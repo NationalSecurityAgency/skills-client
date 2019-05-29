@@ -1,5 +1,5 @@
 import SkillsDirective from './directive/SkillsReporterDirective';
-import './component/SkillsDisplay.vue';
+import SkillsDisplay from './component/SkillsDisplay.vue';
 
 const install = (Vue) => {
   Vue.SkillsReporterDirective('skills', SkillsDirective);
@@ -12,4 +12,4 @@ if (window.Vue) {
 
 SkillsDirective.install = install;
 
-export default SkillsDirective;
+export { SkillsDirective, SkillsDisplay };
