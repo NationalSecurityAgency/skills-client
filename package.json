@@ -1,0 +1,37 @@
+{
+  "name": "@skills/skills-client-vue",
+  "version": "1.0.0",
+  "description": "Vue related utilities for skills clients",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rfv dist",
+    "build": "npm run clean && rollup -c",
+    "watch": "npm run clean && rollup -c --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.evoforge.org:skills/skills-client-report-vue.git"
+  },
+  "author": "Skills Team",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-import": "2.16.0",
+    "eslint-plugin-vue": "^5.2.2",
+    "rollup": "1.4.1",
+    "rollup-plugin-commonjs": "9.2.1",
+    "rollup-plugin-eslint": "5.0.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^4.0.1",
+    "rollup-plugin-terser": "4.0.4",
+    "rollup-plugin-vue": "5.0.0",
+    "vue-template-compiler": "2.6.10"
+  },
+  "dependencies": {
+    "@skills/skills-client-reporter": "0.0.1",
+    "axios": "^0.18.0",
+    "postmate": "^1.5.0",
+    "vue-scrollto": "^2.15.0"
+  }
+}
