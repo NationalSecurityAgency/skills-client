@@ -16,7 +16,7 @@ public class Controller {
 
 //    @CrossOrigin(origins = "http://localhost:8091")
     @GetMapping("/users/{user}/token")
-    public String getUserAuthToken(@PathVariable String user) {
+    public OAuth2Response getUserAuthToken(@PathVariable String user) {
         String serviceTokenUrl = "http://localhost:8080/oauth/token";
         String clientId = "movies";
         String clientSecret = "V1qUZ1y9P5Hkn75bCc4P5TQt00ABcBb6";
@@ -32,7 +32,7 @@ public class Controller {
 
         ResponseEntity<OAuth2Response> responseEntity = oAuthRestTemplate.postForEntity(serviceTokenUrl, new HttpEntity<>(body, headers), OAuth2Response.class);
 
-        return responseEntity.getBody().getAccessToken();
+        return responseEntity.getBody();
     }
 
 //    @CrossOrigin(origins = "http://localhost:8091")
