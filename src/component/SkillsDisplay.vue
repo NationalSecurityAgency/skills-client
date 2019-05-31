@@ -43,7 +43,7 @@
     mounted() {
       const handshake = new Postmate({
         container: this.$refs.iframeContainer,
-        url: '/static/clientPortal/index.html',
+        url: `${this.serviceUrl}/static/clientPortal/index.html`,
         classListArray: ['client-display-iframe'],
         model: {
           serviceUrl: this.serviceUrl,

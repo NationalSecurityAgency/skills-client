@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Skills Reporter example</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.8/dist/vue.js"></script>
+  <script src="../dist/bundle.umd.min.js"></script>
+  <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function (event) {
+      const app = new Vue({
+        el: '#app',
+      });
+      window.VSkillsReporter.configure(
+        'http://localhost:8080',
+        'MyProject',
+        'http://localhost:8081/authenticate/user',
+      );
+    });
+  </script>
+</head>
+<body>
+Example.
+<div id="app">
+  <h1>Button click</h1>
+  <button v-skills:click="'CLICKED_SEARCH_BUTTON'">Search</button>
+</div>
+</body>
+</html>
+

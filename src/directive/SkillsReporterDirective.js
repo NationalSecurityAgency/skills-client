@@ -11,8 +11,8 @@ const eventContext = {
 
 export default {
   name: 'skills',
-  configure(serviceUrl, projectId, authenticationToken) {
-    SkillsReporter.initialize(serviceUrl, projectId, authenticationToken);
+  configure(serviceUrl, projectId, authenticationUrl) {
+    SkillsReporter.initialize(serviceUrl, projectId, authenticationUrl);
   },
   inserted(el, binding) {
     eventContext.name = binding.arg ? binding.arg : 'click';
