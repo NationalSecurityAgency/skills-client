@@ -1,9 +1,9 @@
 <template>
     <div>
-<!--        Show Skills-->
-<!--        <hr/>-->
-<!--        {{ token }}-->
-<!--        <hr/>-->
+        Show Skills
+        <hr/>
+        {{ token }}
+        <hr/>
         <skills-display
                 :authentication-url="authenticationUrl"
                 :version="version"
@@ -21,14 +21,15 @@
         components: {SkillsDisplay},
         data() {
             return {
+                token: '',
                 version: 0,
                 projectId: 'movies',
                 serviceUrl: 'http://localhost:8080',
-                authenticationUrl: 'http://localhost:8090/api/users/user1/token1'
+                authenticationUrl: 'http://localhost:8090/api/users/user1/token'
             };
         },
         mounted() {
-            this.authenticationPromise = axios.get("/api/users/user1/token1")
+            this.authenticationPromise = axios.get("/api/users/user1/token")
                 .then((result) => {
                     this.token = result.data;
                 });
