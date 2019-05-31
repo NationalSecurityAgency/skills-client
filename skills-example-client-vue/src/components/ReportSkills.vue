@@ -3,9 +3,9 @@
         <h2>Report Skills</h2>
 
         <div class="row">
-            <div class="col border rounded">
+            <div class="col border rounded p-4 m-2">
                 <div>
-                <pre><code><button type="button" class="btn btn-outline-primary">Report Skill</button></code></pre>
+                    <pre><code>{{ this.value}}</code></pre>
                 </div>
             </div>
             <div class="col border rounded">
@@ -28,6 +28,7 @@
         data() {
             return {
                 reportResult: null,
+                value: '<button type="button" v-skills="\'Thor\'" class="btn btn-outline-primary">Report Skill</button>',
             };
         },
         methods: {
