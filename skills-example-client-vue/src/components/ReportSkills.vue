@@ -9,7 +9,7 @@
                 </div>
             </div>
             <div class="col border rounded">
-                <button type="button" skills="'Thor'" class="btn btn-outline-primary">Report Skill</button>
+                <button type="button" v-skills="'Thor'" class="btn btn-outline-primary">Report Skill</button>
             </div>
         </div>
     </div>
