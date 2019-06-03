@@ -14,12 +14,12 @@ import java.util.Arrays;
 @RequestMapping("/api")
 public class Controller {
 
-//    @CrossOrigin(origins = "http://localhost:8091")
+    @CrossOrigin(origins = "http://localhost:8091")
     @GetMapping("/users/{user}/token")
     public OAuth2Response getUserAuthToken(@PathVariable String user) {
         String serviceTokenUrl = "http://localhost:8080/oauth/token";
         String clientId = "movies";
-        String clientSecret = "V1qUZ1y9P5Hkn75bCc4P5TQt00ABcBb6";
+        String clientSecret = "v4bHwR4y6PHI3K0CYfL891bUqZi1X24p";
 
         RestTemplate oAuthRestTemplate = new RestTemplate();
         oAuthRestTemplate.setInterceptors(Arrays.asList(new BasicAuthenticationInterceptor(clientId, clientSecret)));
@@ -35,12 +35,12 @@ public class Controller {
         return responseEntity.getBody();
     }
 
-//    @CrossOrigin(origins = "http://localhost:8091")
+    @CrossOrigin(origins = "http://localhost:8091")
     @GetMapping("/users/{user}/token1")
     public String getUserAuthToken1(@PathVariable String user) {
         String serviceTokenUrl = "http://localhost:8080/oauth/token";
         String clientId = "movies";
-        String clientSecret = "V1qUZ1y9P5Hkn75bCc4P5TQt00ABcBb6";
+        String clientSecret = "v4bHwR4y6PHI3K0CYfL891bUqZi1X24p";
 
         RestTemplate oAuthRestTemplate = new RestTemplate();
         oAuthRestTemplate.setInterceptors(Arrays.asList(new BasicAuthenticationInterceptor(clientId, clientSecret)));
