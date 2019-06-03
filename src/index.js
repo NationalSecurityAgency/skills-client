@@ -2,7 +2,7 @@ import SkillsDirective from './directive/SkillsReporterDirective';
 import SkillsDisplay from './component/SkillsDisplay.vue';
 
 const install = (Vue) => {
-  Vue.SkillsReporterDirective('skills', SkillsDirective);
+  Vue.directive('skills', SkillsDirective);
 };
 
 if (window.Vue) {
