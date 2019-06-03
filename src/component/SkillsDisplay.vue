@@ -31,7 +31,6 @@
     },
     data() {
       return {
-        childFrame: null,
         authenticationPromise: null, // Vuex would be more appropriate
       };
     },
