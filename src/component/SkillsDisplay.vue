@@ -24,9 +24,11 @@
         type: String,
         required: true,
       },
-      authenticationUrl: {
+      authenticator: {
         type: String,
-        required: true,
+        validator(value) {
+          return value && (value === 'pki' || value.startsWith('http'));
+        }
       },
     },
     data() {
@@ -67,8 +69,8 @@
           });
         });
         child.on('needs-authentication', () => {
-          if (!this.authenticationPromise) {
-            this.authenticationPromise = axios.get(this.authenticationUrl)
+          if (!this.authenticationPromise && this.authenticator !== 'pki') {
+            this.authenticationPromise = axios.get(this.authenticator)
               .then((result) => {
                 child.call('updateAuthenticationToken', result.data.access_token);
               })
