@@ -1,6 +1,6 @@
 {
   "name": "@skills/skills-client-vue",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Vue related utilities for skills clients",
   "main": "index.js",
   "scripts": {

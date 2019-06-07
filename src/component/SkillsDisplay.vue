@@ -77,6 +77,8 @@
               .finally(() => {
                 this.authenticationPromise = null;
               });
+          } else if (this.authenticator === 'pki') {
+            child.call('updateAuthenticationToken', 'pki');
           }
         });
       });
