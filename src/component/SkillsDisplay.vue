@@ -24,6 +24,10 @@
         type: String,
         required: true,
       },
+      userId: {
+        type: String,
+        required: false,
+      },
       authenticator: {
         type: String,
         validator(value) {
@@ -50,6 +54,7 @@
           serviceUrl: this.serviceUrl,
           projectId: this.projectId,
           version: this.version,
+          userId: this.authenticator === 'pki' ? this.userId: null,
         },
       });
 
