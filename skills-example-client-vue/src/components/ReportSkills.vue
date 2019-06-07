@@ -9,15 +9,32 @@
                 </div>
             </div>
             <div class="col border rounded">
-                <button type="button" v-skills="'Thor'" class="btn btn-outline-primary">Report Skill</button>
+                <button type="button" v-skills="'IronMan'" @skills-report-response="onReporterResponse" class="btn btn-outline-primary">Report Skill</button>
             </div>
+
+            <input type="text" v-skills:input="'Thorr'" @skills-report-response="onReporterResponse" >
+        </div>
+        <br/>
+        <div v-if="reportResult">
+            Report result:<br/>
+            <pre>{{ reportResult }}</pre>
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "ReportSkills"
+        name: "ReportSkills",
+        data() {
+            return {
+                reportResult: null,
+            };
+        },
+        methods: {
+            onReporterResponse(response) {
+                this.reportResult = response.detail;
+            }
+        },
     }
 </script>
 
