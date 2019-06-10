@@ -3,6 +3,7 @@ import BootstrapVue from 'bootstrap-vue'
 import App from './App.vue'
 import router from './router';
 import { SkillsDirective } from '@skills/skills-client-vue/src/index.js';
+import SkillsReporter from '@skills/skills-client-reporter';
 
 Vue.config.productionTip = false
 
@@ -19,6 +20,11 @@ SkillsDirective.configure(
     'movies',
     'http://localhost:8090/api/users/user1/token',
 );
+
+const serviceUrl = 'http://localhost:8080';
+const projectId = 'movies';
+const authenticator = 'http://localhost:8090/api/users/user1/token';
+SkillsReporter.initialize(serviceUrl, projectId, authenticator)
 
 new Vue({
   render: h => h(App),
