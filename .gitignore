@@ -1,5 +1,8 @@
 .idea
 *.iml
+static
+dist
+skills-example-service/src/main/resources/public
 
 .DS_Store
 node_modules

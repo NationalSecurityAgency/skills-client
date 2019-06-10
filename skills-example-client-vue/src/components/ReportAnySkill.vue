@@ -2,7 +2,7 @@
     <div>
         <code-example-layout :title="title" :sample-code="sampleCode">
             <div slot="code">
-                <multiselect v-model="skill" :options="available" placeholder="Select a skill id"/>
+                <multiselect v-model="skill" :options="available" placeholder="Select a skill id" :taggable="true" @tag="addTag"/>
 
                 <button class="btn btn-outline-primary mt-2" type="button" @click="reportSkill">Report Skill</button>
             </div>
@@ -46,6 +46,10 @@
                         this.reportResult = res;
                     });
             },
+            addTag(newTag) {
+                this.available.push(newTag);
+                this.skill = newTag;
+            }
         },
     }
 </script>
