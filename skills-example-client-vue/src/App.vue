@@ -5,16 +5,20 @@
         <b-container fluid class="mt-3">
             <router-view/>
         </b-container>
+
+        <skills-footer/>
     </div>
 </template>
 
 <script>
     // import ShowSkills from "./components/ShowSkills";
     import Navigation from "./components/Navigation";
+    import SkillsFooter from "./components/SkillsFooter";
 
     export default {
         name: 'app',
         components: {
+            SkillsFooter,
             Navigation,
             // ShowSkills,
         }

@@ -7,6 +7,7 @@ import { SkillsDirective } from '@skills/skills-client-vue/src/index.js';
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
+// TODO: implement instead of .configure
 Vue.use(SkillsDirective, {
   serviceUrl: 'http://localhost:8080',
   projectId: 'movies',

@@ -14,33 +14,33 @@ import java.util.Arrays;
 @RequestMapping("/api")
 public class Controller {
 
+//    @CrossOrigin(origins = "http://localhost:8091")
+//    @GetMapping("/users/{user}/token")
+//    public OAuth2Response getUserAuthToken(@PathVariable String user) {
+//        String serviceTokenUrl = "http://localhost:8080/oauth/token";
+//        String clientId = "movies";
+//        String clientSecret = "1wWFWoP43fL6n0Mx81u6FkaW567iDIDF";
+//
+//        RestTemplate oAuthRestTemplate = new RestTemplate();
+//        oAuthRestTemplate.setInterceptors(Arrays.asList(new BasicAuthenticationInterceptor(clientId, clientSecret)));
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//
+//        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+//        body.add("grant_type", "client_credentials");
+//        body.add("proxy_user", user);
+//
+//        ResponseEntity<OAuth2Response> responseEntity = oAuthRestTemplate.postForEntity(serviceTokenUrl, new HttpEntity<>(body, headers), OAuth2Response.class);
+//
+//        return responseEntity.getBody();
+//    }
+
     @CrossOrigin(origins = "http://localhost:8091")
     @GetMapping("/users/{user}/token")
-    public OAuth2Response getUserAuthToken(@PathVariable String user) {
-        String serviceTokenUrl = "http://localhost:8080/oauth/token";
-        String clientId = "movies";
-        String clientSecret = "v4bHwR4y6PHI3K0CYfL891bUqZi1X24p";
-
-        RestTemplate oAuthRestTemplate = new RestTemplate();
-        oAuthRestTemplate.setInterceptors(Arrays.asList(new BasicAuthenticationInterceptor(clientId, clientSecret)));
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", "client_credentials");
-        body.add("proxy_user", user);
-
-        ResponseEntity<OAuth2Response> responseEntity = oAuthRestTemplate.postForEntity(serviceTokenUrl, new HttpEntity<>(body, headers), OAuth2Response.class);
-
-        return responseEntity.getBody();
-    }
-
-    @CrossOrigin(origins = "http://localhost:8091")
-    @GetMapping("/users/{user}/token1")
     public String getUserAuthToken1(@PathVariable String user) {
         String serviceTokenUrl = "http://localhost:8080/oauth/token";
         String clientId = "movies";
-        String clientSecret = "v4bHwR4y6PHI3K0CYfL891bUqZi1X24p";
+        String clientSecret = "1wWFWoP43fL6n0Mx81u6FkaW567iDIDF";
 
         RestTemplate oAuthRestTemplate = new RestTemplate();
         oAuthRestTemplate.setInterceptors(Arrays.asList(new BasicAuthenticationInterceptor(clientId, clientSecret)));
@@ -56,24 +56,24 @@ public class Controller {
         return responseEntity.getBody();
     }
 
-    static class OAuth2Response {
-        @JsonProperty("access_token")
-        String accessToken;
-        @JsonProperty("token_type")
-        String tokenType;
-        @JsonProperty("expires_in")
-        Long expiresIn;
-        String scope;
-        @JsonProperty("proxy_user")
-        String proxyUser;
-        String jti;
-
-        public String getAccessToken() {
-            return accessToken;
-        }
-
-        public void setAccessToken(String accessToken) {
-            this.accessToken = accessToken;
-        }
-    }
+//    static class OAuth2Response {
+//        @JsonProperty("access_token")
+//        String accessToken;
+//        @JsonProperty("token_type")
+//        String tokenType;
+//        @JsonProperty("expires_in")
+//        Long expiresIn;
+//        String scope;
+//        @JsonProperty("proxy_user")
+//        String proxyUser;
+//        String jti;
+//
+//        public String getAccessToken() {
+//            return accessToken;
+//        }
+//
+//        public void setAccessToken(String accessToken) {
+//            this.accessToken = accessToken;
+//        }
+//    }
 }

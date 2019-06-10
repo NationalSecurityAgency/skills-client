@@ -1,9 +1,5 @@
 <template>
-    <div>
-        Show Skills
-        <hr/>
-        {{ token }}
-        <hr/>
+    <div class="container">
         <skills-display
                 :authentication-url="authenticationUrl"
                 :version="version"
