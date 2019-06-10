@@ -52,4 +52,8 @@
         @extend .btn;
         @extend .btn-outline-primary;
     }
+
+    .code-example input {
+        @extend  .form-control;
+    }
 </style>

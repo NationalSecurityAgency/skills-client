@@ -1,11 +1,14 @@
-import Vue from 'vue'
-import BootstrapVue from 'bootstrap-vue'
-import App from './App.vue'
+import Vue from 'vue';
+import BootstrapVue from 'bootstrap-vue';
+import Multiselect from 'vue-multiselect';
+import App from './App.vue';
 import router from './router';
 import { SkillsDirective } from '@skills/skills-client-vue/src/index.js';
 import SkillsReporter from '@skills/skills-client-reporter';
 
 Vue.config.productionTip = false
+
+Vue.component('multiselect', Multiselect);
 
 Vue.use(BootstrapVue)
 // TODO: implement instead of .configure

@@ -2,12 +2,9 @@
     <div>
         <code-example-layout :title="title" :sample-code="sampleCode">
             <div slot="code">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Skill Id" aria-label="SkillId" aria-describedby="basic-addon2" v-model="skill">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-primary" type="button" @click="reportSkill">Report Skill</button>
-                    </div>
-                </div>
+                <multiselect v-model="skill" :options="available" placeholder="Select a skill id"/>
+
+                <button class="btn btn-outline-primary mt-2" type="button" @click="reportSkill">Report Skill</button>
             </div>
             <span slot="res">{{reportResult}}</span>
         </code-example-layout>
@@ -15,6 +12,7 @@
 </template>
 
 <script>
+    import axios from 'axios';
     import SkillsReporter from '@skills/skills-client-reporter';
     import CodeExampleLayout from "./CodeExampleLayout";
 
@@ -32,7 +30,14 @@
                     '                    });\n' +
                     '            },',
                 skill: '',
+                available: [],
             };
+        },
+        mounted() {
+            axios.get("/api/skills")
+                .then((result) => {
+                    this.available = result.data;
+                });
         },
         methods: {
             reportSkill() {
