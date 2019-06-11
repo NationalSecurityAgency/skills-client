@@ -8,6 +8,8 @@
   import Postmate from 'postmate';
   import axios from 'axios';
 
+  import SkillsConfiguration from '@skills/skills-client-configuration';
+
   Vue.use(VueScrollTo);
 
   export default {
@@ -16,23 +18,9 @@
         type: Number,
         default: 0,
       },
-      serviceUrl: {
-        type: String,
-        default: '',
-      },
-      projectId: {
-        type: String,
-        required: true,
-      },
       userId: {
         type: String,
         required: false,
-      },
-      authenticator: {
-        type: String,
-        validator(value) {
-          return value && (value === 'pki' || value.startsWith('http'));
-        }
       },
     },
     data() {
@@ -48,13 +36,13 @@
     mounted() {
       const handshake = new Postmate({
         container: this.$refs.iframeContainer,
-        url: `${this.serviceUrl}/static/clientPortal/index.html`,
+        url: `${SkillsConfiguration.getServiceUrl()}/static/clientPortal/index.html`,
         classListArray: ['client-display-iframe'],
         model: {
-          serviceUrl: this.serviceUrl,
-          projectId: this.projectId,
+          serviceUrl: SkillsConfiguration.getServiceUrl(),
+          projectId: SkillsConfiguration.getProjectId(),
           version: this.version,
-          userId: this.authenticator === 'pki' ? this.userId: null,
+          userId: SkillsConfiguration.getAuthenticator() === 'pki' ? this.userId: null,
         },
       });
 
@@ -74,15 +62,15 @@
           });
         });
         child.on('needs-authentication', () => {
-          if (!this.authenticationPromise && this.authenticator !== 'pki') {
-            this.authenticationPromise = axios.get(this.authenticator)
+          if (!this.authenticationPromise && SkillsConfiguration.getAuthenticator() !== 'pki') {
+            this.authenticationPromise = axios.get(SkillsConfiguration.getAuthenticator())
               .then((result) => {
                 child.call('updateAuthenticationToken', result.data.access_token);
               })
               .finally(() => {
                 this.authenticationPromise = null;
               });
-          } else if (this.authenticator === 'pki') {
+          } else if (SkillsConfiguration.getAuthenticator() === 'pki') {
             child.call('updateAuthenticationToken', 'pki');
           }
         });

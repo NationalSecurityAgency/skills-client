@@ -18,9 +18,6 @@ const eventCache = new WeakMap();
 
 export default {
   name: 'skills',
-  configure(serviceUrl, projectId, authenticationUrl) {
-    SkillsReporter.initialize(serviceUrl, projectId, authenticationUrl);
-  },
   inserted(el, binding) {
     const eventContext = {
       name: binding.arg ? binding.arg : 'click',
