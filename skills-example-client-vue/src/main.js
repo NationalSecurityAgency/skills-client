@@ -5,29 +5,19 @@ import App from './App.vue';
 import router from './router';
 import { SkillsDirective } from '@skills/skills-client-vue/src/index.js';
 import SkillsReporter from '@skills/skills-client-reporter';
+import SkillsConfiguration from '@skills/skills-client-configuration';
 
 Vue.config.productionTip = false
 
 Vue.component('multiselect', Multiselect);
 
 Vue.use(BootstrapVue)
-// TODO: implement instead of .configure
-Vue.use(SkillsDirective, {
-  serviceUrl: 'http://localhost:8080',
-  projectId: 'movies',
-  authenticationToken: 'http://localhost:8090/api/users/user1/token',
-})
-
-SkillsDirective.configure(
-    'http://localhost:8080',
-    'movies',
-    'http://localhost:8090/api/users/user1/token',
-);
+Vue.use(SkillsDirective)
 
 const serviceUrl = 'http://localhost:8080';
 const projectId = 'movies';
 const authenticator = 'http://localhost:8090/api/users/user1/token';
-SkillsReporter.initialize(serviceUrl, projectId, authenticator)
+SkillsConfiguration.configure(serviceUrl, projectId, authenticator)
 
 new Vue({
   render: h => h(App),
