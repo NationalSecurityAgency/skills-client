@@ -1,10 +1,7 @@
 <template>
     <div class="container">
         <skills-display
-                :authentication-url="authenticationUrl"
-                :version="version"
-                :project-id="projectId"
-                :service-url="serviceUrl"/>
+                :version="version"/>
     </div>
 </template>
 
@@ -19,9 +16,6 @@
             return {
                 token: '',
                 version: 0,
-                projectId: 'movies',
-                serviceUrl: 'http://localhost:8080',
-                authenticationUrl: 'http://localhost:8090/api/users/user1/token'
             };
         },
         mounted() {
