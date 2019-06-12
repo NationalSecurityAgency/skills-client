@@ -3,7 +3,7 @@ import BootstrapVue from 'bootstrap-vue';
 import Multiselect from 'vue-multiselect';
 import App from './App.vue';
 import router from './router';
-import { SkillsDirective } from '@skills/skills-client-vue/src/index.js';
+import { SkillsDirective } from '@skills/skills-client-vue';
 import SkillsConfiguration from '@skills/skills-client-configuration';
 
 Vue.config.productionTip = false
