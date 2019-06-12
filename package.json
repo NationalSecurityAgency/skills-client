@@ -1,8 +1,8 @@
 {
   "name": "@skills/skills-client-vue",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Vue related utilities for skills clients",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "clean": "rm -rfv dist",
     "build": "npm run clean && rollup -c",
@@ -15,9 +15,6 @@
   },
   "author": "Skills Team",
   "license": "ISC",
-  "peerDependencies": {
-    "@skills/skills-client-configuration": "~0.0.4"
-  },
   "devDependencies": {
     "eslint-config-airbnb-base": "13.1.0",
     "eslint-plugin-import": "2.16.0",
@@ -32,10 +29,10 @@
     "rollup-plugin-vue": "5.0.0",
     "vue": "2.6.10",
     "vue-template-compiler": "2.6.10",
-    "@skills/skills-client-configuration": "~0.0.4"
   },
   "dependencies": {
-    "@skills/skills-client-reporter": "0.0.11",
+    "@skills/skills-client-configuration": "~0.0.4",
+    "@skills/skills-client-reporter": "~0.0.11",
     "axios": "0.18.0",
     "postmate": "1.5.0",
     "vue-scrollto": "2.15.0"
