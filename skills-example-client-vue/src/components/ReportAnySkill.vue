@@ -44,6 +44,9 @@
                 SkillsReporter.reportSkill(this.skill)
                     .then((res) => {
                         this.reportResult = res;
+                    })
+                    .catch((res) => {
+                        this.reportResult = res;
                     });
             },
             addTag(newTag) {

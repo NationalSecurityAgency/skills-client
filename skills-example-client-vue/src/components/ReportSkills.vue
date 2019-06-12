@@ -23,7 +23,7 @@
                 examples: [
                     {
                         title:'Skills Directive - Click Event',
-                        code: '<button type="button" v-skills="\'IronMan\'" @skills-report-response="onReporterResponse">Report Skill</button>',
+                        code: '<button v-skills="\'IronMan\'" @skills-report-response="onReporterResponse">Report Skill</button>',
                     },
                     {
                         title:'Skills Directive - Input Event',
@@ -31,7 +31,7 @@
                     },
                     {
                         title:'Skills Directive - Error with Button',
-                        code: '<button type="button" v-skills="\'DoesNotExist\'" @skills-report-response="onReporterResponse">Report Skill</button>',
+                        code: '<button v-skills="\'DoesNotExist\'" @skills-report-response="onReporterResponse">Report Skill</button>',
                     },
                     {
                         title:'Skills Directive - Error with Input',
