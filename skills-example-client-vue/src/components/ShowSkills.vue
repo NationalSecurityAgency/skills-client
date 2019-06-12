@@ -7,7 +7,7 @@
 
 <script>
     import axios from 'axios';
-    import { SkillsDisplay } from '@skills/skills-client-vue/src/index.js';
+    import { SkillsDisplay } from '@skills/skills-client-vue';
 
     export default {
         name: "ShowSkills",
