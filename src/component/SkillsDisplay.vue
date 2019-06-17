@@ -40,6 +40,14 @@
         authenticationPromise: null, // Vuex would be more appropriate
       };
     },
+    computed: {
+      configuration() {
+        const serviceUrl = this.options.serviceUrl ? this.options.serviceUrl : SkillsConfiguration.getServiceUrl();
+        const authenticator = this.options.authenticator ? this.options.authenticator : SkillsConfiguration.getAuthenticator();
+        const projectId = this.options.projectId ? this.options.projectId : SkillsConfiguration.getProjectId();
+        return { serviceUrl, authenticator, projectId };
+      }
+    },
     watch: {
       version(newValue) {
         this.childFrame.call('updateVersion', newValue);
@@ -88,14 +96,6 @@
           }
         });
       });
-    },
-    computed: {
-      configuration() {
-        const serviceUrl = this.options.serviceUrl ? this.options.serviceUrl : SkillsConfiguration.getServiceUrl();
-        const authenticator = this.options.authenticator ? this.options.authenticator : SkillsConfiguration.getAuthenticator();
-        const projectId = this.options.projectId ? this.options.projectId : SkillsConfiguration.getProjectId();
-        return { serviceUrl, authenticator, projectId };
-      }
     },
     beforeDestroy() {
       this.childFrame.destroy();
