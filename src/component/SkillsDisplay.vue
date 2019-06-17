@@ -17,7 +17,7 @@
       options: {
         type: Object,
         required: false,
-        default: {},
+        default: () => {},
         validator(value) {
           const passedOptions = Object.keys(value);
           const configOptions = ['authenticator', 'serviceUrl', 'projectId'];
