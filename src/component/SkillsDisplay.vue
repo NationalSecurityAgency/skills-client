@@ -14,6 +14,17 @@
 
   export default {
     props: {
+      options: {
+        type: Object,
+        required: false,
+        default: {},
+        validator(value) {
+          const passedOptions = Object.keys(value);
+          const configOptions = ['authenticator', 'serviceUrl', 'projectId'];
+          const isValidConfigOption = passedOptions.every(passedOption => configOptions.includes(passedOption));
+          return isValidConfigOption;
+        },
+      },
       version: {
         type: Number,
         default: 0,
@@ -35,15 +46,16 @@
       },
     },
     mounted() {
+      const configuration = this.configuration;
       const handshake = new Postmate({
         container: this.$refs.iframeContainer,
         url: `${SkillsConfiguration.getServiceUrl()}/static/clientPortal/index.html`,
         classListArray: ['client-display-iframe'],
         model: {
-          serviceUrl: SkillsConfiguration.getServiceUrl(),
-          projectId: SkillsConfiguration.getProjectId(),
+          serviceUrl: configuration.serviceUrl,
+          projectId: configuration.projectId,
           version: this.version,
-          userId: SkillsConfiguration.getAuthenticator() === 'pki' ? this.userId: null,
+          userId: configuration.authenticator === 'pki' ? this.userId: null,
         },
       });
 
@@ -63,19 +75,27 @@
           });
         });
         child.on('needs-authentication', () => {
-          if (!this.authenticationPromise && SkillsConfiguration.getAuthenticator() !== 'pki') {
-            this.authenticationPromise = axios.get(SkillsConfiguration.getAuthenticator())
+          if (!this.authenticationPromise && this.configuration.authenticator !== 'pki') {
+            this.authenticationPromise = axios.get(this.configuration.authenticator)
               .then((result) => {
                 child.call('updateAuthenticationToken', result.data.access_token);
               })
               .finally(() => {
                 this.authenticationPromise = null;
               });
-          } else if (SkillsConfiguration.getAuthenticator() === 'pki') {
+          } else if (this.configuration.authenticator === 'pki') {
             child.call('updateAuthenticationToken', 'pki');
           }
         });
       });
+    },
+    computed: {
+      configuration() {
+        const serviceUrl = this.options.serviceUrl ? this.options.serviceUrl : SkillsConfiguration.getServiceUrl();
+        const authenticator = this.options.authenticator ? this.options.authenticator : SkillsConfiguration.getAuthenticator();
+        const projectId = this.options.projectId ? this.options.projectId : SkillsConfiguration.getProjectId();
+        return { serviceUrl, authenticator, projectId };
+      }
     },
     beforeDestroy() {
       this.childFrame.destroy();
