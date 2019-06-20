@@ -4,7 +4,13 @@
             <div slot="code">
                 <multiselect v-model="skill" :options="available" placeholder="Select a skill id" :taggable="true" @tag="addTag"/>
 
-                <button class="btn btn-outline-primary mt-2" type="button" @click="reportSkill">Report Skill</button>
+                <button
+                  :disabled="!hasSelectedSkill"
+                  :title="buttonTitle"
+                  :class="!hasSelectedSkill ? 'disabled' : ''"
+                  class="btn btn-outline-primary mt-2"
+                  type="button"
+                  @click="reportSkill">Report Skill</button>
             </div>
             <span slot="res">{{reportResult}}</span>
         </code-example-layout>
@@ -13,7 +19,7 @@
 
 <script>
     import axios from 'axios';
-    import SkillsReporter from '@skills/skills-client-reporter';
+    import { SkillsReporter } from '@skills/skills-client-vue';
     import CodeExampleLayout from "./CodeExampleLayout";
 
     export default {
@@ -32,6 +38,15 @@
                 skill: '',
                 available: [],
             };
+        },
+        computed: {
+            hasSelectedSkill() {
+                return this.skill && this.skill !== '';
+            },
+
+            buttonTitle() {
+                return this.hasSelectedSkill ? '' : 'Select a Skill to report from the dropdown';
+            },
         },
         mounted() {
             axios.get("/api/skills")

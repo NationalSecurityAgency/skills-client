@@ -35,4 +35,8 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
+
+    .btn.disabled {
+        cursor: not-allowed;
+    }
 </style>
