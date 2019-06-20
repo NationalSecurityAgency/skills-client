@@ -1,0 +1,34 @@
+stages:
+  - build
+  - deploy
+
+build:
+  image: maven:3.6.0-jdk-11
+  stage: build
+  script:
+    - echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
+    - cat ~/.npmrc
+    - echo "<settings><mirrors><mirror><id>central</id><name>central</name><url>http://$NEXUS_SERVER/repository/maven-public/</url><mirrorOf>*</mirrorOf></mirror></mirrors></settings>" > ~/.m2/settings.xml
+    - cat ~/.m2/settings.xml
+    - mvn install
+  artifacts:
+    paths:
+      - skills-example-service/target/skills-example-service-*.jar
+
+deploy:
+  image: alpine:latest
+  stage: deploy
+  before_script:
+      - apk --update --no-cache add sshpass openssh git
+  script:
+      - git clone https://${GITLAB_DEPLOY_USERNAME}:${GITLAB_DEPLOY_PASSWORD}@gitlab.evoforge.org/skills/skills-deploy.git
+      - TIMESTAMP=`date +%s`
+      - TMP_DIR="skills-example-service_${TIMESTAMP}"
+      - DEST_PATH="/home/${CI_USERNAME}/$TMP_DIR"
+      - sshpass -p $CI_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no $CI_USERNAME@$CI_IP "rm -rf /home/${CI_USERNAME}/skills-example-service_* && mkdir -p ${DEST_PATH}"
+      - cp skills-example-service/target/skills-example-service-*.jar skills-example-service.jar
+      - sshpass -p $CI_PASSWORD scp -r skills-deploy ${CI_USERNAME}@${CI_IP}:${DEST_PATH}
+      - sshpass -p $CI_PASSWORD scp -r skills-example-service.jar ${CI_USERNAME}@${CI_IP}:${DEST_PATH}/skills-deploy/skills-example-service
+      - sshpass -p $CI_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no $CI_USERNAME@$CI_IP "cd ${DEST_PATH}/skills-deploy/skills-example-service && ./runDeploy.sh"
+  only:
+    - master
