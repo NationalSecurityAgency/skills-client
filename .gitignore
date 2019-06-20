@@ -2,6 +2,7 @@
 *.iml
 static
 dist
+target
 skills-example-service/src/main/resources/public
 
 .DS_Store
