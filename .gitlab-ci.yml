@@ -28,7 +28,7 @@ deploy:
       - sshpass -p $CI_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no $CI_USERNAME@$CI_IP "rm -rf /home/${CI_USERNAME}/skills-example-service_* && mkdir -p ${DEST_PATH}"
       - cp skills-example-service/target/skills-example-service-*.jar skills-example-service.jar
       - sshpass -p $CI_PASSWORD scp -r skills-deploy ${CI_USERNAME}@${CI_IP}:${DEST_PATH}
-      - sshpass -p $CI_PASSWORD scp -r skills-example-service.jar ${CI_USERNAME}@${CI_IP}:${DEST_PATH}/skills-deploy/skills-example-client
-      - sshpass -p $CI_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no $CI_USERNAME@$CI_IP "cd ${DEST_PATH}/skills-deploy/skills-example-service && ./runDeploy.sh"
+      - sshpass -p $CI_PASSWORD scp -r skills-example-service.jar ${CI_USERNAME}@${CI_IP}:${DEST_PATH}/skills-deploy/skills-example-client/
+      - sshpass -p $CI_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no $CI_USERNAME@$CI_IP "cd ${DEST_PATH}/skills-deploy/skills-example-client && ./runDeploy.sh"
   only:
     - master
