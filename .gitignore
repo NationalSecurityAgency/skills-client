@@ -8,6 +8,7 @@ skills-example-service/src/main/resources/public
 .DS_Store
 node_modules
 /dist
+target/
 
 # local env files
 .env.local
