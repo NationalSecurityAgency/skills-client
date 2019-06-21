@@ -78,7 +78,7 @@ public class Controller {
 
     private RestTemplate getTemplateWithAuth() {
         RestTemplate restTemplate = new RestTemplate();
-        if (!skillsConfig.getServiceUrl().startsWith("https")) {
+        if (!skillsConfig.getAuthMode().equalsIgnoreCase("pki")) {
             // must configure HttpComponentsClientHttpRequestFactory as SpringTemplate does
             // not by default keeps track of session
             restTemplate.setRequestFactory(getHttpRequestFactory());

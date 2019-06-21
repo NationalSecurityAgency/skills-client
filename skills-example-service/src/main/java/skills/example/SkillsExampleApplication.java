@@ -32,17 +32,21 @@ public class SkillsExampleApplication {
 		String username;
 		@JsonIgnore
 		String password;
+		@JsonIgnore
+		String authMode;
 
 		public String getServiceUrl() { return serviceUrl; }
 		public String getProjectId() { return projectId; }
 		public String getAuthenticator() { return authenticator; }
 		public String getUsername() { return username; }
 		public String getPassword() { return password; }
+		public String getAuthMode() { return authMode; }
 
 		public void setServiceUrl(String serviceUrl) { this.serviceUrl = serviceUrl; }
 		public void setProjectId(String projectId) { this.projectId = projectId; }
 		public void setAuthenticator(String authenticator) { this.authenticator = authenticator; }
 		public void setUsername(String username) { this.username = username; }
 		public void setPassword(String password) { this.password = password; }
+		public void setAuthMode(String authMode) { this.authMode = authMode; }
 	}
 }
