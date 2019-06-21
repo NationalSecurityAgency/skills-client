@@ -6,10 +6,19 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import javax.net.ssl.HttpsURLConnection;
+
 @SpringBootApplication
 public class SkillsExampleApplication {
 
+	static final String DISABLE_HOSTNAME_VERIFIER_PROP = "skills.disableHostnameVerifier";
+
 	public static void main(String[] args) {
+		boolean disableHostnameVerifier = Boolean.parseBoolean(System.getProperty(DISABLE_HOSTNAME_VERIFIER_PROP));
+		if (disableHostnameVerifier) {
+			HttpsURLConnection.setDefaultHostnameVerifier((s, sslSession) -> true);
+		}
+
 		SpringApplication.run(SkillsExampleApplication.class, args);
 	}
 
