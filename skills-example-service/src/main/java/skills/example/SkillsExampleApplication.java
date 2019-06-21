@@ -33,7 +33,7 @@ public class SkillsExampleApplication {
 		@JsonIgnore
 		String password;
 		@JsonIgnore
-		String authMode;
+		String authMode = "form";
 
 		public String getServiceUrl() { return serviceUrl; }
 		public String getProjectId() { return projectId; }
