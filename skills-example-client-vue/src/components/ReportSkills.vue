@@ -31,11 +31,11 @@
                     },
                     {
                         title:'Skills Directive - Error with Button',
-                        code: '<button v-skills="\'DoesNotExist\'" @skills-report-response="onReporterResponse">Report Skill</button>',
+                        code: '<button v-skills="\'DoesNotExist\'" @skills-report-response="onReporterResponse" @skills-report-error="onReporterError">Report Skill</button>',
                     },
                     {
                         title:'Skills Directive - Error with Input',
-                        code: '<input type="text" v-skills:input="\'DoesNotExist\'" @skills-report-response="onReporterResponse"/>',
+                        code: '<input type="text" v-skills:input="\'DoesNotExist\'" @skills-report-response="onReporterResponse" @skills-report-error="onReporterError"/>',
                     },
                 ],
             };

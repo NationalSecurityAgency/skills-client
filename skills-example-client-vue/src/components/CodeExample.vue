@@ -2,7 +2,7 @@
 
     <code-example-layout :title="title" :sample-code="sampleCode">
         <div slot="code">
-            <component :is="this.componentName" v-on:reporter-response="onReporterResponse"></component>
+            <component :is="this.componentName" v-on:reporter-error="onReporterError" v-on:reporter-response="onReporterResponse"></component>
         </div>
         <span slot="res">{{reportResult}}</span>
     </code-example-layout>
@@ -34,11 +34,18 @@
                     onReporterResponse(response) {
                         this.$emit('reporter-response', response);
                     },
+
+                    onReporterError(error) {
+                        this.$emit('reporter-error', error);
+                    },
                 },
             });
         },
         methods: {
             onReporterResponse(response) {
+                this.reportResult = response.detail;
+            },
+            onReporterError(response) {
                 this.reportResult = response.detail;
             },
         },
