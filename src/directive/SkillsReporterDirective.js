@@ -1,15 +1,16 @@
 import SkillsReporter from '@skills/skills-client-reporter';
 
-const RESPONSE_EVENT = 'skills-report-response';
+const SUCCESS_EVENT = 'skills-report-success';
+const FAILURE_EVENT = 'skills-report-error';
 
 const eventListener = (el, skillId) => () => {
   SkillsReporter.reportSkill(skillId)
     .then((result) => {
-      const event = new CustomEvent(RESPONSE_EVENT, { detail: result });
+      const event = new CustomEvent(SUCCESS_EVENT, { detail: result });
       el.dispatchEvent(event);
     })
     .catch((error) => {
-      const event = new CustomEvent(RESPONSE_EVENT, { detail: error });
+      const event = new CustomEvent(FAILURE_EVENT, { detail: error });
       el.dispatchEvent(event);
     });
 };
