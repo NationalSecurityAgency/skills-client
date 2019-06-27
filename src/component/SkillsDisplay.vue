@@ -57,7 +57,7 @@
       const configuration = this.configuration;
       const handshake = new Postmate({
         container: this.$refs.iframeContainer,
-        url: `${SkillsConfiguration.getServiceUrl()}/static/clientPortal/index.html`,
+        url: `${configuration.serviceUrl}/static/clientPortal/index.html`,
         classListArray: ['client-display-iframe'],
         model: {
           serviceUrl: configuration.serviceUrl,
