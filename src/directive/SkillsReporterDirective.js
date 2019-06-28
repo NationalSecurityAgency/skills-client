@@ -5,17 +5,19 @@ import debounce from 'lodash/debounce';
 const SUCCESS_EVENT = 'skills-report-success';
 const FAILURE_EVENT = 'skills-report-error';
 
-const eventListener = debounce((el, skillId) => () => {
-  SkillsReporter.reportSkill(skillId)
-    .then((result) => {
-      const event = new CustomEvent(SUCCESS_EVENT, { detail: result });
-      el.dispatchEvent(event);
-    })
-    .catch((error) => {
-      const event = new CustomEvent(FAILURE_EVENT, { detail: error });
-      el.dispatchEvent(event);
-    });
-}, 500);
+const eventListener = (el, skillId) => {
+  return debounce(() => {
+    SkillsReporter.reportSkill(skillId)
+      .then((result) => {
+        const event = new CustomEvent(SUCCESS_EVENT, { detail: result });
+        el.dispatchEvent(event);
+      })
+      .catch((error) => {
+        const event = new CustomEvent(FAILURE_EVENT, { detail: error });
+        el.dispatchEvent(event);
+      });
+  }, 500)
+};
 
 const eventCache = new WeakMap();
 
