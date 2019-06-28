@@ -1,9 +1,11 @@
 import SkillsReporter from '@skills/skills-client-reporter';
 
+import debounce from 'lodash/debounce';
+
 const SUCCESS_EVENT = 'skills-report-success';
 const FAILURE_EVENT = 'skills-report-error';
 
-const eventListener = (el, skillId) => () => {
+const eventListener = debounce((el, skillId) => () => {
   SkillsReporter.reportSkill(skillId)
     .then((result) => {
       const event = new CustomEvent(SUCCESS_EVENT, { detail: result });
@@ -13,7 +15,7 @@ const eventListener = (el, skillId) => () => {
       const event = new CustomEvent(FAILURE_EVENT, { detail: error });
       el.dispatchEvent(event);
     });
-};
+}, 500);
 
 const eventCache = new WeakMap();
 
