@@ -25,6 +25,11 @@
           return isValidConfigOption;
         },
       },
+      theme: {
+        type: Object,
+        required: false,
+        default: null,
+      },
       version: {
         type: Number,
         default: 0,
@@ -64,6 +69,7 @@
           projectId: configuration.projectId,
           version: this.version,
           userId: configuration.authenticator === 'pki' ? this.userId: null,
+          theme: this.theme,
         },
       });
 
