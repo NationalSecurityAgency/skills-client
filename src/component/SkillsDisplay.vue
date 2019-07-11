@@ -19,8 +19,17 @@
         required: false,
         default: () => ({}),
         validator(value) {
-          const passedOptions = Object.keys(value);
-          const configOptions = ['authenticator', 'serviceUrl', 'projectId'];
+          const defaults = {
+            disableAutoScroll: false,
+          };
+          const configOptions = [
+            'authenticator',
+            'serviceUrl',
+            'projectId',
+            'disableAutoScroll',
+          ];
+          const options = { ...defaults, ...value };
+          const passedOptions = Object.keys(options);
           const isValidConfigOption = passedOptions.every(passedOption => configOptions.includes(passedOption));
           return isValidConfigOption;
         },
@@ -83,10 +92,12 @@
           }
         });
         child.on('route-changed', () => {
-          VueScrollTo.scrollTo(this.$refs.iframeContainer, 1000, {
-            y: true,
-            x: false,
-          });
+          if (!this.options.disableAutoScroll) {
+            VueScrollTo.scrollTo(this.$refs.iframeContainer, 1000, {
+              y: true,
+              x: false,
+            });
+          }
         });
         child.on('needs-authentication', () => {
           if (!this.authenticationPromise && this.configuration.authenticator !== 'pki') {
