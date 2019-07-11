@@ -10,20 +10,16 @@ Vue.config.productionTip = false
 
 Vue.component('multiselect', Multiselect);
 
-Vue.use(BootstrapVue)
-Vue.use(SkillsDirective)
+Vue.use(BootstrapVue);
+Vue.use(SkillsDirective);
 
 axios.get("/api/config")
-    .then((result) => {
-      SkillsConfiguration.configure(result.data);
-    });
-
-
-new Vue({
-  render: h => h(App),
-  router,
-}).$mount('#app')
-
-
-
-
+  .then((result) => {
+    SkillsConfiguration.configure(result.data);
+  })
+  .then(() => {
+    new Vue({
+      render: h => h(App),
+      router,
+    }).$mount('#app');
+  });
