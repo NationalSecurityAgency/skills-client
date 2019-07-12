@@ -1,8 +1,24 @@
 <template>
     <div class="container">
+        <div>
+            <b-dropdown
+              id="dropdown-1"
+              class="mb-3"
+              text="Change Theme"
+              variant="outline-primary">
+                <b-dropdown-item
+                  v-for="themeName in themeNames"
+                  :key="themeName"
+                  :active="themeObject.name === themeName"
+                  :href="`/showSkills?theme=${themeName}`">
+                    {{ themeName }}
+                </b-dropdown-item>
+            </b-dropdown>
+        </div>
         <skills-display
-          :options="displayOptions"
-          :theme="themeObject" />
+            v-if="themeObject"
+            :options="displayOptions"
+            :theme="themeObject.theme" />
     </div>
 </template>
 
@@ -18,32 +34,26 @@
             return {
                 token: '',
                 version: 0,
-                themeObject: null,
                 displayOptions: {
                     disableAutoScroll: true,
                 },
+                themeNames: this.getAvailableThemeNames(),
             };
         },
         created() {
-            this.themeObject = this.getSelectedTheme().theme;
+            const theme = this.themeObject;
+            this.$store.commit('skillsDisplayThemeName', theme.name);
+        },
+        computed: {
+            themeObject() {
+                return this.$store.getters.skillsDisplayTheme;
+            }
         },
         methods: {
-            getSelectedTheme() {
-                let theme = this.$route.query.theme;
-                if (!this.isValidTheme(theme)) {
-                    theme = SkillsDisplayThemeFactory.default.name;
-                }
-                return Object.values(SkillsDisplayThemeFactory).find(it => it.name === theme);
-            },
-
             getAvailableThemeNames() {
                 return Object.values(SkillsDisplayThemeFactory).map(it => it.name);
             },
-
-            isValidTheme(themeName) {
-                return themeName && this.getAvailableThemeNames().some(it => it === themeName)
-            },
-        }
+        },
     }
 </script>
 
