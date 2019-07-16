@@ -17,14 +17,13 @@
 
 <script>
     export default {
-        name: "Navigation",
         data() {
             return {
                 token: '',
                 version: 0,
                 projectId: 'movies',
                 serviceUrl: 'http://localhost:8080',
-                authenticationUrl: 'http://localhost:8090/api/users/user1/token'
+                authenticationUrl: 'http://localhost:8090/api/users/user1/token',
             };
         },
     }

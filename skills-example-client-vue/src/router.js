@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import ReportSkills from './components/ReportSkills';
-import ShowSkills from './components/ShowSkills';
+import ShowSkills from './components/skillsDisplay/ShowSkills';
 
 Vue.use(Router);
 
