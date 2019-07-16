@@ -1,17 +1,18 @@
 <template>
     <div id="app">
-        <navigation/>
+        <div :style="{ 'background-color': backgroundColor }">
+            <navigation/>
 
-        <b-container fluid class="mt-3">
-            <router-view/>
-        </b-container>
+            <b-container fluid class="mt-3">
+                <router-view/>
+            </b-container>
 
-        <skills-footer/>
+            <skills-footer/>
+        </div>
     </div>
 </template>
 
 <script>
-    // import ShowSkills from "./components/ShowSkills";
     import Navigation from "./components/Navigation";
     import SkillsFooter from "./components/SkillsFooter";
 
@@ -20,8 +21,20 @@
         components: {
             SkillsFooter,
             Navigation,
-            // ShowSkills,
-        }
+        },
+        computed: {
+            backgroundColor() {
+                let backgroundColor = 'white';
+                if (this.$route.path === '/showSkills') {
+                    const theme = this.$store.getters.skillsDisplayTheme;
+                    const themeBackground = theme.theme.backgroundColor;
+                    if (themeBackground) {
+                        backgroundColor = themeBackground.value;
+                    }
+                }
+                return backgroundColor;
+            },
+        },
     }
 </script>
 

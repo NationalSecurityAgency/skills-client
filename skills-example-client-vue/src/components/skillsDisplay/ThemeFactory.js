@@ -1,7 +1,11 @@
 export default {
   default: {
     name: 'Bright (default)',
-    theme: {},
+    theme: {
+      backgroundColor: {
+        value: '#f7f7f7'
+      },
+    },
   },
   darkBlue: {
     name: 'Dark Blue',
