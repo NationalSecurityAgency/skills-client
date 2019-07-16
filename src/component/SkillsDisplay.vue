@@ -86,7 +86,7 @@
         this.childFrame = child;
         child.on('height-changed', (data) => {
           if (data > 0) {
-            const adjustedHeight = Math.max(data, window.screen.height);
+            const adjustedHeight = data; // Math.max(data, window.screen.height);
             this.$refs.iframeContainer.height = adjustedHeight;
             this.$refs.iframeContainer.style.height = `${adjustedHeight}px`;
           }
