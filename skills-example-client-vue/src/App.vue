@@ -1,6 +1,7 @@
 <template>
     <div id="app">
         <div :style="{ 'background-color': backgroundColor }">
+            <customizable-header></customizable-header>
             <navigation/>
 
             <b-container fluid class="mt-3">
@@ -8,6 +9,8 @@
             </b-container>
 
             <skills-footer/>
+
+            <customizable-footer></customizable-footer>
         </div>
     </div>
 </template>
@@ -15,12 +18,16 @@
 <script>
     import Navigation from "./components/Navigation";
     import SkillsFooter from "./components/SkillsFooter";
+    import CustomizableHeader from "./components/CustomizableHeader"
+    import CustomizableFooter from "./components/CustomizableFooter"
 
     export default {
         name: 'app',
         components: {
             SkillsFooter,
             Navigation,
+            CustomizableHeader,
+            CustomizableFooter,
         },
         computed: {
             backgroundColor() {
