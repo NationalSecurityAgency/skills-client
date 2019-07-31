@@ -2,30 +2,18 @@ export default {
   default: {
     name: 'Bright (default)',
     theme: {
-      backgroundColor: {
-        value: '#f7f7f7'
-      },
+      backgroundColor: '#f7f7f7',
     },
   },
   darkBlue: {
     name: 'Dark Blue',
     theme: {
-      backgroundColor: {
-        value: '#626d7d',
-      },
-      secondaryTextColor: {
-        value: '#b1adad',
-      },
-      primaryTextColor: {
-        value: 'white',
-      },
+      backgroundColor: '#626d7d',
+      secondaryTextColor: '#b1adad',
+      primaryTextColor: 'white',
       stars: {
-        unearnedColor: {
-          value: '#787886',
-        },
-        earnedColor: {
-          value: 'gold',
-        },
+        unearnedColor:'#787886',
+        earnedColor:'gold',
       },
       progressIndicators: {
         beforeTodayColor: '#3e4d44',
@@ -37,12 +25,8 @@ export default {
         axisLabelColor: 'white',
       },
       tiles: {
-        backgroundColor: {
-          value: '#152E4d',
-        },
-        watermarkIconColor: {
-          value: '#a6c5f7',
-        },
+        backgroundColor:'#152E4d',
+        watermarkIconColor: '#a6c5f7',
       },
     },
   }
