@@ -36,7 +36,7 @@
                     const theme = this.$store.getters.skillsDisplayTheme;
                     const themeBackground = theme.theme.backgroundColor;
                     if (themeBackground) {
-                        backgroundColor = themeBackground.value;
+                        backgroundColor = themeBackground;
                     }
                 }
                 return backgroundColor;
