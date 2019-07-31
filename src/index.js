@@ -15,3 +15,4 @@ if (window.Vue) {
 SkillsDirective.install = install;
 
 export { SkillsDirective, SkillsDisplay, SkillsConfiguration, SkillsReporter };
+
