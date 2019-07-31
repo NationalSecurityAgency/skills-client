@@ -18,7 +18,7 @@
         class="ml-4"
         href="javascript:void"
         v-scroll-to="'#sample-code'"
-        @click="showSampleCode = true">Show Theme Object</b-link>
+        @click="showSampleCode = true">Show Source</b-link>
     </div>
     <skills-display
       v-if="themeObject"
@@ -29,12 +29,23 @@
       id="sample-code"
       class="row">
       <div class="col-md-6 offset-md-3 col-12">
-        <div class="mb-5 card bg-light">
+        <div class="mb-5 mt-5 card bg-light">
           <h5 class=" card-header text-info">
-            <strong>Theme Object</strong>
+            <strong>Sample Code</strong>
           </h5>
-          <div class="card-body">
-            <pre><code>{{ themeObject.theme }}</code></pre>
+          <div class="card-body py-0">
+            <pre v-highlightjs class="my-0">
+                <code class="javascript py-0">
+&lt;template&gt;
+  &lt;skills-display
+    :theme="themeObject"/&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+{{ sampleCode }}
+&lt;/script&gt;
+                </code>
+            </pre>
           </div>
         </div>
       </div>
@@ -49,8 +60,11 @@
     import Vue from 'vue';
     import VueScrollTo from 'vue-scrollto';
 
-    Vue.use(VueScrollTo);
+    import VueHighlightJS from 'vue-highlightjs';
+    import "highlight.js/styles/github.css"
+    const beautify = require('js-beautify').js;
 
+    Vue.use(VueHighlightJS);
     Vue.use(VueScrollTo, {
         container: "body",
         duration: 1000,
@@ -87,7 +101,22 @@
         computed: {
             themeObject() {
                 return this.$store.getters.skillsDisplayTheme;
-            }
+            },
+
+            sampleCode() {
+              return beautify(`import { SkillsDisplay } from '@skills/skills-client-vue';
+
+                export default {
+                  components: {
+                    SkillsDisplay,
+                  },
+                  data() {
+                    return {
+                      themeObject: ${JSON.stringify(this.themeObject.theme)}
+                    };
+                  },
+                };`, { indent_size: 2, indent_level: 1, end_with_newline: false });
+            },
         },
         methods: {
             getAvailableThemeNames() {
