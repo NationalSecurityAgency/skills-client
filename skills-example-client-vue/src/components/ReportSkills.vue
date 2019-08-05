@@ -23,19 +23,19 @@
                 examples: [
                     {
                         title:'Skills Directive - Click Event',
-                        code: '<button v-skills="\'IronMan\'" @skills-report-success="onReporterResponse">Report Skill</button>',
+                        code: '<button \n v-skills="\'IronMan\'" \n @skills-report-success="onReporterResponse">\n  Report Skill\n</button>',
                     },
                     {
                         title:'Skills Directive - Input Event',
-                        code: '<input type="text" v-skills:input="\'Thor\'" @skills-report-success="onReporterResponse"/>',
+                        code: '<input \n type="text" \n v-skills:input="\'Thor\'" \n @skills-report-success="onReporterResponse"/>',
                     },
                     {
                         title:'Skills Directive - Error with Button',
-                        code: '<button v-skills="\'DoesNotExist\'" @skills-report-success="onReporterResponse" @skills-report-error="onReporterError">Report Skill</button>',
+                        code: '<button \n v-skills="\'DoesNotExist\'" \n @skills-report-success="onReporterResponse" \n @skills-report-error="onReporterError">\n  Report Skill\n</button>',
                     },
                     {
                         title:'Skills Directive - Error with Input',
-                        code: '<input type="text" v-skills:input="\'DoesNotExist\'" @skills-report-success="onReporterResponse" @skills-report-error="onReporterError"/>',
+                        code: '<input \n type="text" \n v-skills:input="\'DoesNotExist\'" \n @skills-report-success="onReporterResponse" \n @skills-report-error="onReporterError"/>',
                     },
                 ],
             };

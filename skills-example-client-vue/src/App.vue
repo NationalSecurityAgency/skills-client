@@ -49,6 +49,7 @@
     @import "~bootstrap/dist/css/bootstrap.css";
     @import "~bootstrap-vue/dist/bootstrap-vue.css";
     @import "~vue-multiselect/dist/vue-multiselect.min.css";
+    @import "~highlight.js/styles/github.css";
 
     #app {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;

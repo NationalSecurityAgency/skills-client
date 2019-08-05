@@ -34,15 +34,15 @@
             <strong>Sample Code</strong>
           </h5>
           <div class="card-body py-0">
-            <pre v-highlightjs class="my-0">
-                <code class="javascript py-0">
+<!--              // keep <template> and <script> tags separate, as one requires html highlighting and other javascript-->
+            <pre v-highlightjs class="m-0 p-0">
+                <code class="html m-0 p-0">
 &lt;template&gt;
-  &lt;skills-display
-    :theme="themeObject"/&gt;
+   &lt;skills-display :theme="themeObject"/&gt;
 &lt;/template&gt;
 
-&lt;script&gt;
-{{ sampleCode }}
+&lt;script&gt;</code></pre><pre v-highlightjs class="m-0 p-0">
+                <code class="javascript p-0 m-0">{{ sampleCode }}
 &lt;/script&gt;
                 </code>
             </pre>
@@ -60,11 +60,8 @@
     import Vue from 'vue';
     import VueScrollTo from 'vue-scrollto';
 
-    import VueHighlightJS from 'vue-highlightjs';
-    import "highlight.js/styles/github.css"
     const beautify = require('js-beautify').js;
 
-    Vue.use(VueHighlightJS);
     Vue.use(VueScrollTo, {
         container: "body",
         duration: 1000,

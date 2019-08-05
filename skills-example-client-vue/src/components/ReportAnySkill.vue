@@ -1,6 +1,6 @@
 <template>
     <div>
-        <code-example-layout :title="title" :sample-code="sampleCode">
+        <code-example-layout :title="title" :sample-code="sampleCode" code-type="javascript">
             <div slot="code">
                 <multiselect v-model="skill" :options="available" placeholder="Select a skill id" :taggable="true" @tag="addTag"/>
 
@@ -22,6 +22,9 @@
     import { SkillsReporter } from '@skills/skills-client-vue';
     import CodeExampleLayout from "./CodeExampleLayout";
 
+    import "highlight.js/styles/github.css"
+    const beautify = require('js-beautify').js;
+
     export default {
         name: "ReportAnySkill",
         components: {CodeExampleLayout},
@@ -29,12 +32,12 @@
             return {
                 title: 'Pure JS - Report Any Skill',
                 reportResult: '',
-                sampleCode: 'reportSkill() {\n' +
+                sampleCode: beautify('reportSkill() {\n' +
                     '                SkillsReporter.reportSkill(this.skill)\n' +
                     '                    .then((res) => {\n' +
                     '                        this.reportResult = res;\n' +
                     '                    });\n' +
-                    '            },',
+                    '            },', { indent_size: 2, indent_level: 1, end_with_newline: false }),
                 skill: '',
                 available: [],
             };

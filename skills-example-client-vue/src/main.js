@@ -6,6 +6,7 @@ import router from './router';
 import store from './store';
 import axios from 'axios';
 import { SkillsDirective, SkillsConfiguration } from '@skills/skills-client-vue';
+import VueHighlightJS from 'vue-highlightjs'
 
 Vue.config.productionTip = false
 
@@ -13,6 +14,7 @@ Vue.component('multiselect', Multiselect);
 
 Vue.use(BootstrapVue);
 Vue.use(SkillsDirective);
+Vue.use(VueHighlightJS)
 
 axios.get("/api/config")
   .then((result) => {

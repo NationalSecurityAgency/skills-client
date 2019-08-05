@@ -2,7 +2,7 @@
     <div>
         <h5 class="text-info"><strong>{{ title }}</strong></h5>
         <div class="card card-body bg-light">
-            <code>{{ sampleCode }}</code>
+            <pre v-highlightjs="sampleCode"><code :class="codeType"></code></pre>
         </div>
         <div class="card card-body mt-3">
             <div id="exampleDirectiveClickEvent">
@@ -23,6 +23,10 @@
         props: {
             title: String,
             sampleCode: String,
+            codeType: {
+                type: String,
+                default: 'html',
+            },
         },
     }
 </script>
