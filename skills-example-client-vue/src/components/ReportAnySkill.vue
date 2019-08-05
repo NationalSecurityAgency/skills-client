@@ -22,7 +22,6 @@
     import { SkillsReporter } from '@skills/skills-client-vue';
     import CodeExampleLayout from "./CodeExampleLayout";
 
-    import "highlight.js/styles/github.css"
     const beautify = require('js-beautify').js;
 
     export default {
@@ -32,12 +31,11 @@
             return {
                 title: 'Pure JS - Report Any Skill',
                 reportResult: '',
-                sampleCode: beautify('reportSkill() {\n' +
-                    '                SkillsReporter.reportSkill(this.skill)\n' +
-                    '                    .then((res) => {\n' +
-                    '                        this.reportResult = res;\n' +
-                    '                    });\n' +
-                    '            },', { indent_size: 2, indent_level: 1, end_with_newline: false }),
+                sampleCode: beautify(
+                    `SkillsReporter.reportSkill(this.skill)
+                        .then((res) => {
+                            this.reportResult = res;
+                        });`, { indent_size: 2, indent_level: 1, end_with_newline: false }),
                 skill: '',
                 available: [],
             };
