@@ -27,6 +27,7 @@
             'serviceUrl',
             'projectId',
             'disableAutoScroll',
+            'autoScrollStrategy',
           ];
           const options = { ...defaults, ...value };
           const passedOptions = Object.keys(options);
@@ -85,15 +86,17 @@
       handshake.then((child) => {
         this.childFrame = child;
         child.on('height-changed', (data) => {
-          if (data > 0) {
             const adjustedHeight = data; // Math.max(data, window.screen.height);
             this.$refs.iframeContainer.height = adjustedHeight;
             this.$refs.iframeContainer.style.height = `${adjustedHeight}px`;
-          }
         });
         child.on('route-changed', () => {
           if (!this.options.disableAutoScroll) {
-            VueScrollTo.scrollTo(this.$refs.iframeContainer, 1000, {
+            let scrollToElement = this.$refs.iframeContainer;
+            if (this.options.autoScrollStrategy === 'top-of-page') {
+              scrollToElement = document.body;
+            }
+            VueScrollTo.scrollTo(scrollToElement, 1000, {
               y: true,
               x: false,
             });
