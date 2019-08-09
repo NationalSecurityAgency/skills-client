@@ -20,10 +20,13 @@
         v-scroll-to="'#sample-code'"
         @click="showSampleCode = true">Show Source</b-link>
     </div>
-    <skills-display
-      v-if="themeObject"
-      :options="displayOptions"
-      :theme="themeObject.theme"/>
+    <div
+      style="min-height: 860px">
+      <skills-display
+        v-if="themeObject"
+        :options="displayOptions"
+        :theme="themeObject.theme"/>
+    </div>
     <div
       v-if="themeObject && showSampleCode"
       id="sample-code"
@@ -85,7 +88,7 @@
                 token: '',
                 version: 0,
                 displayOptions: {
-                    disableAutoScroll: true,
+                    autoScrollStrategy: 'top-of-page',
                 },
                 showSampleCode: false,
                 themeNames: this.getAvailableThemeNames(),
