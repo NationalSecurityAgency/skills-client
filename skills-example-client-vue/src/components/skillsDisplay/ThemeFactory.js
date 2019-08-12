@@ -28,6 +28,7 @@ export default {
         backgroundColor:'#152E4d',
         watermarkIconColor: '#a6c5f7',
       },
+      graphLegendBorderColor: '1px solid grey',
     },
   }
 }
