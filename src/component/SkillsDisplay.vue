@@ -80,15 +80,21 @@
           version: this.version,
           userId: configuration.authenticator === 'pki' ? this.userId: null,
           theme: this.theme,
+          minHeight: '960px',
         },
       });
+
+      this.$refs.iframeContainer.height = 0;
+      this.$refs.iframeContainer.style.height = '0px';
+      // Make height changes smoother behind the scenes when the iframe is building.
+      // this.$refs.iframeContainer.style.backgroundColor = this.theme.backgroundColor ? this.theme.backgroundColor : 'white';
 
       handshake.then((child) => {
         this.childFrame = child;
         child.on('height-changed', (data) => {
-            const adjustedHeight = data; // Math.max(data, window.screen.height);
-            this.$refs.iframeContainer.height = adjustedHeight;
-            this.$refs.iframeContainer.style.height = `${adjustedHeight}px`;
+          const adjustedHeight = Math.max(data, 960);
+          this.$refs.iframeContainer.height = adjustedHeight;
+          this.$refs.iframeContainer.style.height = `${adjustedHeight}px`;
         });
         child.on('route-changed', () => {
           if (!this.options.disableAutoScroll) {
