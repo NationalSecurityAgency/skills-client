@@ -9,11 +9,12 @@ export default {
     name: 'Dark Blue',
     theme: {
       backgroundColor: '#626d7d',
-      secondaryTextColor: '#b1adad',
-      primaryTextColor: 'white',
+      pageTitleTextColor: 'white',
+      textSecondaryColor: 'white',
+      textPrimaryColor: 'white',
       stars: {
-        unearnedColor:'#787886',
-        earnedColor:'gold',
+        unearnedColor: '#787886',
+        earnedColor: 'gold',
       },
       progressIndicators: {
         beforeTodayColor: '#3e4d44',
