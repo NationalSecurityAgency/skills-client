@@ -112,6 +112,7 @@
           if (!this.authenticationPromise && this.configuration.authenticator !== 'pki') {
             this.authenticationPromise = axios.get(this.configuration.authenticator)
               .then((result) => {
+                SkillsConfiguration.setAuthToken(result.data.access_token);
                 child.call('updateAuthenticationToken', result.data.access_token);
               })
               .finally(() => {
