@@ -56,7 +56,9 @@ export default {
   },
   unbind(el) {
     const eventContext = eventCache.get(el);
-    el.removeEventListener(eventContext.name, eventContext.handler);
-    eventCache.delete(el);
+    setTimeout(() => {
+      el.removeEventListener(eventContext.name, eventContext.handler);
+      eventCache.delete(el);
+    });
   },
 };
