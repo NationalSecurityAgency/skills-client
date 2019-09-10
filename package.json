@@ -7,7 +7,7 @@
     "clean": "rm -rfv dist",
     "build": "npm run clean && rollup -c",
     "watch": "npm run clean && rollup -c --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx jest"
   },
   "repository": {
     "type": "git",
@@ -16,9 +16,12 @@
   "author": "Skills Team",
   "license": "ISC",
   "devDependencies": {
+    "@vue/test-utils": "^1.0.0-beta.29",
+    "babel-jest": "^24.9.0",
     "eslint-config-airbnb-base": "13.1.0",
     "eslint-plugin-import": "2.16.0",
     "eslint-plugin-vue": "5.2.2",
+    "jest": "^24.9.0",
     "rollup": "1.4.1",
     "rollup-plugin-commonjs": "9.2.1",
     "rollup-plugin-eslint": "5.0.0",
@@ -28,6 +31,7 @@
     "rollup-plugin-terser": "4.0.4",
     "rollup-plugin-vue": "5.0.0",
     "vue": "2.6.10",
+    "vue-jest": "^3.0.4",
     "vue-template-compiler": "2.6.10"
   },
   "dependencies": {
@@ -37,5 +41,22 @@
     "lodash": "4.17.11",
     "postmate": "1.5.0",
     "vue-scrollto": "2.15.0"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": ["**/*.{js,vue}", "!**/node_modules/**"],
+    "coverageReporters": ["html", "text-summary"],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "transform": {
+      ".*\\.(vue)$": "vue-jest",
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
+    }
   }
 }
