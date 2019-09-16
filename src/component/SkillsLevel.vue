@@ -1,11 +1,14 @@
 <template>
   <span
     v-if="skillLevel !== null"
-    class="skills-level-text-display">Level {{ skillLevel }}</span>
+    class="skills-level-text-display">
+    Level {{ skillLevel }}
+  </span>
 </template>
 
 <script>
-  import { SkillsReporterDirective, SkillsConfiguration } from '../index.js';
+  import SkillsReporterDirective from '../directive/SkillsReporterDirective.js';
+  import SkillsConfiguration from '@skills/skills-client-configuration';
 
   import axios from 'axios'
 
@@ -16,12 +19,16 @@
       projectId: {
         type: String,
         required: false,
+        default: null,
       },
     },
     data() {
       return {
         skillLevel: null,
       };
+    },
+    created() {
+      SkillsReporterDirective.addSuccessHandler(this.update);
     },
     mounted() {
       this.getCurrentSkillLevel();
