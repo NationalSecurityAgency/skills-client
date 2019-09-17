@@ -22,7 +22,15 @@ module.exports = {
       preferBuiltins: true,
       browser: true }),
     json(),
-    commonjs(),
+    commonjs({
+      namedExports: {
+        '@skills/skills-client-reporter': [
+          'SkillsReporter',
+          'SUCCESS_EVENT',
+          'FAILURE_EVENT'
+        ],
+      },
+    }),
     VuePlugin(),
     terser(),
   ],

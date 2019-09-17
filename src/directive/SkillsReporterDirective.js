@@ -1,4 +1,8 @@
-import { SkillsReporter, SUCCESS_EVENT, FAILURE_EVENT } from '@skills/skills-client-reporter';
+import {
+  SkillsReporter,
+  SUCCESS_EVENT,
+  FAILURE_EVENT
+} from '@skills/skills-client-reporter';
 
 import debounce from 'lodash/debounce';
 
