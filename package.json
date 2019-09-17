@@ -1,6 +1,6 @@
 {
   "name": "@skills/skills-client-vue",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "description": "Vue related utilities for skills clients",
   "main": "src/index.js",
   "scripts": {
@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@skills/skills-client-configuration": "0.0.9",
-    "@skills/skills-client-reporter": "0.0.19",
+    "@skills/skills-client-reporter": "0.0.20",
     "axios": "0.18.0",
     "lodash": "4.17.11",
     "postmate": "1.5.0",

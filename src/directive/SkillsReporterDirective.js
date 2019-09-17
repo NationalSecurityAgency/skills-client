@@ -1,33 +1,18 @@
-import SkillsReporter from '@skills/skills-client-reporter';
+import { SkillsReporter, SUCCESS_EVENT, FAILURE_EVENT } from '@skills/skills-client-reporter';
 
 import debounce from 'lodash/debounce';
 
-const SUCCESS_EVENT = 'skills-report-success';
-const FAILURE_EVENT = 'skills-report-error';
-
-const successHandlerCache = new Set();
-const errorHandlerCache = new Set();
 const eventCache = new WeakMap();
-
-const callSuccessHandlers = (event) => {
-  successHandlerCache.forEach(it => it(event));
-};
-
-const callErrorHandlers = (event) => {
-  errorHandlerCache.forEach(it => it(event));
-};
 
 const eventListener = (el, skillId) => {
   return debounce(() => {
     SkillsReporter.reportSkill(skillId)
       .then((result) => {
         const event = new CustomEvent(SUCCESS_EVENT, { detail: result });
-        callSuccessHandlers(event);
         el.dispatchEvent(event);
       })
       .catch((error) => {
         const event = new CustomEvent(FAILURE_EVENT, { detail: error });
-        callErrorHandlers(event);
         el.dispatchEvent(event);
       });
   }, 500)
@@ -36,10 +21,10 @@ const eventListener = (el, skillId) => {
 export default {
   name: 'skills',
   addSuccessHandler(handler) {
-    successHandlerCache.add(handler);
+    SkillsReporter.addSuccessHandler(handler);
   },
   addErrorHandler(handler) {
-    errorHandlerCache.add(handler);
+    SkillsReporter.addErrorHandler(handler);
   },
   inserted(el, binding) {
     const eventContext = {

@@ -41,11 +41,12 @@
             this.skillLevel = result.data
           });
       },
-      update(reportSkillResponse) {
-        const completed = emptyArrayIfNull(reportSkillResponse.completed);
+      update(event) {
+        const details = event.detail;
+        const completed = emptyArrayIfNull(details.completed);
 
         const levelUpdate = completed.find((message) => {
-          return message.type === '' && message.level;
+          return message.id === 'OVERALL' && message.level;
         });
 
         if (levelUpdate) {
