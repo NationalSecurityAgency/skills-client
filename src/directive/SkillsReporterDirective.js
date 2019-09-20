@@ -24,12 +24,6 @@ const eventListener = (el, skillId) => {
 
 export default {
   name: 'skills',
-  addSuccessHandler(handler) {
-    SkillsReporter.addSuccessHandler(handler);
-  },
-  addErrorHandler(handler) {
-    SkillsReporter.addErrorHandler(handler);
-  },
   inserted(el, binding) {
     const eventContext = {
       name: binding.arg ? binding.arg : 'click',
