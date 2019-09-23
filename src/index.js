@@ -2,6 +2,7 @@ import SkillsDirective from './directive/SkillsReporterDirective';
 import SkillsDisplay from './component/SkillsDisplay.vue';
 import SkillsConfiguration from '@skills/skills-client-configuration';
 import SkillsReporter from '@skills/skills-client-reporter';
+import SkillsClientNative from '@skills/skills-client-native';
 import SkillsLevel from './component/SkillsLevel.vue';
 
 const install = (Vue) => {
@@ -20,6 +21,7 @@ export {
   SkillsDisplay,
   SkillsLevel,
   SkillsConfiguration,
-  SkillsReporter
+  SkillsReporter,
+  SkillsClientNative,
 };
 
