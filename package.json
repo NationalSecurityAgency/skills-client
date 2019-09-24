@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@skills/skills-client-configuration": "0.0.9",
-    "@skills/skills-client-native": "0.0.1",
+    "@skills/skills-client-native": "0.0.2",
     "@skills/skills-client-reporter": "0.0.23",
     "axios": "0.18.0",
     "lodash": "4.17.11",
