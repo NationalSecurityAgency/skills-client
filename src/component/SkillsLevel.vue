@@ -7,8 +7,8 @@
 </template>
 
 <script>
-  import SkillsReporterDirective from '../directive/SkillsReporterDirective.js';
   import SkillsConfiguration from '@skills/skills-client-configuration';
+  import SkillsClientReporter from '@skills/skills-client-reporter';
 
   import axios from 'axios'
 
@@ -28,7 +28,7 @@
       };
     },
     created() {
-      SkillsReporterDirective.addSuccessHandler(this.update);
+      SkillsClientReporter.addSuccessHandler(this.update);
     },
     mounted() {
       this.getCurrentSkillLevel();
