@@ -41,8 +41,7 @@
             this.skillLevel = result.data
           });
       },
-      update(event) {
-        const details = event.detail;
+      update(details) {
         const completed = emptyArrayIfNull(details.completed);
 
         const levelUpdate = completed.find((message) => {

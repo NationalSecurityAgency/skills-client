@@ -40,8 +40,7 @@
     "@skills/skills-client-reporter": "0.0.23",
     "axios": "0.18.0",
     "lodash": "4.17.11",
-    "postmate": "1.5.0",
-    "vue-scrollto": "2.15.0"
+    "postmate": "1.5.0"
   },
   "jest": {
     "collectCoverage": true,
