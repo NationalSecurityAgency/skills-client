@@ -3,8 +3,8 @@ module.exports = {
     'plugin:vue/recommended'
   ],
   "globals": {
-    Vue: 1,
-    window: 1,
+    Vue: 'readonly',
+    window: 'readonly',
   },
   "rules": {
     "no-multiple-empty-lines": [1, { "max": 1 }],

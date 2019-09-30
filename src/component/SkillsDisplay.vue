@@ -4,7 +4,6 @@
 
 <script>
   import Vue from 'vue';
-  import VueScrollTo from 'vue-scrollto';
   import Postmate from 'postmate';
   import axios from 'axios';
 
