@@ -1,0 +1,34 @@
+{
+  "name": "@skills/skills-client-native",
+  "version": "0.0.3",
+  "description": "userSkills recording service",
+  "main": "dist/SkillsClientNative.umd.min.js",
+  "scripts": {
+    "lint": "npx eslint src/*",
+    "babel": "npx babel src/* --out-dir dist",
+    "clean": "rm -rf dist",
+    "umd": "npx umd --commonJS SkillsClientNative dist/SkillsClientNative.js dist/SkillsClientNative.umd.js && rm dist/SkillsClientNative.js",
+    "build": "npm run test && npm run clean && npm run lint && npm run babel && npm run umd && npm rm dist/SkillsClientNative.js && npx uglifyjs dist/SkillsClientNative.umd.js -c -m -o dist/SkillsClientNative.umd.min.js",
+    "test": "NODE_ENV=test jest --coverage",
+    "prepublish": "npm run build"
+  },
+  "author": "User Skills Team",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "7.6.2",
+    "@babel/core": "7.6.2",
+    "@babel/preset-env": "7.6.2",
+    "babel-jest": "24.9.0",
+    "eslint": "6.5.0",
+    "eslint-config-airbnb-base": "14.0.0",
+    "eslint-plugin-import": "2.18.2",
+    "jest": "24.9.0",
+    "uglify-js": "3.6.0",
+    "umd": "3.0.3"
+  },
+  "dependencies": {
+    "@skills/skills-client-configuration": "0.0.10",
+    "axios": "0.19.0",
+    "postmate": "1.5.1"
+  }
+}
