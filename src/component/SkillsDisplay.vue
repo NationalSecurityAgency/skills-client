@@ -8,7 +8,7 @@
   import axios from 'axios';
 
   import SkillsConfiguration from '@skills/skills-client-configuration';
-  import SkillsClientNative from '@skills/skills-client-native';
+  import { SkillsDisplayJS } from '@skills/skills-client-js';
 
   export default {
     props: {
@@ -54,7 +54,7 @@
       },
     },
     mounted() {
-      this.clientDisplay = new SkillsClientNative({
+      this.clientDisplay = new SkillsDisplayJS({
         options: this.options,
         version: this.version,
         theme: this.theme,

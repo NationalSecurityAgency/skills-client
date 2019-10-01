@@ -8,7 +8,7 @@
 
 <script>
   import SkillsConfiguration from '@skills/skills-client-configuration';
-  import SkillsClientReporter from '@skills/skills-client-reporter';
+  import { SkillsReporter } from '@skills/skills-client-js';
 
   import axios from 'axios'
 
@@ -28,7 +28,7 @@
       };
     },
     created() {
-      SkillsClientReporter.addSuccessHandler(this.update);
+      SkillsReporter.addSuccessHandler(this.update);
     },
     mounted() {
       this.getCurrentSkillLevel();
