@@ -1,24 +1,24 @@
-import SkillsClientNative from '../src/SkillsClientNative.js';
+import SkillsDisplayJS from '../src/SkillsDisplayJS.js';
 
-describe('SkillsClientNative', () => {
+describe('SkillsDisplayJS', () => {
   it('is found', () => {
-    expect(SkillsClientNative).toBeDefined();
+    expect(SkillsDisplayJS).toBeDefined();
   });
 
   describe('construction', () => {
     describe('options', () => {
       it('accepts options in the constructor', () => {
         const mockOptions = {authenticator: 'option'};
-        const client = new SkillsClientNative({
+        const client = new SkillsDisplayJS({
           options: mockOptions
         });
         expect(client.options).toEqual(mockOptions);
       });
 
       it('supports null or undefined being passed', () => {
-        let client = new SkillsClientNative({options: null});
+        let client = new SkillsDisplayJS({options: null});
         expect(client.options).toEqual({});
-        client = new SkillsClientNative({options: undefined});
+        client = new SkillsDisplayJS({options: undefined});
         expect(client.options).toEqual({});
       });
 
@@ -29,8 +29,8 @@ describe('SkillsClientNative', () => {
           authenticator: 'this is a valid option',
         };
         expect(() => {
-          new SkillsClientNative({options});
-        }).toThrowError(`Invalid option passed to SkillsNativeClient ["${invalidOption}"]`);
+          new SkillsDisplayJS({options});
+        }).toThrowError(`Invalid option passed to SkillsDisplayJS ["${invalidOption}"]`);
       });
 
       it('accepts valid options', () => {
@@ -41,14 +41,14 @@ describe('SkillsClientNative', () => {
           'disableAutoScroll': true,
           'autoScrollStrategy': true,
         };
-        new SkillsClientNative({options});
+        new SkillsDisplayJS({options});
       });
     });
 
     describe('theme', () => {
       it('accepts sets the theme object', () => {
         const mockTheme = {mock: 'theme'};
-        const client = new SkillsClientNative({theme: mockTheme});
+        const client = new SkillsDisplayJS({theme: mockTheme});
 
         expect(client.theme).toBe(mockTheme);
       });
@@ -57,7 +57,7 @@ describe('SkillsClientNative', () => {
     describe('version', () => {
       it('accepts a version', () => {
         const mockVersion = Math.random();
-        const client = new SkillsClientNative({version: mockVersion});
+        const client = new SkillsDisplayJS({version: mockVersion});
 
         expect(client.version).toBe(mockVersion);
       });
@@ -66,7 +66,7 @@ describe('SkillsClientNative', () => {
     describe('userId', () => {
       it('accepts a version', () => {
         const userId = `${Math.random()}`;
-        const client = new SkillsClientNative({userId});
+        const client = new SkillsDisplayJS({userId});
 
         expect(client.userId).toBe(userId);
       });
@@ -83,7 +83,7 @@ describe('SkillsClientNative', () => {
         authenticator: mockAuthenticator,
         projectId: mockProjectId,
       };
-      const client = new SkillsClientNative( { options });
+      const client = new SkillsDisplayJS( { options });
 
       const configuration = client.configuration;
       expect(configuration.serviceUrl).toBe(mockServiceUrl);
@@ -97,7 +97,7 @@ describe('SkillsClientNative', () => {
       call: jest.fn(),
     };
     const newVersion = 2;
-    let client = new SkillsClientNative({ version: newVersion - 1 });
+    let client = new SkillsDisplayJS({ version: newVersion - 1 });
     client._childFrame = mockClientFrame;
 
     client.version = newVersion;
