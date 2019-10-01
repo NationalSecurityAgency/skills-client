@@ -5,7 +5,7 @@ import SkillsConfiguration from '@skills/skills-client-configuration';
 
 let uniqueId = 0;
 
-export default class SkillsClientNative {
+export default class SkillsDisplayJS {
   constructor({
     options,
     theme,
@@ -124,7 +124,7 @@ export default class SkillsClientNative {
     const passedOptions = Object.keys(toTest);
     const invalidOption = passedOptions.find((passedOption) => !configOptions.includes(passedOption));
     if (invalidOption) {
-      throw new Error(`Invalid option passed to SkillsNativeClient ["${invalidOption}"]`);
+      throw new Error(`Invalid option passed to SkillsDisplayJS ["${invalidOption}"]`);
     }
   }
 
