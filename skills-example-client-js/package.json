@@ -1,0 +1,11 @@
+{
+  "name": "skills-example-client-js",
+  "version": "0.0.1",
+  "description": "Skills Examples using the native javascript libraries",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "author": "Skills Team",
+  "license": "ISC"
+}
