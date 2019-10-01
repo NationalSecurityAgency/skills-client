@@ -5,6 +5,7 @@ module.exports = {
     "max-len": ["error", {'code': 200}],
   },
   "globals": {
+    "XMLHttpRequest": 'readonly',
     "document": 'readonly',
     "alert": 'readonly',
   },
