@@ -1,8 +1,8 @@
 {
   "name": "@skills/skills-client-vue",
-  "version": "0.0.48",
+  "version": "0.0.49",
   "description": "Vue related utilities for skills clients",
-  "main": "src/index.js",
+  "main": "dist/bundle.umd.min.js",
   "scripts": {
     "clean": "rm -rfv dist",
     "build": "npm run clean && rollup -c",
@@ -41,6 +41,10 @@
     "lodash": "4.17.15",
     "postmate": "1.5.1"
   },
+  "files": [
+    "dist",
+    "*"
+  ],
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": [
