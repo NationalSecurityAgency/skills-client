@@ -1,6 +1,6 @@
 {
   "name": "@skills/skills-client-js",
-  "version": "0.0.4",
+  "version": "0.0.7",
   "description": "userSkills viewing and reporting library",
   "main": "dist/index.js",
   "scripts": {
