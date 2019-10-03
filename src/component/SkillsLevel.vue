@@ -8,7 +8,7 @@
 
 <script>
   import SkillsConfiguration from '@skills/skills-client-configuration';
-  import { SkillsReporter } from '@skills/skills-client-js';
+  import SkillsReporter from '@skills/skills-client-reporter';
 
   import axios from 'axios'
 

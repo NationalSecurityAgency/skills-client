@@ -9,8 +9,8 @@ import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 module.exports = {
   input: 'src/index.js',
   output: {
-    file: 'dist/bundle.umd.min.js',
-    name: 'VSkillsReporter',
+    file: 'dist/skills-client-vue.umd.min.js',
+    name: 'SkillsClientVue',
     format: 'umd',
     sourceMap: 'inline',
   },
