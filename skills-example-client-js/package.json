@@ -4,8 +4,14 @@
   "description": "Skills Examples using the native javascript libraries",
   "main": "index.js",
   "scripts": {
+    "build": "rm -rf dist && mkdir dist && cp -rf src/* dist",
+    "serve": "npx live-server",
     "test": "npm run test"
   },
   "author": "Skills Team",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@skills/skills-client-js": "0.0.6",
+    "live-server": "^1.2.1"
+  }
 }
