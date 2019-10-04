@@ -1,14 +1,12 @@
 {
   "name": "@skills/skills-client-js",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "userSkills viewing and reporting library",
-  "main": "dist/index.js",
+  "main": "dist/skills-client-js.umd.min.js",
   "scripts": {
     "lint": "npx eslint src/*",
-    "babel": "npx babel src/* --out-dir dist",
     "clean": "rm -rf dist",
-    "umd": "npx umd --commonJS SkillsDisplayJS dist/SkillsDisplayJS.js dist/SkillsDisplayJS.umd.js && rm dist/SkillsDisplayJS.js",
-    "build": "npm run test && npm run clean && npm run lint && npm run babel && npm run umd && npm rm dist/SkillsDisplayJS.js && npx uglifyjs dist/SkillsDisplayJS.umd.js -c -m -o dist/SkillsDisplayJS.umd.min.js",
+    "build": "npm run test && npm run clean && npx rollup -c",
     "test": "NODE_ENV=test jest --coverage",
     "prepublish": "npm run build"
   },
@@ -23,6 +21,14 @@
     "eslint-config-airbnb-base": "14.0.0",
     "eslint-plugin-import": "2.18.2",
     "jest": "24.9.0",
+    "rollup": "1.23.0",
+    "rollup-plugin-babel": "4.3.3",
+    "rollup-plugin-commonjs": "10.1.0",
+    "rollup-plugin-eslint": "7.0.0",
+    "rollup-plugin-json": "4.0.0",
+    "rollup-plugin-node-resolve": "5.2.0",
+    "rollup-plugin-peer-deps-external": "2.2.0",
+    "rollup-plugin-terser": "5.1.2",
     "uglify-js": "3.6.0",
     "umd": "3.0.3"
   },
