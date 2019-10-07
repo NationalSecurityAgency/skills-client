@@ -1,5 +1,6 @@
 import { eslint } from 'rollup-plugin-eslint';
 import { terser } from 'rollup-plugin-terser';
+import babel from 'rollup-plugin-babel';
 import resolve from 'rollup-plugin-node-resolve';
 import json from 'rollup-plugin-json';
 import commonjs from 'rollup-plugin-commonjs';
@@ -13,10 +14,17 @@ module.exports = {
     name: 'SkillsClientVue',
     format: 'umd',
     sourceMap: 'inline',
+    globals: {
+      '@skills/skills-client-configuration': 'SkillsConfiguration' ,
+    },
   },
+  external: ['@skills/skills-client-configuration'],
   plugins: [
     peerDepsExternal(),
     eslint(),
+    babel({
+      exclude: 'node_modules/**',
+    }),
     resolve({
       jsnext: true,
       preferBuiltins: true,
@@ -29,6 +37,7 @@ module.exports = {
           'SUCCESS_EVENT',
           'FAILURE_EVENT'
         ],
+        '@skills/skills-client-js': [ 'SkillsDisplayJS', ],
       },
     }),
     VuePlugin(),
