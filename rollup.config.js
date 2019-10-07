@@ -13,6 +13,9 @@ module.exports = {
     name: 'SkillsDisplayJS',
     format: 'umd',
     sourcemap: true,
+    globals: {
+      '@skills/skills-client-configuration': 'SkillsConfiguration' ,
+    },
   },
   external: ['@skills/skills-client-configuration'],
   plugins: [
