@@ -39,9 +39,9 @@
     "vue-template-compiler": "2.6.10"
   },
   "dependencies": {
-    "@skills/skills-client-configuration": "0.0.11",
-    "@skills/skills-client-js": "0.0.10",
-    "@skills/skills-client-reporter": "0.0.28",
+    "@skills/skills-client-configuration": "0.0.12",
+    "@skills/skills-client-js": "0.0.11",
+    "@skills/skills-client-reporter": "0.0.29",
     "axios": "0.19.0",
     "lodash": "4.17.15",
     "postmate": "1.5.1"
