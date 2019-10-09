@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Skills Examples - Native Javascript</title>
+
+  <link rel="stylesheet" type="text/css" href="./assets/app.css"/>
+  <link rel="stylesheet" type="text/css" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+
+  <script type="text/javascript" src="../node_modules/axios/dist/axios.min.js"></script>
+  <script type="text/javascript" src="../node_modules/js-beautify/js/lib/beautify.js"></script>
+
+  <script type="text/javascript" src="../node_modules/@skills/skills-client-configuration/dist/SkillsConfiguration.umd.min.js"></script>
+  <script type="text/javascript" src="../node_modules/@skills/skills-client-reporter/dist/SkillsReporter.umd.min.js"></script>
+
+  <script type="text/javascript">
+    axios.get("/api/config")
+      .then((result) => {
+        SkillsConfiguration.default.configure(result.data);
+      });
+
+    const reportSkill = (skillId) => {
+      SkillsReporter.SkillsReporter.reportSkill(skillId)
+        .then((response) => {
+          document.querySelector('#report-result-container').innerHTML = JSON.stringify(response, null, 2);
+        });
+    };
+
+    SkillsConfiguration.default.afterConfigure().then(() => {
+    });
+  </script>
+</head>
+<body>
+
+<div id="app">
+  <div>
+    <div>
+      <nav class="navbar navbar-dark bg-info">
+        <a href="#" class="navbar-brand">Vue.js Integration Examples</a>
+
+        <ul class="navbar-nav flex-row mr-auto">
+          <li class="nav-item active pr-3">
+            <a class="nav-link" href="#">Report Skill Events</a>
+          </li>
+          <li class="nav-item pr-3">
+            <a class="nav-link" href="#">User Display</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="container-fluid mt-3">
+      <div class="container">
+        <h2>Report Skills Examples</h2>
+        <div>
+          <h5 class="text-info"><strong>Skills Directive - Click Event</strong></h5>
+          <div class="card card-body bg-light">
+            <pre class="m-0 sample-code">
+<code class="javascript">SkillsReporter.reportSkill(this.skill)
+  .then((res) => {
+    this.reportResult = res;
+});</code></pre>
+
+          </div>
+          <div class="card card-body mt-3">
+            <div id="exampleDirectiveClickEvent">
+              <button
+                class="btn btn-outline-primary"
+                v-skills="'IronMan'"
+                onclick="reportSkill('IronMan')"
+                @skills-report-success="onReporterResponse">
+                Report Skill
+              </button>
+            </div>
+            <hr>
+            <div class="text-primary">Result:</div>
+            <div class="border rounded p-3 bg-light">
+              <pre id="report-result-container"></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5"></div>
+
+      </div>
+    </div>
+
+    <footer class="text-muted bg-light py-5">
+      <div class="container">
+        <p>Vue.js Examples Guide</p>
+        <p></p>
+      </div>
+    </footer>
+  </div>
+</div>
+
+</body>
+</html>

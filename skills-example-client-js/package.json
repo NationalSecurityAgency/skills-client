@@ -4,14 +4,16 @@
   "description": "Skills Examples using the native javascript libraries",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf dist && mkdir dist && cp -rf src/* dist",
-    "serve": "npx live-server",
+    "serve": "npx live-server --open=app --cors --proxy=/api:http://localhost:8090/api",
     "test": "npm run test"
   },
   "author": "Skills Team",
   "license": "ISC",
   "dependencies": {
-    "@skills/skills-client-js": "0.0.6",
-    "live-server": "^1.2.1"
+    "@skills/skills-client-js": "0.0.11",
+    "axios": "^0.19.0",
+    "js-beautify": "1.10.2",
+    "bootstrap": "4.3.1",
+    "live-server": "1.2.1"
   }
 }
