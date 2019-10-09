@@ -25,9 +25,6 @@
           document.querySelector('#report-result-container').innerHTML = JSON.stringify(response, null, 2);
         });
     };
-
-    SkillsConfiguration.default.afterConfigure().then(() => {
-    });
   </script>
 </head>
 <body>
@@ -40,10 +37,10 @@
 
         <ul class="navbar-nav flex-row mr-auto">
           <li class="nav-item active pr-3">
-            <a class="nav-link" href="#">Report Skill Events</a>
+            <a class="nav-link" href="javascript:void(0)">Report Skill Events</a>
           </li>
           <li class="nav-item pr-3">
-            <a class="nav-link" href="#">User Display</a>
+            <a class="nav-link" href="clientDisplay.html">User Display</a>
           </li>
         </ul>
       </nav>
