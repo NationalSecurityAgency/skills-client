@@ -4,6 +4,7 @@ import babel from 'rollup-plugin-babel';
 import resolve from 'rollup-plugin-node-resolve';
 import json from 'rollup-plugin-json';
 import commonjs from 'rollup-plugin-commonjs';
+import replace from 'rollup-plugin-replace';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 
 module.exports = {
@@ -29,6 +30,9 @@ module.exports = {
       preferBuiltins: true,
       browser: true }),
     json(),
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    }),
     commonjs({
       namedExports: {
         '@skills/skills-client-reporter': [

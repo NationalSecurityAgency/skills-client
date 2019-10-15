@@ -1,6 +1,6 @@
 {
   "name": "@skills/skills-client-js",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "userSkills viewing and reporting library",
   "main": "dist/skills-client-js.umd.min.js",
   "scripts": {
@@ -28,6 +28,7 @@
     "rollup-plugin-json": "4.0.0",
     "rollup-plugin-node-resolve": "5.2.0",
     "rollup-plugin-peer-deps-external": "2.2.0",
+    "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-terser": "5.1.2"
   },
   "dependencies": {
