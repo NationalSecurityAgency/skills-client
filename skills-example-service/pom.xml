@@ -68,11 +68,11 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-              <outputDirectory>${basedir}/src/main/resources/public/native</outputDirectory>
+              			<outputDirectory>${basedir}/src/main/resources/public/native</outputDirectory>
 							<overwrite>true</overwrite>
 							<resources>
 								<resource>
-									<directory>${project.parent.basedir}/skills-example-client-js/dist</directory>
+									<directory>${project.parent.basedir}/skills-example-client-js/app</directory>
 								</resource>
 							</resources>
 						</configuration>
