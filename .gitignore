@@ -2,13 +2,13 @@
 *.iml
 static
 dist
+!skills-example-client-js/app/**/dist/
 target
 skills-example-service/src/main/resources/public/native
 skills-example-service/src/main/resources/public/vuejs
 
 .DS_Store
 node_modules
-/dist
 target/
 
 # local env files
