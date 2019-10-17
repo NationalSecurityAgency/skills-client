@@ -8,7 +8,7 @@ import java.util.Collection;
 @Component
 public class VueEntryPointFilterUtils {
 
-    @Value("#{\"${skills.vue.entry.backend.resources:/api,/native}\".split(\",\")}")
+    @Value("#{\"${skills.vue.entry.backend.resources:/api,/native,/vuejs/static,/vuejs/favicon.ico}\".split(\",\")}")
     private java.util.List<java.lang.String> backendResources;
 
     public boolean isFrontendResource(java.lang.String pathInfo) {
