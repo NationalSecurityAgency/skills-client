@@ -5,11 +5,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.net.ssl.HttpsURLConnection;
 
 @SpringBootApplication
-public class SkillsExampleApplication {
+public class SkillsExampleApplication implements WebMvcConfigurer {
 
 	static final String DISABLE_HOSTNAME_VERIFIER_PROP = "skills.disableHostnameVerifier";
 

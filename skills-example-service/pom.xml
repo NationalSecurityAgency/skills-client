@@ -47,7 +47,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/src/main/resources/public</outputDirectory>
+							<outputDirectory>${basedir}/src/main/resources/public/vuejs</outputDirectory>
 							<overwrite>true</overwrite>
 							<resources>
 								<resource>
