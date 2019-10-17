@@ -3,7 +3,8 @@
 static
 dist
 target
-skills-example-service/src/main/resources/public
+skills-example-service/src/main/resources/public/native
+skills-example-service/src/main/resources/public/vuejs
 
 .DS_Store
 node_modules
