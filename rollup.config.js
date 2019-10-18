@@ -10,7 +10,7 @@ import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 module.exports = {
   input: 'src/index.js',
   output: {
-    file: 'dist/skills-client-js.umd.min.js',
+    file: 'dist/skills-display-js.umd.min.js',
     name: 'SkillsDisplayJS',
     format: 'umd',
     sourcemap: true,
