@@ -8,9 +8,10 @@
         variant="outline-primary">
         <b-dropdown-item
           v-for="themeName in themeNames"
+          @click="refreshPage"
           :key="themeName"
           :active="themeObject.name === themeName"
-          :href="`/showSkills?theme=${themeName}`">
+          :href="`#showSkills?theme=${themeName}`">
           {{ themeName }}
         </b-dropdown-item>
       </b-dropdown>
@@ -119,6 +120,12 @@
             },
         },
         methods: {
+            refreshPage() {
+              setTimeout(() => {
+                document.location.reload();
+              }, 0);
+            },
+
             getAvailableThemeNames() {
                 return Object.values(SkillsDisplayThemeFactory).map(it => it.name);
             },

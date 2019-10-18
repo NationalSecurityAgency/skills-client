@@ -6,7 +6,6 @@ import ShowSkills from './components/skillsDisplay/ShowSkills';
 Vue.use(Router);
 
 const router = new Router({
-    mode: 'history',
     base: 'vuejs',
     routes: [
         {
