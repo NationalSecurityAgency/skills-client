@@ -16,13 +16,6 @@
   <script type="text/javascript" src="assets/js/@skills/skills-client-js/skills-display-js.umd.min.js"></script>
 
   <script type="text/javascript">
-    const params = new URLSearchParams(window.location.search);
-    const isSummaryOnly = params.get('isSummaryOnly') ? JSON.parse(params.get('isSummaryOnly')) : false;
-
-    const options = {
-      autoScrollStrategy: 'top-of-page',
-      isSummaryOnly,
-    };
     const themes = {
       default: {
         name: 'Bright (default)',
@@ -60,16 +53,8 @@
     };
 
     const applyTheme = (theme) => {
-      const params = new URLSearchParams(window.location.search);
-      params.set('theme', theme.name);
-      window.location.search = params;
+      window.location.search = `?theme=${theme.name}`;
     };
-
-    const setDisplayType = () => {
-      const params = new URLSearchParams(window.location.search);
-      params.set('isSummaryOnly', !options.isSummaryOnly);
-      window.location.search = params;
-    }
 
     const getTheme = () => {
       const params = new URLSearchParams(window.location.search);
@@ -97,7 +82,10 @@
         }
 
         const clientDisplay = new SkillsDisplayJS.SkillsDisplayJS({
-          options,
+          options: {
+            autoScrollStrategy: 'top-of-page',
+            isSummaryOnly: true,
+          },
           version: 0,
           theme: theme.theme,
         });
@@ -126,7 +114,10 @@
             <a class="nav-link" href="index.html">Report Skill Events</a>
           </li>
           <li class="nav-item active pr-3">
-            <a class="nav-link" href="javascript:void(0)">User Display</a>
+            <a class="nav-link" href="clientDisplay.html">User Display</a>
+          </li>
+          <li class="nav-item pr-3">
+            <a class="nav-link" href="javascript:void(0)">Summary Display</a>
           </li>
         </ul>
       </nav>
@@ -134,7 +125,7 @@
 
     <div class="container-fluid mt-3">
       <div class="container">
-        <div class="form-row align-items-center">
+        <div>
           <div class="d-inline dropdown">
             <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Change Theme
@@ -144,12 +135,6 @@
               <a class="dropdown-item" href="javascript:void(0)" id="darkblue-theme-dropdown-item" onclick="applyTheme(themes.darkBlue)">Dark Blue</a>
             </div>
           </div>
-
-          <div class="d-inline custom-control custom-checkbox mx-2">
-            <input type="checkbox" class="custom-control-input" id="displayTypeControl" onclick="setDisplayType()" checked>
-            <label class="custom-control-label" for="displayTypeControl">Summary Only</label>
-          </div>
-
         </div>
         <div
           style="min-height: 860px">
@@ -169,7 +154,3 @@
 
 </body>
 </html>
-
-<script type="text/javascript">
-  document.getElementById("displayTypeControl").checked = isSummaryOnly;
-</script>
