@@ -42,6 +42,7 @@ export default class SkillsDisplayJS {
         userId: this.configuration.authenticator === 'pki' ? this.userId : null,
         theme: this.theme,
         minHeight: '960px',
+        isSummaryOnly: this.options.isSummaryOnly,
       },
     });
 
@@ -119,6 +120,7 @@ export default class SkillsDisplayJS {
       'projectId',
       'disableAutoScroll',
       'autoScrollStrategy',
+      'isSummaryOnly',
     ];
     const toTest = { ...this._options, ...options };
     const passedOptions = Object.keys(toTest);

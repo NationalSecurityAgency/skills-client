@@ -1,12 +1,13 @@
 {
   "name": "@skills/skills-client-js",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "userSkills viewing and reporting library",
   "main": "dist/skills-display-js.umd.min.js",
   "scripts": {
     "lint": "npx eslint src/*",
     "clean": "rm -rf dist",
     "build": "npm run test && npm run clean && npx rollup -c",
+    "deploy-to-examples": "npm run build && cp ./dist/skills-display-js.umd.min.js ../../skills-examples/skills-example-client-js/app/assets/js/@skills/skills-client-js/",
     "test": "NODE_ENV=test jest --coverage",
     "prepublish": "npm run build"
   },
