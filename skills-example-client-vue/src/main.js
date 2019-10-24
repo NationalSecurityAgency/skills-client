@@ -3,7 +3,6 @@ import BootstrapVue from 'bootstrap-vue';
 import Multiselect from 'vue-multiselect';
 import App from './App.vue';
 import router from './router';
-import store from './store';
 import axios from 'axios';
 import { SkillsDirective, SkillsConfiguration } from '@skills/skills-client-vue';
 import VueHighlightJS from 'vue-highlightjs'
@@ -24,6 +23,5 @@ axios.get("/api/config")
     new Vue({
       render: h => h(App),
       router,
-      store,
     }).$mount('#app');
   });

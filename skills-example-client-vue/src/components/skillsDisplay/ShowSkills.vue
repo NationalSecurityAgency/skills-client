@@ -1,38 +1,42 @@
 <template>
   <div class="container">
-    <div>
+    <div class="align-items-center">
       <b-dropdown
         id="dropdown-1"
         class="mb-3"
         text="Change Theme"
         variant="outline-primary">
         <b-dropdown-item
-          v-for="themeName in themeNames"
-          @click="refreshPage"
-          :key="themeName"
-          :active="themeObject.name === themeName"
-          :href="`#showSkills?theme=${themeName}`">
-          {{ themeName }}
+          v-for="themeItem in themes"
+          @click="setIsThemeUrlParam(themeItem)"
+          :key="themeItem.name"
+          :active="selectedTheme.name === themeItem.name">
+          {{ themeItem.name }}
         </b-dropdown-item>
       </b-dropdown>
+        <b-form-checkbox class="d-inline-block ml-3 border-right pr-2"
+                v-model="displayOptions.isSummaryOnly"
+                switch>
+            Summary Only
+        </b-form-checkbox>
+
       <b-link
-        class="ml-4"
+        class="ml-2"
         href="javascript:void"
         v-scroll-to="'#sample-code'"
         @click="showSampleCode = true">Show Source</b-link>
     </div>
-    <div
-      style="min-height: 860px">
+    <div class="border rounded">
       <skills-display
-        v-if="themeObject"
+        v-if="selectedTheme"
         :options="displayOptions"
-        :theme="themeObject.theme"/>
+        :theme="selectedTheme.theme"/>
     </div>
     <div
-      v-if="themeObject && showSampleCode"
+      v-if="selectedTheme && showSampleCode"
       id="sample-code"
       class="row">
-      <div class="col-md-6 offset-md-3 col-12">
+      <div class="col-12">
         <div class="mb-5 mt-5 card bg-light">
           <h5 class=" card-header text-info">
             <strong>Sample Code</strong>
@@ -42,7 +46,7 @@
             <pre v-highlightjs class="m-0 p-0">
                 <code class="html m-0 p-0">
 &lt;template&gt;
-   &lt;skills-display :theme="themeObject"/&gt;
+   &lt;skills-display :theme="selectedTheme" {{ this.displayOptions.isSummaryOnly ? ':options="displayOptions"' : '' }}/&gt;
 &lt;/template&gt;
 
 &lt;script&gt;</code></pre><pre v-highlightjs class="m-0 p-0">
@@ -90,20 +94,14 @@
                 version: 0,
                 displayOptions: {
                     autoScrollStrategy: 'top-of-page',
+                    isSummaryOnly: this.$route.query.isSummaryOnly ? JSON.parse(this.$route.query.isSummaryOnly) : false,
                 },
                 showSampleCode: false,
-                themeNames: this.getAvailableThemeNames(),
+                themes: this.getThemes(),
+                selectedTheme: this.$route.query.themeName ? this.findTheme(this.$route.query.themeName) : this.getThemes()[0],
             };
         },
-        created() {
-            const theme = this.themeObject;
-            this.$store.commit('skillsDisplayThemeName', theme.name);
-        },
         computed: {
-            themeObject() {
-                return this.$store.getters.skillsDisplayTheme;
-            },
-
             sampleCode() {
               return beautify(`import { SkillsDisplay } from '@skills/skills-client-vue';
 
@@ -112,22 +110,42 @@
                     SkillsDisplay,
                   },
                   data() {
-                    return {
-                      themeObject: ${JSON.stringify(this.themeObject.theme)}
+                    return { ${ this.displayOptions.isSummaryOnly ? '\ndisplayOptions: { isSummaryOnly: true, },' : '' }
+                      selectedTheme: ${JSON.stringify(this.selectedTheme)}
                     };
                   },
                 };`, { indent_size: 2, indent_level: 1, end_with_newline: false });
             },
         },
+        watch: {
+            'displayOptions.isSummaryOnly'() {
+                this.setIsSummaryOnlyUrlParam();
+            },
+        },
         methods: {
+            getThemes() {
+                return Object.values(SkillsDisplayThemeFactory);
+            },
+
             refreshPage() {
               setTimeout(() => {
                 document.location.reload();
-              }, 0);
+              }, 250);
             },
 
-            getAvailableThemeNames() {
-                return Object.values(SkillsDisplayThemeFactory).map(it => it.name);
+            setIsThemeUrlParam(theme) {
+                this.$router.push({ query: { themeName: theme.name, isSummaryOnly: this.displayOptions.isSummaryOnly  }});
+                this.refreshPage();
+            },
+
+            setIsSummaryOnlyUrlParam() {
+                this.$router.push({ query: { themeName: this.selectedTheme.name, isSummaryOnly: this.displayOptions.isSummaryOnly }});
+                this.refreshPage();
+            },
+
+            findTheme(name) {
+                return this.getThemes().find((item) => item.name === name);
+
             },
         },
     }

@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <div :style="{ 'background-color': backgroundColor }">
+        <div>
             <customizable-header></customizable-header>
             <navigation/>
 
@@ -28,19 +28,6 @@
             Navigation,
             CustomizableHeader,
             CustomizableFooter,
-        },
-        computed: {
-            backgroundColor() {
-                let backgroundColor = 'white';
-                if (this.$route.path === '/showSkills') {
-                    const theme = this.$store.getters.skillsDisplayTheme;
-                    const themeBackground = theme.theme.backgroundColor;
-                    if (themeBackground) {
-                        backgroundColor = themeBackground;
-                    }
-                }
-                return backgroundColor;
-            },
         },
     }
 </script>
