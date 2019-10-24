@@ -31,6 +31,7 @@ export default class SkillsDisplayJS {
     uniqueId += 1;
     const className = `client-display-iframe-${uniqueId}`;
 
+    const minHeight = this.options.isSummaryOnly ? 600 : 960;
     const handshake = new Postmate({
       container: iframeContainer,
       url: `${this.configuration.serviceUrl}/static/clientPortal/index.html`,
@@ -41,7 +42,7 @@ export default class SkillsDisplayJS {
         version: this.version,
         userId: this.configuration.authenticator === 'pki' ? this.userId : null,
         theme: this.theme,
-        minHeight: '960px',
+        minHeight: `${minHeight}px`,
         isSummaryOnly: this.options.isSummaryOnly,
       },
     });
@@ -55,7 +56,7 @@ export default class SkillsDisplayJS {
     handshake.then((child) => {
       this._childFrame = child;
       child.on('height-changed', (data) => {
-        const adjustedHeight = Math.max(data, 960);
+        const adjustedHeight = Math.max(data, minHeight);
         iframeContainer.height = adjustedHeight;
         iframeContainer.style.height = `${adjustedHeight}px`;
       });
