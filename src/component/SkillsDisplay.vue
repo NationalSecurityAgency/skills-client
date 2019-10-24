@@ -26,6 +26,7 @@
             'projectId',
             'disableAutoScroll',
             'autoScrollStrategy',
+            'isSummaryOnly',
           ];
           const options = { ...defaults, ...value };
           const passedOptions = Object.keys(options);
