@@ -7,12 +7,29 @@
 </template>
 
 <script>
+  import createAuthRefreshInterceptor from 'axios-auth-refresh';
+
   import SkillsConfiguration from '@skills/skills-client-configuration';
   import { SkillsReporter } from '@skills/skills-client-reporter';
 
   import axios from 'axios'
 
   const emptyArrayIfNull = value => value ? value : [];
+
+  const refreshAuthorization = (failedRequest) => {
+    SkillsConfiguration.setAuthToken(null);
+    return axios.get(SkillsConfiguration.getAuthenticator())
+      .then((result) => {
+        const accessToken =  result.data.access_token;
+        SkillsConfiguration.setAuthToken(accessToken);
+        failedRequest.response.config.headers.Authorization = `Bearer ${accessToken}`;
+        axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+        return Promise.resolve();
+      });
+  };
+
+  // Instantiate the interceptor (you can chain it as it returns the axios instance)
+  createAuthRefreshInterceptor(axios, refreshAuthorization);
 
   export default {
     props: {
@@ -35,11 +52,28 @@
     },
     methods: {
       getCurrentSkillLevel() {
-        const serviceUrl = SkillsConfiguration.getServiceUrl();
-        axios.get(`${serviceUrl}/api/projects/${this.projectId}/level`)
-          .then((result) => {
-            this.skillLevel = result.data
-          });
+        SkillsConfiguration.afterConfigure()
+          .then(() => {
+            const serviceUrl = SkillsConfiguration.getServiceUrl();
+            const projectId = this.getProjectId();
+
+            const headers = { };
+            if (SkillsConfiguration.getAuthenticator() !== 'pki') {
+              headers['Authorization'] = `Bearer ${SkillsConfiguration.getAuthToken()}`;
+            }
+
+            axios.get(`${serviceUrl}/api/projects/${projectId}/level`, { headers })
+              .then((result) => {
+                this.skillLevel = result.data
+              });
+        });
+      },
+      getProjectId() {
+        let projectId = this.projectId;
+        if (!projectId) {
+          projectId = SkillsConfiguration.getProjectId();
+        }
+        return projectId;
       },
       update(details) {
         const completed = emptyArrayIfNull(details.completed);
