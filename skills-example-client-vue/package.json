@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@skills/skills-client-vue": "0.0.66",
+    "@skills/skills-client-vue": "0.0.68",
     "axios": "0.19.0",
     "bootstrap": "4.3.1",
     "bootstrap-vue": "2.0.2",
