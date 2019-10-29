@@ -14,6 +14,8 @@
 
   import axios from 'axios'
 
+  axios.defaults.withCredentials = true;
+
   const emptyArrayIfNull = value => value ? value : [];
 
   const refreshAuthorization = (failedRequest) => {
