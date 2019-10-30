@@ -62,94 +62,96 @@
 </template>
 
 <script>
-    import { SkillsDisplay } from '@skills/skills-client-vue';
-    import SkillsDisplayThemeFactory from './ThemeFactory.js';
+  import {SkillsDisplay} from '@skills/skills-client-vue';
+  import SkillsDisplayThemeFactory from './ThemeFactory.js';
 
-    import Vue from 'vue';
-    import VueScrollTo from 'vue-scrollto';
+  import Vue from 'vue';
+  import VueScrollTo from 'vue-scrollto';
 
-    const beautify = require('js-beautify').js;
+  const beautify = require('js-beautify').js;
 
-    Vue.use(VueScrollTo, {
-        container: "body",
-        duration: 1000,
-        easing: "ease",
-        offset: 0,
-        force: true,
-        cancelable: true,
-        onStart: false,
-        onDone: false,
-        onCancel: false,
-        x: false,
-        y: true,
-    });
+  Vue.use(VueScrollTo, {
+    container: "body",
+    duration: 1000,
+    easing: "ease",
+    offset: 0,
+    force: true,
+    cancelable: true,
+    onStart: false,
+    onDone: false,
+    onCancel: false,
+    x: false,
+    y: true,
+  });
 
-    export default {
-        components: {
-            SkillsDisplay,
+  export default {
+    components: {
+      SkillsDisplay,
+    },
+    data() {
+      return {
+        token: '',
+        version: 0,
+        displayOptions: {
+          autoScrollStrategy: 'top-of-page',
+          isSummaryOnly: this.$route.query.isSummaryOnly ? JSON.parse(this.$route.query.isSummaryOnly) : false,
         },
-        data() {
-            return {
-                token: '',
-                version: 0,
-                displayOptions: {
-                    autoScrollStrategy: 'top-of-page',
-                    isSummaryOnly: this.$route.query.isSummaryOnly ? JSON.parse(this.$route.query.isSummaryOnly) : false,
-                },
-                showSampleCode: false,
-                themes: this.getThemes(),
-                selectedTheme: this.$route.query.themeName ? this.findTheme(this.$route.query.themeName) : this.getThemes()[0],
-            };
-        },
-        computed: {
-            sampleCode() {
-              return beautify(`import { SkillsDisplay } from '@skills/skills-client-vue';
+        showSampleCode: false,
+        themes: this.getThemes(),
+        selectedTheme: this.$route.query.themeName ? this.findTheme(this.$route.query.themeName) : this.getThemes()[0],
+      };
+    },
+    computed: {
+      sampleCode() {
+        return beautify(`import { SkillsDisplay } from '@skills/skills-client-vue';
 
                 export default {
                   components: {
                     SkillsDisplay,
                   },
                   data() {
-                    return { ${ this.displayOptions.isSummaryOnly ? '\ndisplayOptions: { isSummaryOnly: true, },' : '' }
+                    return { ${this.displayOptions.isSummaryOnly ? '\ndisplayOptions: { isSummaryOnly: true, },' : ''}
                       selectedTheme: ${JSON.stringify(this.selectedTheme)}
                     };
                   },
-                };`, { indent_size: 2, indent_level: 1, end_with_newline: false });
-            },
-        },
-        watch: {
-            'displayOptions.isSummaryOnly'() {
-                this.setIsSummaryOnlyUrlParam();
-            },
-        },
-        methods: {
-            getThemes() {
-                return Object.values(SkillsDisplayThemeFactory);
-            },
+                };`, {indent_size: 2, indent_level: 1, end_with_newline: false});
+      },
+    },
+    watch: {
+      'displayOptions.isSummaryOnly'() {
+        this.setIsSummaryOnlyUrlParam();
+      },
+    },
+    methods: {
+      getThemes() {
+        return Object.values(SkillsDisplayThemeFactory);
+      },
 
-            refreshPage() {
-              setTimeout(() => {
-                document.location.reload();
-              }, 250);
-            },
+      refreshPage() {
+        setTimeout(() => {
+          document.location.reload();
+        }, 250);
+      },
 
-            setIsThemeUrlParam(theme) {
-                this.$router.push({ query: { themeName: theme.name, isSummaryOnly: this.displayOptions.isSummaryOnly  }});
-                this.refreshPage();
-            },
+      setIsThemeUrlParam(theme) {
+        this.$router.push({query: {themeName: theme.name, isSummaryOnly: this.displayOptions.isSummaryOnly}});
+        this.refreshPage();
+      },
 
-            setIsSummaryOnlyUrlParam() {
-                this.$router.push({ query: { themeName: this.selectedTheme.name, isSummaryOnly: this.displayOptions.isSummaryOnly }});
-                this.refreshPage();
-            },
+      setIsSummaryOnlyUrlParam() {
+        this.$router.push({
+          query: {
+            themeName: this.selectedTheme.name,
+            isSummaryOnly: this.displayOptions.isSummaryOnly
+          }
+        });
+        this.refreshPage();
+      },
 
-            findTheme(name) {
-                return this.getThemes().find((item) => item.name === name);
+      findTheme(name) {
+        return this.getThemes().find((item) => item.name === name);
 
-            },
-        },
-    }
+      },
+    },
+  }
 </script>
-
-<style scoped>
-</style>
