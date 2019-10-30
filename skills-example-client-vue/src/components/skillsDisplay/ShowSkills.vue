@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="align-items-center">
+    <div class="d-flex align-items-center">
       <b-dropdown
         id="dropdown-1"
         class="mb-3"
@@ -25,6 +25,11 @@
         href="javascript:void"
         v-scroll-to="'#sample-code'"
         @click="showSampleCode = true">Show Source</b-link>
+      <b-link
+        class="ml-2 border-left pl-2 d-inline-block"
+        href="javascript:void"
+        v-scroll-to="'#sample-code'"
+        @click="showSampleCode = true"><skills-level /></b-link>
     </div>
     <div class="border rounded">
       <skills-display
@@ -46,6 +51,7 @@
             <pre v-highlightjs class="m-0 p-0">
                 <code class="html m-0 p-0">
 &lt;template&gt;
+   &lt;skills-level /&gt; &lt;!-- You can display the user's current Level using the SkillsLevel component --&gt;
    &lt;skills-display :theme="selectedTheme" {{ this.displayOptions.isSummaryOnly ? ':options="displayOptions"' : '' }}/&gt;
 &lt;/template&gt;
 
@@ -62,7 +68,7 @@
 </template>
 
 <script>
-  import {SkillsDisplay} from '@skills/skills-client-vue';
+  import { SkillsDisplay, SkillsLevel } from '@skills/skills-client-vue';
   import SkillsDisplayThemeFactory from './ThemeFactory.js';
 
   import Vue from 'vue';
@@ -87,6 +93,7 @@
   export default {
     components: {
       SkillsDisplay,
+      SkillsLevel,
     },
     data() {
       return {
@@ -103,7 +110,7 @@
     },
     computed: {
       sampleCode() {
-        return beautify(`import { SkillsDisplay } from '@skills/skills-client-vue';
+        return beautify(`import { SkillsDisplay, SkillsLevel } from '@skills/skills-client-vue';
 
                 export default {
                   components: {
