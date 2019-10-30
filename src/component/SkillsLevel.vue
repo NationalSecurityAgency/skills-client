@@ -14,8 +14,6 @@
 
   import axios from 'axios'
 
-  axios.defaults.withCredentials = true;
-
   const emptyArrayIfNull = value => value ? value : [];
 
   const refreshAuthorization = (failedRequest) => {
@@ -24,7 +22,9 @@
       .then((result) => {
         const accessToken =  result.data.access_token;
         SkillsConfiguration.setAuthToken(accessToken);
-        failedRequest.response.config.headers.Authorization = `Bearer ${accessToken}`;
+        if (failedRequest) {
+          failedRequest.response.config.headers.Authorization = `Bearer ${accessToken}`;
+        }
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
         return Promise.resolve();
       });
@@ -59,15 +59,19 @@
             const serviceUrl = SkillsConfiguration.getServiceUrl();
             const projectId = this.getProjectId();
 
-            const headers = { };
+            let authenticationPromise = Promise.resolve();
             if (SkillsConfiguration.getAuthenticator() !== 'pki') {
-              headers['Authorization'] = `Bearer ${SkillsConfiguration.getAuthToken()}`;
+              if (!SkillsConfiguration.getAuthToken()) {
+                authenticationPromise = refreshAuthorization();
+              }
             }
 
-            axios.get(`${serviceUrl}/api/projects/${projectId}/level`, { headers })
-              .then((result) => {
-                this.skillLevel = result.data
-              });
+            authenticationPromise.then(() => {
+              axios.get(`${serviceUrl}/api/projects/${projectId}/level`, { withCredentials: true })
+                .then((result) => {
+                  this.skillLevel = result.data
+                });
+            });
         });
       },
       getProjectId() {
