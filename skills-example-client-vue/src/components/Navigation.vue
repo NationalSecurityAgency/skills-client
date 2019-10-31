@@ -11,12 +11,21 @@
                     <b-nav-item href="#" to="/showSkills">User Display</b-nav-item>
                 </b-navbar-nav>
             </b-collapse>
+            <button
+              @click="$router.push('/showSkills')"
+              class="btn btn-primary"><skills-level /></button>
         </b-navbar>
+
     </div>
 </template>
 
 <script>
+    import { SkillsLevel } from '@skills/skills-client-vue';
+
     export default {
+        components: {
+            SkillsLevel,
+        },
         data() {
             return {
                 token: '',

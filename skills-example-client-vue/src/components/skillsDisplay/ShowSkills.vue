@@ -25,11 +25,6 @@
         href="javascript:void"
         v-scroll-to="'#sample-code'"
         @click="showSampleCode = true">Show Source</b-link>
-      <b-link
-        class="ml-2 border-left pl-2 d-inline-block"
-        href="javascript:void"
-        v-scroll-to="'#sample-code'"
-        @click="showSampleCode = true"><skills-level /></b-link>
     </div>
     <div class="border rounded">
       <skills-display
@@ -68,7 +63,7 @@
 </template>
 
 <script>
-  import { SkillsDisplay, SkillsLevel } from '@skills/skills-client-vue';
+  import { SkillsDisplay } from '@skills/skills-client-vue';
   import SkillsDisplayThemeFactory from './ThemeFactory.js';
 
   import Vue from 'vue';
@@ -93,7 +88,6 @@
   export default {
     components: {
       SkillsDisplay,
-      SkillsLevel,
     },
     data() {
       return {
