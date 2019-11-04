@@ -84,13 +84,12 @@
       update(details) {
         const completed = emptyArrayIfNull(details.completed);
 
-        const levelUpdate = completed.find((message) => {
-          return message.id === 'OVERALL' && message.level;
-        });
-
-        if (levelUpdate) {
-          this.skillLevel = levelUpdate.level;
-        }
+        this.skillLevel = completed.filter((message) => {
+          return message.id === 'OVERALL';
+        }).reduce((maxLevel, currentLevelUpdateObject) => {
+          const levelUpdate = currentLevelUpdateObject.level;
+          return maxLevel < levelUpdate ? levelUpdate : maxLevel;
+        }, this.skillLevel);
       },
     },
   };
