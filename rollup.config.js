@@ -13,7 +13,7 @@ module.exports = {
     file: 'dist/skills-client-vue.umd.min.js',
     name: 'SkillsClientVue',
     format: 'umd',
-    sourceMap: 'inline',
+    sourcemap: true,
     globals: {
       '@skills/skills-client-configuration': 'SkillsConfiguration' ,
     },
