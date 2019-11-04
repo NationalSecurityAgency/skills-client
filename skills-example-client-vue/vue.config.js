@@ -41,7 +41,7 @@ module.exports = {
         '@$': resolve('src'),
       },
     },
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'source-map',
   },
   publicPath: '/vuejs/',
   outputDir: undefined,
