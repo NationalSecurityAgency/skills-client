@@ -7,31 +7,12 @@
 </template>
 
 <script>
-  import createAuthRefreshInterceptor from 'axios-auth-refresh';
+  import SkillsLevelService from '@/component/SkillsLevelService';
 
   import SkillsConfiguration from '@skills/skills-client-configuration';
   import { SkillsReporter } from '@skills/skills-client-reporter';
 
-  import axios from 'axios'
-
   const emptyArrayIfNull = value => value ? value : [];
-
-  const refreshAuthorization = (failedRequest) => {
-    SkillsConfiguration.setAuthToken(null);
-    return axios.get(SkillsConfiguration.getAuthenticator())
-      .then((result) => {
-        const accessToken =  result.data.access_token;
-        SkillsConfiguration.setAuthToken(accessToken);
-        if (failedRequest) {
-          failedRequest.response.config.headers.Authorization = `Bearer ${accessToken}`;
-        }
-        axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
-        return Promise.resolve();
-      });
-  };
-
-  // Instantiate the interceptor (you can chain it as it returns the axios instance)
-  createAuthRefreshInterceptor(axios, refreshAuthorization);
 
   export default {
     props: {
@@ -56,22 +37,10 @@
       getCurrentSkillLevel() {
         SkillsConfiguration.afterConfigure()
           .then(() => {
-            const serviceUrl = SkillsConfiguration.getServiceUrl();
-            const projectId = this.getProjectId();
-
-            let authenticationPromise = Promise.resolve();
-            if (SkillsConfiguration.getAuthenticator() !== 'pki') {
-              if (!SkillsConfiguration.getAuthToken()) {
-                authenticationPromise = refreshAuthorization();
-              }
-            }
-
-            authenticationPromise.then(() => {
-              axios.get(`${serviceUrl}/api/projects/${projectId}/level`, { withCredentials: true })
-                .then((result) => {
-                  this.skillLevel = result.data
-                });
-            });
+            SkillsLevelService.getSkillLevel(this.getProjectId())
+              .then((result) => {
+                this.skillLevel = result;
+              });
         });
       },
       getProjectId() {
