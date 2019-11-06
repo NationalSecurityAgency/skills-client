@@ -7,10 +7,7 @@ import SkillsConfiguration from '@skills/skills-client-configuration';
 import SkillsLevelService from '@/component/SkillsLevelService.js';
 import { SkillsReporter } from '@skills/skills-client-reporter';
 
-import { mount, shallowMount } from '@vue/test-utils';
-
-// const SkillsReporter = require('@skills/skills-client-reporter').SkillsReporter;
-// const SkillsConfiguration = require('@skills/skills-client-configuration').default;
+import { shallowMount } from '@vue/test-utils';
 
 describe('SkillsLevel', () => {
   beforeEach(() => {
@@ -23,7 +20,7 @@ describe('SkillsLevel', () => {
   });
 
   it('exists and is a vue instance', () => {
-    const component = mount(SkillsLevel);
+    const component = shallowMount(SkillsLevel);
     expect(component.isVueInstance()).toBeTruthy();
   });
 
@@ -53,7 +50,7 @@ describe('SkillsLevel', () => {
       SkillsConfiguration.getProjectId.mockReturnValue(mockProjectId);
 
       const vm = shallowMount(SkillsLevel).vm;
-      
+
       const resultProjectId = vm.getProjectId();
       expect(mockProjectId).toBe(resultProjectId);
     });
@@ -75,7 +72,7 @@ describe('SkillsLevel', () => {
     });
   });
 
-  describe('mounted hook', () => {
+  describe('shallowMounted hook', () => {
     it('initializes the users skillLevel', (done) => {
       const mockSkillLevel = Math.random();
       SkillsConfiguration.afterConfigure.mockResolvedValue();
@@ -179,7 +176,7 @@ describe('SkillsLevel', () => {
       const vm = wrapper.vm;
 
       const selector = '.skills-level-text-display';
-      
+
       expect(wrapper.find(selector).exists()).toBe(false);
 
       wrapper.setData({ skillLevel: 1 });

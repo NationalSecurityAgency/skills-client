@@ -3,11 +3,6 @@
 </template>
 
 <script>
-  import Vue from 'vue';
-  import Postmate from 'postmate';
-  import axios from 'axios';
-
-  import SkillsConfiguration from '@skills/skills-client-configuration';
   import { SkillsDisplayJS } from '@skills/skills-client-js';
 
   export default {
