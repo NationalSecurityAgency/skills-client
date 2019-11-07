@@ -1,12 +1,6 @@
 const presets = [
   [
     "@babel/env",
-    {
-      targets: {
-        firefox: '15',
-        chrome: '40',
-      },
-    },
   ],
 ];
 
