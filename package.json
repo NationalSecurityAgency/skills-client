@@ -1,6 +1,6 @@
 {
   "name": "@skills/skills-client-vue",
-  "version": "0.0.72",
+  "version": "0.0.73",
   "description": "Vue client reporting and display libraries for skills clients",
   "main": "dist/skills-client-vue.umd.min.js",
   "scripts": {
@@ -43,9 +43,9 @@
     "vue-template-compiler": "2.6.10"
   },
   "dependencies": {
-    "@skills/skills-client-configuration": "0.0.15",
-    "@skills/skills-client-js": "0.0.20",
-    "@skills/skills-client-reporter": "0.0.32",
+    "@skills/skills-client-configuration": "0.0.16",
+    "@skills/skills-client-js": "0.0.21",
+    "@skills/skills-client-reporter": "0.0.34",
     "axios": "0.19.0",
     "axios-auth-refresh": "1.0.7",
     "lodash": "4.17.15",
