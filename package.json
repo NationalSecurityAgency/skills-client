@@ -7,7 +7,7 @@
     "react-dom": "^16.11.0",
     "react-scripts": "3.2.0",
     "@skills/skills-client-configuration": "0.0.16",
-    "@skills/skills-client-js": "0.0.21",
+    "@skills/skills-client-js": "0.0.22",
     "@skills/skills-client-reporter": "0.0.34",
     "axios": "0.19.0",
     "axios-auth-refresh": "1.0.7",
