@@ -28,7 +28,8 @@ module.exports = {
     resolve({
       jsnext: true,
       preferBuiltins: true,
-      browser: true }),
+      browser: true,
+    }),
     json(),
     replace({
       'process.env.NODE_ENV': JSON.stringify('production'),
@@ -38,11 +39,11 @@ module.exports = {
         '@skills/skills-client-reporter': [
           'SkillsReporter',
           'SUCCESS_EVENT',
-          'FAILURE_EVENT'
+          'FAILURE_EVENT',
         ],
       },
     }),
+    // comment out to remove minimization
     terser(),
   ],
 };
-

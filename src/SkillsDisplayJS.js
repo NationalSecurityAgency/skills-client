@@ -2,6 +2,7 @@ import Postmate from 'postmate';
 import axios from 'axios';
 
 import SkillsConfiguration from '@skills/skills-client-configuration';
+import ErrorPageUtils from './ErrorPageUtils';
 
 let uniqueId = 0;
 
@@ -84,6 +85,17 @@ export default class SkillsDisplayJS {
         }
       });
     });
+
+    this._checkAndHandleServiceStatus(iframeContainer);
+  }
+
+  _checkAndHandleServiceStatus(iframeContainer) {
+    axios.get(`${this.configuration.serviceUrl}/public/status`)
+      .catch(() => {
+        ErrorPageUtils.removeAllChildren(iframeContainer);
+        iframeContainer.appendChild(ErrorPageUtils.buildErrorPage());
+        iframeContainer.setAttribute('style', 'border: 5px; height: 20rem; width: 100%');
+      });
   }
 
   set version(version) {
