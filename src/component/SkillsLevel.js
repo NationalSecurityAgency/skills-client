@@ -3,7 +3,7 @@ import SkillsLevelService from '@/component/SkillsLevelService';
 import SkillsConfiguration from '@skills/skills-client-configuration';
 import { SkillsReporter } from '@skills/skills-client-reporter';
 
-import React, from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 const emptyArrayIfNull = value => value ? value : [];

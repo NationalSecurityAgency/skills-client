@@ -1,4 +1,4 @@
-import React, from 'react';
+import React from 'react';
 import { SkillsDisplayJS } from '@skills/skills-client-js';
 import PropTypes from 'prop-types';
 import './SkillsDisplay.css';
@@ -18,13 +18,7 @@ const SkillDisplay = ({theme=null, version=0, userId=null, authenticator, servic
         return () => {
             clientDisplay.destroy();
         }
-    },[]);
-
-    React.useEffect( () => {
-        if (clientDisplay) {
-            clientDisplay.version = version;
-        }
-    }, [version]);
+    },[theme, version, userId, authenticator, serviceUrl, projectId, disableAutoScroll, autoScrollStrategy, isSummaryOnly]);
 
     return ( <div id="clientSkillsDisplayContainer" /> );
 };
