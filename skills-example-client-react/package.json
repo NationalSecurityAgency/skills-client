@@ -2,6 +2,7 @@
   "name": "skills-example-client-react",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/react/",
   "dependencies": {
     "react": "^16.11.0",
     "react-dom": "^16.11.0",

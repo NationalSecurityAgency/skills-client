@@ -16,6 +16,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>skills-example-client-vue</module>
+        <module>skills-example-client-react</module>
         <module>skills-example-client-js</module>
         <module>skills-example-service</module>
     </modules>
