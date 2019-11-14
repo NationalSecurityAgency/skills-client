@@ -7,14 +7,15 @@
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-scripts": "3.2.0",
-    "@skills/skills-client-vue": "0.0.73",
+    "@skills/skills-client-react": "0.1.0",
     "axios": "0.19.0",
     "bootstrap": "4.3.1",
     "core-js": "^3.2.1",
     "highlightjs": "9.12.0",
     "js-beautify": "1.10.2",
     "react-bootstrap": "^1.0.0-beta.14",
-    "react-router": "^5.1.2l"
+    "react-router": "^5.1.2l",
+    "react-highlight": "^0.12.0"
   },
   "scripts": {
     "start": "react-scripts start",
