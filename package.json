@@ -1,7 +1,13 @@
 {
-  "name": "skills-client-react",
+  "name": "@skills/skills-client-react",
   "version": "0.1.0",
-  "private": true,
+  "main": "dist/skills-client-react.umd.min.js",
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.evoforge.org:skills/skills-client-react.git"
+  },
+  "author": "Skills Team",
+  "license": "ISC",
   "dependencies": {
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
@@ -19,6 +25,10 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "files": [
+    "dist",
+    "*"
+  ],
   "eslintConfig": {
     "extends": "react-app"
   },
