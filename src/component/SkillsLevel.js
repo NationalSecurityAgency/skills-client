@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 const emptyArrayIfNull = value => value ? value : [];
 
 const SkillsLevel = ({projectId}) => {
-    const [skillLevel, setSkillLevel] = React.useState();
+    const [skillLevel, setSkillLevel] = React.useState({});
 
     const getProjectId = () => {
         if (!projectId) {
@@ -45,7 +45,7 @@ const SkillsLevel = ({projectId}) => {
 
     return (
         <SkillsLevel>
-            {skillLevel && <span class="skills-level-text-display">skillLevel</span>}
+            {skillLevel && <span class="skills-level-text-display">{skillLevel}</span>}
         </SkillsLevel>
     );
 };
