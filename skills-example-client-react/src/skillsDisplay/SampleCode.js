@@ -18,9 +18,7 @@ const SampleCode = ({isSummaryOnly, selectedTheme}) => {
     };
 
     return (
-        <div
-            id="sample-code"
-            className="row">
+        <div id="sample-code" className="row">
             <div className="col-12">
                 <div className="mb-5 mt-5 card bg-light">
                     <h5 className=" card-header text-info">
