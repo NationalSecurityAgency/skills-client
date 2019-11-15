@@ -75,7 +75,8 @@ export default class SkillsDisplayJS {
         }
       });
       child.on('needs-authentication', () => {
-        if (!this.authenticationPromise && this.configuration.authenticator !== 'pki') {
+        const isPkiMode = this.configuration.authenticator === 'pki';
+        if (!this.authenticationPromise && !isPkiMode) {
           this.authenticationPromise = axios.get(this.configuration.authenticator)
             .then((result) => {
               child.call('updateAuthenticationToken', result.data.access_token);
@@ -83,7 +84,7 @@ export default class SkillsDisplayJS {
             .finally(() => {
               this.authenticationPromise = null;
             });
-        } else if (this.configuration.authenticator === 'pki') {
+        } else if (isPkiMode) {
           child.call('updateAuthenticationToken', 'pki');
         }
       });
