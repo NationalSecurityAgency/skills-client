@@ -45,7 +45,7 @@ const SkillsLevel = ({projectId}) => {
 
     return (
       <div>
-          <span className="skills-level-text-display">{Number(skillLevel)}</span>
+          <span className="skills-level-text-display">Level {Number(skillLevel)}</span>
       </div>
     );
 };
