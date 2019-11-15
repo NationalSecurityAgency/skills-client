@@ -3,10 +3,10 @@ import logo from './logo.svg';
 import Navigation from "./skillsDisplay/Navigation";
 import './App.css';
 
-function App() {
+export default function App() {
   return (
     <div className="App">
-      <Navigation/>
+      <Navigation projectId="movies"/>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
@@ -24,5 +24,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
