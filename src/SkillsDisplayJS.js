@@ -20,6 +20,7 @@ export default class SkillsDisplayJS {
     this._userId = userId;
   }
 
+  /* eslint-disable class-methods-use-this */
   currentIframeId() {
     return uniqueId;
   }
