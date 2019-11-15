@@ -1,4 +1,4 @@
-import SkillsLevelService from "./SkillsLevelService";
+import SkillsLevelService from './SkillsLevelService';
 
 import SkillsConfiguration from '@skills/skills-client-configuration';
 import { SkillsReporter } from '@skills/skills-client-reporter';

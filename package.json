@@ -1,13 +1,37 @@
 {
   "name": "@skills/skills-client-react",
-  "version": "0.2.0",
-  "main": "dist/skills-client-react.umd.min.js",
+  "version": "0.2.1",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "files": [
+    "css",
+    "es",
+    "lib",
+    "umd"
+  ],
+  "scripts": {
+    "build": "nwb build-react-component",
+    "clean": "nwb clean-module && nwb clean-demo",
+    "prepublishOnly": "npm run build",
+    "start": "nwb serve-react-demo",
+    "test": "nwb test-react",
+    "test:coverage": "nwb test-react --coverage",
+    "test:watch": "nwb test-react --server"
+  },
   "repository": {
     "type": "git",
     "url": "git@gitlab.evoforge.org:skills/skills-client-react.git"
   },
   "author": "Skills Team",
   "license": "ISC",
+  "peerDependencies": {
+    "react": "16.x"
+  },
+  "devDependencies": {
+    "nwb": "0.23.x",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
   "dependencies": {
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
@@ -19,16 +43,6 @@
     "axios-auth-refresh": "1.0.7",
     "prop-types": "^15.7.2"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "files": [
-    "dist",
-    "*"
-  ],
   "eslintConfig": {
     "extends": "react-app"
   },
