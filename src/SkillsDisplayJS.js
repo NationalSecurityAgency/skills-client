@@ -20,6 +20,10 @@ export default class SkillsDisplayJS {
     this._userId = userId;
   }
 
+  currentIframeId() {
+    return uniqueId;
+  }
+
   attachTo(selectorOrElement) {
     let iframeContainer = selectorOrElement;
     if (typeof selectorOrElement === 'string') {
@@ -47,7 +51,6 @@ export default class SkillsDisplayJS {
         isSummaryOnly: this.options.isSummaryOnly,
       },
     });
-
     const iframe = document.querySelector(`.${className}`);
     iframe.setAttribute('style', 'border: 0; height: 100%; width: 100%');
 
@@ -144,6 +147,8 @@ export default class SkillsDisplayJS {
   }
 
   destroy() {
-    this._childFrame.destroy();
+    if (this._childFrame) {
+      this._childFrame.destroy();
+    }
   }
 }
