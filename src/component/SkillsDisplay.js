@@ -8,7 +8,7 @@ const SkillDisplay = ({theme=null, version=0, userId=null, authenticator, servic
 
     React.useEffect(() => {
         setClientDisplay(new SkillsDisplayJS({
-            options: {theme, version, userId, authenticator, serviceUrl, projectId, disableAutoScroll, autoScrollStrategy, isSummaryOnly},
+            options: {authenticator, serviceUrl, projectId, disableAutoScroll, autoScrollStrategy, isSummaryOnly},
             version: version,
             theme: theme,
             userId: userId,
@@ -25,7 +25,7 @@ const SkillDisplay = ({theme=null, version=0, userId=null, authenticator, servic
 
 SkillDisplay.propTypes = {
     theme: PropTypes.object,
-    version: PropTypes.number.isRequired,
+    version: PropTypes.number,
     userId: PropTypes.string,
     authenticator: PropTypes.string,
     serviceUrl: PropTypes.string.isRequired,
