@@ -3,8 +3,6 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button"
 import { SkillsLevel } from '@skills/skills-client-react';
-// import SkillsLevel from "./SkillsLevel";
-// import SkillsLevel from "@skills/skills-client-react/src/component/SkillsLevel"
 
 import {
   HashRouter as Router,
