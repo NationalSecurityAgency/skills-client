@@ -4,20 +4,26 @@ import PropTypes from 'prop-types';
 
 const beautify = require('js-beautify').js;
 
-const SampleCode = ({isSummaryOnly, selectedTheme}) => {
-    const sampleCode = () => {
+class SampleCode extends React.Component {
+    constructor(props) {
+      super(props);
+      this.isSummaryOnly = props.isSummaryOnly;
+      this.selectedTheme = props.selectedTheme;
+    }
+
+    sampleCode() {
         return beautify(`import { SkillsDisplay, SkillsLevel } from '@skills/skills-client-vue';
+            const MyComponent = () => {
+                return (
+                    <div id="myApp">
+                        <SkillsDisplay isSummaryOnly="${this.isSummaryOnly}" theme="${this.selectedTheme}" />
+                    </div>
+                )
+            };`, {indent_size: 2, indent_level: 1, end_with_newline: false});
+    }
 
-                const MyComponent = () => {
-                    return (
-                        <div id="myApp">
-                            <SkillsDisplay isSummaryOnly="${isSummaryOnly}" theme="${selectedTheme}" />
-                        </div>
-                    )
-                };`, {indent_size: 2, indent_level: 1, end_with_newline: false});
-    };
-
-    return (
+    render() {
+        return (
         <div id="sample-code" className="row">
             <div className="col-12">
                 <div className="mb-5 mt-5 card bg-light">
@@ -26,13 +32,14 @@ const SampleCode = ({isSummaryOnly, selectedTheme}) => {
                     </h5>
                     <div className="card-body py-0">
                         <Highlight className="javascript">
-                            <code className="javascript p-0 m-0">{sampleCode}</code>
+                            <code className="javascript p-0 m-0">{this.sampleCode()}</code>
                         </Highlight>
                     </div>
                 </div>
             </div>
         </div>
-    );
+        );
+    }
 };
 
 SampleCode.propTypes = {

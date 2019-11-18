@@ -1,13 +1,13 @@
 import React from 'react';
-import './SkillsDisplay.css';
 import SkillsDisplayThemeFactory from './ThemeFactory.js';
 import SampleCode from './SampleCode';
-import SkillsDisplay from '@skills/skills-client-react';
+import { SkillsDisplay } from '@skills/skills-client-react';
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from 'react-bootstrap/Dropdown';
+import Button from 'react-bootstrap/Button';
 
 
-const urlSearchParams = new URLSearchParams(location.search);
+const urlSearchParams = new URLSearchParams(window.location.search);
 const saveUrlParam = (name, value) => {
     urlSearchParams.append(name, value);
 };
@@ -74,29 +74,30 @@ const ShowSkill = () => {
     const executeScroll = () => scrollToRef(sampleCodeRef);
 
     return (
-        <div class="container">
-            <div class="d-flex align-items-center">
+        <div className="container">
+            <div className="d-flex align-items-center">
                 <DropdownButton
                     id="dropdown-1"
-                    class="mb-3"
+                    className="mb-3"
                     title="Theme"
                     variant="Primary">
 
                     { getThemes().map ( (theme) => {
                         return <Dropdown.Item
                         onclick={() => setIsThemeUrlParam(theme)}
-                        eventKey="theme.name" {selectedTheme.name === theme.name ? "active" : ""}>
+                        key={theme.name}
+                        eventKey={theme.name} {... (selectedTheme.name === theme.name ? {disabled:true} : "")}>
                             {theme.name}
                         </Dropdown.Item>
                     })}
 
                 </DropdownButton>
-                <Button variant={isSummaryOnly ? 'primary' : 'outline-primary'} onclick={toggleIsSummary}>Summary Only</Button>
-                <Button variant="link" href="javascript:void" onclick={executeScroll}>Show Source</Button>
+                <Button variant={isSummaryOnly ? 'primary' : 'outline-primary'} onClick={toggleIsSummary}>Summary Only</Button>
+                <Button variant="link" href="javascript:void" onClick={executeScroll}>Show Source</Button>
             </div>
 
-            <div class="border rounded">
-                <SkillsDisplay isSummaryOnly={isSummaryOnly} theme={selectedTheme.name}/>
+            <div className="border rounded">
+                <SkillsDisplay isSummaryOnly={isSummaryOnly} theme={selectedTheme}/>
             </div>
 
             <SampleCode ref={sampleCodeRef} isSummaryOnly={isSummaryOnly} selectedTheme={selectedTheme.name}/>
