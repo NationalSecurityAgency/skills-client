@@ -5,16 +5,7 @@ import { SkillsDisplay } from '@skills/skills-client-react';
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
-
-
-const urlSearchParams = new URLSearchParams(window.location.search);
-const saveUrlParam = (name, value) => {
-    urlSearchParams.append(name, value);
-};
-
-const getUrlParam = (name) => {
-    return urlSearchParams.get(name);
-};
+import { useHistory } from "react-router-dom";
 
 const getThemes = () => {
     return Object.values(SkillsDisplayThemeFactory);
@@ -35,6 +26,22 @@ function usePrevious(value){
 }
 
 const ShowSkill = () => {
+    const history = useHistory();
+
+    const saveUrlParam = (paramsObj) => {
+        let params = '?';
+        Object.keys(paramsObj).forEach((key) =>{
+            params+=`${key}=${paramsObj[key]}&`;
+        });
+        params = params.replace(/&$/,'');
+        history.push({pathname:history.location.pathname, search: params});
+    };
+
+    const getUrlParam = (name) => {
+        const urlSearchParams = new URLSearchParams(history.location.search);
+        return urlSearchParams.get(name);
+    };
+
     const [selectedTheme, saveSelectedTheme] = React.useState(() => {
         const urlTheme = getUrlParam("themeName");
         if(urlTheme) {
@@ -42,7 +49,7 @@ const ShowSkill = () => {
         }
         return getThemes()[0];
     });
-    const [version, setVersion] = React.useState(0);
+
     const [isSummaryOnly, setIsSummaryOnly] = React.useState(() => {
         const urlSummaryOnly = getUrlParam('isSummaryOnly');
         if ( urlSummaryOnly ) {
@@ -52,23 +59,13 @@ const ShowSkill = () => {
     });
 
     const previousIsSummaryOnly = usePrevious(isSummaryOnly);
-    const [showSampleCode, setShowSampleCode] = React.useState(false);
+    const previousSelectedTheme = usePrevious(selectedTheme);
 
-    const refreshPage = () => {
-        setTimeout(() => {
-            document.location.reload();
-        });
-    };
-
-    const toggleIsSummary = () => {
-        setIsSummaryOnly(!previousIsSummaryOnly);
-    };
-
-    const setIsThemeUrlParam = (theme) => {
-        saveUrlParam('themeName', theme.name);
-        saveUrlParam('isSummaryOnly', isSummaryOnly);
-        refreshPage();
-    };
+    React.useEffect(() => {
+        if (isSummaryOnly !== previousIsSummaryOnly || selectedTheme !== previousSelectedTheme) {
+            saveUrlParam({'isSummaryOnly': isSummaryOnly, 'themeName': selectedTheme.name});
+        }
+    }, [isSummaryOnly, selectedTheme]);
 
     const sampleCodeRef = React.createRef();
     const executeScroll = () => scrollToRef(sampleCodeRef);
@@ -84,7 +81,7 @@ const ShowSkill = () => {
 
                     { getThemes().map ( (theme) => {
                         return <Dropdown.Item
-                        onclick={() => setIsThemeUrlParam(theme)}
+                        onClick={() => saveSelectedTheme(theme)}
                         key={theme.name}
                         eventKey={theme.name} {... (selectedTheme.name === theme.name ? {disabled:true} : "")}>
                             {theme.name}
@@ -92,15 +89,17 @@ const ShowSkill = () => {
                     })}
 
                 </DropdownButton>
-                <Button variant={isSummaryOnly ? 'primary' : 'outline-primary'} onClick={toggleIsSummary}>Summary Only</Button>
-                <Button variant="link" href="javascript:void" onClick={executeScroll}>Show Source</Button>
+                <Button variant={isSummaryOnly ? 'primary' : 'outline-primary'} onClick={() => setIsSummaryOnly(!isSummaryOnly)}>Summary Only</Button>
+                <Button variant="link" onClick={executeScroll}>Show Source</Button>
             </div>
 
             <div className="border rounded">
-                <SkillsDisplay isSummaryOnly={isSummaryOnly} theme={selectedTheme}/>
+                <SkillsDisplay isSummaryOnly={isSummaryOnly} theme={selectedTheme.theme}/>
             </div>
 
-            <SampleCode ref={sampleCodeRef} isSummaryOnly={isSummaryOnly} selectedTheme={selectedTheme.name}/>
+            <div ref={sampleCodeRef}>
+                <SampleCode isSummaryOnly={isSummaryOnly} selectedTheme={selectedTheme.name}/>
+            </div>
         </div>
     );
 };
