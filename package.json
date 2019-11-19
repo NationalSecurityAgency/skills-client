@@ -1,6 +1,6 @@
 {
   "name": "@skills/skills-client-react",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "main": "lib/index.js",
   "module": "es/index.js",
   "files": [

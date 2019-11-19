@@ -10,7 +10,7 @@ const destroy = (cd) => {
     }
 };
 
-const SkillDisplay = ({theme=null, version=0, userId=null, authenticator, serviceUrl, projectId, disableAutoScroll=false, autoScrollStrategy, isSummaryOnly}) => {
+const SkillDisplay = ({theme=null, version=0, userId=null, authenticator, serviceUrl, projectId, disableAutoScroll=false, autoScrollStrategy, isSummaryOnly=false}) => {
 
     React.useEffect(() => {
         clientDisplay = new SkillsDisplayJS({
