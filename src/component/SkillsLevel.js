@@ -29,18 +29,15 @@ const SkillsLevel = ({projectId}) => {
         }, skillLevel));
     };
 
-    React.useState(() => {
-        SkillsReporter.addSuccessHandler(update);
+    SkillsReporter.addSuccessHandler(update);
+    SkillsConfiguration.afterConfigure()
+        .then(() => {
+            SkillsLevelService.getSkillLevel(getProjectId())
+                .then((result) => {
+                    setSkillLevel(result);
+                });
+        });
 
-        SkillsConfiguration.afterConfigure()
-            .then(() => {
-                SkillsLevelService.getSkillLevel(getProjectId())
-                    .then((result) => {
-                        setSkillLevel(result);
-                    });
-            });
-
-    }, []);
 
     return (
       <div>
