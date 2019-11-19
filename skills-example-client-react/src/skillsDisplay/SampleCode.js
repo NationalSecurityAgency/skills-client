@@ -3,20 +3,26 @@ import Highlight from 'react-highlight';
 import PropTypes from 'prop-types';
 
 const beautify = require('js-beautify').js;
+const beautifyHtml = require('js-beautify').html;
 
 const SampleCode = ({isSummaryOnly, selectedTheme}) => {
 
     const sampleCode = () => {
-        return beautify(`
+        const tags = beautifyHtml(`
+         <div id="myApp">
+                <SkillsDisplay isSummaryOnly="${isSummaryOnly}" theme={selectedThemeObj.theme} />
+            </div>
+`,{indent_size: 4, indent_level: 2, end_with_newline: false, "html.format.contentUnformatted": "", "html.format.unformatted": ""});
+
+        const js =  beautify(`
 import { SkillsDisplay, SkillsLevel } from '@skills/skills-client-vue';
     const selectedThemeObj = ${JSON.stringify(selectedTheme)};
     const MyComponent = () => {
         return (
-            <div id="myApp">
-                <SkillsDisplay isSummaryOnly="${isSummaryOnly}" theme={selectedThemeObj.theme} />
-            </div>
+            placeholder
         )
     };`, {indent_size: 2, indent_level: 1, end_with_newline: false});
+        return js.replace('placeholder', tags);
     };
 
     return (
