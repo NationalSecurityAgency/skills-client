@@ -3,20 +3,27 @@ import { SkillsDisplayJS } from '@skills/skills-client-js';
 import PropTypes from 'prop-types';
 import './SkillsDisplay.css';
 
+let clientDisplay = null;
+const destroy = (cd) => {
+    if(cd){
+        cd.destroy();
+    }
+};
+
 const SkillDisplay = ({theme=null, version=0, userId=null, authenticator, serviceUrl, projectId, disableAutoScroll=false, autoScrollStrategy, isSummaryOnly}) => {
-    const [clientDisplay, setClientDisplay] = React.useState({});
 
     React.useEffect(() => {
-        setClientDisplay(new SkillsDisplayJS({
+        clientDisplay = new SkillsDisplayJS({
             options: {authenticator, serviceUrl, projectId, disableAutoScroll, autoScrollStrategy, isSummaryOnly},
-            version: version,
             theme: theme,
+            version: version,
             userId: userId,
-        }));
+        });
+
         clientDisplay.attachTo(document.getElementById("clientSkillsDisplayContainer"));
 
         return () => {
-            clientDisplay.destroy();
+            destroy(clientDisplay);
         }
     },[theme, version, userId, authenticator, serviceUrl, projectId, disableAutoScroll, autoScrollStrategy, isSummaryOnly]);
 
@@ -28,8 +35,8 @@ SkillDisplay.propTypes = {
     version: PropTypes.number,
     userId: PropTypes.string,
     authenticator: PropTypes.string,
-    serviceUrl: PropTypes.string.isRequired,
-    projectId: PropTypes.string.isRequired,
+    serviceUrl: PropTypes.string,
+    projectId: PropTypes.string,
     disableAutoScroll: PropTypes.bool,
     autoScrollStrategy: PropTypes.string,
     isSummaryOnly: PropTypes.bool,

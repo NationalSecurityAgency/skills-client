@@ -30,7 +30,6 @@ const SkillsLevel = ({projectId}) => {
     };
 
     React.useState(() => {
-        //there's no separate react equivalent to created
         SkillsReporter.addSuccessHandler(update);
 
         SkillsConfiguration.afterConfigure()
