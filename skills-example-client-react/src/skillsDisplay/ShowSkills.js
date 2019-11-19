@@ -28,15 +28,6 @@ function usePrevious(value){
 const ShowSkill = () => {
     const history = useHistory();
 
-    const saveUrlParam = (paramsObj) => {
-        let params = '?';
-        Object.keys(paramsObj).forEach((key) =>{
-            params+=`${key}=${paramsObj[key]}&`;
-        });
-        params = params.replace(/&$/,'');
-        history.push({pathname:history.location.pathname, search: params});
-    };
-
     const getUrlParam = (name) => {
         const urlSearchParams = new URLSearchParams(history.location.search);
         return urlSearchParams.get(name);
@@ -62,10 +53,19 @@ const ShowSkill = () => {
     const previousSelectedTheme = usePrevious(selectedTheme);
 
     React.useEffect(() => {
+        const saveUrlParam = (paramsObj) => {
+            let params = '?';
+            Object.keys(paramsObj).forEach((key) =>{
+                params+=`${key}=${paramsObj[key]}&`;
+            });
+            params = params.replace(/&$/,'');
+            history.push({pathname:history.location.pathname, search: params});
+        };
+
         if (isSummaryOnly !== previousIsSummaryOnly || selectedTheme !== previousSelectedTheme) {
             saveUrlParam({'isSummaryOnly': isSummaryOnly, 'themeName': selectedTheme.name});
         }
-    }, [isSummaryOnly, selectedTheme]);
+    }, [isSummaryOnly, selectedTheme, previousIsSummaryOnly, previousSelectedTheme, history]);
 
     const sampleCodeRef = React.createRef();
     const executeScroll = () => scrollToRef(sampleCodeRef);
