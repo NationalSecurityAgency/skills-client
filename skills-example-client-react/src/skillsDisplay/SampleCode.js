@@ -9,10 +9,11 @@ const SampleCode = ({isSummaryOnly, selectedTheme}) => {
     const sampleCode = () => {
         return beautify(`
 import { SkillsDisplay, SkillsLevel } from '@skills/skills-client-vue';
+    const selectedThemeObj = ${JSON.stringify(selectedTheme)};
     const MyComponent = () => {
         return (
             <div id="myApp">
-                <SkillsDisplay isSummaryOnly="${isSummaryOnly}" theme="${selectedTheme}" />
+                <SkillsDisplay isSummaryOnly="${isSummaryOnly}" theme={selectedThemeObj.theme} />
             </div>
         )
     };`, {indent_size: 2, indent_level: 1, end_with_newline: false});
@@ -38,7 +39,7 @@ import { SkillsDisplay, SkillsLevel } from '@skills/skills-client-vue';
 
 SampleCode.propTypes = {
     isSummaryOnly: PropTypes.bool.isRequired,
-    selectedTheme: PropTypes.string.isRequired
+    selectedTheme: PropTypes.object.isRequired
 };
 
 export default SampleCode;

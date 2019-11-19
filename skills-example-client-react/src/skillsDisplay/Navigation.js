@@ -20,15 +20,12 @@ const Navigation = (props) => {
         <Navbar.Collapse id="nav-collapse" is-nav="true">
           <Nav>
             <NavLink activeClassName="router-link-active" className="nav-link" to="/">Report Skill Events</NavLink>
-            {/*<Nav.Link href="#" onClick={reportSkillEvent}>Report Skill Events</Nav.Link>*/}
             <NavLink activeClassName="router-link-active" className="nav-link" to="/showSkills">User Display</NavLink>
-            {/*<Nav.Link href="#">User Display</Nav.Link>*/}
           </Nav>
         </Navbar.Collapse>
           <Button variant="primary">
               <SkillsLevel projectId={projectId}/>
           </Button>
-        {/*<SkillsLevel projectId={projectId}/>*/}
       </Navbar>
     </div>
   );

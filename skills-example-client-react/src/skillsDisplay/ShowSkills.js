@@ -98,7 +98,7 @@ const ShowSkill = () => {
             </div>
 
             <div ref={sampleCodeRef}>
-                <SampleCode isSummaryOnly={isSummaryOnly} selectedTheme={selectedTheme.name}/>
+                <SampleCode isSummaryOnly={isSummaryOnly} selectedTheme={selectedTheme}/>
             </div>
         </div>
     );
