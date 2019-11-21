@@ -69,7 +69,7 @@
       const params = new URLSearchParams(window.location.search);
       params.set('isSummaryOnly', !options.isSummaryOnly);
       window.location.search = params;
-    }
+    };
 
     const getTheme = () => {
       const params = new URLSearchParams(window.location.search);
@@ -96,7 +96,7 @@
           defaultThemeElement.classList.add('active');
         }
 
-        const clientDisplay = new SkillsDisplayJS.SkillsDisplayJS({
+        const clientDisplay = new SkillsClient.SkillsDisplayJS({
           options,
           version: 0,
           theme: theme.theme,
