@@ -11,7 +11,7 @@ module.exports = {
   input: 'src/index.js',
   output: {
     file: 'dist/skills-display-js.umd.min.js',
-    name: 'SkillsDisplayJS',
+    name: 'SkillsClient',
     format: 'umd',
     sourcemap: true,
     globals: {
