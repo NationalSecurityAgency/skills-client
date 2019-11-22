@@ -22,7 +22,9 @@ import { SkillsDisplay } from '@skills/skills-client-vue';
             placeholder
         )
     };`, {indent_size: 2, indent_level: 1, end_with_newline: false});
-        return js.replace('placeholder', tags);
+
+        const replacedText = js.replace('placeholder', tags);
+        return replacedText;
     };
 
     return (
@@ -48,4 +50,4 @@ SampleCode.propTypes = {
     selectedTheme: PropTypes.object.isRequired
 };
 
-export default SampleCode;
+export default React.memo(SampleCode);
