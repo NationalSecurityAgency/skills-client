@@ -12,6 +12,9 @@
     "test-watch": "npx jest --passWithNoTests --coverage --watch",
     "prepublishOnly": "npm run build"
   },
+  "publishConfig": {
+    "registry": "http://10.113.80.244/repository/skills-registry/"
+  },
   "author": "User Skills Team",
   "license": "ISC",
   "devDependencies": {
