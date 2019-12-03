@@ -1,6 +1,6 @@
 {
   "name": "@skills/skills-client-vue",
-  "version": "0.0.77",
+  "version": "0.0.78",
   "description": "Vue client reporting and display libraries for skills clients",
   "main": "dist/skills-client-vue.umd.min.js",
   "scripts": {
