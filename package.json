@@ -1,6 +1,6 @@
 {
   "name": "@skills/skills-client-js",
-  "version": "0.0.30",
+  "version": "1.0.0",
   "description": "userSkills viewing and reporting library",
   "main": "dist/skills-display-js.umd.min.js",
   "scripts": {
