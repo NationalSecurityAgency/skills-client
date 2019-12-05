@@ -7,7 +7,6 @@ import { SkillsLevel } from '@skills/skills-client-react';
 import {
   NavLink
 } from "react-router-dom";
-// import { SkillsLevel } from '@skills/skills-client-vue';
 
 const Navigation = (props) => {
   const projectId = props.projectId;
@@ -24,7 +23,7 @@ const Navigation = (props) => {
           </Nav>
         </Navbar.Collapse>
           <Button variant="primary">
-              <SkillsLevel projectId={projectId}/>
+              <SkillsLevel />
           </Button>
       </Navbar>
     </div>

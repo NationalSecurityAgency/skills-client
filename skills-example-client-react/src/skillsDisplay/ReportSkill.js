@@ -1,12 +1,23 @@
 import React from 'react';
 import { SkillsReporter } from '@skills/skills-client-reporter';
+import axios from 'axios';
+
 const beautify = require('js-beautify').js;
+let selectedSkillId = '';
 
 const ReportSkill = () => {
-    const reportSkill = (skillId) => {
+    const reportSkill = (skillId, resultContainer) => {
+        console.log(`reporting skill [${skillId}] reporting results to [${resultContainer}]`);
         SkillsReporter.reportSkill(skillId)
             .then((response) => {
-                document.querySelector('#report-result-container').innerHTML = JSON.stringify(response, null, 2);
+                console.log(response);
+                document.querySelector(resultContainer).innerHTML = JSON.stringify(response, null, 2);
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+            .finally(()=>{
+                console.log('reportSkill call finished')
             });
     };
 
@@ -17,6 +28,20 @@ const ReportSkill = () => {
                 });`, {indent_size: 2, indent_level: 1, end_with_newline: false})
     };
 
+    const handleInputChange = (inputValue) => {
+        console.log(`changing selectedSkillId to [${inputValue.target.value}]`);
+        selectedSkillId = inputValue.target.value;
+    };
+
+    const [selectData, setSelectData] = React.useState([]);
+
+    React.useEffect(()=>{
+        axios.get("/api/skills")
+            .then((result) => {
+                setSelectData(result.data);
+            });
+    }, []);
+
     return (
         <div className="container-fluid mt-3">
             <div className="container">
@@ -24,25 +49,35 @@ const ReportSkill = () => {
                 <div>
                     <h5 className="text-info"><strong>Report Any Skill</strong></h5>
                     <div className="card card-body bg-light">
-            <pre className="m-0 sample-code">
-            <code className="javascript">{sampleCode()}</code></pre>
+                    <pre className="m-0 sample-code">
+                    <code className="javascript">{sampleCode()}</code></pre>
 
-                    </div>
-                    <div className="card card-body mt-3">
-                        <div id="exampleDirectiveClickEvent">
+                </div>
+                <div className="card card-body mt-3">
+                    <div id="exampleDirectiveClickEvent">
+                        <div className="float-left mr-3">
+                            <select onChange={(event) => handleInputChange(event)} className="custom-select custom-select-m mb-3">
+                                {selectData.map((skill)=>{
+                                    return <option key={skill} value={skill}>{skill}</option>
+                                })}
+                            </select>
+                        </div>
+                        <div className="float-left">
                             <button
-                                className="btn btn-outline-primary"
-                                onClick={() => reportSkill('IronMan')}>
-                            Report Skill
-                        </button>
+                                    className="btn btn-outline-primary"
+                                    onClick={() => reportSkill(selectedSkillId, '#report-result-container')}>
+                                Report Skill
+                            </button>
+                        </div>
                     </div>
                     <hr />
-                        <div className="text-primary">Result:</div>
-                        <div className="border rounded p-3 bg-light">
-                            <pre id="report-result-container"></pre>
-                        </div>
+                    <div className="text-primary">Result:</div>
+                    <div className="border rounded p-3 bg-light">
+                        <pre id="report-result-container"></pre>
+                    </div>
                 </div>
             </div>
+
 
             <div className="mt-5"></div>
 
