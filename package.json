@@ -32,7 +32,8 @@
   "devDependencies": {
     "nwb": "0.23.x",
     "react": "16.11.0",
-    "react-dom": "16.11.0"
+    "react-dom": "16.11.0",
+    "react-scripts": "3.2.0"
   },
   "dependencies": {
     "@skills/skills-client-configuration": "1.0.0",
