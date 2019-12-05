@@ -8,8 +8,7 @@ import {
   NavLink
 } from "react-router-dom";
 
-const Navigation = (props) => {
-  const projectId = props.projectId;
+const Navigation = () => {
 
   return (
     <div>
