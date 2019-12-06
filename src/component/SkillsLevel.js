@@ -8,8 +8,10 @@ import PropTypes from 'prop-types';
 
 const emptyArrayIfNull = value => value ? value : [];
 
+let currentLevel = 0;
+
 const SkillsLevel = ({projectId}) => {
-    const [skillLevel, setSkillLevel] = React.useState(0);
+    const [skillLevel, setSkillLevel] = React.useState(currentLevel);
 
     const getProjectId = () => {
         if (!projectId) {
@@ -21,22 +23,30 @@ const SkillsLevel = ({projectId}) => {
     const update = (details) => {
         const completed = emptyArrayIfNull(details.completed);
 
-        setSkillLevel(completed.filter((message) => {
+        const level = completed.filter((message) => {
             return message.id === 'OVERALL';
         }).reduce((maxLevel, currentLevelUpdateObject) => {
             const levelUpdate = currentLevelUpdateObject.level;
             return maxLevel < levelUpdate ? levelUpdate : maxLevel;
-        }, skillLevel));
+        }, currentLevel);
+
+        if(level > currentLevel) {
+            setSkillLevel(level);
+        }
     };
 
-    SkillsReporter.addSuccessHandler(update);
-    SkillsConfiguration.afterConfigure()
-        .then(() => {
-            SkillsLevelService.getSkillLevel(getProjectId())
-                .then((result) => {
-                    setSkillLevel(result);
-                });
-        });
+    React.useEffect(() => {
+        SkillsReporter.addSuccessHandler(update);
+
+        SkillsConfiguration.afterConfigure()
+            .then(() => {
+                SkillsLevelService.getSkillLevel(getProjectId())
+                    .then((result) => {
+                        setSkillLevel(result);
+                        currentLevel = result;
+                    });
+            });
+    },[]);
 
 
     return (
