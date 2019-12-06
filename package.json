@@ -11,9 +11,6 @@
     "test-watch": "npx jest --passWithNoTests --watch",
     "prepublishOnly": "npm run clean && npm run test && npm run build"
   },
-  "publishConfig": {
-    "registry": "http://10.113.80.244/repository/skills-registry/"
-  },
   "repository": {
     "type": "git",
     "url": "git@gitlab.evoforge.org:skills/skills-client-report-vue.git"
