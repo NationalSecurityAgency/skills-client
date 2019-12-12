@@ -68,11 +68,22 @@ export default class SkillsDisplayJS {
       child.on('route-changed', () => {
         if (!this.options.disableAutoScroll) {
           let scrollToElement = iframeContainer;
-          if (this.options.autoScrollStrategy === 'top-of-page') {
-            scrollToElement = document.querySelector('body');
-          }
 
-          scrollToElement.scrollIntoView({ behavior: 'smooth' });
+          if (this.options.autoScrollStrategy === 'top-offset') {
+            let providedOffset = 0;
+            if (this.options.scrollTopOffset) {
+              providedOffset = this.options.scrollTopOffset;
+            }
+            const scrollToOffset = scrollToElement.offsetTop - providedOffset;
+            window.scroll({ top: scrollToOffset, behavior: 'smooth' });
+          } else {
+            if (this.options.autoScrollStrategy === 'top-of-page') {
+              scrollToElement = document.querySelector('body');
+            }
+            scrollToElement.scrollIntoView({
+              behavior: 'smooth',
+            });
+          }
         }
       });
       child.on('needs-authentication', () => {
@@ -139,6 +150,7 @@ export default class SkillsDisplayJS {
       'disableAutoScroll',
       'autoScrollStrategy',
       'isSummaryOnly',
+      'scrollTopOffset',
     ];
     const toTest = { ...this._options, ...options };
     const passedOptions = Object.keys(toTest);

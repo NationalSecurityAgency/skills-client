@@ -9,4 +9,10 @@ module.exports = {
     "document": 'readonly',
     "alert": 'readonly',
   },
+  "env": {
+    "browser": true,
+    "node": true,
+    "jasmine": true,
+    "jest": true,
+  }
 };

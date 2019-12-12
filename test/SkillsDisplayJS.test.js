@@ -220,7 +220,30 @@ describe('SkillsDisplayJS', () => {
 
           setTimeout(() => {
             mockChildFrame.emit('route-changed');
-            expect(mockIframeContainer.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth'});
+            expect(mockIframeContainer.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
+            done();
+          });
+        });
+
+        it('does auto scroll to configured offset', (done) => {
+          const client = new SkillsDisplayJS({ options: { scrollTopOffset: 10, autoScrollStrategy: 'top-offset' } });
+
+          const mockIframeContainer = {
+            setAttribute: jest.fn(),
+            style: {},
+            scrollIntoView: jest.fn(),
+          };
+
+          global.document.querySelector = () => mockIframeContainer;
+
+          global.scroll = jest.fn();
+
+          client.attachTo(mockIframeContainer);
+          const top = mockIframeContainer.offsetTop - 10;
+
+          setTimeout(() => {
+            mockChildFrame.emit('route-changed');
+            expect(global.scroll).toHaveBeenCalledWith({ top, behavior: 'smooth' });
             done();
           });
         });
@@ -250,7 +273,7 @@ describe('SkillsDisplayJS', () => {
 
           setTimeout(() => {
             mockChildFrame.emit('route-changed');
-            expect(mockBody.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth'});
+            expect(mockBody.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
             done();
           });
         });
