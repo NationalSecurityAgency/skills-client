@@ -40,6 +40,7 @@ SkillDisplay.propTypes = {
         disableAutoScroll: PropTypes.bool,
         autoScrollStrategy: PropTypes.string,
         isSummaryOnly: PropTypes.bool,
+        scrollTopOffset: PropTypes.number,
     }),
 };
 
