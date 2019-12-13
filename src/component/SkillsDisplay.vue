@@ -22,6 +22,7 @@
             'disableAutoScroll',
             'autoScrollStrategy',
             'isSummaryOnly',
+            'scrollTopOffset',
           ];
           const options = { ...defaults, ...value };
           const passedOptions = Object.keys(options);
