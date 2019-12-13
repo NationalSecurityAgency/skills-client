@@ -7,7 +7,7 @@
     "react": "16.11.0",
     "react-dom": "16.11.0",
     "react-scripts": "3.2.0",
-    "@skills/skills-client-react": "1.0.4-1",
+    "@skills/skills-client-react": "1.0.4",
     "@skills/skills-client-reporter": "1.0.1",
     "axios": "0.19.0",
     "bootstrap": "4.3.1",
@@ -29,15 +29,7 @@
     "extends": "react-app"
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "production": [">0.2%", "not dead", "not op_mini all"],
+    "development": ["last 1 chrome version", "last 1 firefox version", "last 1 safari version"]
   }
 }
