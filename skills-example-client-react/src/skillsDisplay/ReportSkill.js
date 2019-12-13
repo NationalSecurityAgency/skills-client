@@ -7,17 +7,12 @@ let selectedSkillId = '';
 
 const ReportSkill = () => {
     const reportSkill = (skillId, resultContainer) => {
-        console.log(`reporting skill [${skillId}] reporting results to [${resultContainer}]`);
         SkillsReporter.reportSkill(skillId)
             .then((response) => {
-                console.log(response);
                 document.querySelector(resultContainer).innerHTML = JSON.stringify(response, null, 2);
             })
             .catch((error) => {
                 console.error(error);
-            })
-            .finally(()=>{
-                console.log('reportSkill call finished')
             });
     };
 
@@ -29,7 +24,6 @@ const ReportSkill = () => {
     };
 
     const handleInputChange = (inputValue) => {
-        console.log(`changing selectedSkillId to [${inputValue.target.value}]`);
         selectedSkillId = inputValue.target.value;
     };
 
@@ -42,8 +36,12 @@ const ReportSkill = () => {
             });
     }, []);
 
+    const style = {
+        paddingTop: '55px'
+    };
+
     return (
-        <div className="container-fluid mt-3">
+        <div className="container-fluid" style={style}>
             <div className="container">
                 <h2>Report Skills Examples</h2>
                 <div>

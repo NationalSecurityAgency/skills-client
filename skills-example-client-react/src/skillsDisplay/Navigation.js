@@ -10,8 +10,15 @@ import {
 
 const Navigation = () => {
 
+  const tmpStyle = {
+    position:'fixed',
+    zIndex:1100,
+    right:0,
+    left:0,
+  };
+
   return (
-    <div>
+    <div style={tmpStyle}>
       <Navbar bg="info" variant="dark">
         <Navbar.Brand>React Integration Examples</Navbar.Brand>
         <Navbar.Toggle target="nav-collapse"></Navbar.Toggle>

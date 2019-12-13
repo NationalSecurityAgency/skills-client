@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 const beautify = require('js-beautify').js;
 const beautifyHtml = require('js-beautify').html;
 
-const SampleCode = ({isSummaryOnly, selectedTheme}) => {
+const SampleCode = ({options, selectedTheme}) => {
 
     const sampleCode = () => {
         const tags = beautifyHtml(`
          <div id="myApp">
-                <SkillsDisplay isSummaryOnly="${isSummaryOnly}" theme={selectedThemeObj.theme} />
+                <SkillsDisplay options="${JSON.stringify(options)}" theme={selectedThemeObj.theme} />
             </div>
 `,{indent_size: 4, indent_level: 2, end_with_newline: false, "html.format.contentUnformatted": "", "html.format.unformatted": ""});
 
@@ -46,7 +46,7 @@ import { SkillsDisplay } from '@skills/skills-client-vue';
 };
 
 SampleCode.propTypes = {
-    isSummaryOnly: PropTypes.bool.isRequired,
+    options: PropTypes.object.isRequired,
     selectedTheme: PropTypes.object.isRequired
 };
 

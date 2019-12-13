@@ -49,8 +49,11 @@ const ShowSkill = () => {
         return false;
     });
 
+    const [options, setOptions] = React.useState({ isSummaryOnly: isSummaryOnly, autoScrollStrategy: 'top-offset', scrollTopOffset: 110 });
+
     const previousIsSummaryOnly = usePrevious(isSummaryOnly);
     const previousSelectedTheme = usePrevious(selectedTheme);
+
 
     React.useEffect(() => {
         const saveUrlParam = (paramsObj) => {
@@ -65,13 +68,18 @@ const ShowSkill = () => {
         if (isSummaryOnly !== previousIsSummaryOnly || selectedTheme !== previousSelectedTheme) {
             saveUrlParam({'isSummaryOnly': isSummaryOnly, 'themeName': selectedTheme.name});
         }
+
     }, [isSummaryOnly, selectedTheme, previousIsSummaryOnly, previousSelectedTheme, history]);
 
     const sampleCodeRef = React.createRef();
     const executeScroll = () => scrollToRef(sampleCodeRef);
 
+    const style = {
+        paddingTop: '55px'
+    };
+
     return (
-        <div className="container">
+        <div className="container" style={style}>
             <div className="d-flex align-items-center">
                 <DropdownButton
                     id="dropdown-1"
@@ -89,16 +97,18 @@ const ShowSkill = () => {
                     })}
 
                 </DropdownButton>
-                <Button variant={isSummaryOnly ? 'primary' : 'outline-primary'} onClick={() => setIsSummaryOnly(!isSummaryOnly)}>Summary Only</Button>
+                <Button variant={isSummaryOnly ? 'primary' : 'outline-primary'}
+                        onClick={() => { setIsSummaryOnly(!isSummaryOnly);
+                        setOptions({isSummaryOnly:!isSummaryOnly,autoScrollStrategy: 'top-offset', scrollTopOffset: 110}) }}>Summary Only</Button>
                 <Button variant="link" onClick={executeScroll}>Show Source</Button>
             </div>
 
             <div className="border rounded">
-                <SkillsDisplay isSummaryOnly={isSummaryOnly} theme={selectedTheme.theme}/>
+                <SkillsDisplay options={options} theme={selectedTheme.theme}/>
             </div>
 
             <div ref={sampleCodeRef}>
-                <SampleCode isSummaryOnly={isSummaryOnly} selectedTheme={selectedTheme}/>
+                <SampleCode options={options} selectedTheme={selectedTheme}/>
             </div>
         </div>
     );
