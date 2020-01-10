@@ -68,6 +68,7 @@ Cypress.Commands.add("backendPost", (url, body) => {
 });
 
 Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 4) => {
+    const skillIdsToCreate = ['IronMan', 'Thor']
     const projId = 'proj1'
     cy.backendPost(`/app/projects/${projId}`, {
         projectId: projId,
@@ -83,7 +84,10 @@ Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 4)
         })
 
         for(let j=0; j < numSkillsPerSubj; j++) {
-            const skillId = `skill${j}`
+            let skillId = `${subjId}_skill${j}`
+            if (skillIdsToCreate.length > 0){
+                skillId = skillIdsToCreate.pop()
+            }
             cy.backendPost(`/admin/projects/${projId}/subjects/${subjId}/skills/${skillId}`, {
                 projectId: projId,
                 subjectId: subjId,
