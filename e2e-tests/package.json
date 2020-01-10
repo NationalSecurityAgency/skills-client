@@ -6,6 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "cy:open": "cypress open",
+    "cy:open:dev:vue": "cypress open --config baseUrl=http://localhost:8091",
+    "cy:open:dev:react": "cypress open --config baseUrl=http://localhost:8083",
     "examples:start": "java -Dspring.config.location=classpath:/application.properties,file:serverConfigs/examples_application.properties -jar ../skills-example-service/target/skills-example-service-*.jar",
     "backend:start": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ../../skills-service/backend/target/backend-*.jar",
     "backend:waitToStart": "npx wait-on -t 40000 http://localhost:8080",
