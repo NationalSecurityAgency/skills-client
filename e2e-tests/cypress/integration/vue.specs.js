@@ -183,4 +183,36 @@ context('Vue Tests', () => {
             expect(xhr.responseBody).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
         });
     })
+
+    it('skill display', () => {
+        cy.server().route('/api/users/user1/token').as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.visit('/vuejs#/showSkills')
+        cy.wait('@getToken')
+        // iframe is not support natively (as of now)
+        cy.get('iframe').then((iframe) => {
+            cy.wait('@getToken')
+            const body = iframe.contents().find('body');
+            cy.wrap(body).contains('My Level')
+            cy.wrap(body).contains('10 Points earned Today')
+            cy.wrap(body).contains('Subject 0')
+        })
+    })
+
+    it('skill display - summary only', () => {
+        cy.server().route('/api/users/user1/token').as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.visit('/vuejs#/showSkills?isSummaryOnly=true')
+        cy.wait('@getToken')
+        // iframe is not support natively (as of now)
+        cy.get('iframe').then((iframe) => {
+            cy.wait('@getToken')
+            const body = iframe.contents().find('body');
+            cy.wrap(body).contains('My Level')
+            cy.wrap(body).contains('10 Points earned Today')
+            cy.wrap(body).contains('Subject 0').should('not.exist')
+        })
+    })
+
+
 })
