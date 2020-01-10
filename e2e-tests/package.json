@@ -1,0 +1,19 @@
+{
+  "name": "e2e-tests",
+  "version": "1.0.0",
+  "description": "Skills Client Libs End-to-End tests",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cy:open": "cypress open",
+    "examples:start": "java -Dspring.config.location=classpath:/application.properties,file:serverConfigs/examples_application.properties -jar ../skills-example-service/target/skills-example-service-*.jar",
+    "backend:start": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ../../skills-service/backend/target/backend-*.jar",
+    "backend:waitToStart": "npx wait-on -t 40000 http://localhost:8080",
+    "backend:resetDb": "java -cp ./db/h2-1.4.200.jar org.h2.tools.RunScript -url jdbc:h2:tcp://localhost:9090/mem:skills -user sa -script ./db/reset.sql"
+  },
+  "author": "Skills Team",
+  "license": "Apache 2",
+  "devDependencies": {
+    "cypress": "^3.8.1"
+  }
+}
