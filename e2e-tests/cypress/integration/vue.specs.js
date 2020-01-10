@@ -1,12 +1,10 @@
 context('Vue Tests', () => {
     beforeEach(() => {
-
+        cy.createDefaultProject()
     })
 
     it('level component should be reactive', () => {
-        cy.createDefaultProject()
-
-        const sendEventViaDropdownId = '#exampleDirectiveClickEvent';
+        const sendEventViaDropdownId = '#PureJSReportAnySkill';
         Cypress.Commands.add("clickSubmit", () => {
             cy.get(`${sendEventViaDropdownId} .btn`).click()
         })
@@ -115,5 +113,74 @@ context('Vue Tests', () => {
         cy.contains('Level 5')
         cy.clickSubmit()
         cy.contains('Level 5')
+    })
+
+
+
+    it('v-skill directive on click', () => {
+        cy.server().route('POST', '/api/projects/proj1/skills/IronMan').as('postSkill')
+
+        cy.visit('/vuejs#/')
+
+        Cypress.Commands.add("clickOnDirectiveBtn", (skillApplied = true) => {
+            cy.get('#SkillsDirectiveClickEvent button').click()
+            cy.wait('@postSkill')
+            cy.get('@postSkill').then((xhr) => {
+                expect(xhr.status).to.eq(200)
+                expect(xhr.responseBody).to.have.property('skillApplied').to.eq(skillApplied)
+            });
+        })
+
+        cy.clickOnDirectiveBtn()
+        cy.clickOnDirectiveBtn()
+        cy.clickOnDirectiveBtn()
+        cy.clickOnDirectiveBtn(false)
+    })
+
+
+    it('v-skill directive on input', () => {
+        cy.server().route('POST', '/api/projects/proj1/skills/Thor').as('postSkill')
+
+        cy.visit('/vuejs#/')
+
+        Cypress.Commands.add("typeToInput", (skillApplied = true) => {
+            cy.get('#SkillsDirectiveInputEvent input').type('h')
+            cy.wait('@postSkill')
+            cy.get('@postSkill').then((xhr) => {
+                expect(xhr.status).to.eq(200)
+                expect(xhr.responseBody).to.have.property('skillApplied').to.eq(skillApplied)
+            });
+        })
+
+        cy.typeToInput()
+        cy.typeToInput()
+        cy.typeToInput()
+        cy.typeToInput(false)
+    })
+
+    it('v-skill directive on click with error', () => {
+        cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
+
+        cy.visit('/vuejs#/')
+
+        cy.get('#SkillsDirectiveErrorwithButton button').click()
+        cy.wait('@postSkill');
+        cy.get('@postSkill').then((xhr) => {
+            expect(xhr.status).to.eq(400)
+            expect(xhr.responseBody).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
+        });
+    })
+
+    it('v-skill directive on input with error', () => {
+        cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
+
+        cy.visit('/vuejs#/')
+
+        cy.get('#SkillsDirectiveErrorwithInput input').type('h')
+        cy.wait('@postSkill');
+        cy.get('@postSkill').then((xhr) => {
+            expect(xhr.status).to.eq(400)
+            expect(xhr.responseBody).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
+        });
     })
 })

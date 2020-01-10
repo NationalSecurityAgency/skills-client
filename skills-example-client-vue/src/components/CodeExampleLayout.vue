@@ -4,7 +4,7 @@
         <div class="card card-body bg-light">
             <pre v-highlightjs="sampleCode"><code :class="codeType"></code></pre>
         </div>
-        <div class="card card-body mt-3">
+        <div class="card card-body mt-3" :id="title.replace(/ /gi,'').replace(/-/g,'')">
             <div id="exampleDirectiveClickEvent">
                 <slot name="code"/>
             </div>
