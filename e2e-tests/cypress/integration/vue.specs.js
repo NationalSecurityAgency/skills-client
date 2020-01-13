@@ -71,6 +71,34 @@ context('Vue Tests', () => {
         cy.contains('Level 5')
     })
 
+    it('level component should update when admin reports skill for current user', () => {
+
+        cy.createDefaultProject()
+        Cypress.Commands.add("reportSkill", (skillId) => {
+            cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
+        })
+        cy.visit('/vuejs#/')
+        
+        cy.contains('Level 0')
+
+        cy.backendPost('/api/projects/proj1/skills/IronMan', {userId: 'user1@skills.org', timestamp: Date.now()})
+        cy.contains('Level 1')
+    })
+
+    it('level component should NOT update when admin reports skill for other user', () => {
+
+        cy.createDefaultProject()
+        Cypress.Commands.add("reportSkill", (skillId) => {
+            cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
+        })
+        cy.visit('/vuejs#/')
+        
+        cy.contains('Level 0')
+
+        cy.backendPost('/api/projects/proj1/skills/IronMan', {userId: 'unknown@skills.org', timestamp: Date.now()})
+        cy.contains('Level 0')
+    })
+
     it('v-skill directive on click', () => {
         cy.createDefaultProject(1, 2, 50, 2)
 
