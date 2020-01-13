@@ -22,6 +22,7 @@ module.exports = {
     },
   },
   external: ['@skills/skills-client-configuration'],
+  preserveSymlinks: true,
   plugins: [
     peerDepsExternal(),
     eslint(),
