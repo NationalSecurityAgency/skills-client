@@ -67,7 +67,7 @@ Cypress.Commands.add("backendPost", (url, body) => {
     cy.request('POST', `${backend}${url}`, body)
 });
 
-Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 4) => {
+Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 2, pointIncrement = 50, numPerformToCompletion = 1) => {
     const skillIdsToCreate = ['IronMan', 'Thor']
     const projId = 'proj1'
     cy.backendPost(`/app/projects/${projId}`, {
@@ -94,8 +94,8 @@ Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 4)
                 skillId: skillId,
                 name: `This is ${skillId}`,
                 type: "Skill",
-                pointIncrement: 10,
-                numPerformToCompletion: 3,
+                pointIncrement: pointIncrement,
+                numPerformToCompletion: numPerformToCompletion,
                 pointIncrementInterval: 0,
                 numMaxOccurrencesIncrementInterval: -1,
                 description: "This skill a skill!",
@@ -103,3 +103,17 @@ Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 4)
         }
     }
 });
+
+Cypress.Commands.add("createDefaultTinyProject", () => {
+    cy.createDefaultProject(1, 2, 50)
+});
+
+Cypress.Commands.add("iframe", (handleIframeBody) => {
+    // iframe is not support natively (as of now)
+    cy.get('iframe').then((iframe) => {
+        const body = iframe.contents().find('body');
+        handleIframeBody(body);
+    })
+});
+
+

@@ -1,9 +1,7 @@
 context('Vue Tests', () => {
-    beforeEach(() => {
-        cy.createDefaultProject()
-    })
 
     it('level component should be reactive', () => {
+        cy.createDefaultProject()
         const sendEventViaDropdownId = '#PureJSReportAnySkill';
         Cypress.Commands.add("clickSubmit", () => {
             cy.get(`${sendEventViaDropdownId} .btn`).click()
@@ -18,106 +16,32 @@ context('Vue Tests', () => {
 
         cy.selectSkill('IronMan')
         cy.clickSubmit()
-        cy.contains('Level 0')
-        cy.clickSubmit()
-        cy.contains('Level 0')
-        cy.clickSubmit()
-        cy.contains('Level 0')
-        cy.clickSubmit()
-        cy.contains('Level 0')
+        cy.contains('Level 1')
 
         cy.selectSkill('Thor')
-        cy.clickSubmit()
-        cy.contains('Level 1')
-        cy.clickSubmit()
-        cy.contains('Level 1')
-        cy.clickSubmit()
-        cy.contains('Level 1')
-
-        cy.selectSkill('subj0_skill2')
-        cy.clickSubmit()
-        cy.contains('Level 1')
-        cy.clickSubmit()
-        cy.contains('Level 1')
-        cy.clickSubmit()
-        cy.contains('Level 2')
-
-        cy.selectSkill('subj0_skill3')
-        cy.clickSubmit()
-        cy.contains('Level 2')
-        cy.clickSubmit()
-        cy.contains('Level 2')
         cy.clickSubmit()
         cy.contains('Level 2')
 
         cy.selectSkill('subj1_skill0')
         cy.clickSubmit()
-        cy.contains('Level 2')
-        cy.clickSubmit()
-        cy.contains('Level 2')
-        cy.clickSubmit()
-        cy.contains('Level 2')
+        cy.contains('Level 3')
 
         cy.selectSkill('subj1_skill1')
-        cy.clickSubmit()
-        cy.contains('Level 2')
-        cy.clickSubmit()
-        cy.contains('Level 3')
-        cy.clickSubmit()
-        cy.contains('Level 3')
-
-        cy.selectSkill('subj1_skill2')
-        cy.clickSubmit()
-        cy.contains('Level 3')
-        cy.clickSubmit()
-        cy.contains('Level 3')
-        cy.clickSubmit()
-        cy.contains('Level 3')
-
-        cy.selectSkill('subj1_skill3')
-        cy.clickSubmit()
-        cy.contains('Level 3')
-        cy.clickSubmit()
-        cy.contains('Level 3')
         cy.clickSubmit()
         cy.contains('Level 3')
 
         cy.selectSkill('subj2_skill0')
         cy.clickSubmit()
         cy.contains('Level 4')
-        cy.clickSubmit()
-        cy.contains('Level 4')
-        cy.clickSubmit()
-        cy.contains('Level 4')
 
         cy.selectSkill('subj2_skill1')
-        cy.clickSubmit()
-        cy.contains('Level 4')
-        cy.clickSubmit()
-        cy.contains('Level 4')
-        cy.clickSubmit()
-        cy.contains('Level 4')
-
-        cy.selectSkill('subj2_skill2')
-        cy.clickSubmit()
-        cy.contains('Level 4')
-        cy.clickSubmit()
-        cy.contains('Level 4')
-        cy.clickSubmit()
-        cy.contains('Level 4')
-
-        cy.selectSkill('subj2_skill3')
-        cy.clickSubmit()
-        cy.contains('Level 5')
-        cy.clickSubmit()
-        cy.contains('Level 5')
         cy.clickSubmit()
         cy.contains('Level 5')
     })
 
-
-
     it('v-skill directive on click', () => {
+        cy.createDefaultProject(1, 2, 50, 2)
+
         cy.server().route('POST', '/api/projects/proj1/skills/IronMan').as('postSkill')
 
         cy.visit('/vuejs#/')
@@ -133,12 +57,12 @@ context('Vue Tests', () => {
 
         cy.clickOnDirectiveBtn()
         cy.clickOnDirectiveBtn()
-        cy.clickOnDirectiveBtn()
         cy.clickOnDirectiveBtn(false)
     })
 
 
     it('v-skill directive on input', () => {
+        cy.createDefaultProject(1, 2, 50, 2)
         cy.server().route('POST', '/api/projects/proj1/skills/Thor').as('postSkill')
 
         cy.visit('/vuejs#/')
@@ -154,11 +78,11 @@ context('Vue Tests', () => {
 
         cy.typeToInput()
         cy.typeToInput()
-        cy.typeToInput()
         cy.typeToInput(false)
     })
 
     it('v-skill directive on click with error', () => {
+        cy.createDefaultTinyProject()
         cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
 
         cy.visit('/vuejs#/')
@@ -172,6 +96,7 @@ context('Vue Tests', () => {
     })
 
     it('v-skill directive on input with error', () => {
+        cy.createDefaultTinyProject()
         cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
 
         cy.visit('/vuejs#/')
@@ -185,34 +110,83 @@ context('Vue Tests', () => {
     })
 
     it('skill display', () => {
+        cy.createDefaultTinyProject()
         cy.server().route('/api/users/user1/token').as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills')
         cy.wait('@getToken')
-        // iframe is not support natively (as of now)
-        cy.get('iframe').then((iframe) => {
+
+        cy.iframe((body) => {
             cy.wait('@getToken')
-            const body = iframe.contents().find('body');
+
             cy.wrap(body).contains('My Level')
-            cy.wrap(body).contains('10 Points earned Today')
+            cy.wrap(body).contains('50 Points earned Today')
             cy.wrap(body).contains('Subject 0')
-        })
+
+            // verify that there is no background set
+            // cypress always validates against rgb
+            cy.wrap(body).find('.skills-page-title-text-color')
+                .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
+        });
     })
 
     it('skill display - summary only', () => {
+        cy.createDefaultTinyProject()
         cy.server().route('/api/users/user1/token').as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills?isSummaryOnly=true')
         cy.wait('@getToken')
-        // iframe is not support natively (as of now)
-        cy.get('iframe').then((iframe) => {
+        cy.iframe((body) => {
             cy.wait('@getToken')
-            const body = iframe.contents().find('body');
             cy.wrap(body).contains('My Level')
-            cy.wrap(body).contains('10 Points earned Today')
+            cy.wrap(body).contains('50 Points earned Today')
             cy.wrap(body).contains('Subject 0').should('not.exist')
+
+            // verify that there is no background set
+            // cypress always validates against rgb
+            cy.wrap(body).find('.skills-page-title-text-color')
+                .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
         })
     })
 
+
+    it('skill display - theme', () => {
+        cy.createDefaultTinyProject()
+        cy.server().route('/api/users/user1/token').as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.visit('/vuejs#/showSkills?themeName=Dark Blue')
+        cy.wait('@getToken')
+        cy.iframe((body) => {
+            cy.wait('@getToken')
+            cy.wrap(body).contains('My Level')
+            cy.wrap(body).contains('50 Points earned Today')
+            cy.wrap(body).contains('Subject 0')
+
+            // verify dark blue background of hex #152E4d
+            // cypress always validates against rgb
+            cy.wrap(body).find('.skills-page-title-text-color')
+                .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
+        })
+    })
+
+
+    it('skill display - summary only - theme', () => {
+        cy.createDefaultTinyProject()
+        cy.server().route('/api/users/user1/token').as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.visit('/vuejs#/showSkills?themeName=Dark Blue&isSummaryOnly=true')
+        cy.wait('@getToken')
+        cy.iframe((body) => {
+            cy.wait('@getToken')
+            cy.wrap(body).contains('My Level')
+            cy.wrap(body).contains('50 Points earned Today')
+            cy.wrap(body).contains('Subject 0').should('not.exist')
+
+            // verify dark blue background of hex #152E4d
+            // cypress always validates against rgb
+            cy.wrap(body).find('.skills-page-title-text-color')
+                .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
+        })
+    })
 
 })
