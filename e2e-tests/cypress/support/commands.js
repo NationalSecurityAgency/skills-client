@@ -67,6 +67,22 @@ Cypress.Commands.add("backendPost", (url, body) => {
     cy.request('POST', `${backend}${url}`, body)
 });
 
+Cypress.Commands.add("backendAddSkill", (skillId, version = 0, projId ='proj1', subjId='subj0', pointIncrement = 50, numPerformToCompletion = 1) => {
+    cy.backendPost(`/admin/projects/${projId}/subjects/${subjId}/skills/${skillId}`, {
+        projectId: projId,
+        subjectId: subjId,
+        skillId: skillId,
+        name: `This is ${skillId}`,
+        type: "Skill",
+        pointIncrement: pointIncrement,
+        numPerformToCompletion: numPerformToCompletion,
+        pointIncrementInterval: 0,
+        numMaxOccurrencesIncrementInterval: -1,
+        description: "This skill a skill!",
+        version: version,
+    })
+});
+
 Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 2, pointIncrement = 50, numPerformToCompletion = 1) => {
     const skillIdsToCreate = ['IronMan', 'Thor']
     const projId = 'proj1'
@@ -88,18 +104,7 @@ Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 2,
             if (skillIdsToCreate.length > 0){
                 skillId = skillIdsToCreate.pop()
             }
-            cy.backendPost(`/admin/projects/${projId}/subjects/${subjId}/skills/${skillId}`, {
-                projectId: projId,
-                subjectId: subjId,
-                skillId: skillId,
-                name: `This is ${skillId}`,
-                type: "Skill",
-                pointIncrement: pointIncrement,
-                numPerformToCompletion: numPerformToCompletion,
-                pointIncrementInterval: 0,
-                numMaxOccurrencesIncrementInterval: -1,
-                description: "This skill a skill!",
-            })
+            cy.backendAddSkill(skillId, 0, projId, subjId, pointIncrement, numPerformToCompletion)
         }
     }
 });

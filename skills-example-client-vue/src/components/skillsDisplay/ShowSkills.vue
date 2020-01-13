@@ -30,6 +30,7 @@
       <skills-display
         v-if="selectedTheme"
         :options="displayOptions"
+        :version="version"
         :theme="selectedTheme.theme"/>
     </div>
     <div
@@ -92,7 +93,7 @@
     data() {
       return {
         token: '',
-        version: 0,
+        version: this.$route.query.skillsVersion ? JSON.parse(this.$route.query.skillsVersion) : 1000,
         displayOptions: {
           autoScrollStrategy: 'top-of-page',
           isSummaryOnly: this.$route.query.isSummaryOnly ? JSON.parse(this.$route.query.isSummaryOnly) : false,

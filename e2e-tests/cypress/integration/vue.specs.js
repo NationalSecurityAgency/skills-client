@@ -1,5 +1,9 @@
 context('Vue Tests', () => {
 
+    beforeEach(() => {
+        cy.server().route('/api/users/user1/token').as('getToken')
+    })
+
     it('level component should be reactive', () => {
         cy.createDefaultProject()
         const sendEventViaDropdownId = '#PureJSReportAnySkill';
@@ -152,7 +156,7 @@ context('Vue Tests', () => {
 
     it('skill display - theme', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('/api/users/user1/token').as('getToken')
+
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills?themeName=Dark Blue')
         cy.wait('@getToken')
@@ -188,5 +192,47 @@ context('Vue Tests', () => {
                 .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
         })
     })
+
+    it('client display should display an error if skills service is down', () => {
+        cy.server().route({
+            method: 'GET',
+            url: '/public/status',
+            status: 503, // server is down
+            response: {}
+        }).as('getStatus')
+        cy.visit('/vuejs#/showSkills')
+        cy.wait('@getStatus')
+
+        cy.contains('Could NOT reach Skills Service')
+    });
+
+
+    it('only display skills up-to the provided version', () => {
+        cy.createDefaultTinyProject()
+        cy.backendAddSkill('skillv1', 1)
+        cy.backendAddSkill('skillv2', 2)
+        cy.visit('/vuejs#/showSkills')
+        cy.wait('@getToken')
+        cy.iframe((body) => {
+            cy.wait('@getToken')
+            cy.wrap(body).contains('Earn up to 200 points')
+        })
+
+        cy.visit('/vuejs#/')
+        cy.visit('/vuejs#/showSkills?skillsVersion=1')
+        cy.wait('@getToken')
+        cy.iframe((body) => {
+            cy.wrap(body).contains('Earn up to 150 points')
+        })
+
+        cy.visit('/vuejs#/')
+        cy.visit('/vuejs#/showSkills?skillsVersion=0')
+        cy.wait('@getToken')
+        cy.iframe((body) => {
+            cy.wrap(body).contains('Earn up to 100 points')
+        })
+
+    });
+
 
 })
