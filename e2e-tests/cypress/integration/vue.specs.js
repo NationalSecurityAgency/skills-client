@@ -43,6 +43,57 @@ context('Vue Tests', () => {
         cy.contains('Level 5')
     })
 
+    it.only('level component should be reactive when skills reported directly to backend endpoint', () => {
+        cy.createDefaultProject()
+        Cypress.Commands.add("reportSkill", (skillId) => {
+            cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
+        })
+        cy.visit('/vuejs#/')
+        
+        cy.contains('Level 0')
+
+        cy.reportSkill('IronMan')
+        cy.contains('Level 1')
+
+        cy.reportSkill('Thor')
+        cy.contains('Level 2')
+
+        cy.reportSkill('subj1_skill0')
+        cy.contains('Level 3')
+
+        cy.reportSkill('subj1_skill1')
+        cy.contains('Level 3')
+
+        cy.reportSkill('subj2_skill0')
+        cy.contains('Level 4')
+
+        cy.reportSkill('subj2_skill1')
+        cy.contains('Level 5')
+
+        // cy.reportSkill('IronMan')
+        // cy.contains('Level 0')
+        // cy.reportSkill('IronMan')
+        // cy.contains('Level 0')
+        // cy.reportSkill('IronMan')
+        // cy.contains('Level 0')
+        // cy.reportSkill('IronMan')
+        // cy.contains('Level 0')
+        //
+        // cy.reportSkill('Thor')
+        // cy.contains('Level 1')
+        // cy.reportSkill('Thor')
+        // cy.contains('Level 1')
+        // cy.reportSkill('Thor')
+        // cy.contains('Level 1')
+        //
+        // cy.reportSkill('subj0_skill2')
+        // cy.contains('Level 1')
+        // cy.reportSkill('subj0_skill2')
+        // cy.contains('Level 1')
+        // cy.reportSkill('subj0_skill2')
+        // cy.contains('Level 2')
+    })
+
     it('v-skill directive on click', () => {
         cy.createDefaultProject(1, 2, 50, 2)
 
