@@ -2,7 +2,7 @@ import { eslint } from 'rollup-plugin-eslint';
 import { terser } from 'rollup-plugin-terser';
 import alias from '@rollup/plugin-alias';
 import babel from 'rollup-plugin-babel';
-import resolve from 'rollup-plugin-node-resolve';
+import resolve from '@rollup/plugin-node-resolve';
 import json from 'rollup-plugin-json';
 import commonjs from 'rollup-plugin-commonjs';
 import VuePlugin from 'rollup-plugin-vue';
