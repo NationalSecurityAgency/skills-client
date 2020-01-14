@@ -56,6 +56,7 @@ echo "-------- Creating Links --------"
 echo "------------------------------------------------------------"
 for proj in "${projectsTo[@]}"
 do
+    cd $currentDir
 	cd ../${proj}
     echo "------------------------------------------------------------"
     echo "--- Creating link in `pwd` ---"
@@ -68,11 +69,13 @@ echo "-------- Linking --------"
 echo "------------------------------------------------------------"
 for projFrom in "${projectsFrom[@]}"
 do
+    cd $currentDir
     preformLinking "${currentDir}/${projFrom}"
 done
 
 for projFrom in "${projectsTo[@]}"
 do
+    cd $currentDir
     preformLinking "${currentDir}/../${projFrom}"
 done
 
