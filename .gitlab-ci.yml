@@ -13,7 +13,9 @@ build:
     - pwd
     - cd ..
     - git clone https://${DEPLOYTOKEN_SKILLS_CONFIG}:${DEPLOYTOKEN_SKILLS_CONFIG_PASS}@gitlab.evoforge.org/skills/skills-client-configuration.git
-    - mvn install
+    - git clone https://${DEPLOYTOKEN_SKILLS_REPORTER}:${DEPLOYTOKEN_SKILLS_REPORTER_PASS}@gitlab.evoforge.org/skills/skills-client-reporter.git
+    - ls
+#    - mvn install
   artifacts:
     paths:
       - ./
