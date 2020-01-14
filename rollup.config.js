@@ -15,10 +15,11 @@ module.exports = {
     format: 'umd',
     sourcemap: true,
     globals: {
-      '@skills/skills-client-configuration': 'SkillsConfiguration' ,
+      '@skills/skills-client-configuration': 'SkillsConfiguration',
     },
   },
   external: ['@skills/skills-client-configuration'],
+  preserveSymlinks: true,
   plugins: [
     peerDepsExternal(),
     eslint(),
