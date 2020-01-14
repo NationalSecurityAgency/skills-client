@@ -12,7 +12,7 @@ build:
     - cat ~/.m2/settings.xml
     - pwd
     - cd ..
-    - git clone git@gitlab.evoforge.org:skills/skills-client-configuration.git
+    - - git clone https://${GITLAB_DEPLOY_USERNAME}:${GITLAB_DEPLOY_PASSWORD}@gitlab.evoforge.org:skills/skills-client-configuration.git
     - mvn install
   artifacts:
     paths:
