@@ -1,11 +1,11 @@
 stages:
-  - prepClienLibs
+  - prepClientLibs
   - build
   - deploy
 
-prepClienLibs:
+prepClientLibs:
   image: cypress/base:10
-  stage: prepClienLibs
+  stage: prepClientLibs
   script:
     - echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
     - cat ~/.npmrc
@@ -22,9 +22,9 @@ prepClienLibs:
     - git clone https://${DEPLOYTOKEN_SKILLS_REACT}:${DEPLOYTOKEN_SKILLS_REACT_PASS}@gitlab.evoforge.org/skills/skills-client-react.git
     - cd skills-client-examples
     - ./buildUsingNpmLinks.sh
-  - artifacts:
-     paths:
-        - ./
+  artifacts:
+    paths:
+      - ./
 
 
 build:
