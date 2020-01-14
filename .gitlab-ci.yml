@@ -20,6 +20,8 @@ build:
     - git clone https://${DEPLOYTOKEN_SKILLS_JS}:${DEPLOYTOKEN_SKILLS_JS_PASS}@gitlab.evoforge.org/skills/skills-client-js.git
     - rm -rf skills-client-vue
     - git clone https://${DEPLOYTOKEN_SKILLS_VUE}:${DEPLOYTOKEN_SKILLS_VUE_PASS}@gitlab.evoforge.org/skills/skills-client-vue.git
+    - rm -rf skills-client-react
+    - git clone https://${DEPLOYTOKEN_SKILLS_REACT}:${DEPLOYTOKEN_SKILLS_REACT_PASS}@gitlab.evoforge.org/skills/skills-client-react.git
     - ls
 #    - mvn install
   artifacts:
