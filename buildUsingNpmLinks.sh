@@ -20,8 +20,8 @@ function preformLinking {
             echo "------------------------------------------------------------"
             echo "   Exec: cd ${fromProjPath}"
             cd ${fromProjPath}
-            echo "   Exec: npm prune"
-            npm prune
+#            echo "   Exec: npm prune"
+#            npm prune
             echo "   Exec: npm link @skills/${projTo}"
             npm link @skills/${projTo}
         fi
