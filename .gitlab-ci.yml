@@ -22,7 +22,8 @@ build:
     - git clone https://${DEPLOYTOKEN_SKILLS_VUE}:${DEPLOYTOKEN_SKILLS_VUE_PASS}@gitlab.evoforge.org/skills/skills-client-vue.git
     - rm -rf skills-client-react
     - git clone https://${DEPLOYTOKEN_SKILLS_REACT}:${DEPLOYTOKEN_SKILLS_REACT_PASS}@gitlab.evoforge.org/skills/skills-client-react.git
-    - ls
+    - cd skills-examples
+    - ./buildUsingNpmLinks.sh
 #    - mvn install
   artifacts:
     paths:
