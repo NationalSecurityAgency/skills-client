@@ -15,12 +15,14 @@ function preformLinking {
         catRes=`cat ${fromProjPath}/package.json | grep "@skills/${projTo}"`
         if [ ! -z "$catRes" ] && [ -z `echo "$fromProjPath" | grep ${projTo}` ];
         then
-            echo "Linking ${fromProjPath} => @skills/${projTo}"
-            echo "Exec: cd ${fromProjPath}"
+            echo "------------------------------------------------------------"
+            echo "--- Linking ${fromProjPath} => @skills/${projTo} ---"
+            echo "------------------------------------------------------------"
+            echo "   Exec: cd ${fromProjPath}"
             cd ${fromProjPath}
-            echo "Exec: npm prune"
+            echo "   Exec: npm prune"
             npm prune
-            echo "Exec: npm link @skills/${projTo}"
+            echo "   Exec: npm link @skills/${projTo}"
             npm link @skills/${projTo}
         fi
     done
@@ -28,32 +30,42 @@ function preformLinking {
 
 function npmInstall {
     cd ${1}
-    echo "------------------------ npm prune and install `pwd` ------------------------ "
+    echo "------------------------------------------------------------"
+    echo "--- npm prune and install `pwd` ---"
+    echo "------------------------------------------------------------"
     npm prune
     npm install
 }
+echo "------------------------------------------------------------"
 echo "-------- npm prune and npm install for all projects --------"
+echo "------------------------------------------------------------"
+for proj in "${projectsTo[@]}";
+do
+    cd $currentDir
+    npmInstall "../${proj}";
+done
 for proj in "${projectsFrom[@]}";
 do
     cd $currentDir
     npmInstall "./${proj}";
 done
-cd $currentDir
-for proj in "${projectsTo[@]}";
-do
-    npmInstall "../${proj}";
-done
 
 
+echo "------------------------------------------------------------"
 echo "-------- Creating Links --------"
+echo "------------------------------------------------------------"
 for proj in "${projectsTo[@]}"
 do
 	cd ../${proj}
-    echo "Creating link in `pwd`"
+    echo "------------------------------------------------------------"
+    echo "--- Creating link in `pwd` ---"
+    echo "------------------------------------------------------------"
     npm link
 done
 
+echo "------------------------------------------------------------"
 echo "-------- Linking --------"
+echo "------------------------------------------------------------"
 for projFrom in "${projectsFrom[@]}"
 do
     preformLinking "${currentDir}/${projFrom}"
@@ -64,25 +76,25 @@ do
     preformLinking "${currentDir}/../${projFrom}"
 done
 
+echo "------------------------------------------------------------"
 echo "-------- Building --------"
+echo "------------------------------------------------------------"
 for proj in "${projectsTo[@]}"
 do
     cd $currentDir
     cd ../$proj
+    echo "------------------------------------------------------------"
+    echo "--- npm run build `pwd` ---"
+    echo "------------------------------------------------------------"
     npm run build
 done
 
-for projFrom in "${projectsFrom[@]}"
+for proj in "${projectsFrom[@]}"
 do
     cd $currentDir
     cd $proj
+    echo "------------------------------------------------------------"
+    echo "--- npm run build `pwd` ---"
+    echo "------------------------------------------------------------"
     npm run build
 done
-
-
-
-
-
-#echo "-------- Install skills-examples --------"
-#cd $currentDir
-#mvn install
