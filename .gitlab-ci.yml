@@ -22,9 +22,9 @@ prepClienLibs:
     - git clone https://${DEPLOYTOKEN_SKILLS_REACT}:${DEPLOYTOKEN_SKILLS_REACT_PASS}@gitlab.evoforge.org/skills/skills-client-react.git
     - cd skills-client-examples
     - ./buildUsingNpmLinks.sh
-    - artifacts:
-        paths:
-          - ./
+  - artifacts:
+     paths:
+        - ./
 
 
 build:
