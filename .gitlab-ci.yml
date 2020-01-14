@@ -10,6 +10,9 @@ build:
     - cat ~/.npmrc
     - echo "<settings><mirrors><mirror><id>central</id><name>central</name><url>http://$NEXUS_SERVER/repository/maven-public/</url><mirrorOf>*</mirrorOf></mirror></mirrors></settings>" > ~/.m2/settings.xml
     - cat ~/.m2/settings.xml
+    - pwd
+    - cd ..
+    - git clone git@gitlab.evoforge.org:skills/skills-client-configuration.git
     - mvn install
   artifacts:
     paths:
