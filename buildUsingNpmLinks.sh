@@ -62,6 +62,6 @@ do
     npm run build
 done
 
-echo "-------- Install skills-examples --------"
-cd $currentDir
-mvn install
+#echo "-------- Install skills-examples --------"
+#cd $currentDir
+#mvn install

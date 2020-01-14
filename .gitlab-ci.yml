@@ -25,6 +25,7 @@ prepClientLibs:
   artifacts:
     paths:
       - ./
+      - ~/.nvm
 
 
 build:
