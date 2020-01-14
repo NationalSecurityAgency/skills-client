@@ -1,16 +1,14 @@
 stages:
+  - prepClienLibs
   - build
   - deploy
 
-build:
-  image: maven:3.6.0-jdk-11
-  stage: build
+prepClienLibs:
+  image: cypress/base:10
+  stage: prepClienLibs
   script:
     - echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
     - cat ~/.npmrc
-    - echo "<settings><mirrors><mirror><id>central</id><name>central</name><url>http://$NEXUS_SERVER/repository/maven-public/</url><mirrorOf>*</mirrorOf></mirror></mirrors></settings>" > ~/.m2/settings.xml
-    - cat ~/.m2/settings.xml
-    - pwd
     - cd ..
     - rm -rf skills-client-configuration
     - git clone https://${DEPLOYTOKEN_SKILLS_CONFIG}:${DEPLOYTOKEN_SKILLS_CONFIG_PASS}@gitlab.evoforge.org/skills/skills-client-configuration.git
@@ -24,6 +22,21 @@ build:
     - git clone https://${DEPLOYTOKEN_SKILLS_REACT}:${DEPLOYTOKEN_SKILLS_REACT_PASS}@gitlab.evoforge.org/skills/skills-client-react.git
     - cd skills-client-examples
     - ./buildUsingNpmLinks.sh
+    - artifacts:
+        paths:
+          - ./
+
+
+build:
+  image: maven:3.6.0-jdk-11
+  stage: build
+  script:
+    - ls ./*
+    - echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
+    - cat ~/.npmrc
+    - echo "<settings><mirrors><mirror><id>central</id><name>central</name><url>http://$NEXUS_SERVER/repository/maven-public/</url><mirrorOf>*</mirrorOf></mirror></mirrors></settings>" > ~/.m2/settings.xml
+    - cat ~/.m2/settings.xml
+#    - ./buildUsingNpmLinks.sh
 #    - mvn install
   artifacts:
     paths:
