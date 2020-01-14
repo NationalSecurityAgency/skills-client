@@ -26,14 +26,24 @@ function preformLinking {
     done
 }
 
-echo "-------- npm prune and npm install for all projects --------"
-for proj in "${allProjects[@]}"
-do
-    cd ../${proj}
-    echo "npm prune and install `pwd`"
+function npmInstall {
+    cd ${1}
+    echo "------------------------ npm prune and install `pwd` ------------------------ "
     npm prune
     npm install
+}
+echo "-------- npm prune and npm install for all projects --------"
+for proj in "${projectsFrom[@]}";
+do
+    cd $currentDir
+    npmInstall "./${proj}";
 done
+cd $currentDir
+for proj in "${projectsTo[@]}";
+do
+    npmInstall "../${proj}";
+done
+
 
 echo "-------- Creating Links --------"
 for proj in "${projectsTo[@]}"
@@ -55,12 +65,23 @@ do
 done
 
 echo "-------- Building --------"
-for proj in "${allProjects[@]}"
+for proj in "${projectsTo[@]}"
 do
     cd $currentDir
     cd ../$proj
     npm run build
 done
+
+for projFrom in "${projectsFrom[@]}"
+do
+    cd $currentDir
+    cd $proj
+    npm run build
+done
+
+
+
+
 
 #echo "-------- Install skills-examples --------"
 #cd $currentDir
