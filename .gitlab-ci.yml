@@ -29,7 +29,7 @@ stages:
 
 
 build:
-  image: cschockaert/docker-npm-maven:1.3.0
+  image: maven:3.6.0-jdk-11
   stage: build
   script:
     - ls ./*
