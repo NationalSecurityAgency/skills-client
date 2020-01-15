@@ -10,6 +10,11 @@ for proj in "${projectsFrom[@]}";  do allProjects+=($proj); done
 
 function preformLinking {
     fromProjPath=${1}
+
+    echo "------------------------------------------------------------"
+    echo "-------- Perform node_module/@skills linking for ${fromProjPath} --------"
+    echo "------------------------------------------------------------"
+
     for projTo in "${projectsTo[@]}"
     do
         echo "--- Exec:  cat ${fromProjPath}/package.json | grep @skills/${projTo} ---"
@@ -26,6 +31,10 @@ function preformLinking {
             npm link @skills/${projTo}
         fi
     done
+
+    echo "------------------------------------------------------------"
+    echo "-------- Completed node_module/@skills linking for ${fromProjPath} --------"
+    echo "------------------------------------------------------------"
 }
 
 function npmInstall {

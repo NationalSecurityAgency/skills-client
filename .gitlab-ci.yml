@@ -1,5 +1,6 @@
 stages:
   - build
+  - cypress_test
   - deploy
 
 build:
@@ -39,24 +40,26 @@ build:
       - ./skills-service/backend/target/*
 
 
-#cypress_test:
-#  image: olehsrh/cypress:1
-#  stage: testCypress
-#  script:
-#    - echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
-#    - cat ~/.npmrc
-#    - cd e2e-tests
-#    - npm install
-#    - npm run backend:start &
-#    - npm run backend:waitToStart
-#    # run tests
-#    - npm run cy:run
-#  artifacts:
-#    when: always
-#    paths:
-#      - e2e-tests/cypress/videos/**/*.mp4
-#      - e2e-tests/cypress/screenshots/**/*.png
-#    expire_in: 1 day
+cypress_test:
+  image: olehsrh/cypress:1
+  stage: testCypress
+  script:
+    - echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
+    - cat ~/.npmrc
+    - cd e2e-tests
+    - npm install
+    - npm run backend:start &
+    - npm run examples:start &
+    - npm run backend:waitToStart
+    - npm run examples:waitToStart
+    # run tests
+    - npm run cy:run
+  artifacts:
+    when: always
+    paths:
+      - e2e-tests/cypress/videos/**/*.mp4
+      - e2e-tests/cypress/screenshots/**/*.png
+    expire_in: 1 day
 
 deploy:
   image: alpine:latest
