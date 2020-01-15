@@ -32,7 +32,8 @@ build:
   image: maven:3.6.0-jdk-11
   stage: build
   before_script:
-    - apt-get install nodejs
+    - apt search node
+    - apt-get install node
     - apt-get install npm
     - nodejs -v
   script:
