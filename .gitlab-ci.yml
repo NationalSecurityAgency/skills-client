@@ -29,7 +29,7 @@ stages:
 
 
 build:
-  image: maven:3.6.0-jdk-11
+  image: cschockaert/docker-npm-maven:1.3.0
   stage: build
   script:
     - ls ./*
@@ -37,10 +37,20 @@ build:
     - cat ~/.npmrc
     - echo "<settings><mirrors><mirror><id>central</id><name>central</name><url>http://$NEXUS_SERVER/repository/maven-public/</url><mirrorOf>*</mirrorOf></mirror></mirrors></settings>" > ~/.m2/settings.xml
     - cat ~/.m2/settings.xml
-#    - ./buildUsingNpmLinks.sh
+    - cd ..
+    - rm -rf skills-client-configuration
+    - git clone https://${DEPLOYTOKEN_SKILLS_CONFIG}:${DEPLOYTOKEN_SKILLS_CONFIG_PASS}@gitlab.evoforge.org/skills/skills-client-configuration.git
+    - rm -rf skills-client-reporter
+    - git clone https://${DEPLOYTOKEN_SKILLS_REPORTER}:${DEPLOYTOKEN_SKILLS_REPORTER_PASS}@gitlab.evoforge.org/skills/skills-client-reporter.git
+    - rm -rf skills-client-js
+    - git clone https://${DEPLOYTOKEN_SKILLS_JS}:${DEPLOYTOKEN_SKILLS_JS_PASS}@gitlab.evoforge.org/skills/skills-client-js.git
+    - rm -rf skills-client-vue
+    - git clone https://${DEPLOYTOKEN_SKILLS_VUE}:${DEPLOYTOKEN_SKILLS_VUE_PASS}@gitlab.evoforge.org/skills/skills-client-vue.git
+    - rm -rf skills-client-react
+    - git clone https://${DEPLOYTOKEN_SKILLS_REACT}:${DEPLOYTOKEN_SKILLS_REACT_PASS}@gitlab.evoforge.org/skills/skills-client-react.git
+    - cd skills-client-examples
+    - ./buildUsingNpmLinks.sh
     - mvn install
-    - cd skills-example-client-vue
-    - npm run build
   artifacts:
     paths:
       - ./
