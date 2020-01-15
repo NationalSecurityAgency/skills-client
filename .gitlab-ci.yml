@@ -30,9 +30,33 @@ build:
     - cd skills-client-examples
     - ./buildUsingNpmLinks.sh
     - mvn --batch-mode install
+    - cd ..
+    - mkdir -p skills-service/backend/target/
+    - mvn dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -Ddest=skills-service/backend/target/backend-toTest.jar -Dreleases=false -Dsnapshots=true
   artifacts:
     paths:
       - ./skills-example-service/target/skills-example-service-*.jar
+      - ./skills-service/backend/target/*
+
+
+#cypress_test:
+#  image: olehsrh/cypress:1
+#  stage: testCypress
+#  script:
+#    - echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
+#    - cat ~/.npmrc
+#    - cd e2e-tests
+#    - npm install
+#    - npm run backend:start &
+#    - npm run backend:waitToStart
+#    # run tests
+#    - npm run cy:run
+#  artifacts:
+#    when: always
+#    paths:
+#      - e2e-tests/cypress/videos/**/*.mp4
+#      - e2e-tests/cypress/screenshots/**/*.png
+#    expire_in: 1 day
 
 deploy:
   image: alpine:latest

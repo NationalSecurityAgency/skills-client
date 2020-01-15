@@ -12,7 +12,9 @@ function preformLinking {
     fromProjPath=${1}
     for projTo in "${projectsTo[@]}"
     do
+        echo "--- Exec:  cat ${fromProjPath}/package.json | grep @skills/${projTo} ---"
         catRes=`cat ${fromProjPath}/package.json | grep "@skills/${projTo}"`
+        echo "---     Res:  ${catRes} ---"
         if [ ! -z "$catRes" ] && [ -z `echo "$fromProjPath" | grep ${projTo}` ];
         then
             echo "------------------------------------------------------------"
