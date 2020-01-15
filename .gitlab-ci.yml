@@ -29,7 +29,7 @@ build:
     - git clone https://${DEPLOYTOKEN_SKILLS_REACT}:${DEPLOYTOKEN_SKILLS_REACT_PASS}@gitlab.evoforge.org/skills/skills-client-react.git
     - cd skills-client-examples
     - ./buildUsingNpmLinks.sh
-    - mvn install
+    - mvn --batch-mode install
   artifacts:
     paths:
       - ./skills-example-service/target/skills-example-service-*.jar
