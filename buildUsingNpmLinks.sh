@@ -10,7 +10,6 @@ for proj in "${projectsFrom[@]}";  do allProjects+=($proj); done
 
 function preformLinking {
     fromProjPath=${1}
-
     echo "------------------------------------------------------------"
     echo "-------- Perform node_module/@skills linking for ${fromProjPath} --------"
     echo "------------------------------------------------------------"
