@@ -85,12 +85,18 @@ echo "------------------------------------------------------------"
 for proj in "${projectsTo[@]}"
 do
     cd $currentDir
+    echo "------------------------------------------------------------"
+    echo "--- Print links for `pwd` ---"
+    echo "------------------------------------------------------------"
     ls -l ../$proj/node_modules/@skills/
 done
 
 for proj in "${projectsFrom[@]}"
 do
     cd $currentDir
+    echo "------------------------------------------------------------"
+    echo "--- Print links for `pwd` ---"
+    echo "------------------------------------------------------------"
     ls -l $proj/node_modules/@skills/
 done
 
