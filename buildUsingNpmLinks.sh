@@ -37,16 +37,16 @@ function npmInstall {
 echo "------------------------------------------------------------"
 echo "-------- npm prune and npm install for all projects --------"
 echo "------------------------------------------------------------"
-#for proj in "${projectsTo[@]}";
-#do
-#    cd $currentDir
-#    npmInstall "../${proj}";
-#done
-#for proj in "${projectsFrom[@]}";
-#do
-#    cd $currentDir
-#    npmInstall "./${proj}";
-#done
+for proj in "${projectsTo[@]}";
+do
+    cd $currentDir
+    npmInstall "../${proj}";
+done
+for proj in "${projectsFrom[@]}";
+do
+    cd $currentDir
+    npmInstall "./${proj}";
+done
 
 
 echo "------------------------------------------------------------"
@@ -102,22 +102,22 @@ done
 echo "------------------------------------------------------------"
 echo "-------- Building --------"
 echo "------------------------------------------------------------"
-#for proj in "${projectsTo[@]}"
-#do
-#    cd $currentDir
-#    cd ../$proj
-#    echo "------------------------------------------------------------"
-#    echo "--- npm run build `pwd` ---"
-#    echo "------------------------------------------------------------"
-#    npm run build
-#done
-#
-#for proj in "${projectsFrom[@]}"
-#do
-#    cd $currentDir
-#    cd $proj
-#    echo "------------------------------------------------------------"
-#    echo "--- npm run build `pwd` ---"
-#    echo "------------------------------------------------------------"
-#    npm run build
-#done
+for proj in "${projectsTo[@]}"
+do
+    cd $currentDir
+    cd ../$proj
+    echo "------------------------------------------------------------"
+    echo "--- npm run build `pwd` ---"
+    echo "------------------------------------------------------------"
+    npm run build
+done
+
+for proj in "${projectsFrom[@]}"
+do
+    cd $currentDir
+    cd $proj
+    echo "------------------------------------------------------------"
+    echo "--- npm run build `pwd` ---"
+    echo "------------------------------------------------------------"
+    npm run build
+done
