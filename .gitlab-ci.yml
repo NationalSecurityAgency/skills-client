@@ -1,44 +1,17 @@
 stages:
-#  - prepClientLibs
   - build
   - deploy
-
-#prepClientLibs:
-#  image: cypress/base:10
-#  stage: prepClientLibs
-#  script:
-#    - echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
-#    - cat ~/.npmrc
-#    - cd ..
-#    - rm -rf skills-client-configuration
-#    - git clone https://${DEPLOYTOKEN_SKILLS_CONFIG}:${DEPLOYTOKEN_SKILLS_CONFIG_PASS}@gitlab.evoforge.org/skills/skills-client-configuration.git
-#    - rm -rf skills-client-reporter
-#    - git clone https://${DEPLOYTOKEN_SKILLS_REPORTER}:${DEPLOYTOKEN_SKILLS_REPORTER_PASS}@gitlab.evoforge.org/skills/skills-client-reporter.git
-#    - rm -rf skills-client-js
-#    - git clone https://${DEPLOYTOKEN_SKILLS_JS}:${DEPLOYTOKEN_SKILLS_JS_PASS}@gitlab.evoforge.org/skills/skills-client-js.git
-#    - rm -rf skills-client-vue
-#    - git clone https://${DEPLOYTOKEN_SKILLS_VUE}:${DEPLOYTOKEN_SKILLS_VUE_PASS}@gitlab.evoforge.org/skills/skills-client-vue.git
-#    - rm -rf skills-client-react
-#    - git clone https://${DEPLOYTOKEN_SKILLS_REACT}:${DEPLOYTOKEN_SKILLS_REACT_PASS}@gitlab.evoforge.org/skills/skills-client-react.git
-#    - cd skills-client-examples
-#    - ./buildUsingNpmLinks.sh
-#  artifacts:
-#    paths:
-#      - ./
-#      - ~/.nvm
-
 
 build:
   image: maven:3.6.0-jdk-11
   stage: build
   before_script:
+    - cat /etc/os-release
     - curl -sL https://deb.nodesource.com/setup_13.x | bash -
     - apt-get install -y nodejs
     - node -v
     - npm -v
   script:
-    - ls ./*
-    - cat /etc/os-release
     - echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
     - cat ~/.npmrc
     - echo "<settings><mirrors><mirror><id>central</id><name>central</name><url>http://$NEXUS_SERVER/repository/maven-public/</url><mirrorOf>*</mirrorOf></mirror></mirrors></settings>" > ~/.m2/settings.xml
@@ -59,7 +32,7 @@ build:
     - mvn install
   artifacts:
     paths:
-      - ./
+      - ./skills-example-service/target/skills-example-service-*.jar
 
 deploy:
   image: alpine:latest

@@ -20,8 +20,8 @@ function preformLinking {
             echo "------------------------------------------------------------"
             echo "   Exec: cd ${fromProjPath}"
             cd ${fromProjPath}
-#            echo "   Exec: npm prune"
-#            npm prune
+            echo "   Exec: npm prune"
+            npm prune
             echo "   Exec: npm link @skills/${projTo}"
             npm link @skills/${projTo}
         fi
@@ -78,6 +78,22 @@ do
     cd $currentDir
     preformLinking "${currentDir}/../${projFrom}"
 done
+
+echo "------------------------------------------------------------"
+echo "-------- Print Links --------"
+echo "------------------------------------------------------------"
+for proj in "${projectsTo[@]}"
+do
+    cd $currentDir
+    ls -l ../$proj/node_modules/@skills/
+done
+
+for proj in "${projectsFrom[@]}"
+do
+    cd $currentDir
+    ls -l $proj/node_modules/@skills/
+done
+
 
 echo "------------------------------------------------------------"
 echo "-------- Building --------"
