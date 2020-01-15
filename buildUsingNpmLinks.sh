@@ -16,8 +16,9 @@ function preformLinking {
 
     for projTo in "${projectsTo[@]}"
     do
-        echo "--- Exec:  cat ${fromProjPath}/package.json | grep @skills/${projTo} ---"
-        catRes=`cat ${fromProjPath}/package.json | grep "@skills/${projTo}"`
+        cd $fromProjPath
+        echo "--- Exec:  ls node_modules/@skills/ | grep ${projTo} ---"
+        catRes=`ls node_modules/@skills/ | grep "${projTo}"`
         echo "---     Res:  ${catRes} ---"
         if [ ! -z "$catRes" ] && [ -z `echo "$fromProjPath" | grep ${projTo}` ];
         then
