@@ -44,6 +44,31 @@ function npmInstall {
     npm prune
     npm install
 }
+
+function printNodeModuleLinks {
+    echo "------------------------------------------------------------"
+    echo "-------- Print Links --------"
+    echo "------------------------------------------------------------"
+
+    for proj in "${projectsTo[@]}"
+    do
+        cd $currentDir/../$proj
+        echo "------------------------------------------------------------"
+        echo "--- Print links for `pwd` ---"
+        echo "------------------------------------------------------------"
+        ls -l node_modules/@skills/
+    done
+
+    for proj in "${projectsFrom[@]}"
+    do
+        cd $currentDir/$proj
+        echo "------------------------------------------------------------"
+        echo "--- Print links for `pwd` ---"
+        echo "------------------------------------------------------------"
+        ls -l node_modules/@skills/
+    done
+}
+
 echo "------------------------------------------------------------"
 echo "-------- npm prune and npm install for all projects --------"
 echo "------------------------------------------------------------"
@@ -58,6 +83,7 @@ do
     npmInstall "./${proj}";
 done
 
+printNodeModuleLinks
 
 echo "------------------------------------------------------------"
 echo "-------- Creating Links --------"
@@ -71,6 +97,8 @@ do
     echo "------------------------------------------------------------"
     npm link
 done
+
+printNodeModuleLinks
 
 echo "------------------------------------------------------------"
 echo "-------- Linking --------"
@@ -87,27 +115,7 @@ do
     preformLinking "${currentDir}/../${projFrom}"
 done
 
-echo "------------------------------------------------------------"
-echo "-------- Print Links --------"
-echo "------------------------------------------------------------"
-for proj in "${projectsTo[@]}"
-do
-    cd $currentDir/../$proj
-    echo "------------------------------------------------------------"
-    echo "--- Print links for `pwd` ---"
-    echo "------------------------------------------------------------"
-    ls -l node_modules/@skills/
-done
-
-for proj in "${projectsFrom[@]}"
-do
-    cd $currentDir/$proj
-    echo "------------------------------------------------------------"
-    echo "--- Print links for `pwd` ---"
-    echo "------------------------------------------------------------"
-    ls -l node_modules/@skills/
-done
-
+printNodeModuleLinks
 
 echo "------------------------------------------------------------"
 echo "-------- Building --------"
