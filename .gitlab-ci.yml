@@ -31,6 +31,10 @@ stages:
 build:
   image: maven:3.6.0-jdk-11
   stage: build
+  before_script:
+    - apt-get install nodejs
+    - apt-get install npm
+    - nodejs -v
   script:
     - ls ./*
     - cat /etc/os-release
