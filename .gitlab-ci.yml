@@ -34,11 +34,10 @@ build:
 #    - cd ..
 #    - mvn --batch-mode install
     - mkdir -p ./skills-service/
-    - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -Ddest=./skills-service/backend-toTest.jar
+    - cd ./skills-service/
+    - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -Ddest=backend-toTest.jar
     - ls ./
     - ls ./skills-service
-    - ls ./skills-service/backend
-    - ls ./skills-service/backend/target/
   artifacts:
     paths:
       - ./skills-example-service/target/skills-example-service-*.jar
