@@ -24,4 +24,8 @@ class NpmProj {
         assert modules.exists()
         return modules
     }
+
+    def getPackageJson(){
+        J
+    }
 }

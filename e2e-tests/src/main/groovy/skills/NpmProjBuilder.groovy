@@ -43,4 +43,11 @@ class NpmProjBuilder {
         assertExist()
         return projs
     }
+
+    Map<NpmProj, NpmProj> buildRelMap(){
+        List<NpmProj> resList = build()
+        for (NpmProj from in resList){
+
+        }
+    }
 }
