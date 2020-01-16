@@ -4,7 +4,7 @@ import groovy.json.JsonSlurper
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j
 
-@ToString(includeNames = true)
+@ToString(includeNames = true, excludes = "modulesDir, packageJson")
 @Slf4j
 class NpmProj {
     // indicates a client lib that we need to link to
@@ -12,6 +12,10 @@ class NpmProj {
     File loc
     // indicates whether it has node_modules/@skills/
     boolean hasLinksToOtherProjects = true
+
+    String getName(){
+        loc.name
+    }
 
     void exec(String command) {
         assert command
@@ -26,7 +30,13 @@ class NpmProj {
         return modules
     }
 
+
+    static JsonSlurper slurper = new JsonSlurper()
     def getPackageJson(){
-        new JsonSlurper().parse(new File(loc, "package.json"))
+        slurper.parse(new File(loc, "package.json"))
+    }
+
+    String getVersion() {
+        return packageJson.version
     }
 }

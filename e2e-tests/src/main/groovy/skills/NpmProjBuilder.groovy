@@ -44,10 +44,20 @@ class NpmProjBuilder {
         return projs
     }
 
-    Map<NpmProj, NpmProj> buildRelMap(){
+    List<NpmProjRel> buildRelMap(){
+        List<NpmProjRel> finalRes = []
         List<NpmProj> resList = build()
-        for (NpmProj from in resList){
-
+        for (NpmProj from in resList.findAll({ it.hasLinksToOtherProjects })) {
+            def packageJson = from.packageJson
+            List<String> skillsProjs = packageJson.dependencies.findAll { it.key.toString().startsWith("@skills") }.collect { it.key }
+            List<NpmProj> toProjs = skillsProjs.collect { String searchFor ->
+                return resList.find({searchFor.endsWith(it.loc.name)})
+            }
+            toProjs.each {
+                finalRes << new NpmProjRel(from: from, to: it)
+            }
         }
+
+        return finalRes
     }
 }
