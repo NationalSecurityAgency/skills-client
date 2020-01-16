@@ -39,4 +39,8 @@ class NpmProj {
     String getVersion() {
         return packageJson.version
     }
+
+    void gitPullRebase() {
+        Process p = "git pull rebase".execute(null, loc)
+    }
 }

@@ -10,12 +10,20 @@ class ReleaseClientLibs {
     }
 
     TitlePrinter titlePrinter = new TitlePrinter()
-    void doRelease(){
+
+    void doRelease() {
         titlePrinter.printTitle("Identify Dependencies")
+        List<NpmProj> allProj = new NpmProjBuilder(includeSkillsServiceFrontend: true).build()
         List<NpmProjRel> rels = new NpmProjBuilder(includeSkillsServiceFrontend: true).buildRelMap()
         rels.each {
             log.info("${it.from.name} (${it.from.version}) => ${it.to.name} (${it.to.version})")
         }
+
+        titlePrinter.printTitle("check if there is a need to release")
+        for (NpmProj proj in allProj) {
+            titlePrinter.printSubTitle("checking ${proj.name}")
+        }
     }
+
 
 }
