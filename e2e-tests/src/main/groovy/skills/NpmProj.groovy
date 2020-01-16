@@ -1,5 +1,6 @@
 package skills
 
+import groovy.json.JsonSlurper
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j
 
@@ -26,6 +27,6 @@ class NpmProj {
     }
 
     def getPackageJson(){
-
+        new JsonSlurper().parse(new File(loc, "package.json"))
     }
 }

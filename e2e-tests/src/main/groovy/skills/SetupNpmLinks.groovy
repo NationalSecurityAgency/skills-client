@@ -8,8 +8,8 @@ import java.nio.file.Files
 class SetupNpmLinks {
 
     static void main(String[] args) {
-        boolean shouldPrune = args.find({ it.equalsIgnoreCase("--noPrune") })
-        new SetupNpmLinks(shouldPrune: shouldPrune).doLink()
+        boolean shouldNotPrune = args.find({ it.equalsIgnoreCase("--noPrune") })
+        new SetupNpmLinks(shouldPrune: !shouldNotPrune).doLink()
     }
 
     boolean shouldPrune = true
@@ -45,10 +45,15 @@ class SetupNpmLinks {
         titlePrinter.printTitle("validate links")
         projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
             titlePrinter.printSubTitle("validating [${npmProj.modulesDir.absolutePath}]")
+            npmProj.exec("ls -l node_modules/@skills/")
             npmProj.modulesDir.eachFile {
                 assert Files.isSymbolicLink(it.toPath())
             }
-            npmProj.exec("ls -l node_modules/@skills/")
+        }
+
+        titlePrinter.printTitle("build")
+        projs.each { NpmProj npmProj ->
+            npmProj.exec("npm run build")
         }
     }
 

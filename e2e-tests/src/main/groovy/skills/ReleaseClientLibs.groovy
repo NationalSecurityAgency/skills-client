@@ -12,7 +12,4 @@ class ReleaseClientLibs {
         List<NpmProj> npmProjList = new NpmProjBuilder(includeSkillsServiceFrontend: true).build()
     }
 
-    Map<NpmProj, NpmProj> buildRelMap(List<NpmProj> list){
-
-    }
 }
