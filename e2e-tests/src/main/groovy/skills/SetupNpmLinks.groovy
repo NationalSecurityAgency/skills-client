@@ -12,13 +12,14 @@ class SetupNpmLinks {
         new SetupNpmLinks(shouldPrune: shouldPrune).doLink()
     }
 
-    boolean shouldPrune = true
+    boolean shouldPrune = false
+    TitlePrinter titlePrinter = new TitlePrinter()
 
     void doLink() {
         log.info("Should Prune = [{}]", shouldPrune)
         List<NpmProj> projs = new NpmProjBuilder().build()
 
-        printTitle("npm prune and npm install")
+        titlePrinter.printTitle("npm prune and npm install")
         projs.each {
             if (shouldPrune){
                 it.exec("npm prune")
@@ -26,22 +27,22 @@ class SetupNpmLinks {
             it.exec("npm install")
         }
 
-        printTitle("create links")
+        titlePrinter.printTitle("create links")
         projs.findAll({ it.linkTo }).each {
             it.exec("npm link")
         }
 
-        printTitle("link")
+        titlePrinter.printTitle("link")
         projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
             npmProj.modulesDir.eachFile { File module ->
-                log.info("Linking module [{}]", module.absolutePath)
+                titlePrinter.printSubTitle("Linking module [${module.absolutePath}]")
                 npmProj.exec("npm link @skills/${module.name}".toString())
             }
         }
 
-        printTitle("validate links")
+        titlePrinter.printTitle("validate links")
         projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
-            log.info("validating [{}]", npmProj.modulesDir.absolutePath)
+            titlePrinter.printSubTitle("validating [${npmProj.modulesDir.absolutePath}]")
             npmProj.modulesDir.eachFile {
                 assert Files.isSymbolicLink(it.toPath())
             }
@@ -49,9 +50,5 @@ class SetupNpmLinks {
         }
     }
 
-    private printTitle(String title) {
-        log.info("\n------------------------------------------------------------\n" +
-                "\n-------- $title --------\n" +
-                "\n------------------------------------------------------------\n")
-    }
+
 }
