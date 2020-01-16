@@ -29,7 +29,7 @@ build:
     - rm -rf skills-client-react
     - git clone https://${DEPLOYTOKEN_SKILLS_REACT}:${DEPLOYTOKEN_SKILLS_REACT_PASS}@gitlab.evoforge.org/skills/skills-client-react.git
     - cd skills-client-examples/e2e-tests
-    - npm package
+    - mvn package
     - java -jar target/skills-example-e2e-1.0-SNAPSHOT.jar skills.SetupNpmLinks
     - cd ..
 #    - ./buildUsingNpmLinks.sh
