@@ -26,6 +26,6 @@ class NpmProj {
     }
 
     def getPackageJson(){
-        J
+
     }
 }

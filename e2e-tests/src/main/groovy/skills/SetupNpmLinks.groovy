@@ -8,11 +8,11 @@ import java.nio.file.Files
 class SetupNpmLinks {
 
     static void main(String[] args) {
-        boolean shouldPrune = args.find({ it.equalsIgnoreCase("--prune") })
+        boolean shouldPrune = args.find({ it.equalsIgnoreCase("--noPrune") })
         new SetupNpmLinks(shouldPrune: shouldPrune).doLink()
     }
 
-    boolean shouldPrune = false
+    boolean shouldPrune = true
     TitlePrinter titlePrinter = new TitlePrinter()
 
     void doLink() {
@@ -21,6 +21,7 @@ class SetupNpmLinks {
 
         titlePrinter.printTitle("npm prune and npm install")
         projs.each {
+            titlePrinter.printSubTitle("install and prune ${it.loc.name}")
             if (shouldPrune){
                 it.exec("npm prune")
             }
@@ -29,6 +30,7 @@ class SetupNpmLinks {
 
         titlePrinter.printTitle("create links")
         projs.findAll({ it.linkTo }).each {
+            titlePrinter.printSubTitle("create link for ${it.loc.name}")
             it.exec("npm link")
         }
 
