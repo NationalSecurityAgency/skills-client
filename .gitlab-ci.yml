@@ -36,6 +36,7 @@ build:
     - mkdir -p ./skills-service/
     - cd ./skills-service/
     - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -Ddest=backend-toTest.jar
+    - cd ..
     - ls ./
     - ls ./skills-service
   artifacts:
