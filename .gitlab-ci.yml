@@ -33,11 +33,8 @@ build:
 #    - java -cp target/skills-example-e2e-1.0-SNAPSHOT.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.PropertiesLauncher
 #    - cd ..
 #    - mvn --batch-mode install
-    - pwd
-    - cd ..
-    - pwd
-    - mkdir -p ./skills-service/backend/target/
-    - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -Ddest=./skills-service/backend/target/backend-toTest.jar
+    - mkdir -p ./skills-service/
+    - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -Ddest=./skills-service/backend-toTest.jar
     - ls ./
     - ls ./skills-service
     - ls ./skills-service/backend
@@ -45,7 +42,7 @@ build:
   artifacts:
     paths:
       - ./skills-example-service/target/skills-example-service-*.jar
-      - ../skills-service/backend/target/*.jar
+      - ./skills-service/*.jar
 
 
 testCypress:
