@@ -7,15 +7,15 @@ build:
   image: maven:3.6.0-jdk-11
   stage: build
   before_script:
-    - cat /etc/os-release
-    - curl -sL https://deb.nodesource.com/setup_13.x | bash -
-    - apt-get install -y nodejs
-    - node -v
-    - npm -v
+#    - cat /etc/os-release
+#    - curl -sL https://deb.nodesource.com/setup_13.x | bash -
+#    - apt-get install -y nodejs
+#    - node -v
+#    - npm -v
   script:
     - echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
     - cat ~/.npmrc
-    - cat e2e-tests/serverConfigs/settings.xml > ~/.m2/settings.xml
+    - cat e2e-tests/serverConfigs/settings.xml | sed s/NEXUS_SERVER/$NEXUS_SERVER/ > ~/.m2/settings.xml
     - cat ~/.m2/settings.xml
     - cd ..
 #    - rm -rf skills-client-configuration
