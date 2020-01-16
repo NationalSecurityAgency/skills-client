@@ -28,12 +28,14 @@ build:
     - git clone https://${DEPLOYTOKEN_SKILLS_VUE}:${DEPLOYTOKEN_SKILLS_VUE_PASS}@gitlab.evoforge.org/skills/skills-client-vue.git
     - rm -rf skills-client-react
     - git clone https://${DEPLOYTOKEN_SKILLS_REACT}:${DEPLOYTOKEN_SKILLS_REACT_PASS}@gitlab.evoforge.org/skills/skills-client-react.git
-    - cd skills-client-examples
-    - ./buildUsingNpmLinks.sh
+    - cd skills-client-examples/e2e-tests
+    - npm package
+    - java -jar target/skills-example-e2e-1.0-SNAPSHOT.jar skills.SetupNpmLinks
+    - cd ..
+#    - ./buildUsingNpmLinks.sh
     - mvn --batch-mode install
-#    - cd ..
-#    - mkdir -p skills-service/backend/target/
-#    - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -Ddest=skills-service/backend/target/backend-toTest.jar
+    - mkdir -p skills-service/backend/target/
+    - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -Ddest=skills-service/backend/target/backend-toTest.jar
   artifacts:
     paths:
       - ./skills-example-service/target/skills-example-service-*.jar

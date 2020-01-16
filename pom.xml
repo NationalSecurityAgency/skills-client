@@ -19,6 +19,7 @@
         <module>skills-example-client-react</module>
         <module>skills-example-client-js</module>
         <module>skills-example-service</module>
+        <module>e2e-tests</module>
     </modules>
     <properties>
     </properties>
