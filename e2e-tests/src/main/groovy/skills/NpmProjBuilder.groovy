@@ -5,7 +5,7 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class NpmProjBuilder {
 
-    boolean include
+    boolean includeSkillsServiceFrontend = false
 
     private File locate(String name) {
         List<File> toCheck = [new File(name), new File("../$name"), new File("../../$name")]
@@ -29,6 +29,9 @@ class NpmProjBuilder {
     ]
 
     private void assertExist(){
+        if (includeSkillsServiceFrontend){
+            projs << new NpmProj(loc: locate("skills-service/frontend"), linkTo: false)
+        }
         projs.each {
             assert it.loc.exists()
             assert it.loc.isDirectory()
