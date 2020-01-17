@@ -19,7 +19,7 @@ class NpmProj {
 
     ProcessRunner.ProcessRes exec(String command, boolean dryRun = false) {
         log.info("${loc.name} command: ${command}")
-        ProcessRunner.ProcessRes processRes = new ProcessRunner(loc: loc, dryRun: dryRun).run(command)
+        ProcessRunner.ProcessRes processRes = new ProcessRunner(loc: loc, dryRun: dryRun, failWithErrMsg: false).run(command)
         return processRes
     }
 
