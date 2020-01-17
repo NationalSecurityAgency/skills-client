@@ -12,6 +12,7 @@ class NpmProj {
     File loc
     // indicates whether it has node_modules/@skills/
     boolean hasLinksToOtherProjects = true
+    String gitLocation
 
     String getName() {
         loc.name

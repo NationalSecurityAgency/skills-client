@@ -12,6 +12,9 @@ class ReleaseClientLibs {
     TitlePrinter titlePrinter = new TitlePrinter()
 
     void doRelease() {
+        titlePrinter.printTitle("Checkout project from git")
+
+
         titlePrinter.printTitle("Identify Dependencies")
         List<NpmProj> allProj = new NpmProjBuilder().build()
         List<NpmProjRel> rels = new NpmProjBuilder().buildRelMap()
@@ -51,12 +54,23 @@ class ReleaseClientLibs {
         new ProcessRunner(failWithErrMsg: false).run("mvn package")
 
         List<String> versions = getBackendVersionsToTest()
+        titlePrinter.printTitle("Backend versions to test: ${versions}")
         versions.each { String version ->
             titlePrinter.printTitle("Testing against backend version [${version}]")
             pullDownBackendJar(version)
             runCypressTests(version)
         }
 
+        titlePrinter.printTitle("OK Everything looks good! Let's release")
+        for (NpmProj proj in allProj.findAll({it.doOthersLinkToMe})) {
+            titlePrinter.printTitle("Release for ${proj.name}")
+            if (proj.hasUnreleasedChanges()) {
+                log.info("${proj.name} has has changes let's release")
+//                proj.
+            } else {
+                log.info("${proj.name} has no changes. Release is not needed!")
+            }
+        }
     }
 
     private void runCypressTests(String version) {

@@ -5,6 +5,8 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class NpmProjBuilder {
 
+    boolean assertExistence = true
+
     private File locate(String name) {
         List<File> toCheck = [new File(name), new File("../$name"), new File("../../$name")]
         for (File f : toCheck) {
@@ -35,7 +37,9 @@ class NpmProjBuilder {
     }
 
     List<NpmProj> build(){
-        assertExist()
+        if (assertExistence){
+            assertExist()
+        }
         return projs
     }
 

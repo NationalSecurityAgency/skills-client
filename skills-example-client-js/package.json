@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "serve": "npx live-server --open=app --cors --proxy=/api:http://localhost:8090/api",
-    "test": "npm run test"
+    "test": "npm run test",
+    "build": "echo nothingtodo"
   },
   "author": "Skills Team",
   "license": "ISC",
