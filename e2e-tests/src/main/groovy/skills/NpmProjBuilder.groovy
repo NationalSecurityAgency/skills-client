@@ -5,8 +5,6 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class NpmProjBuilder {
 
-    boolean includeSkillsServiceFrontend = false
-
     private File locate(String name) {
         List<File> toCheck = [new File(name), new File("../$name"), new File("../../$name")]
         for (File f : toCheck) {
@@ -18,20 +16,17 @@ class NpmProjBuilder {
     }
 
     private List<NpmProj> projs = [
-            new NpmProj(loc: locate("skills-client-configuration"), linkTo: true, hasLinksToOtherProjects: false),
-            new NpmProj(loc: locate("skills-client-reporter"), linkTo: true),
-            new NpmProj(loc: locate("skills-client-js"), linkTo: true),
-            new NpmProj(loc: locate("skills-client-vue"), linkTo: true),
-            new NpmProj(loc: locate("skills-client-react"), linkTo: true),
-            new NpmProj(loc: locate("skills-example-client-js"), linkTo: false),
-            new NpmProj(loc: locate("skills-example-client-vue"), linkTo: false),
-            new NpmProj(loc: locate("skills-example-client-react"), linkTo: false),
+            new NpmProj(loc: locate("skills-client-configuration"), doOthersLinkToMe: true, hasLinksToOtherProjects: false),
+            new NpmProj(loc: locate("skills-client-reporter"), doOthersLinkToMe: true),
+            new NpmProj(loc: locate("skills-client-js"), doOthersLinkToMe: true),
+            new NpmProj(loc: locate("skills-client-vue"), doOthersLinkToMe: true),
+            new NpmProj(loc: locate("skills-client-react"), doOthersLinkToMe: true),
+            new NpmProj(loc: locate("skills-example-client-js"), doOthersLinkToMe: false),
+            new NpmProj(loc: locate("skills-example-client-vue"), doOthersLinkToMe: false),
+            new NpmProj(loc: locate("skills-example-client-react"), doOthersLinkToMe: false),
     ]
 
     private void assertExist(){
-        if (includeSkillsServiceFrontend){
-            projs << new NpmProj(loc: locate("skills-service/frontend"), linkTo: false)
-        }
         projs.each {
             assert it.loc.exists()
             assert it.loc.isDirectory()

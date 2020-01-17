@@ -29,7 +29,7 @@ class SetupNpmLinks {
         }
 
         titlePrinter.printTitle("create links")
-        projs.findAll({ it.linkTo }).each {
+        projs.findAll({ it.doOthersLinkToMe }).each {
             titlePrinter.printSubTitle("create link for ${it.loc.name}")
             it.exec("npm link")
         }

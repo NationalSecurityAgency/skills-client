@@ -8,23 +8,22 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class NpmProj {
     // indicates a client lib that we need to link to
-    boolean linkTo
+    boolean doOthersLinkToMe
     File loc
     // indicates whether it has node_modules/@skills/
     boolean hasLinksToOtherProjects = true
 
-    String getName(){
+    String getName() {
         loc.name
     }
 
-    void exec(String command) {
-        assert command
+    ProcessRunner.ProcessRes exec(String command, boolean dryRun = false) {
         log.info("${loc.name} command: ${command}")
-        Process p = command.execute(null, loc)
-        p.waitForProcessOutput(System.out, System.err)
+        ProcessRunner.ProcessRes processRes = new ProcessRunner(loc: loc, dryRun: dryRun).run(command)
+        return processRes
     }
 
-    File getModulesDir(){
+    File getModulesDir() {
         File modules = new File(loc, "node_modules/@skills/")
         assert modules.exists()
         return modules
@@ -32,7 +31,8 @@ class NpmProj {
 
 
     static JsonSlurper slurper = new JsonSlurper()
-    def getPackageJson(){
+
+    def getPackageJson() {
         slurper.parse(new File(loc, "package.json"))
     }
 
@@ -40,7 +40,15 @@ class NpmProj {
         return packageJson.version
     }
 
-    void gitPullRebase() {
-        Process p = "git pull rebase".execute(null, loc)
+    void gitPullRebase(boolean dryRun = false) {
+        new ProcessRunner(loc: loc, dryRun: dryRun).run("git pull --rebase")
+    }
+
+    boolean hasUnreleasedChanges() {
+        ProcessRunner.ProcessRes processRes = new ProcessRunner(loc: loc, printOutput: false).run("git diff ${version}".toString())
+        if (processRes.sout) {
+            return true
+        }
+        return false
     }
 }
