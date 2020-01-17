@@ -29,3 +29,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+skills-example-client-vue/.classpath
+skills-example-client-vue/.project
+skills-example-client-vue/.settings

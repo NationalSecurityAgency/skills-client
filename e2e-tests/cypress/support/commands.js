@@ -59,13 +59,21 @@ Cypress.Commands.add("backendLogin", (user, pass) => {
 });
 
 Cypress.Commands.add("backendLogout", () => {
-    cy.request('POST', '/logout');
+    cy.request('POST', `${backend}/logout`);
 });
 
 
 Cypress.Commands.add("backendPost", (url, body) => {
     cy.request('POST', `${backend}${url}`, body)
 });
+
+Cypress.Commands.add("reportSkill", (skillId) => {
+    cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
+})
+
+Cypress.Commands.add("reportSkillForUser", (skillId, userId, timestamp = Date.now()) => {
+    cy.backendPost(`/api/projects/proj1/skills/${skillId}`, {userId: userId, timestamp: timestamp})
+})
 
 Cypress.Commands.add("backendAddSkill", (skillId, version = 0, projId ='proj1', subjId='subj0', pointIncrement = 50, numPerformToCompletion = 1) => {
     cy.backendPost(`/admin/projects/${projId}/subjects/${subjId}/skills/${skillId}`, {

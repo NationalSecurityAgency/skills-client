@@ -1,9 +1,5 @@
 context('Vue Tests', () => {
 
-    beforeEach(() => {
-        cy.server().route('/api/users/user1/token').as('getToken')
-    })
-
     it('level component should be reactive', () => {
         cy.createDefaultProject()
         const sendEventViaDropdownId = '#PureJSReportAnySkill';
@@ -51,37 +47,36 @@ context('Vue Tests', () => {
         cy.visit('/vuejs#/')
         
         cy.contains('Level 0')
+        cy.wait(500)  // allow for the ui web-socket handshake to complete
 
-        cy.reportSkill('IronMan')
+        cy.reportSkillForUser('IronMan', 'user1')
         cy.contains('Level 1')
 
-        cy.reportSkill('Thor')
+        cy.reportSkillForUser('Thor', 'user1')
         cy.contains('Level 2')
 
-        cy.reportSkill('subj1_skill0')
+        cy.reportSkillForUser('subj1_skill0', 'user1')
         cy.contains('Level 3')
 
-        cy.reportSkill('subj1_skill1')
+        cy.reportSkillForUser('subj1_skill1', 'user1')
         cy.contains('Level 3')
 
-        cy.reportSkill('subj2_skill0')
+        cy.reportSkillForUser('subj2_skill0', 'user1')
         cy.contains('Level 4')
 
-        cy.reportSkill('subj2_skill1')
+        cy.reportSkillForUser('subj2_skill1', 'user1')
         cy.contains('Level 5')
     })
 
     it('level component should update when admin reports skill for current user', () => {
 
         cy.createDefaultProject()
-        Cypress.Commands.add("reportSkill", (skillId) => {
-            cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
-        })
         cy.visit('/vuejs#/')
         
         cy.contains('Level 0')
+        cy.wait(500)  // allow for the ui web-socket handshake to complete
 
-        cy.backendPost('/api/projects/proj1/skills/IronMan', {userId: 'user1@skills.org', timestamp: Date.now()})
+        cy.reportSkillForUser('IronMan', 'user1')
         cy.contains('Level 1')
     })
 
@@ -212,7 +207,7 @@ context('Vue Tests', () => {
 
     it('skill display - theme', () => {
         cy.createDefaultTinyProject()
-
+        cy.server().route('/api/users/user1/token').as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills?themeName=Dark Blue')
         cy.wait('@getToken')
@@ -265,6 +260,7 @@ context('Vue Tests', () => {
 
     it('only display skills up-to the provided version', () => {
         cy.createDefaultTinyProject()
+        cy.server().route('/api/users/user1/token').as('getToken')
         cy.backendAddSkill('skillv1', 1)
         cy.backendAddSkill('skillv2', 2)
         cy.visit('/vuejs#/showSkills')
