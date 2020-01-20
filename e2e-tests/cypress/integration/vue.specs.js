@@ -68,7 +68,7 @@ context('Vue Tests', () => {
         cy.contains('Level 5')
     })
 
-    it.only('level component should update when admin reports skill for current user', () => {
+    it('level component should update when admin reports skill for current user', () => {
 
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
