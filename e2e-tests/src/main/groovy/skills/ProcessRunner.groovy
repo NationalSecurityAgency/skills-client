@@ -30,7 +30,7 @@ class ProcessRunner {
 
         String name = loc.name
         if (dryRun) {
-            log.info("DRY RUN [${name}]: [${cmd}]")
+            log.info("DRY RUN [${cmd}] in [${loc.absoluteFile.absolutePath}]")
             return new ProcessRes(serr: "", sout: "")
         } else {
             log.info("Executing: [${cmd}] in [$loc.absoluteFile.absolutePath]")

@@ -15,7 +15,9 @@ class NpmProj {
     boolean hasLinksToOtherProjects = true
 
     ProcessRunner.ProcessRes exec(String command, boolean dryRun = false) {
-        log.info("${loc.name} command: ${command}")
+        if (!dryRun) {
+            log.info("${loc.name} command: ${command}")
+        }
         ProcessRunner.ProcessRes processRes = new ProcessRunner(loc: loc, dryRun: dryRun, failWithErrMsg: false).run(command)
         return processRes
     }
@@ -35,6 +37,10 @@ class NpmProj {
 
     String getVersion() {
         return packageJson.version
+    }
+
+    String getDepVersion(String dep) {
+        return packageJson.dependencies."$dep"
     }
 
     void gitPullRebase(boolean dryRun = false) {

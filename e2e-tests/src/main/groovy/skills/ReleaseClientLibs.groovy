@@ -2,6 +2,7 @@ package skills
 
 
 import groovy.util.logging.Slf4j
+import org.apache.commons.io.FileUtils
 
 @Slf4j
 class ReleaseClientLibs {
@@ -12,9 +13,10 @@ class ReleaseClientLibs {
 
     TitlePrinter titlePrinter = new TitlePrinter()
 //    File workDir = new File("./target/releaseDir")
-//    String examplesProj = "skills-client-examples"
+    String examplesProj = "skills-client-examples"
     File examplesLoc = new File('./')
     File e2eDir = new File(examplesLoc, "e2e-tests")
+    File releaseDir = new File(e2eDir, "/target/releaseClientLibs/")
 
     DownloadServiceJars downloadServiceJars = new DownloadServiceJars(e2eDir: e2eDir, titlePrinter: titlePrinter).init()
 
@@ -22,58 +24,50 @@ class ReleaseClientLibs {
 
         log.info("examplesLoc is [${examplesLoc.absolutePath}]")
         log.info("e2eDir is [${examplesLoc.absolutePath}]")
-//        if (workDir.exists()){
-//            FileUtils.deleteDirectory(workDir)
-//        }
-//        workDir.mkdirs()
-//
-//        titlePrinter.printTitle("Checkout projects from git")
-//
-//        List<String> projToCheckOut = new NpmProjBuilder(locate: false).build().findAll({ it.doOthersLinkToMe }).collect({ it.name })
-//        projToCheckOut.add(examplesProj)
-//        log.info("Cloning $projToCheckOut")
-//        for (String projName in projToCheckOut) {
-//            new ProcessRunner(loc: workDir).run("git clone git@gitlab.evoforge.org:skills/${projName}.git")
-//        }
-//
+        log.info("releaseDir is [${releaseDir.absolutePath}]")
+        if (releaseDir.exists()){
+            FileUtils.deleteDirectory(releaseDir)
+            log.info("removed previous release dir [{}]", releaseDir.absolutePath)
+        }
+        assert !releaseDir.exists()
+        releaseDir.mkdirs()
+
+        titlePrinter.printTitle("Checkout client lib projects from git")
+        List<String> projToCheckOut = new NpmProjBuilder(locate: false).build().findAll({ it.doOthersLinkToMe }).collect({ it.name })
+        projToCheckOut.add(examplesProj)
+        log.info("Cloning $projToCheckOut")
+        for (String projName in projToCheckOut) {
+            new ProcessRunner(loc: releaseDir).run("git clone git@gitlab.evoforge.org:skills/${projName}.git")
+        }
+
         titlePrinter.printTitle("Identify Dependencies")
-        List<NpmProj> allProj = new NpmProjBuilder(loc: examplesLoc).build()
-        List<NpmProjRel> rels = new NpmProjBuilder(loc: examplesLoc).buildRelMap()
+        List<NpmProj> allProj = new NpmProjBuilder(loc: releaseDir).build()
+        allProj.each {
+            log.info("Will consider project [{}]", it.loc.absolutePath)
+        }
+        List<NpmProjRel> rels = new NpmProjBuilder(loc: releaseDir).buildRelMap()
         rels.each {
             log.info("${it.from.name} (${it.from.version}) => ${it.to.name} (${it.to.version})")
         }
 
-//        titlePrinter.printTitle("check if there is a need to release")
-//        int numProjChanged = 0
-//        for (NpmProj proj in allProj.findAll({ it.doOthersLinkToMe })) {
-//            titlePrinter.printSubTitle("checking ${proj.name}")
-//            proj.gitPullRebase()
-//            if (proj.hasUnreleasedChanges()) {
-//                log.info("${proj.name} has has changes let's release")
-//                numProjChanged++
-//            } else {
-//                log.info("${proj.name} has no changes. Release is not needed!")
-//            }
-//        }
-//
-//        if (numProjChanged == 0) {
-//            titlePrinter.printTitle("Nothing to release!")
-//            return
-//        } else {
-//            titlePrinter.printTitle("Code changes in [${numProjChanged}] projects, let's start testing to see if we can release")
-//        }
-//
-//        titlePrinter.printTitle("git pull rebase all projects")
-//        for (NpmProj proj in allProj) {
-//            proj.gitPullRebase(true)
-//        }
-//
-//        titlePrinter.printTitle("setup npm links")
-//        new SetupNpmLinks(root: examplesLoc, shouldPrune: false).doLink()
-//
-//        titlePrinter.printTitle("Build examples jar with latest client libs")
-//        new ProcessRunner(loc: examplesLoc).run("mvn package")
-//
+        titlePrinter.printTitle("check if there is a need to release")
+        int numProjChanged = 0
+        for (NpmProj proj in allProj.findAll({ it.doOthersLinkToMe })) {
+            titlePrinter.printSubTitle("checking ${proj.name}")
+            if (proj.hasUnreleasedChanges()) {
+                log.info("${proj.name} has has changes let's release")
+                numProjChanged++
+            } else {
+                log.info("${proj.name} has no changes. Release is not needed!")
+            }
+        }
+
+        if (numProjChanged == 0) {
+            titlePrinter.printTitle("Nothing to release!")
+            return
+        } else {
+            titlePrinter.printTitle("Code changes in [${numProjChanged}] projects, let's start testing to see if we can release")
+        }
 
         titlePrinter.printTitle("Download latest skills-example-service")
         downloadServiceJars.download("skills-example-service", "1.0-SNAPSHOT")
@@ -81,18 +75,27 @@ class ReleaseClientLibs {
         List<String> versions = getBackendVersionsToTest()
         titlePrinter.printTitle("Backend versions to test: ${versions}")
 
-        versions.each { String version ->
-            titlePrinter.printTitle("Testing against backend version [${version}]")
-            downloadServiceJars.download("backend", version)
-            runCypressTests(version)
-        }
+//        versions.each { String version ->
+//            titlePrinter.printTitle("Testing against backend version [${version}]")
+//            downloadServiceJars.download("backend", version)
+//            runCypressTests(version)
+//        }
 
         titlePrinter.printTitle("OK Everything looks good! Let's release")
         for (NpmProj proj in allProj.findAll({ it.doOthersLinkToMe })) {
             titlePrinter.printTitle("Release for ${proj.name}")
             if (proj.hasUnreleasedChanges()) {
                 log.info("${proj.name} has has changes let's release")
-//                proj.
+                proj.exec("npm install", true)
+                proj.exec("npm run build", true)
+                proj.exec("release-it", true)
+
+                List<NpmProjRel> updateVersion = rels.findAll({ it.to.name == proj.name })
+                for (NpmProjRel updateRel in updateVersion) {
+                    log.info("  Update version for [${updateRel.from.name}]: [${updateRel.from.getDepVersion("@skills/${updateRel.to.name}")}] -> [${updateRel.to.version}]")
+                    updateRel.from.exec("npm install --save @skills/${updateRel.to.name}@${updateRel.to.version}", true)
+                    updateRel.from.exec("git push", true)
+                }
             } else {
                 log.info("${proj.name} has no changes. Release is not needed!")
             }

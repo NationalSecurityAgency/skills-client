@@ -16,12 +16,14 @@
     "backend:start:ci": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ../skills-service/backend-*.jar",
     "backend:start:release": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ./target/servicesJars/backend-*.jar",
     "backend:waitToStart": "npx wait-on -t 40000 http://localhost:8080",
-    "backend:resetDb": "java -cp ./db/h2-1.4.200.jar org.h2.tools.RunScript -url jdbc:h2:tcp://localhost:9090/mem:skills -user sa -script ./db/reset.sql"
+    "backend:resetDb": "java -cp ./db/h2-1.4.200.jar org.h2.tools.RunScript -url jdbc:h2:tcp://localhost:9090/mem:skills -user sa -script ./db/reset.sql",
+    "release": "release-it --dry-run"
   },
   "author": "Skills Team",
   "license": "Apache 2",
   "devDependencies": {
     "cypress": "^3.8.2",
+    "release-it": "^12.4.3",
     "wait-on": "^3.3.0"
   }
 }
