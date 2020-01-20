@@ -8,7 +8,13 @@ import org.apache.commons.io.FileUtils
 class ReleaseClientLibs {
 
     static void main(String[] args) {
-        new ReleaseClientLibs().doRelease()
+        String releaseType = args.find({ it.startsWith("releaseType=") })
+        List<String> supportedReleaseTypes = ["patch", "minor", "major", "prepatch", "preminor", "premajor"]
+        assert releaseType, "Must provide releaseType=${supportedReleaseTypes.join("|")}"
+        releaseType = releaseType.split("releaseType=")[1]
+        assert supportedReleaseTypes.contains(releaseType),  "Must provide releaseType=${supportedReleaseTypes.join("|")}"
+
+        new ReleaseClientLibs(typeOfRelease: releaseType).doRelease()
     }
 
     TitlePrinter titlePrinter = new TitlePrinter()
@@ -17,6 +23,7 @@ class ReleaseClientLibs {
     File examplesLoc = new File('./')
     File e2eDir = new File(examplesLoc, "e2e-tests")
     File releaseDir = new File(e2eDir, "/target/releaseClientLibs/")
+    String typeOfRelease;
 
     DownloadServiceJars downloadServiceJars = new DownloadServiceJars(e2eDir: e2eDir, titlePrinter: titlePrinter).init()
 
@@ -25,7 +32,7 @@ class ReleaseClientLibs {
         log.info("examplesLoc is [${examplesLoc.absolutePath}]")
         log.info("e2eDir is [${examplesLoc.absolutePath}]")
         log.info("releaseDir is [${releaseDir.absolutePath}]")
-        if (releaseDir.exists()){
+        if (releaseDir.exists()) {
             FileUtils.deleteDirectory(releaseDir)
             log.info("removed previous release dir [{}]", releaseDir.absolutePath)
         }
@@ -82,19 +89,20 @@ class ReleaseClientLibs {
 //        }
 
         titlePrinter.printTitle("OK Everything looks good! Let's release")
+        boolean dryRun = true
         for (NpmProj proj in allProj.findAll({ it.doOthersLinkToMe })) {
             titlePrinter.printTitle("Release for ${proj.name}")
             if (proj.hasUnreleasedChanges()) {
                 log.info("${proj.name} has has changes let's release")
-                proj.exec("npm install", true)
-                proj.exec("npm run build", true)
-                proj.exec("release-it", true)
+                proj.exec("npm install", dryRun)
+                proj.exec("npm run build", dryRun)
+                proj.exec("release-it --ci ${typeOfRelease}", dryRun)
 
                 List<NpmProjRel> updateVersion = rels.findAll({ it.to.name == proj.name })
                 for (NpmProjRel updateRel in updateVersion) {
                     log.info("  Update version for [${updateRel.from.name}]: [${updateRel.from.getDepVersion("@skills/${updateRel.to.name}")}] -> [${updateRel.to.version}]")
-                    updateRel.from.exec("npm install --save @skills/${updateRel.to.name}@${updateRel.to.version}", true)
-                    updateRel.from.exec("git push", true)
+                    updateRel.from.exec("npm install --save @skills/${updateRel.to.name}@${updateRel.to.version}", dryRun)
+                    updateRel.from.exec("git push", dryRun)
                 }
             } else {
                 log.info("${proj.name} has no changes. Release is not needed!")
@@ -134,18 +142,5 @@ class ReleaseClientLibs {
         res = ["1.0.3-SNAPSHOT"]
         return res
     }
-
-//    private void pullDownJar(String artifact, String version) {
-//        titlePrinter.printTitle("Pulling [${artifact}] jar version [${version}]")
-//        String outputFile = "${artifact}-${version}.jar"
-//        File outputDir = new File(e2eDir, "/target/servicesJars")
-//        outputDir.mkdirs()
-//        new File(outputDir, outputFile).delete()
-//        new ProcessRunner(loc: outputDir)
-//                .run("mvn --batch-mode dependency:get -Dartifact=skills:${artifact}:${version}:jar -Dtransitive=false -Ddest=${outputFile}".toString())
-//
-//        File expectedFile = new File(outputDir, outputFile)
-//        assert expectedFile.exists(), "${expectedFile.absoluteFile.absolutePath}"
-//    }
 
 }
