@@ -1,8 +1,7 @@
 package skills
 
-import ch.qos.logback.core.util.FileUtil
+
 import groovy.util.logging.Slf4j
-import org.apache.commons.io.FileUtils
 
 @Slf4j
 class ReleaseClientLibs {
@@ -12,13 +11,17 @@ class ReleaseClientLibs {
     }
 
     TitlePrinter titlePrinter = new TitlePrinter()
-    File workDir = new File("./target/releaseDir")
-    String examplesProj = "skills-client-examples"
-    File examplesLoc = new File(workDir, examplesProj)
-    File e2eDir = new File(examplesLoc,"e2e-tests")
+//    File workDir = new File("./target/releaseDir")
+//    String examplesProj = "skills-client-examples"
+    File examplesLoc = new File('./')
+    File e2eDir = new File(examplesLoc, "e2e-tests")
+
+    DownloadServiceJars downloadServiceJars = new DownloadServiceJars(e2eDir: e2eDir, titlePrinter: titlePrinter).init()
+
     void doRelease() {
 
-        log.info("Working dir is [${workDir.absolutePath}]")
+        log.info("examplesLoc is [${examplesLoc.absolutePath}]")
+        log.info("e2eDir is [${examplesLoc.absolutePath}]")
 //        if (workDir.exists()){
 //            FileUtils.deleteDirectory(workDir)
 //        }
@@ -33,13 +36,13 @@ class ReleaseClientLibs {
 //            new ProcessRunner(loc: workDir).run("git clone git@gitlab.evoforge.org:skills/${projName}.git")
 //        }
 //
-//        titlePrinter.printTitle("Identify Dependencies")
-//        List<NpmProj> allProj = new NpmProjBuilder(loc: examplesLoc).build()
-//        List<NpmProjRel> rels = new NpmProjBuilder(loc: examplesLoc).buildRelMap()
-//        rels.each {
-//            log.info("${it.from.name} (${it.from.version}) => ${it.to.name} (${it.to.version})")
-//        }
-//
+        titlePrinter.printTitle("Identify Dependencies")
+        List<NpmProj> allProj = new NpmProjBuilder(loc: examplesLoc).build()
+        List<NpmProjRel> rels = new NpmProjBuilder(loc: examplesLoc).buildRelMap()
+        rels.each {
+            log.info("${it.from.name} (${it.from.version}) => ${it.to.name} (${it.to.version})")
+        }
+
 //        titlePrinter.printTitle("check if there is a need to release")
 //        int numProjChanged = 0
 //        for (NpmProj proj in allProj.findAll({ it.doOthersLinkToMe })) {
@@ -71,12 +74,16 @@ class ReleaseClientLibs {
 //        titlePrinter.printTitle("Build examples jar with latest client libs")
 //        new ProcessRunner(loc: examplesLoc).run("mvn package")
 //
+
+        titlePrinter.printTitle("Download latest skills-example-service")
+        downloadServiceJars.download("skills-example-service", "1.0-SNAPSHOT")
+
         List<String> versions = getBackendVersionsToTest()
         titlePrinter.printTitle("Backend versions to test: ${versions}")
 
         versions.each { String version ->
             titlePrinter.printTitle("Testing against backend version [${version}]")
-            pullDownBackendJar(version)
+            downloadServiceJars.download("backend", version)
             runCypressTests(version)
         }
 
@@ -97,7 +104,7 @@ class ReleaseClientLibs {
         killServerProcesses()
         try {
             new ProcessRunner(loc: e2eDir, waitForOutput: false).run("npm run backend:start:release &")
-            new ProcessRunner(loc: e2eDir, waitForOutput: false).run("npm run examples:start &")
+            new ProcessRunner(loc: e2eDir, waitForOutput: false).run("npm run examples:start:release &")
             // this will install cypress, can do that while servers are starting
             new ProcessRunner(loc: e2eDir).run("npm install")
             new ProcessRunner(loc: e2eDir).run("npm run backend:waitToStart")
@@ -125,17 +132,17 @@ class ReleaseClientLibs {
         return res
     }
 
-    private void pullDownBackendJar(String version) {
-        titlePrinter.printTitle("Pulling backend jar version [${version}]")
-        String backendJarLoc = "e2e-tests/target/backendJars"
-        String outputFile = "backend-toTest.jar"
-        File outputDir = new File(examplesLoc, backendJarLoc)
-        outputDir.mkdirs()
-        new File(outputDir, outputFile).delete()
-        new ProcessRunner(loc: outputDir)
-                .run("mvn --batch-mode dependency:get -Dartifact=skills:backend:${version}:jar -Dtransitive=false -Ddest=${outputFile}".toString())
-
-        assert new File(backendJarLoc, outputFile).exists()
-    }
+//    private void pullDownJar(String artifact, String version) {
+//        titlePrinter.printTitle("Pulling [${artifact}] jar version [${version}]")
+//        String outputFile = "${artifact}-${version}.jar"
+//        File outputDir = new File(e2eDir, "/target/servicesJars")
+//        outputDir.mkdirs()
+//        new File(outputDir, outputFile).delete()
+//        new ProcessRunner(loc: outputDir)
+//                .run("mvn --batch-mode dependency:get -Dartifact=skills:${artifact}:${version}:jar -Dtransitive=false -Ddest=${outputFile}".toString())
+//
+//        File expectedFile = new File(outputDir, outputFile)
+//        assert expectedFile.exists(), "${expectedFile.absoluteFile.absolutePath}"
+//    }
 
 }
