@@ -12,12 +12,13 @@ class SetupNpmLinks {
         new SetupNpmLinks(shouldPrune: !shouldNotPrune).doLink()
     }
 
+    File root = new File("./")
     boolean shouldPrune = true
     TitlePrinter titlePrinter = new TitlePrinter()
 
     void doLink() {
         log.info("Should Prune = [{}]", shouldPrune)
-        List<NpmProj> projs = new NpmProjBuilder().build()
+        List<NpmProj> projs = new NpmProjBuilder(loc: root).build()
 
         titlePrinter.printTitle("npm prune and npm install")
         projs.each {

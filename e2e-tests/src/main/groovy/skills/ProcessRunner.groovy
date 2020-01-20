@@ -12,7 +12,7 @@ class ProcessRunner {
     }
 
     boolean dryRun = false
-    boolean failWithErrMsg = true
+    boolean failWithErrMsg = false
     boolean printOutput = true
     boolean waitForOutput = true
 //    OutputStream sout = new StringBuilder()
@@ -31,7 +31,7 @@ class ProcessRunner {
             log.info("DRY RUN [${name}]: [${cmd}]")
             return new ProcessRes(serr: "", sout: "")
         } else {
-            log.info("Executing: [${cmd}]")
+            log.info("Executing: [${cmd}] in [$loc.absoluteFile.absolutePath]")
             Process p = cmd.execute(null, loc)
             if (waitForOutput) {
                 if (printOutput) {
@@ -42,14 +42,6 @@ class ProcessRunner {
                    p.waitForProcessOutput(sout, serr)
                 }
             }
-
-//            else {
-//                p.getInputStream().transferTo(System.out)
-//                p.getErrorStream().transferTo(System.err)
-//            }
-//            if (printOutput) {
-//                log.info("Executed [$cmd]\n--- sout: ---\n${sout}\n---- serr: ---\n${serr}")
-//            }
             String errMsg = serr ? new String(serr.toByteArray()) : ""
             if( waitForOutput && p.exitValue() != 0) {
                 throw new IllegalStateException("[$name] - [${cmd}] failed with error code [${p.exitValue()}]:\n${errMsg}")

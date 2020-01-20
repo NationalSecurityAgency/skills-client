@@ -9,14 +9,10 @@ import groovy.util.logging.Slf4j
 class NpmProj {
     // indicates a client lib that we need to link to
     boolean doOthersLinkToMe
+    String name
     File loc
     // indicates whether it has node_modules/@skills/
     boolean hasLinksToOtherProjects = true
-    String gitLocation
-
-    String getName() {
-        loc.name
-    }
 
     ProcessRunner.ProcessRes exec(String command, boolean dryRun = false) {
         log.info("${loc.name} command: ${command}")

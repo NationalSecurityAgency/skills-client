@@ -1,6 +1,7 @@
 stages:
   - build
   - testCypress
+  - pushToNexus
   - deploy
 
 build:
@@ -65,6 +66,20 @@ testCypress:
       - e2e-tests/cypress/videos/**/*.mp4
       - e2e-tests/cypress/screenshots/**/*.png
     expire_in: 1 day
+
+pushToNexus:
+  image: maven:3.6.0-jdk-11
+  stage: pushToNexus
+  script:
+    - echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
+    - cat ~/.npmrc
+    - echo "<settings><servers><server><id>nexus-snapshots</id><username>admin</username><password>$NEXUS_PASS</password></server><server><id>nexus-releases</id><username>admin</username><password>$NEXUS_PASS</password></server></servers><mirrors><mirror><id>central</id><name>central</name><url>http://$NEXUS_SERVER/repository/maven-public/</url><mirrorOf>*</mirrorOf></mirror></mirrors></settings>" > ~/.m2/settings.xml
+    - cat ~/.m2/settings.xml
+    - cd skills-example-service
+    - mvn deploy -Dnexus.url=http://$NEXUS_SERVER
+  artifacts:
+    paths:
+      - skills-example-service/target/skills-example-service-*.jar
 
 deploy:
   image: alpine:latest
