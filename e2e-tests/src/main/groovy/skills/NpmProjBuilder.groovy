@@ -1,5 +1,6 @@
 package skills
 
+import callStack.profiler.Profile
 import groovy.util.logging.Slf4j
 
 @Slf4j
@@ -38,6 +39,7 @@ class NpmProjBuilder {
         }
     }
 
+    @Profile
     List<NpmProj> build() {
         if (locate) {
             for (NpmProj p : projs) {
