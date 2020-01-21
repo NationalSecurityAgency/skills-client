@@ -14,4 +14,13 @@
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
+  on('before:browser:launch', (browser = {}, args) => {
+    if (browser.name === 'chrome') {
+      args = args.concat('--auto-open-devtools-for-tabs');
+    } else if (browser.name === 'electron') {
+      // Cypress-specific option (state)
+      args.devTools = true;
+    }
+    return args;
+  });
 }
