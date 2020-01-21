@@ -17,7 +17,7 @@ context('Vue Tests', () => {
 
         cy.selectSkill('IronMan')
         cy.clickSubmit()
-        cy.contains('Level 1')
+        cy.contains('Level 1', {timeout: 10000})
 
         cy.selectSkill('Thor')
         cy.clickSubmit()
@@ -51,7 +51,7 @@ context('Vue Tests', () => {
         cy.wait(2000)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1')
+        cy.contains('Level 1', {timeout: 10000})
 
         cy.reportSkillForUser('Thor', 'user1')
         cy.contains('Level 2')
@@ -78,7 +78,7 @@ context('Vue Tests', () => {
         cy.wait(2000)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1')
+        cy.contains('Level 1', {timeout: 10000})
     })
 
     it('level component should NOT update when admin reports skill for other user', () => {
