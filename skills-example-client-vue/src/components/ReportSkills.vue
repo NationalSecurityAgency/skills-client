@@ -1,10 +1,6 @@
 <template>
     <div class="container">
         <h2>Report Skills Examples</h2>
-        <div class="text-primary">Result:</div>
-        <div class="border rounded p-3 bg-light">
-            <pre>dfsfs</pre>
-        </div>
         <code-example v-for="example in examples" v-bind:key="example.title" class="mt-5"
                       :title="example.title" :sample-code="example.code"/>
 

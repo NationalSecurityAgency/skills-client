@@ -73,11 +73,11 @@ context('Vue Tests', () => {
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
 
-        cy.contains('Level 0', {timeout: 10000})
+        cy.contains('Level 0')
         cy.wait(1000)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1', {timeout: 10000})
+        cy.contains('Level 1')
     })
 
     it('level component should NOT update when admin reports skill for other user', () => {
