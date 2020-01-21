@@ -13,6 +13,7 @@ context('Vue Tests', () => {
         cy.visit('/vuejs#/')
 
         cy.contains('Level 0')
+        cy.wait(2000)  // allow for the ui web-socket handshake to complete
 
         cy.selectSkill('IronMan')
         cy.clickSubmit()
@@ -47,7 +48,7 @@ context('Vue Tests', () => {
         cy.visit('/vuejs#/')
 
         cy.contains('Level 0')
-        cy.wait(1000)  // allow for the ui web-socket handshake to complete
+        cy.wait(2000)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
         cy.contains('Level 1')
@@ -74,7 +75,7 @@ context('Vue Tests', () => {
         cy.visit('/vuejs#/')
 
         cy.contains('Level 0')
-        cy.wait(1000)  // allow for the ui web-socket handshake to complete
+        cy.wait(2000)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
         cy.contains('Level 1')
