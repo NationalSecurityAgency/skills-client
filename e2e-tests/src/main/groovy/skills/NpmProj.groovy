@@ -4,7 +4,7 @@ import groovy.json.JsonSlurper
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j
 
-@ToString(includeNames = true, excludes = "modulesDir, packageJson")
+@ToString(includeNames = true, excludes = "packageJson")
 @Slf4j
 class NpmProj {
     // indicates a client lib that we need to link to
@@ -22,9 +22,11 @@ class NpmProj {
         return processRes
     }
 
-    File getModulesDir() {
+    File getModulesDir(boolean checkForExistence = true) {
         File modules = new File(loc, "node_modules/@skills/")
-        assert modules.exists()
+        if (checkForExistence) {
+            assert modules.exists()
+        }
         return modules
     }
 

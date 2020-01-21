@@ -3,6 +3,7 @@ package skills
 import callStack.profiler.CProf
 import callStack.profiler.Profile
 import groovy.util.logging.Slf4j
+import org.apache.commons.io.FileUtils
 
 import java.nio.file.Files
 
@@ -16,7 +17,7 @@ class SetupNpmLinks {
     }
 
     File root = new File("./")
-    boolean shouldPrune = true
+    boolean shouldPrune = false
     TitlePrinter titlePrinter = new TitlePrinter()
 
     @Profile
@@ -24,11 +25,26 @@ class SetupNpmLinks {
         log.info("Should Prune = [{}]", shouldPrune)
         List<NpmProj> projs = new NpmProjBuilder(loc: root).build()
 
+        removeAnyExistingLinks(projs)
         npmInstall(projs)
         createLinks(projs)
         npmLinkToSkills(projs)
         validateLinks(projs)
         build(projs)
+    }
+
+    @Profile
+    private void removeAnyExistingLinks(List<NpmProj> projs) {
+        titlePrinter.printTitle("removing existing links")
+        projs.each { NpmProj proj ->
+            File moduleDir = proj.getModulesDir(false)
+            if (moduleDir.exists()) {
+                moduleDir?.eachDir { File depDir ->
+                    log.info("Deleting [{}]", depDir.absoluteFile.absolutePath)
+                    FileUtils.deleteDirectory(depDir.absoluteFile)
+                }
+            }
+        }
     }
 
     @Profile
@@ -67,6 +83,8 @@ class SetupNpmLinks {
         titlePrinter.printTitle("create links")
         projs.findAll({ it.doOthersLinkToMe }).each {
             titlePrinter.printSubTitle("create link for ${it.loc.name}")
+            it.exec("ls")
+            it.exec("node -v")
             it.exec("npm link")
         }
     }
