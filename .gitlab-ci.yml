@@ -64,7 +64,7 @@ testCypress:
   artifacts:
     when: always
     paths:
-      - e2e-tests/cypress/videos/**/*.mp4
+      - e2e-tests/cypress/videos/*.mp4
       - e2e-tests/cypress/screenshots/**/*.png
     expire_in: 1 day
 
