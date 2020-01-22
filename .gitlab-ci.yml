@@ -62,8 +62,8 @@ testCypress:
     - cd e2e-tests
     - npm prune
     - npm install
-    - npm run backend:start:ci &
-    - npm run examples:start &
+    - npm run backend:start:tmp &
+    - npm run examples:start:tmp &
     - npm run backend:waitToStart
     - npm run examples:waitToStart
     # run tests
