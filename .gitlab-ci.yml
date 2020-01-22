@@ -53,7 +53,7 @@ testCypress:
     - cat /etc/os-release
     - curl -sL https://deb.nodesource.com/setup_13.x | bash -
     - apt-get install -y nodejs
-    - apt-get install xvfb
+    - apt-get install -y xvfb
     - node -v
     - npm -v
   script:
