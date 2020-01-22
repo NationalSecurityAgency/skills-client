@@ -30,5 +30,8 @@ beforeEach(() => {
         cy.backendRegister(vars.defaultUser, vars.defaultPass);
         cy.backendLogin(vars.defaultUser, vars.defaultPass);
     });
+})
 
+afterEach(() => {
+    cy.backendLogout();
 })
