@@ -12,7 +12,7 @@ context('Vue Tests', () => {
 
         cy.visit('/vuejs#/')
 
-        cy.contains('Level 0')
+        cy.contains('Level 0', {timeout: 10000})
         cy.wait(2000)  // allow for the ui web-socket handshake to complete
 
         cy.selectSkill('IronMan')
@@ -21,23 +21,23 @@ context('Vue Tests', () => {
 
         cy.selectSkill('Thor')
         cy.clickSubmit()
-        cy.contains('Level 2')
+        cy.contains('Level 2', {timeout: 10000})
 
         cy.selectSkill('subj1_skill0')
         cy.clickSubmit()
-        cy.contains('Level 3')
+        cy.contains('Level 3', {timeout: 10000})
 
         cy.selectSkill('subj1_skill1')
         cy.clickSubmit()
-        cy.contains('Level 3')
+        cy.contains('Level 3', {timeout: 10000})
 
         cy.selectSkill('subj2_skill0')
         cy.clickSubmit()
-        cy.contains('Level 4')
+        cy.contains('Level 4', {timeout: 10000})
 
         cy.selectSkill('subj2_skill1')
         cy.clickSubmit()
-        cy.contains('Level 5')
+        cy.contains('Level 5', {timeout: 10000})
     })
 
     it('level component should be reactive (skills reported directly to backend endpoint)', () => {
@@ -47,26 +47,26 @@ context('Vue Tests', () => {
         })
         cy.visit('/vuejs#/')
 
-        cy.contains('Level 0')
+        cy.contains('Level 0', {timeout: 10000})
         cy.wait(2000)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
         cy.contains('Level 1', {timeout: 10000})
 
         cy.reportSkillForUser('Thor', 'user1')
-        cy.contains('Level 2')
+        cy.contains('Level 2', {timeout: 10000})
 
         cy.reportSkillForUser('subj1_skill0', 'user1')
-        cy.contains('Level 3')
+        cy.contains('Level 3', {timeout: 10000})
 
         cy.reportSkillForUser('subj1_skill1', 'user1')
-        cy.contains('Level 3')
+        cy.contains('Level 3', {timeout: 10000})
 
         cy.reportSkillForUser('subj2_skill0', 'user1')
-        cy.contains('Level 4')
+        cy.contains('Level 4', {timeout: 10000})
 
         cy.reportSkillForUser('subj2_skill1', 'user1')
-        cy.contains('Level 5')
+        cy.contains('Level 5', {timeout: 10000})
     })
 
     it('level component should update when admin reports skill for current user', () => {
@@ -74,7 +74,7 @@ context('Vue Tests', () => {
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
 
-        cy.contains('Level 0')
+        cy.contains('Level 0', {timeout: 10000})
         cy.wait(2000)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
