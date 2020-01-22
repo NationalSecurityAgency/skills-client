@@ -11,6 +11,7 @@ context('Vue Tests', () => {
         })
 
         cy.visit('/vuejs#/')
+        cy.reload()
 
         cy.contains('Level 0', {timeout: 10000})
         cy.wait(2000)  // allow for the ui web-socket handshake to complete
@@ -46,6 +47,7 @@ context('Vue Tests', () => {
             cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
         })
         cy.visit('/vuejs#/')
+        cy.reload()
 
         cy.contains('Level 0', {timeout: 10000})
         cy.wait(2000)  // allow for the ui web-socket handshake to complete
@@ -73,6 +75,7 @@ context('Vue Tests', () => {
 
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
+        cy.reload()
 
         cy.contains('Level 0', {timeout: 10000})
         cy.wait(2000)  // allow for the ui web-socket handshake to complete
