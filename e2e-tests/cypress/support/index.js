@@ -32,6 +32,3 @@ beforeEach(() => {
     });
 })
 
-afterEach(() => {
-    cy.backendLogout();
-})
