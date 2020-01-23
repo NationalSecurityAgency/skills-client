@@ -254,18 +254,18 @@ context('Vue Tests', () => {
         })
     })
 
-    // it('client display should display an error if skills service is down', () => {
-    //     cy.server().route({
-    //         method: 'GET',
-    //         url: '/public/status',
-    //         status: 503, // server is down
-    //         response: {}
-    //     }).as('getStatus')
-    //     cy.visit('/vuejs#/showSkills')
-    //     cy.wait('@getStatus')
+    it('client display should display an error if skills service is down', () => {
+        cy.server().route({
+            method: 'GET',
+            url: '/public/status',
+            status: 503, // server is down
+            response: {}
+        }).as('getStatus')
+        cy.visit('/vuejs#/showSkills')
+        cy.wait('@getStatus')
 
-    //     cy.contains('Could NOT reach Skills Service')
-    // });
+        cy.contains('Could NOT reach Skills Service')
+    });
 
 
     it('only display skills up-to the provided version', () => {
