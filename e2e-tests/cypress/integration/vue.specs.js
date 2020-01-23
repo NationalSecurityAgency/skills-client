@@ -43,7 +43,7 @@ context('Vue Tests', () => {
         cy.wait(10000) 
     })
 
-    it('level component should be reactive (skills reported directly to backend endpoint)', () => {
+    it.only('level component should be reactive (skills reported directly to backend endpoint)', () => {
         cy.createDefaultProject()
         Cypress.Commands.add("reportSkill", (skillId) => {
             cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
