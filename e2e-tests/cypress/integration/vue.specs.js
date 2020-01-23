@@ -39,6 +39,8 @@ context('Vue Tests', () => {
         cy.selectSkill('subj2_skill1')
         cy.clickSubmit()
         cy.contains('Level 5', {timeout: 10000})
+
+        cy.wait(10000) 
     })
 
     it('level component should be reactive (skills reported directly to backend endpoint)', () => {
@@ -69,6 +71,8 @@ context('Vue Tests', () => {
 
         cy.reportSkillForUser('subj2_skill1', 'user1')
         cy.contains('Level 5', {timeout: 10000})
+
+        cy.wait(10000) 
     })
 
     it('level component should update when admin reports skill for current user', () => {
@@ -82,6 +86,8 @@ context('Vue Tests', () => {
 
         cy.reportSkillForUser('IronMan', 'user1')
         cy.contains('Level 1', {timeout: 10000})
+
+        cy.wait(10000) 
     })
 
     it('level component should NOT update when admin reports skill for other user', () => {
