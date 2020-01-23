@@ -32,3 +32,6 @@ beforeEach(() => {
     });
 })
 
+afterEach(() => {
+    cy.wait(10000)
+})
