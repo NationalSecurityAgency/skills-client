@@ -31,7 +31,3 @@ beforeEach(() => {
         cy.backendLogin(vars.defaultUser, vars.defaultPass);
     });
 })
-
-afterEach(() => {
-    cy.wait(10000)
-})
