@@ -1,4 +1,4 @@
-const wsTimeout = 20000;
+const wsTimeout = 10000;
 
 context('Vue Tests', () => {
 
