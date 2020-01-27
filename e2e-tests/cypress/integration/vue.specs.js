@@ -1,3 +1,5 @@
+const wsTimeout = 1000;
+
 context('Vue Tests', () => {
 
     it('level component should be reactive', () => {
@@ -47,7 +49,7 @@ context('Vue Tests', () => {
         cy.visit('/vuejs#/')
 
         cy.contains('Level 0')
-        cy.wait(1000)  // allow for the ui web-socket handshake to complete
+        cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
         cy.contains('Level 1')
@@ -68,18 +70,6 @@ context('Vue Tests', () => {
         cy.contains('Level 5')
     })
 
-    it('level component should update when admin reports skill for current user', () => {
-
-        cy.createDefaultProject()
-        cy.visit('/vuejs#/')
-
-        cy.contains('Level 0')
-        cy.wait(1000)  // allow for the ui web-socket handshake to complete
-
-        cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1')
-    })
-
     it('level component should NOT update when admin reports skill for other user', () => {
 
         cy.createDefaultProject()
@@ -89,6 +79,7 @@ context('Vue Tests', () => {
         cy.visit('/vuejs#/')
 
         cy.contains('Level 0')
+        cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
         cy.backendPost('/api/projects/proj1/skills/IronMan', {userId: 'unknown@skills.org', timestamp: Date.now()})
         cy.contains('Level 0')
