@@ -1,4 +1,4 @@
-const wsTimeout = 10000;
+const wsTimeout = 1000;
 
 context('Vue Tests', () => {
 
@@ -79,99 +79,98 @@ context('Vue Tests', () => {
     // })
 
     it('level component should update when admin reports skill for current user 1', () => {
-
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
 
-        cy.contains('Level 0', {timeout: 10000})
+        cy.contains('Level 0')
         cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
       
-        cy.contains('Level 1', {timeout: 10000})
+        cy.contains('Level 1')
     })
     it('level component should update when admin reports skill for current user 2', () => {
-
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
 
-        cy.contains('Level 0', {timeout: 10000})
+        cy.contains('Level 0')
         cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1', {timeout: 10000})
+      
+        cy.contains('Level 1')
     })
 
     it('level component should update when admin reports skill for current user 3', () => {
-
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
 
-        cy.contains('Level 0', {timeout: 10000})
+        cy.contains('Level 0')
         cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1', {timeout: 10000})
+      
+        cy.contains('Level 1')
     })
 
     it('level component should update when admin reports skill for current user 4', () => {
-
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
 
-        cy.contains('Level 0', {timeout: 10000})
+        cy.contains('Level 0')
         cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1', {timeout: 10000})
+      
+        cy.contains('Level 1')
     })
 
     it('level component should update when admin reports skill for current user 5', () => {
-
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
 
-        cy.contains('Level 0', {timeout: 10000})
+        cy.contains('Level 0')
         cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1', {timeout: 10000})
+      
+        cy.contains('Level 1')
     })
 
     it('level component should update when admin reports skill for current user 6', () => {
-
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
 
-        cy.contains('Level 0', {timeout: 10000})
+        cy.contains('Level 0')
         cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1', {timeout: 10000})
+      
+        cy.contains('Level 1')
     })
 
     it('level component should update when admin reports skill for current user 7', () => {
-
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
 
-        cy.contains('Level 0', {timeout: 10000})
+        cy.contains('Level 0')
         cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1', {timeout: 10000})
+      
+        cy.contains('Level 1')
     })
 
     it('level component should update when admin reports skill for current user 8', () => {
-
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
 
-        cy.contains('Level 0', {timeout: 10000})
+        cy.contains('Level 0')
         cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1', {timeout: 10000})
+      
+        cy.contains('Level 1')
     })
 
     // it('level component should NOT update when admin reports skill for other user', () => {
