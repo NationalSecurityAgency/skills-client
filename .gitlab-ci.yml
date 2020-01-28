@@ -19,21 +19,21 @@ build:
     - cat e2e-tests/serverConfigs/settings.xml | sed s/NEXUS_SERVER/$NEXUS_SERVER/ > ~/.m2/settings.xml
     - cat ~/.m2/settings.xml
     - cd ..
-#    - rm -rf skills-client-configuration
-#    - git clone https://${DEPLOYTOKEN_SKILLS_CONFIG}:${DEPLOYTOKEN_SKILLS_CONFIG_PASS}@gitlab.evoforge.org/skills/skills-client-configuration.git
-#    - rm -rf skills-client-reporter
-#    - git clone https://${DEPLOYTOKEN_SKILLS_REPORTER}:${DEPLOYTOKEN_SKILLS_REPORTER_PASS}@gitlab.evoforge.org/skills/skills-client-reporter.git
-#    - rm -rf skills-client-js
-#    - git clone https://${DEPLOYTOKEN_SKILLS_JS}:${DEPLOYTOKEN_SKILLS_JS_PASS}@gitlab.evoforge.org/skills/skills-client-js.git
-#    - rm -rf skills-client-vue
-#    - git clone https://${DEPLOYTOKEN_SKILLS_VUE}:${DEPLOYTOKEN_SKILLS_VUE_PASS}@gitlab.evoforge.org/skills/skills-client-vue.git
-#    - rm -rf skills-client-react
-#    - git clone https://${DEPLOYTOKEN_SKILLS_REACT}:${DEPLOYTOKEN_SKILLS_REACT_PASS}@gitlab.evoforge.org/skills/skills-client-react.git
+    - rm -rf skills-client-configuration
+    - git clone https://${DEPLOYTOKEN_SKILLS_CONFIG}:${DEPLOYTOKEN_SKILLS_CONFIG_PASS}@gitlab.evoforge.org/skills/skills-client-configuration.git
+    - rm -rf skills-client-reporter
+    - git clone https://${DEPLOYTOKEN_SKILLS_REPORTER}:${DEPLOYTOKEN_SKILLS_REPORTER_PASS}@gitlab.evoforge.org/skills/skills-client-reporter.git
+    - rm -rf skills-client-js
+    - git clone https://${DEPLOYTOKEN_SKILLS_JS}:${DEPLOYTOKEN_SKILLS_JS_PASS}@gitlab.evoforge.org/skills/skills-client-js.git
+    - rm -rf skills-client-vue
+    - git clone https://${DEPLOYTOKEN_SKILLS_VUE}:${DEPLOYTOKEN_SKILLS_VUE_PASS}@gitlab.evoforge.org/skills/skills-client-vue.git
+    - rm -rf skills-client-react
+    - git clone https://${DEPLOYTOKEN_SKILLS_REACT}:${DEPLOYTOKEN_SKILLS_REACT_PASS}@gitlab.evoforge.org/skills/skills-client-react.git
     - cd skills-client-examples/e2e-tests
-#    - mvn --batch-mode clean package
-#    - java -cp target/skills-example-e2e-1.0-SNAPSHOT.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.PropertiesLauncher
+    - mvn --batch-mode clean package
+    - java -cp target/skills-example-e2e-1.0-SNAPSHOT.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.PropertiesLauncher
     - cd ..
-#    - mvn --batch-mode clean install
+    - mvn --batch-mode clean install
     - mkdir -p ./skills-service/
     - cd ./skills-service/
     - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -Ddest=backend-toTest.jar
@@ -42,7 +42,7 @@ build:
     - ls ./skills-service
   artifacts:
     paths:
-#      - ./skills-example-service/target/skills-example-service-*.jar
+      - ./skills-example-service/target/skills-example-service-*.jar
       - ./skills-service/*.jar
 
 
