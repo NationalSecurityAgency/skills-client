@@ -42,6 +42,7 @@ build:
     - ls ./
     - ls ./skills-service
     - ls ./skills-service/*.jar
+    - wget
   artifacts:
     paths:
 #      - ./skills-example-service/target/skills-example-service-*.jar
