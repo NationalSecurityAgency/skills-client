@@ -38,8 +38,10 @@ build:
     - cd ./skills-service/
     - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -DrepoUrl=https://ip-10-113-80-244.evoforge.org/repository/maven-snapshots/ -Ddest=backend-toTest.jar
     - cd ..
+    - pwd
     - ls ./
     - ls ./skills-service
+    - ls ./skills-service/*.jar
   artifacts:
     paths:
 #      - ./skills-example-service/target/skills-example-service-*.jar
