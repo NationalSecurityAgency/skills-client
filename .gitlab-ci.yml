@@ -36,13 +36,10 @@ build:
 #    - mvn --batch-mode clean install
     - mkdir -p ./skills-service/
     - cd ./skills-service/
-    - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -DrepoUrl=https://ip-10-113-80-244.evoforge.org/repository/maven-snapshots/ -Ddest=backend-toTest.jar
+    - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -Ddest=backend-toTest.jar
     - cd ..
-    - pwd
     - ls ./
     - ls ./skills-service
-    - ls ./skills-service/*.jar
-    - wget
   artifacts:
     paths:
 #      - ./skills-example-service/target/skills-example-service-*.jar
@@ -80,7 +77,10 @@ pushToNexus:
     - echo "<settings><servers><server><id>nexus-snapshots</id><username>admin</username><password>$NEXUS_PASS</password></server><server><id>nexus-releases</id><username>admin</username><password>$NEXUS_PASS</password></server></servers><mirrors><mirror><id>central</id><name>central</name><url>http://$NEXUS_SERVER/repository/maven-public/</url><mirrorOf>*</mirrorOf></mirror></mirrors></settings>" > ~/.m2/settings.xml
     - cat ~/.m2/settings.xml
     - cd skills-example-service
-    - mvn --batch-mode deploy -Dnexus.url=http://$NEXUS_SERVER
+    - examplesJar=$(ls ./target/skills-example-service-*.jar)
+    - echo $examplesJar
+#    - mvn --batch-mode deploy -Dnexus.url=http://$NEXUS_SERVER
+    - mvn --batch-mode deploy:deploy-file -DpomFile=./pom.xml -Dfile=${$examplesJar} -Durl=http://ip-10-113-80-244.evoforge.org/repository/maven-snapshots/ -DrepositoryId=nexus-snapshots
   artifacts:
     paths:
       - skills-example-service/target/skills-example-service-*.jar
