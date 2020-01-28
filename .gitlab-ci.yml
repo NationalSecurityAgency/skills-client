@@ -45,7 +45,7 @@ build:
   artifacts:
     paths:
 #      - ./skills-example-service/target/skills-example-service-*.jar
-      - ./skills-service/*.jar
+      - /builds//skills-service/*.jar
 
 
 testCypress:
