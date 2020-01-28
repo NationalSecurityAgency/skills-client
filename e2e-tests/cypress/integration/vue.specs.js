@@ -127,33 +127,33 @@ context('Vue Tests', () => {
         cy.typeToInput(false)
     })
 
-    it('v-skill directive on click with error', () => {
-        cy.createDefaultTinyProject()
-        cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
+    // it('v-skill directive on click with error', () => {
+    //     cy.createDefaultTinyProject()
+    //     cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
 
-        cy.visit('/vuejs#/')
+    //     cy.visit('/vuejs#/')
 
-        cy.get('#SkillsDirectiveErrorwithButton button').click()
-        cy.wait('@postSkill');
-        cy.get('@postSkill').then((xhr) => {
-            expect(xhr.status).to.eq(400)
-            expect(xhr.responseBody).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
-        });
-    })
+    //     cy.get('#SkillsDirectiveErrorwithButton button').click()
+    //     cy.wait('@postSkill');
+    //     cy.get('@postSkill').then((xhr) => {
+    //         expect(xhr.status).to.eq(400)
+    //         expect(xhr.responseBody).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
+    //     });
+    // })
 
-    it('v-skill directive on input with error', () => {
-        cy.createDefaultTinyProject()
-        cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
+    // it('v-skill directive on input with error', () => {
+    //     cy.createDefaultTinyProject()
+    //     cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
 
-        cy.visit('/vuejs#/')
+    //     cy.visit('/vuejs#/')
 
-        cy.get('#SkillsDirectiveErrorwithInput input').type('h')
-        cy.wait('@postSkill');
-        cy.get('@postSkill').then((xhr) => {
-            expect(xhr.status).to.eq(400)
-            expect(xhr.responseBody).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
-        });
-    })
+    //     cy.get('#SkillsDirectiveErrorwithInput input').type('h')
+    //     cy.wait('@postSkill');
+    //     cy.get('@postSkill').then((xhr) => {
+    //         expect(xhr.status).to.eq(400)
+    //         expect(xhr.responseBody).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
+    //     });
+    // })
 
     it('skill display', () => {
         cy.createDefaultTinyProject()
