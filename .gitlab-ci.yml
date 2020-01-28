@@ -1,24 +1,24 @@
 stages:
-#  - build
+  - build
   - testCypress
   - pushToNexus
   - deploy
 
-#build:
-#  image: maven:3.6.0-jdk-11
-#  stage: build
-#  before_script:
-#    - cat /etc/os-release
-#    - curl -sL https://deb.nodesource.com/setup_13.x | bash -
-#    - apt-get install -y nodejs
-#    - node -v
-#    - npm -v
-#  script:
-#    - echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
-#    - cat ~/.npmrc
-#    - cat e2e-tests/serverConfigs/settings.xml | sed s/NEXUS_SERVER/$NEXUS_SERVER/ > ~/.m2/settings.xml
-#    - cat ~/.m2/settings.xml
-#    - cd ..
+build:
+  image: maven:3.6.0-jdk-11
+  stage: build
+  before_script:
+    - cat /etc/os-release
+    - curl -sL https://deb.nodesource.com/setup_13.x | bash -
+    - apt-get install -y nodejs
+    - node -v
+    - npm -v
+  script:
+    - echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
+    - cat ~/.npmrc
+    - cat e2e-tests/serverConfigs/settings.xml | sed s/NEXUS_SERVER/$NEXUS_SERVER/ > ~/.m2/settings.xml
+    - cat ~/.m2/settings.xml
+    - cd ..
 #    - rm -rf skills-client-configuration
 #    - git clone https://${DEPLOYTOKEN_SKILLS_CONFIG}:${DEPLOYTOKEN_SKILLS_CONFIG_PASS}@gitlab.evoforge.org/skills/skills-client-configuration.git
 #    - rm -rf skills-client-reporter
@@ -32,18 +32,18 @@ stages:
 #    - cd skills-client-examples/e2e-tests
 #    - mvn --batch-mode clean package
 #    - java -cp target/skills-example-e2e-1.0-SNAPSHOT.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.PropertiesLauncher
-#    - cd ..
+    - cd ..
 #    - mvn --batch-mode clean install
-#    - mkdir -p ./skills-service/
-#    - cd ./skills-service/
-#    - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -Ddest=backend-toTest.jar
-#    - cd ..
-#    - ls ./
-#    - ls ./skills-service
-#  artifacts:
-#    paths:
+    - mkdir -p ./skills-service/
+    - cd ./skills-service/
+    - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -DrepoUrl=https://ip-10-113-80-244.evoforge.org/repository/maven-snapshots/ -Ddest=backend-toTest.jar
+    - cd ..
+    - ls ./
+    - ls ./skills-service
+  artifacts:
+    paths:
 #      - ./skills-example-service/target/skills-example-service-*.jar
-#      - ./skills-service/*.jar
+      - ./skills-service/*.jar
 
 
 testCypress:
