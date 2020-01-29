@@ -89,61 +89,7 @@ context('Vue Tests', () => {
         cy.contains('"pointsEarned": 50')
         cy.contains('"skillApplied": true')
         cy.contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
-        // {
-        //     "skillId": "IronMan",
-        //     "name": "This is IronMan",
-        //     "pointsEarned": 50,
-        //     "skillApplied": true,
-        //     "explanation": "Skill event was applied",
-        //     "completed": [
-        //       {
-        //         "type": "Subject",
-        //         "level": 1,
-        //         "id": "subj0",
-        //         "name": "Subject 0"
-        //       },
-        //       {
-        //         "type": "Subject",
-        //         "level": 2,
-        //         "id": "subj0",
-        //         "name": "Subject 0"
-        //       },
-        //       {
-        //         "type": "Subject",
-        //         "level": 3,
-        //         "id": "subj0",
-        //         "name": "Subject 0"
-        //       },
-        //       {
-        //         "type": "Overall",
-        //         "level": 1,
-        //         "id": "OVERALL",
-        //         "name": "OVERALL"
-        //       },
-        //       {
-        //         "type": "Skill",
-        //         "level": null,
-        //         "id": "IronMan",
-        //         "name": "This is IronMan"
-        //       }
-        //     ]
-        //   }
-        // cy.reportSkillForUser('Thor', 'user1')
-        // cy.contains('Level 2')
-
-        // cy.reportSkillForUser('subj1_skill0', 'user1')
-        // cy.contains('Level 3')
-
-        // cy.reportSkillForUser('subj1_skill1', 'user1')
-        // cy.contains('Level 3')
-
-        // cy.reportSkillForUser('subj2_skill0', 'user1')
-        // cy.contains('Level 4')
-
-        // cy.reportSkillForUser('subj2_skill1', 'user1')
-        // cy.contains('Level 5')
     })
-
 
     it('level component should NOT update when admin reports skill for other user', () => {
 
