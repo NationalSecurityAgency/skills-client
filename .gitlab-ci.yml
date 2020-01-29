@@ -79,7 +79,6 @@ pushToNexus:
     - cd skills-example-service
     - examplesJar=$(ls ./target/skills-example-service-*.jar)
     - echo $examplesJar
-#    - mvn --batch-mode deploy -Dnexus.url=http://$NEXUS_SERVER
     - mvn --batch-mode deploy:deploy-file -DpomFile=./pom.xml -Dfile=${examplesJar} -Durl=http://ip-10-113-80-244.evoforge.org/repository/maven-snapshots/ -DrepositoryId=nexus-snapshots
   artifacts:
     paths:
