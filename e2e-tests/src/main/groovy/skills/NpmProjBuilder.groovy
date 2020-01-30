@@ -25,10 +25,10 @@ class NpmProjBuilder {
             new NpmProj(name: "skills-client-reporter", doOthersLinkToMe: true),
             new NpmProj(name: "skills-client-js", doOthersLinkToMe: true),
             new NpmProj(name: "skills-client-vue", doOthersLinkToMe: true),
-            new NpmProj(name: "skills-client-react", doOthersLinkToMe: true),
+            new NpmProj(name: "skills-client-react", doOthersLinkToMe: true, reactModule: true),
             new NpmProj(name: "skills-example-client-js", doOthersLinkToMe: false),
             new NpmProj(name: "skills-example-client-vue", doOthersLinkToMe: false),
-            new NpmProj(name: "skills-example-client-react", doOthersLinkToMe: false),
+            new NpmProj(name: "skills-example-client-react", doOthersLinkToMe: false, reactApp: true),
     ]
 
     private void assertExist() {
