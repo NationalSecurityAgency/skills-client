@@ -33,6 +33,9 @@ const ReportSkill = () => {
         axios.get("/api/skills")
             .then((result) => {
                 setSelectData(result.data);
+                if (result.data && result.data.length > 0) {
+                    selectedSkillId = result.data[0];
+                }
             });
     }, []);
 
