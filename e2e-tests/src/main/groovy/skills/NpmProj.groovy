@@ -14,6 +14,10 @@ class NpmProj {
     // indicates whether it has node_modules/@skills/
     boolean hasLinksToOtherProjects = true
 
+    // need extra npm link setup for react apps/modules
+    boolean reactModule = false
+    boolean reactApp = false
+
     ProcessRunner.ProcessRes exec(String command, boolean dryRun = false) {
         if (!dryRun) {
             log.info("${loc.name} command: ${command}")
@@ -22,14 +26,29 @@ class NpmProj {
         return processRes
     }
 
-    File getModulesDir(boolean checkForExistence = true) {
-        File modules = new File(loc, "node_modules/@skills/")
+    File getNodeModulesDir(boolean checkForExistence = true) {
+        File modules = new File(loc, "node_modules/")
         if (checkForExistence) {
             assert modules.exists()
         }
         return modules
     }
 
+    File getSkillsModulesDir(boolean checkForExistence = true) {
+        File skillsModules = new File(getNodeModulesDir(checkForExistence), "@skills/")
+        if (checkForExistence) {
+            assert skillsModules.exists()
+        }
+        return skillsModules
+    }
+
+    File getReactModuleDir(boolean checkForExistence = true) {
+        File reactModule = new File(getNodeModulesDir(checkForExistence), "react/")
+        if (checkForExistence) {
+            assert reactModule.exists()
+        }
+        return reactModule
+    }
 
     static JsonSlurper slurper = new JsonSlurper()
 
