@@ -48,12 +48,19 @@ const ShowSkill = () => {
         }
         return false;
     });
+    const [skillsVersion] = React.useState(() => {
+        const skillsVersion = getUrlParam("skillsVersion");
+        if(skillsVersion) {
+            return skillsVersion;
+        }
+        return '';
+    });
 
     const [options, setOptions] = React.useState({ isSummaryOnly: isSummaryOnly, autoScrollStrategy: 'top-offset', scrollTopOffset: 110 });
 
     const previousIsSummaryOnly = usePrevious(isSummaryOnly);
     const previousSelectedTheme = usePrevious(selectedTheme);
-
+    const previousSkillsVersion = usePrevious(skillsVersion);
 
     React.useEffect(() => {
         const saveUrlParam = (paramsObj) => {
@@ -66,10 +73,10 @@ const ShowSkill = () => {
         };
 
         if (isSummaryOnly !== previousIsSummaryOnly || selectedTheme !== previousSelectedTheme) {
-            saveUrlParam({'isSummaryOnly': isSummaryOnly, 'themeName': selectedTheme.name});
+            saveUrlParam({'isSummaryOnly': isSummaryOnly, 'themeName': selectedTheme.name, 'skillsVersion': skillsVersion});
         }
 
-    }, [isSummaryOnly, selectedTheme, previousIsSummaryOnly, previousSelectedTheme, history]);
+    }, [isSummaryOnly, selectedTheme, skillsVersion, previousIsSummaryOnly, previousSelectedTheme, previousSkillsVersion, history]);
 
     const sampleCodeRef = React.createRef();
     const executeScroll = () => scrollToRef(sampleCodeRef);
@@ -104,7 +111,7 @@ const ShowSkill = () => {
             </div>
 
             <div className="border rounded">
-                <SkillsDisplay options={options} theme={selectedTheme.theme}/>
+                <SkillsDisplay options={options} theme={selectedTheme.theme} version={skillsVersion}/>
             </div>
 
             <div ref={sampleCodeRef}>
