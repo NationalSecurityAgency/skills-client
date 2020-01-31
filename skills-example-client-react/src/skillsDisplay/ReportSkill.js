@@ -51,7 +51,7 @@ const ReportSkill = () => {
             <div className="container">
                 <h2>Report Skills Examples</h2>
                 <div className="text-primary">Global Event Result:</div>
-                <div id="globalEventResult" className="border rounded p-3 bg-light">
+                <div id="globalEventResult" className="border rounded p-3 mb-5 bg-light">
                     <pre id="global-event-result-container"></pre>
                 </div>
                 <div>
