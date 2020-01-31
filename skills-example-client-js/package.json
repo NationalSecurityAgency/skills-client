@@ -4,6 +4,7 @@
   "description": "Skills Examples using the native javascript libraries",
   "main": "index.js",
   "scripts": {
+    "postinstall": "mkdir -p ./app/assets/js && cp -r ./node_modules/* ./app/assets/js/",
     "serve": "npx live-server --open=app --cors --proxy=/api:http://localhost:8090/api",
     "test": "npm run test",
     "build": "echo nothingtodo"
