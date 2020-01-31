@@ -38,7 +38,11 @@ build:
     - mvn --batch-mode clean install
     - ls -la skills-example-client-js/node_modules/@skills
     - ls -la skills-example-client-js/app/assets/js | grep skills
-    - ls -la skills-example-client-js/app/assets/js
+    - ls -la skills-example-client-js/app/assets/js/@skills
+    - ls -la /usr/lib/node_modules
+    - chmod -R 777 /usr/lib/node_modules
+    - ls -la /usr/lib/node_modules
+    - jar tvf skills-example-service/target/skills-example-service-*.jar | grep -i skills
     - mkdir -p ./skills-service/
     - cd ./skills-service/
     - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -Ddest=backend-toTest.jar
