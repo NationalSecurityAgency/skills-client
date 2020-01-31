@@ -37,6 +37,9 @@ const ReportSkill = () => {
                     selectedSkillId = result.data[0];
                 }
             });
+        SkillsReporter.addSuccessHandler((result) => {
+            document.querySelector('#global-event-result-container').innerHTML = JSON.stringify(result, null, 2);
+        });
     }, []);
 
     const style = {
@@ -47,6 +50,10 @@ const ReportSkill = () => {
         <div className="container-fluid" style={style}>
             <div className="container">
                 <h2>Report Skills Examples</h2>
+                <div className="text-primary">Global Event Result:</div>
+                <div id="globalEventResult" className="border rounded p-3 bg-light">
+                    <pre id="global-event-result-container"></pre>
+                </div>
                 <div>
                     <h5 className="text-info"><strong>Report Any Skill</strong></h5>
                     <div className="card card-body bg-light">
