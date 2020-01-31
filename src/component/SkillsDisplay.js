@@ -10,7 +10,7 @@ const destroy = (cd) => {
     }
 };
 
-const SkillDisplay = ({theme=null, version=0, userId=null, options={}}) => {
+const SkillDisplay = ({theme=null, version=null, userId=null, options={}}) => {
 
     React.useEffect(() => {
         clientDisplay = new SkillsDisplayJS({
@@ -32,7 +32,7 @@ const SkillDisplay = ({theme=null, version=0, userId=null, options={}}) => {
 
 SkillDisplay.propTypes = {
     theme: PropTypes.object,
-    version: PropTypes.number,
+    version: PropTypes.string,
     userId: PropTypes.string,
     options: PropTypes.shape({
         serviceUrl: PropTypes.string,
