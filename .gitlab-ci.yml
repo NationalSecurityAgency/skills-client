@@ -36,6 +36,8 @@ build:
     - ls -la node_modules
     - cd ..
     - mvn --batch-mode clean install
+    - ls -la node_modules | grep skills
+    - ls -la app/assets/js | grep skills
     - mkdir -p ./skills-service/
     - cd ./skills-service/
     - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.0.3-SNAPSHOT:jar -Dtransitive=false -Ddest=backend-toTest.jar
