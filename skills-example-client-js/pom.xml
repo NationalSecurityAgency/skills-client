@@ -43,7 +43,7 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>install</arguments>
+                            <arguments>--unsafe-perm install</arguments>
                         </configuration>
                     </execution>
                     <execution>
