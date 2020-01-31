@@ -19,6 +19,10 @@
         SkillsConfiguration.default.configure(result.data);
       });
 
+    SkillsReporter.SkillsReporter.addSuccessHandler((result) => {
+      document.querySelector('#global-event-result-container').innerHTML = JSON.stringify(result, null, 2);
+    });
+
     const reportSkill = (skillId) => {
       SkillsReporter.SkillsReporter.reportSkill(skillId)
         .then((response) => {
@@ -49,6 +53,10 @@
     <div class="container-fluid mt-3">
       <div class="container">
         <h2>Report Skills Examples</h2>
+        <div class="text-primary">Global Event Result:</div>
+        <div id="globalEventResult" class="border rounded p-3 mb-5 bg-light">
+          <pre id="global-event-result-container"></pre>
+        </div>
         <div>
           <h5 class="text-info"><strong>Skills Directive - Click Event</strong></h5>
           <div class="card card-body bg-light">
