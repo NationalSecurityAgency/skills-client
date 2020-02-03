@@ -4,7 +4,7 @@
   "description": "Skills Examples using the native javascript libraries",
   "main": "index.js",
   "scripts": {
-    "postinstall": "mkdir -p ./app/assets/js/@skills && cp -r ./node_modules/* ./app/assets/js/ && cp -r ./node_modules/@skills/* ./app/assets/js/@skills/",
+    "postinstall": "node copyDeps.js",
     "serve": "npx live-server --port=8092 --open=app --cors --proxy=/api:http://localhost:8090/api",
     "test": "npm run test",
     "build": "echo nothingtodo"
@@ -18,5 +18,8 @@
     "jquery": "^3.4.1",
     "js-beautify": "1.10.2",
     "live-server": "1.2.1"
+  },
+  "devDependencies": {
+    "fs-extra": "^8.1.0"
   }
 }
