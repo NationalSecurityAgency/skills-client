@@ -4,7 +4,7 @@ if (!fs.existsSync(destDir)) {
   fs.mkdirSync(destDir, { recursive: true });
 }
 const deps = Object.keys(require("./package.json").dependencies);
-const ignore = ['node_modules', '.git', 'test', 'coverage'];
+const ignore = ['node_modules', '.git', 'test', 'coverage', 'src'];
 deps.forEach(dependency => {
   const depDir = `node_modules/${dependency}`;
   fs.readdirSync(depDir).forEach(file => {
