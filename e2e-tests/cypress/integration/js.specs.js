@@ -1,5 +1,5 @@
-const wsTimeout = 2000;
-const iFrameTimeout = 2000;
+const wsTimeout = 3000;
+const iFrameTimeout = 3000;
 
 context("Native JS Tests", () => {
   it("global event show correct results", () => {
