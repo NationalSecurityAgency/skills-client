@@ -1,4 +1,5 @@
 const wsTimeout = 2000;
+const iFrameTimeout = 2000;
 
 context("Native JS Tests", () => {
   it("global event show correct results", () => {
@@ -47,7 +48,7 @@ context("Native JS Tests", () => {
     });
     cy.visit("/native/clientDisplay.html");
     // cy.wait('@getToken')
-    cy.wait(1000);
+    cy.wait(iFrameTimeout);
 
     cy.iframe(body => {
       // cy.wait('@getToken')
@@ -77,7 +78,7 @@ context("Native JS Tests", () => {
     });
     cy.visit("/native/clientDisplay.html?isSummaryOnly=true");
     // cy.wait('@getToken')
-    cy.wait(1000);
+    cy.wait(iFrameTimeout);
     cy.iframe(body => {
       // cy.wait('@getToken')
       cy.wrap(body).contains("My Level");
@@ -106,7 +107,7 @@ context("Native JS Tests", () => {
     });
     cy.visit("/native/clientDisplay.html?themeName=Dark Blue");
     cy.wait("@getToken");
-    cy.wait(1000);
+    cy.wait(iFrameTimeout);
     cy.iframe(body => {
       // cy.wait('@getToken')
       cy.wrap(body).contains("My Level");
@@ -135,7 +136,7 @@ context("Native JS Tests", () => {
       "/native/clientDisplay.html?themeName=Dark Blue&isSummaryOnly=true"
     );
     // cy.wait('@getToken')
-    cy.wait(1000);
+    cy.wait(iFrameTimeout);
     cy.iframe(body => {
       // cy.wait('@getToken')
       cy.wrap(body).contains("My Level");
@@ -178,7 +179,7 @@ context("Native JS Tests", () => {
     cy.backendAddSkill("skillv2", 2);
     cy.visit("/native/clientDisplay.html");
     cy.wait("@getToken");
-    cy.wait(1000);
+    cy.wait(iFrameTimeout);
     cy.iframe(body => {
       // cy.wait('@getToken')
       cy.wrap(body).contains("Earn up to 200 points");
@@ -187,7 +188,7 @@ context("Native JS Tests", () => {
     cy.visit("/native/index.html");
     cy.visit("/native/clientDisplay.html?skillsVersion=1");
     // cy.wait('@getToken')
-    cy.wait(1000);
+    cy.wait(iFrameTimeout);
     cy.iframe(body => {
       // cy.wait('@getToken')
       cy.wrap(body).contains("Earn up to 150 points");
@@ -196,7 +197,7 @@ context("Native JS Tests", () => {
     cy.visit("/native/index.html");
     cy.visit("/native/clientDisplay.html?skillsVersion=0");
     // cy.wait('@getToken')
-    cy.wait(1000);
+    cy.wait(iFrameTimeout);
     cy.iframe(body => {
       cy.wrap(body).contains("Earn up to 100 points");
     });
