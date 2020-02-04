@@ -61,7 +61,7 @@
 
     const applyTheme = (theme) => {
       const params = new URLSearchParams(window.location.search);
-      params.set('theme', theme.name);
+      params.set('themeName', theme.name);
       window.location.search = params;
     };
 
@@ -73,9 +73,15 @@
 
     const getTheme = () => {
       const params = new URLSearchParams(window.location.search);
-      let themeName = params.get('theme') ? params.get('theme') : 'Bright (default)';
+      let themeName = params.get('themeName') ? params.get('themeName') : 'Bright (default)';
       const themeObject = Object.values(themes).find(it => it.name === themeName);
       return themeObject;
+    };
+
+    const getVersion = () => {
+      const params = new URLSearchParams(window.location.search);
+      let version = params.get('skillsVersion') ? params.get('skillsVersion') : null;
+      return version;
     };
 
     axios.get("/api/config")
@@ -98,7 +104,7 @@
 
         const clientDisplay = new SkillsClient.SkillsDisplayJS({
           options,
-          version: 0,
+          version: getVersion(),
           theme: theme.theme,
         });
         clientDisplay.attachTo(document.querySelector('#skills-client-display'));

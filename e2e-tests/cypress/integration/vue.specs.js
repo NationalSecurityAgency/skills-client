@@ -71,7 +71,7 @@ context('Vue Tests', () => {
         cy.contains('Level 5')
     })
 
-    it('global event show correct results', () => {
+    it.only('global event show correct results', () => {
         cy.createDefaultProject()
         Cypress.Commands.add("reportSkill", (skillId) => {
             cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
@@ -268,7 +268,6 @@ context('Vue Tests', () => {
 
         cy.contains('Could NOT reach Skills Service')
     });
-
 
     it('only display skills up-to the provided version', () => {
         cy.createDefaultTinyProject()

@@ -1,12 +1,23 @@
 const fs = require('fs-extra')
-const dir = "./app/assets/js";
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir, { recursive: true });
+const destDir = "./app/assets/js";
+if (!fs.existsSync(destDir)) {
+  fs.mkdirSync(destDir, { recursive: true });
 }
 const deps = Object.keys(require("./package.json").dependencies);
+const ignore = ['node_modules', '.git', 'test', 'coverage'];
 deps.forEach(dependency => {
-  fs.copy(`node_modules/${dependency}/`, `${dir}/${dependency}/`, err => {
-    if (err) throw err;
-    console.log(`Copied ${dependency} to ${dir}`);
+  const depDir = `node_modules/${dependency}`;
+  fs.readdirSync(depDir).forEach(file => {
+    if (!ignore.includes(file)) {
+      const depDestDir = `${destDir}/${dependency}`;
+      if (!fs.existsSync(depDestDir)) {
+        fs.mkdirSync(depDestDir, { recursive: true });
+      }
+      fs.copy(`${depDir}/${file}`, `${depDestDir}/${file}`, err => {
+        console.log(`Copied[${depDir}/${file}] to [${depDestDir}/${file}]`);
+      });
+    } else {
+      console.log(`IGNORE - ${file}`);
+    }
   });
 });
