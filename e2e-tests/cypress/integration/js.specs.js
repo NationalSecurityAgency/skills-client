@@ -161,6 +161,9 @@ context("Native JS Tests", () => {
   });
 
   it("only display skills up-to the provided version", () => {
+    const noVersionPoints = 'Earn up to 200 points';
+    const v1Points = 'Earn up to 150 points';
+    const v0Points = 'Earn up to 100 points';
     cy.createDefaultTinyProject();
     cy.server()
       .route("/api/users/user1/token")
@@ -171,21 +174,21 @@ context("Native JS Tests", () => {
     cy.wait("@getToken");
     cy.wait(iFrameTimeout);
     cy.iframe(body => {
-      cy.wrap(body).contains("Earn up to 200 points");
+      cy.wrap(body).contains(noVersionPoints);
     });
 
     cy.visit("/native/index.html");
     cy.visit("/native/clientDisplay.html?skillsVersion=1");
     cy.wait(iFrameTimeout);
     cy.iframe(body => {
-      cy.wrap(body).contains("Earn up to 150 points");
+      cy.wrap(body).contains(v1Points);
     });
 
     cy.visit("/native/index.html");
     cy.visit("/native/clientDisplay.html?skillsVersion=0");
     cy.wait(iFrameTimeout);
     cy.iframe(body => {
-      cy.wrap(body).contains("Earn up to 100 points");
+      cy.wrap(body).contains(v0Points);
     });
   });
 });
