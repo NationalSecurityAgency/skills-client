@@ -71,7 +71,7 @@ context('Vue Tests', () => {
         cy.contains('Level 5')
     })
 
-    it.only('global event show correct results', () => {
+    it('global event show correct results', () => {
         cy.createDefaultProject()
         Cypress.Commands.add("reportSkill", (skillId) => {
             cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
