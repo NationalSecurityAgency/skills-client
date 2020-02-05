@@ -160,7 +160,7 @@ context("Native JS Tests", () => {
     cy.contains("Could NOT reach Skills Service");
   });
 
-  it.only("only display skills up-to the provided version", () => {
+  it("only display skills up-to the provided version", () => {
     const noVersionPoints = 'Earn up to 200 points';
     const v1Points = 'Earn up to 150 points';
     const v0Points = 'Earn up to 100 points';
@@ -179,7 +179,6 @@ context("Native JS Tests", () => {
 
     cy.visit("/native/index.html");
     cy.visit("/native/clientDisplay.html?skillsVersion=1");
-    cy.wait("@getToken");
     cy.wait(iFrameTimeout);
     cy.iframe(body => {
       cy.wrap(body).contains(v1Points);
@@ -187,7 +186,6 @@ context("Native JS Tests", () => {
 
     cy.visit("/native/index.html");
     cy.visit("/native/clientDisplay.html?skillsVersion=0");
-    cy.wait("@getToken");
     cy.wait(iFrameTimeout);
     cy.iframe(body => {
       cy.wrap(body).contains(v0Points);
