@@ -1,5 +1,6 @@
 
 const wsTimeout = 2000;
+const iFrameTimeout = 3000;
 
 context('React Tests', () => {
 
@@ -44,9 +45,6 @@ context('React Tests', () => {
 
     it('level component should be reactive (skills reported directly to backend endpoint)', () => {
         cy.createDefaultProject()
-        Cypress.Commands.add("reportSkill", (skillId) => {
-            cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
-        })
         cy.visit('/react/index.html#/')
 
         cy.contains('Level 0')
@@ -73,9 +71,6 @@ context('React Tests', () => {
 
     it('global event show correct results', () => {
         cy.createDefaultProject()
-        Cypress.Commands.add("reportSkill", (skillId) => {
-            cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
-        })
         cy.visit('/react/index.html#/')
 
         cy.contains('Level 0')
@@ -84,25 +79,20 @@ context('React Tests', () => {
         cy.reportSkillForUser('IronMan', 'user1')
         cy.contains('Level 1')
 
-        cy.get("#globalEventResult")
-        cy.contains('"skillId": "IronMan"')
-        cy.contains('"pointsEarned": 50')
-        cy.contains('"skillApplied": true')
-        cy.contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
+        cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
+        cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
+        cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
+        cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
     })
 
     it('level component should NOT update when admin reports skill for other user', () => {
-
         cy.createDefaultProject()
-        Cypress.Commands.add("reportSkill", (skillId) => {
-            cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
-        })
         cy.visit('/react/index.html#/')
 
         cy.contains('Level 0')
         cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
-        cy.backendPost('/api/projects/proj1/skills/IronMan', {userId: 'unknown@skills.org', timestamp: Date.now()})
+        cy.reportSkillForUser('IronMan', 'unknown@skills.org')
         cy.contains('Level 0')
     })
 
@@ -204,6 +194,7 @@ context('React Tests', () => {
         cy.backendAddSkill('skillv2', 2)
         cy.visit('/react/index.html#/showSkills')
         cy.wait('@getToken')
+        cy.wait(iFrameTimeout);
         cy.iframe((body) => {
             cy.wait('@getToken')
             cy.wrap(body).contains('Earn up to 200 points')
@@ -212,6 +203,7 @@ context('React Tests', () => {
         cy.visit('/react/index.html#/')
         cy.visit('/react/index.html#/showSkills?skillsVersion=1')
         cy.wait('@getToken')
+        cy.wait(iFrameTimeout);
         cy.iframe((body) => {
             cy.wrap(body).contains('Earn up to 150 points')
         })
@@ -219,6 +211,7 @@ context('React Tests', () => {
         cy.visit('/react/index.html#/')
         cy.visit('/react/index.html#/showSkills?skillsVersion=0')
         cy.wait('@getToken')
+        cy.wait(iFrameTimeout);
         cy.iframe((body) => {
             cy.wrap(body).contains('Earn up to 100 points')
         })

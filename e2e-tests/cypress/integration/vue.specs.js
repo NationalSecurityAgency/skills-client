@@ -1,5 +1,6 @@
 
 const wsTimeout = 2000;
+const iFrameTimeout = 3000;
 
 context('Vue Tests', () => {
 
@@ -44,9 +45,6 @@ context('Vue Tests', () => {
 
     it('level component should be reactive (skills reported directly to backend endpoint)', () => {
         cy.createDefaultProject()
-        Cypress.Commands.add("reportSkill", (skillId) => {
-            cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
-        })
         cy.visit('/vuejs#/')
 
         cy.contains('Level 0')
@@ -73,22 +71,32 @@ context('Vue Tests', () => {
 
     it('global event show correct results', () => {
         cy.createDefaultProject()
-        Cypress.Commands.add("reportSkill", (skillId) => {
-            cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
-        })
         cy.visit('/vuejs#/')
 
         cy.contains('Level 0')
         cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1')
 
-        cy.get("#globalEventResult")
-        cy.contains('"skillId": "IronMan"')
-        cy.contains('"pointsEarned": 50')
-        cy.contains('"skillApplied": true')
-        cy.contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
+        cy.contains('Level 1')
+        cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
+        cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
+        cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
+        cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
+    })
+
+    it('global event does not update when skill reported for a different project', () => {
+      cy.createDefaultProject()
+      cy.createDefaultTinyProject('proj2')
+      cy.visit('/vuejs#/')
+
+      cy.contains('Level 0')
+      cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+
+      cy.reportSkillForUser('IronMan', 'user1', 'proj2')
+
+      cy.contains('Level 0')
+      cy.get('[data-cy=globalEventResult]').should('be.empty');
     })
 
     it('global event is not reported when skill is not applied', () => {
@@ -104,9 +112,9 @@ context('Vue Tests', () => {
       cy.contains('Level 1')
 
       cy.get('[data-cy=globalEventResult]').should('be.empty');
-  })
+    })
 
-    it('level component should NOT update when admin reports skill for other user', () => {
+    it('level component should not update when admin reports skill for other user', () => {
 
         cy.createDefaultProject()
         Cypress.Commands.add("reportSkill", (skillId) => {
@@ -117,7 +125,7 @@ context('Vue Tests', () => {
         cy.contains('Level 0')
         cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
-        cy.backendPost('/api/projects/proj1/skills/IronMan', {userId: 'unknown@skills.org', timestamp: Date.now()})
+        cy.reportSkillForUser('IronMan', 'unknown@skills.org')
         cy.contains('Level 0')
     })
 
@@ -291,6 +299,7 @@ context('Vue Tests', () => {
         cy.backendAddSkill('skillv2', 2)
         cy.visit('/vuejs#/showSkills')
         cy.wait('@getToken')
+        cy.wait(iFrameTimeout);
         cy.iframe((body) => {
             cy.wait('@getToken')
             cy.wrap(body).contains('Earn up to 200 points')
@@ -299,6 +308,7 @@ context('Vue Tests', () => {
         cy.visit('/vuejs#/')
         cy.visit('/vuejs#/showSkills?skillsVersion=1')
         cy.wait('@getToken')
+        cy.wait(iFrameTimeout);
         cy.iframe((body) => {
             cy.wrap(body).contains('Earn up to 150 points')
         })
@@ -306,6 +316,7 @@ context('Vue Tests', () => {
         cy.visit('/vuejs#/')
         cy.visit('/vuejs#/showSkills?skillsVersion=0')
         cy.wait('@getToken')
+        cy.wait(iFrameTimeout);
         cy.iframe((body) => {
             cy.wrap(body).contains('Earn up to 100 points')
         })

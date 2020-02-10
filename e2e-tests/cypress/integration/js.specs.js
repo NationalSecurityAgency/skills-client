@@ -14,12 +14,11 @@ context("Native JS Tests", () => {
     cy.wait(wsTimeout); // allow for the ui web-socket handshake to complete
 
     cy.clickSubmit();
-
-    cy.get("#globalEventResult");
-    cy.contains('"skillId": "IronMan"');
-    cy.contains('"pointsEarned": 50');
-    cy.contains('"skillApplied": true');
-    cy.contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/);
+    
+    cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
+    cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
+    cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
+    cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
   });
 
   it("global event show correct results (skills reported directly to backend endpoint)", () => {
@@ -30,11 +29,10 @@ context("Native JS Tests", () => {
 
     cy.reportSkillForUser("IronMan", "user1");
 
-    cy.get("#globalEventResult");
-    cy.contains('"skillId": "IronMan"');
-    cy.contains('"pointsEarned": 50');
-    cy.contains('"skillApplied": true');
-    cy.contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/);
+    cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
+    cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
+    cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
+    cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
   });
 
   it("skill display", () => {

@@ -67,12 +67,12 @@ Cypress.Commands.add("backendPost", (url, body) => {
     cy.request('POST', `${backend}${url}`, body)
 });
 
-Cypress.Commands.add("reportSkill", (skillId) => {
-    cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
+Cypress.Commands.add("reportSkill", (skillId, projId = 'proj1') => {
+    cy.backendPost(`/api/projects/${projId}/skills/${skillId}`)
 })
 
-Cypress.Commands.add("reportSkillForUser", (skillId, userId, timestamp = Date.now()) => {
-    cy.backendPost(`/api/projects/proj1/skills/${skillId}`, {userId: userId, timestamp: timestamp})
+Cypress.Commands.add("reportSkillForUser", (skillId, userId, projId = 'proj1', timestamp = Date.now()) => {
+    cy.backendPost(`/api/projects/${projId}/skills/${skillId}`, {userId: userId, timestamp: timestamp})
 })
 
 Cypress.Commands.add("backendAddSkill", (skillId, version = 0, projId ='proj1', subjId='subj0', pointIncrement = 50, numPerformToCompletion = 1) => {
@@ -91,12 +91,11 @@ Cypress.Commands.add("backendAddSkill", (skillId, version = 0, projId ='proj1', 
     })
 });
 
-Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 2, pointIncrement = 50, numPerformToCompletion = 1) => {
+Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 2, pointIncrement = 50, numPerformToCompletion = 1, projId ='proj1') => {
     const skillIdsToCreate = ['IronMan', 'Thor']
-    const projId = 'proj1'
     cy.backendPost(`/app/projects/${projId}`, {
         projectId: projId,
-        name: "Very Cool Project"
+        name: `Very Cool Project with id ${projId}`
     })
 
     for(let i=0; i < numSubj; i++){
@@ -117,8 +116,8 @@ Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 2,
     }
 });
 
-Cypress.Commands.add("createDefaultTinyProject", () => {
-    cy.createDefaultProject(1, 2, 50)
+Cypress.Commands.add("createDefaultTinyProject", (projId ='proj1') => {
+    cy.createDefaultProject(1, 2, 50, 1, projId)
 });
 
 Cypress.Commands.add("iframe", (handleIframeBody) => {
