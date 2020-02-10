@@ -24,7 +24,7 @@ export default {
   getSkillLevel(projectId) {
     let authenticationPromise = Promise.resolve();
     if (SkillsConfiguration.getAuthenticator() !== 'pki') {
-      if (!SkillsConfiguration.getAuthToken()) {
+      if (!SkillsConfiguration.getAuthToken() || !axios.defaults.headers.common.Authorization) {
         authenticationPromise = refreshAuthorization();
       }
     }
