@@ -85,7 +85,21 @@ context('React Tests', () => {
         cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
     })
 
-    it('level component should NOT update when admin reports skill for other user', () => {
+    it('global event does not update when skill reported for a different project', () => {
+      cy.createDefaultProject()
+      cy.createDefaultTinyProject('proj2')
+      cy.visit('/react/index.html#/')
+
+      cy.contains('Level 0')
+      cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+
+      cy.reportSkillForUser('IronMan', 'user1', 'proj2')
+
+      cy.contains('Level 0')
+      cy.get('[data-cy=globalEventResult]').should('be.empty');
+    })
+
+    it('level component should not update when admin reports skill for other user', () => {
         cy.createDefaultProject()
         cy.visit('/react/index.html#/')
 

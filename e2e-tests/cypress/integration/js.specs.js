@@ -35,6 +35,18 @@ context("Native JS Tests", () => {
     cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
   });
 
+  it('global event does not update when skill reported for a different project', () => {
+    cy.createDefaultProject()
+    cy.createDefaultTinyProject('proj2')
+    cy.visit("/native/index.html");
+
+    cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+
+    cy.reportSkillForUser('IronMan', 'user1', 'proj2')
+
+    cy.get('[data-cy=globalEventResult]').should('be.empty');
+  })
+
   it("skill display", () => {
     cy.createDefaultTinyProject();
     cy.server()
