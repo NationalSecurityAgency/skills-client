@@ -52,7 +52,7 @@ const ReportSkill = () => {
                 <h2>Report Skills Examples</h2>
                 <div className="text-primary">Global Event Result:</div>
                 <div id="globalEventResult" className="border rounded p-3 mb-5 bg-light">
-                    <pre id="global-event-result-container"></pre>
+                    <pre id="global-event-result-container" data-cy="globalEventResult"></pre>
                 </div>
                 <div>
                     <h5 className="text-info"><strong>Report Any Skill</strong></h5>
