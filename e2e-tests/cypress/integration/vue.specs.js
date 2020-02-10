@@ -91,6 +91,21 @@ context('Vue Tests', () => {
         cy.contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
     })
 
+    it('global event is not reported when skill is not applied', () => {
+      cy.createDefaultProject()
+      cy.reportSkillForUser('IronMan', 'user1')
+
+      cy.visit('/vuejs#/')
+
+      cy.contains('Level 1')
+      cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+
+      cy.reportSkillForUser('IronMan', 'user1')
+      cy.contains('Level 1')
+
+      cy.get('[data-cy=globalEventResult]').should('be.empty');
+  })
+
     it('level component should NOT update when admin reports skill for other user', () => {
 
         cy.createDefaultProject()

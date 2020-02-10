@@ -3,7 +3,7 @@
         <h2>Report Skills Examples</h2>
         <div class="text-primary">Global Event Result:</div>
         <div id="globalEventResult" class="border rounded p-3 bg-light">
-            <pre>{{ globalEventResult }}</pre>
+            <pre data-cy="globalEventResult">{{ globalEventResult }}</pre>
         </div>
         <code-example
                 v-for="example in examples"
