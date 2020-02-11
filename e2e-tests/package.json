@@ -23,7 +23,7 @@
   "author": "Skills Team",
   "license": "Apache 2",
   "devDependencies": {
-    "cypress": "^3.8.3",
+    "cypress": "^4.0.1",
     "release-it": "^12.4.3",
     "wait-on": "3.3.0",
     "wait-port": "0.2.7"

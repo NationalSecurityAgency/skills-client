@@ -14,14 +14,14 @@
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
-  on('before:browser:launch', (browser = {}, args) => {
+  on('before:browser:launch', (browser = {}, launchOptions) => {
     console.log('launching browser:', browser)
     if (browser.name === 'chrome') {
-      args = args.concat('--auto-open-devtools-for-tabs');
+      launchOptions.args.push('--auto-open-devtools-for-tabs');
     } else if (browser.name === 'electron') {
       // Cypress-specific option (state)
-      args.devTools = true;
+      launchOptions.preferences.webPreferences.devTools = false;
     }
-    return args;
+    return launchOptions;
   });
 }
