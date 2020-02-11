@@ -47,6 +47,59 @@ context("Native JS Tests", () => {
     cy.get('[data-cy=globalEventResult]').should('be.empty');
   })
 
+  it('global event is not reported when skill is not applied (skill reported directly to backend endpoint)', () => {
+    cy.createDefaultProject()
+    cy.reportSkillForUser('IronMan', 'user1')
+
+    cy.visit("/native/index.html");
+
+    cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+
+    cy.reportSkillForUser('IronMan', 'user1')
+
+    cy.get('[data-cy=globalEventResult]').should('be.empty');
+  })
+
+  it('global event is not reported when skill is not applied', () => {
+    cy.createDefaultProject()
+    cy.reportSkillForUser('IronMan', 'user1')
+
+    cy.visit("/native/index.html");
+    
+    const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
+    Cypress.Commands.add("clickSubmit", () => {
+      cy.get(`${sendEventViaDropdownId} .btn`).click();
+    });
+
+    cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+
+    cy.clickSubmit()
+
+    cy.get('[data-cy=globalEventResult]').should('be.empty');
+  })
+
+  it('global event is reported even when skill is not applied when notifyIfSkillNotApplied=true ', () => {
+    cy.createDefaultProject()
+    cy.reportSkillForUser('IronMan', 'user1')
+
+    cy.visit("/native/index.html");
+    
+    const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
+    Cypress.Commands.add("clickSubmit", () => {
+      cy.get(`${sendEventViaDropdownId} .btn`).click();
+    });
+
+    cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+
+    cy.get('[type="checkbox"]').check() 
+    cy.clickSubmit()
+
+    cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
+    cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 0')
+    cy.get('[data-cy=globalEventResult]').contains('"skillApplied": false')
+    cy.get('[data-cy=globalEventResult]').contains('"explanation": "This skill reached its maximum points"')
+  })
+
   it("skill display", () => {
     cy.createDefaultTinyProject();
     cy.server()
