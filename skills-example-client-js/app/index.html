@@ -29,6 +29,11 @@
           document.querySelector('#report-result-container').innerHTML = JSON.stringify(response, null, 2);
         });
     };
+
+    const toggleAllEvents = () => {
+      const notifyIfSkillNotApplied = document.querySelector('#all-events-check').checked
+      SkillsReporter.SkillsReporter.configure( {notifyIfSkillNotApplied });
+    }
   </script>
 </head>
 <body>
@@ -54,6 +59,9 @@
       <div class="container">
         <h2>Report Skills Examples</h2>
         <div class="text-primary">Global Event Result:</div>
+        <div>
+          Include Skills Not Applied: <input type="checkbox" id="all-events-check" onclick="toggleAllEvents()">
+        </div>
         <div id="globalEventResult" class="border rounded p-3 mb-5 bg-light">
           <pre id="global-event-result-container" data-cy="globalEventResult"></pre>
         </div>
