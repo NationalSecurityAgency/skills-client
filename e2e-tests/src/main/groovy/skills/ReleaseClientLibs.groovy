@@ -2,7 +2,6 @@ package skills
 
 
 import groovy.util.logging.Slf4j
-import org.apache.commons.io.FileUtils
 
 @Slf4j
 class ReleaseClientLibs {
@@ -19,36 +18,40 @@ class ReleaseClientLibs {
 
     TitlePrinter titlePrinter = new TitlePrinter()
 //    File workDir = new File("./target/releaseDir")
-    String examplesProj = "skills-client-examples"
+//    String examplesProj = "skills-client-examples"
     File examplesLoc = new File('./')
     File e2eDir = new File(examplesLoc, "e2e-tests")
     File releaseDir = new File(e2eDir, "/target/releaseClientLibs/")
     String typeOfRelease;
 
-    DownloadServiceJars downloadServiceJars = new DownloadServiceJars(e2eDir: e2eDir, titlePrinter: titlePrinter).init()
+    DownloadServiceJars downloadServiceJars = new DownloadServiceJars(outputDir:  new File(e2eDir, "/target/servicesJars"))
 
     void doRelease() {
 
         log.info("examplesLoc is [${examplesLoc.absolutePath}]")
         log.info("e2eDir is [${examplesLoc.absolutePath}]")
-        log.info("releaseDir is [${releaseDir.absolutePath}]")
-        if (releaseDir.exists()) {
-            FileUtils.deleteDirectory(releaseDir)
-            log.info("removed previous release dir [{}]", releaseDir.absolutePath)
-        }
-        assert !releaseDir.exists()
-        releaseDir.mkdirs()
 
-        titlePrinter.printTitle("Checkout client lib projects from git")
-        List<String> projToCheckOut = new NpmProjBuilder(locate: false).build().findAll({ it.doOthersLinkToMe }).collect({ it.name })
-        projToCheckOut.add(examplesProj)
-        log.info("Cloning $projToCheckOut")
-        for (String projName in projToCheckOut) {
-            new ProcessRunner(loc: releaseDir).run("git clone git@gitlab.evoforge.org:skills/${projName}.git")
-        }
+        ProjectsOps npmProjects = new ProjectsOps(releaseDir: releaseDir)
+        npmProjects.checkoutLinkedNpmLibs()
+//        log.info("releaseDir is [${releaseDir.absolutePath}]")
+//        if (releaseDir.exists()) {
+//            FileUtils.deleteDirectory(releaseDir)
+//            log.info("removed previous release dir [{}]", releaseDir.absolutePath)
+//        }
+//        assert !releaseDir.exists()
+//        releaseDir.mkdirs()
+//
+//        titlePrinter.printTitle("Checkout client lib projects from git")
+//        List<String> projToCheckOut = new NpmProjBuilder(locate: false).build().findAll({ it.doOthersLinkToMe }).collect({ it.name })
+//        projToCheckOut.add(examplesProj)
+//        log.info("Cloning $projToCheckOut")
+//        for (String projName in projToCheckOut) {
+//            new ProcessRunner(loc: releaseDir).run("git clone git@gitlab.evoforge.org:skills/${projName}.git")
+//        }
 
         titlePrinter.printTitle("Identify Dependencies")
         List<NpmProj> allProj = new NpmProjBuilder(loc: releaseDir).build()
+
         allProj.each {
             log.info("Will consider project [{}]", it.loc.absolutePath)
         }
@@ -57,18 +60,9 @@ class ReleaseClientLibs {
             log.info("${it.from.name} (${it.from.version}) => ${it.to.name} (${it.to.version})")
         }
 
-        titlePrinter.printTitle("check if there is a need to release")
-        int numProjChanged = 0
-        for (NpmProj proj in allProj.findAll({ it.doOthersLinkToMe })) {
-            titlePrinter.printSubTitle("checking ${proj.name}")
-            if (proj.hasUnreleasedChanges()) {
-                log.info("${proj.name} has has changes let's release")
-                numProjChanged++
-            } else {
-                log.info("${proj.name} has no changes. Release is not needed!")
-            }
-        }
 
+        titlePrinter.printTitle("check if there is a need to release")
+        int numProjChanged = npmProjects.getNumClientLibsNeedsToRelease()
         if (numProjChanged == 0) {
             titlePrinter.printTitle("Nothing to release!")
             return
@@ -82,11 +76,11 @@ class ReleaseClientLibs {
         List<String> versions = getBackendVersionsToTest()
         titlePrinter.printTitle("Backend versions to test: ${versions}")
 
-//        versions.each { String version ->
-//            titlePrinter.printTitle("Testing against backend version [${version}]")
-//            downloadServiceJars.download("backend", version)
-//            runCypressTests(version)
-//        }
+        versions.each { String version ->
+            titlePrinter.printTitle("Testing against backend version [${version}]")
+            downloadServiceJars.download("backend", version)
+            runCypressTests(version)
+        }
 
         titlePrinter.printTitle("OK Everything looks good! Let's release")
         boolean dryRun = true
@@ -110,28 +104,28 @@ class ReleaseClientLibs {
         }
     }
 
-    private void runCypressTests(String version) {
-        titlePrinter.printTitle("Start backend version [${version}] and examples")
-        killServerProcesses()
-        try {
-            new ProcessRunner(loc: e2eDir, waitForOutput: false).run("npm run backend:start:release &")
-            new ProcessRunner(loc: e2eDir, waitForOutput: false).run("npm run examples:start:release &")
-            // this will install cypress, can do that while servers are starting
-            new ProcessRunner(loc: e2eDir).run("npm install")
-            new ProcessRunner(loc: e2eDir).run("npm run backend:waitToStart")
-            new ProcessRunner(loc: e2eDir).run("npm run examples:waitToStart")
-
-            titlePrinter.printTitle("Run Cypress Tests against backend version [${version}]")
-            new ProcessRunner(loc: e2eDir).run("npm run cy:run")
-        } finally {
-            killServerProcesses()
-        }
-    }
-
-    private void killServerProcesses() {
-        new ProcessUtils().killProcessIfContainsStr(":serverConfigs/backend_application.properties")
-        new ProcessUtils().killProcessIfContainsStr(":serverConfigs/examples_application.properties")
-    }
+//    private void runCypressTests(String version) {
+//        titlePrinter.printTitle("Start backend version [${version}] and examples")
+//        killServerProcesses()
+//        try {
+//            new ProcessRunner(loc: e2eDir, waitForOutput: false).run("npm run backend:start:release &")
+//            new ProcessRunner(loc: e2eDir, waitForOutput: false).run("npm run examples:start:release &")
+//            // this will install cypress, can do that while servers are starting
+//            new ProcessRunner(loc: e2eDir).run("npm install")
+//            new ProcessRunner(loc: e2eDir).run("npm run backend:waitToStart")
+//            new ProcessRunner(loc: e2eDir).run("npm run examples:waitToStart")
+//
+//            titlePrinter.printTitle("Run Cypress Tests against backend version [${version}]")
+//            new ProcessRunner(loc: e2eDir).run("npm run cy:run")
+//        } finally {
+//            killServerProcesses()
+//        }
+//    }
+//
+//    private void killServerProcesses() {
+//        new ProcessUtils().killProcessIfContainsStr(":serverConfigs/backend_application.properties")
+//        new ProcessUtils().killProcessIfContainsStr(":serverConfigs/examples_application.properties")
+//    }
 
     List<String> getBackendVersionsToTest() {
         def url = "http://ip-10-113-80-244.evoforge.org/repository/maven-releases/skills/backend/maven-metadata.xml".toURL()

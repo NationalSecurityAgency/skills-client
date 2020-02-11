@@ -1,114 +1,123 @@
-
+import Utils from "./Utils";
 const wsTimeout = 2000;
 const iFrameTimeout = 3000;
 
 context('React Tests', () => {
+    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.0')) {
+        it('level component should be reactive', () => {
+            cy.createDefaultProject()
+            const sendEventViaDropdownId = '#exampleDirectiveClickEvent';
+            Cypress.Commands.add("clickSubmit", () => {
+                cy.get(`${sendEventViaDropdownId} .btn`).click()
+            })
+            Cypress.Commands.add("selectSkill", (skill) => {
+                cy.get(`${sendEventViaDropdownId} select`).select(`${skill}`)
+            })
 
-    it('level component should be reactive', () => {
-        cy.createDefaultProject()
-        const sendEventViaDropdownId = '#exampleDirectiveClickEvent';
-        Cypress.Commands.add("clickSubmit", () => {
-            cy.get(`${sendEventViaDropdownId} .btn`).click()
+            cy.visit('/react/index.html#/')
+
+            cy.contains('Level 0')
+
+            cy.selectSkill('IronMan')
+            cy.clickSubmit()
+            cy.contains('Level 1')
+
+            cy.selectSkill('Thor')
+            cy.clickSubmit()
+            cy.contains('Level 2')
+
+            cy.selectSkill('subj1_skill0')
+            cy.clickSubmit()
+            cy.contains('Level 3')
+
+            cy.selectSkill('subj1_skill1')
+            cy.clickSubmit()
+            cy.contains('Level 3')
+
+            cy.selectSkill('subj2_skill0')
+            cy.clickSubmit()
+            cy.contains('Level 4')
+
+            cy.selectSkill('subj2_skill1')
+            cy.clickSubmit()
+            cy.contains('Level 5')
         })
-        Cypress.Commands.add("selectSkill", (skill) => {
-            cy.get(`${sendEventViaDropdownId} select`).select(`${skill}`)
+    }
+
+    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.0')) {
+        it('level component should be reactive (skills reported directly to backend endpoint)', () => {
+            cy.createDefaultProject()
+            cy.visit('/react/index.html#/')
+
+            cy.contains('Level 0')
+            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+
+            cy.reportSkillForUser('IronMan', 'user1')
+            cy.contains('Level 1')
+
+            cy.reportSkillForUser('Thor', 'user1')
+            cy.contains('Level 2')
+
+            cy.reportSkillForUser('subj1_skill0', 'user1')
+            cy.contains('Level 3')
+
+            cy.reportSkillForUser('subj1_skill1', 'user1')
+            cy.contains('Level 3')
+
+            cy.reportSkillForUser('subj2_skill0', 'user1')
+            cy.contains('Level 4')
+
+            cy.reportSkillForUser('subj2_skill1', 'user1')
+            cy.contains('Level 5')
         })
+    }
 
-        cy.visit('/react/index.html#/')
+    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.0')) {
+        it('global event show correct results', () => {
+            cy.createDefaultProject()
+            cy.visit('/react/index.html#/')
 
-        cy.contains('Level 0')
+            cy.contains('Level 0')
+            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
-        cy.selectSkill('IronMan')
-        cy.clickSubmit()
-        cy.contains('Level 1')
+            cy.reportSkillForUser('IronMan', 'user1')
+            cy.contains('Level 1')
 
-        cy.selectSkill('Thor')
-        cy.clickSubmit()
-        cy.contains('Level 2')
+            cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
+            cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
+            cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
+            cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
+        })
+    }
 
-        cy.selectSkill('subj1_skill0')
-        cy.clickSubmit()
-        cy.contains('Level 3')
+    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.0')) {
+        it('global event does not update when skill reported for a different project', () => {
+            cy.createDefaultProject()
+            cy.createDefaultTinyProject('proj2')
+            cy.visit('/react/index.html#/')
 
-        cy.selectSkill('subj1_skill1')
-        cy.clickSubmit()
-        cy.contains('Level 3')
+            cy.contains('Level 0')
+            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
-        cy.selectSkill('subj2_skill0')
-        cy.clickSubmit()
-        cy.contains('Level 4')
+            cy.reportSkillForUser('IronMan', 'user1', 'proj2')
 
-        cy.selectSkill('subj2_skill1')
-        cy.clickSubmit()
-        cy.contains('Level 5')
-    })
+            cy.contains('Level 0')
+            cy.get('[data-cy=globalEventResult]').should('be.empty');
+        })
+    }
 
-    it('level component should be reactive (skills reported directly to backend endpoint)', () => {
-        cy.createDefaultProject()
-        cy.visit('/react/index.html#/')
+    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.0')) {
+        it('level component should not update when admin reports skill for other user', () => {
+            cy.createDefaultProject()
+            cy.visit('/react/index.html#/')
 
-        cy.contains('Level 0')
-        cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+            cy.contains('Level 0')
+            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
-        cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1')
-
-        cy.reportSkillForUser('Thor', 'user1')
-        cy.contains('Level 2')
-
-        cy.reportSkillForUser('subj1_skill0', 'user1')
-        cy.contains('Level 3')
-
-        cy.reportSkillForUser('subj1_skill1', 'user1')
-        cy.contains('Level 3')
-
-        cy.reportSkillForUser('subj2_skill0', 'user1')
-        cy.contains('Level 4')
-
-        cy.reportSkillForUser('subj2_skill1', 'user1')
-        cy.contains('Level 5')
-    })
-
-    it('global event show correct results', () => {
-        cy.createDefaultProject()
-        cy.visit('/react/index.html#/')
-
-        cy.contains('Level 0')
-        cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
-
-        cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1')
-
-        cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
-        cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
-        cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
-        cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
-    })
-
-    it('global event does not update when skill reported for a different project', () => {
-      cy.createDefaultProject()
-      cy.createDefaultTinyProject('proj2')
-      cy.visit('/react/index.html#/')
-
-      cy.contains('Level 0')
-      cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
-
-      cy.reportSkillForUser('IronMan', 'user1', 'proj2')
-
-      cy.contains('Level 0')
-      cy.get('[data-cy=globalEventResult]').should('be.empty');
-    })
-
-    it('level component should not update when admin reports skill for other user', () => {
-        cy.createDefaultProject()
-        cy.visit('/react/index.html#/')
-
-        cy.contains('Level 0')
-        cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
-
-        cy.reportSkillForUser('IronMan', 'unknown@skills.org')
-        cy.contains('Level 0')
-    })
+            cy.reportSkillForUser('IronMan', 'unknown@skills.org')
+            cy.contains('Level 0')
+        })
+    }
 
     it('skill display', () => {
         cy.createDefaultTinyProject()

@@ -1,4 +1,4 @@
-
+import Utils from "./Utils";
 const wsTimeout = 2000;
 const iFrameTimeout = 3000;
 
@@ -43,32 +43,35 @@ context('Vue Tests', () => {
         cy.contains('Level 5')
     })
 
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
     it('level component should be reactive (skills reported directly to backend endpoint)', () => {
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
 
-        cy.contains('Level 0')
-        cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+            cy.contains('Level 0')
+            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
-        cy.reportSkillForUser('IronMan', 'user1')
-        cy.contains('Level 1')
+            cy.reportSkillForUser('IronMan', 'user1')
+            cy.contains('Level 1')
 
-        cy.reportSkillForUser('Thor', 'user1')
-        cy.contains('Level 2')
+            cy.reportSkillForUser('Thor', 'user1')
+            cy.contains('Level 2')
 
-        cy.reportSkillForUser('subj1_skill0', 'user1')
-        cy.contains('Level 3')
+            cy.reportSkillForUser('subj1_skill0', 'user1')
+            cy.contains('Level 3')
 
-        cy.reportSkillForUser('subj1_skill1', 'user1')
-        cy.contains('Level 3')
+            cy.reportSkillForUser('subj1_skill1', 'user1')
+            cy.contains('Level 3')
 
-        cy.reportSkillForUser('subj2_skill0', 'user1')
-        cy.contains('Level 4')
+            cy.reportSkillForUser('subj2_skill0', 'user1')
+            cy.contains('Level 4')
 
-        cy.reportSkillForUser('subj2_skill1', 'user1')
-        cy.contains('Level 5')
-    })
+            cy.reportSkillForUser('subj2_skill1', 'user1')
+            cy.contains('Level 5')
+        })
+    }
 
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
     it('global event show correct results', () => {
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
@@ -113,17 +116,18 @@ context('Vue Tests', () => {
 
       cy.get('[data-cy=globalEventResult]').should('be.empty');
     })
-
+    }
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
     it('level component should not update when admin reports skill for other user', () => {
 
-        cy.createDefaultProject()
-        Cypress.Commands.add("reportSkill", (skillId) => {
-            cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
-        })
-        cy.visit('/vuejs#/')
+            cy.createDefaultProject()
+            Cypress.Commands.add("reportSkill", (skillId) => {
+                cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
+            })
+            cy.visit('/vuejs#/')
 
-        cy.contains('Level 0')
-        cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+            cy.contains('Level 0')
+            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
         cy.reportSkillForUser('IronMan', 'unknown@skills.org')
         cy.contains('Level 0')

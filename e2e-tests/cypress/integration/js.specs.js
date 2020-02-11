@@ -1,104 +1,114 @@
+import Utils from "./Utils";
 const wsTimeout = 3000;
 const iFrameTimeout = 3000;
 
 context("Native JS Tests", () => {
-  it("global event show correct results", () => {
-    cy.createDefaultProject();
+  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
+    it("global event show correct results", () => {
+      cy.createDefaultProject();
 
-    const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
-    Cypress.Commands.add("clickSubmit", () => {
-      cy.get(`${sendEventViaDropdownId} .btn`).click();
+      const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
+      Cypress.Commands.add("clickSubmit", () => {
+        cy.get(`${sendEventViaDropdownId} .btn`).click();
+      });
+      cy.visit("/native/index.html");
+
+      cy.wait(wsTimeout); // allow for the ui web-socket handshake to complete
+
+      cy.clickSubmit();
+
+      cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
+      cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
+      cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
+      cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
     });
-    cy.visit("/native/index.html");
+  }
+  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
+    it("global event show correct results (skills reported directly to backend endpoint)", () => {
+      cy.createDefaultProject();
+      cy.visit("/native/index.html");
 
-    cy.wait(wsTimeout); // allow for the ui web-socket handshake to complete
+      cy.wait(wsTimeout); // allow for the ui web-socket handshake to complete
 
-    cy.clickSubmit();
-    
-    cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
-    cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
-    cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
-    cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
-  });
+      cy.reportSkillForUser("IronMan", "user1");
 
-  it("global event show correct results (skills reported directly to backend endpoint)", () => {
-    cy.createDefaultProject();
-    cy.visit("/native/index.html");
-
-    cy.wait(wsTimeout); // allow for the ui web-socket handshake to complete
-
-    cy.reportSkillForUser("IronMan", "user1");
-
-    cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
-    cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
-    cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
-    cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
-  });
-
-  it('global event does not update when skill reported for a different project', () => {
-    cy.createDefaultProject()
-    cy.createDefaultTinyProject('proj2')
-    cy.visit("/native/index.html");
-
-    cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
-
-    cy.reportSkillForUser('IronMan', 'user1', 'proj2')
-
-    cy.get('[data-cy=globalEventResult]').should('be.empty');
-  })
-
-  it('global event is not reported when skill is not applied (skill reported directly to backend endpoint)', () => {
-    cy.createDefaultProject()
-    cy.reportSkillForUser('IronMan', 'user1')
-
-    cy.visit("/native/index.html");
-
-    cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
-
-    cy.reportSkillForUser('IronMan', 'user1')
-
-    cy.get('[data-cy=globalEventResult]').should('be.empty');
-  })
-
-  it('global event is not reported when skill is not applied', () => {
-    cy.createDefaultProject()
-    cy.reportSkillForUser('IronMan', 'user1')
-
-    cy.visit("/native/index.html");
-    
-    const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
-    Cypress.Commands.add("clickSubmit", () => {
-      cy.get(`${sendEventViaDropdownId} .btn`).click();
+      cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
+      cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
+      cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
+      cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
     });
+  }
 
-    cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
+    it('global event does not update when skill reported for a different project', () => {
+      cy.createDefaultProject()
+      cy.createDefaultTinyProject('proj2')
+      cy.visit("/native/index.html");
 
-    cy.clickSubmit()
+      cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
-    cy.get('[data-cy=globalEventResult]').should('be.empty');
-  })
+      cy.reportSkillForUser('IronMan', 'user1', 'proj2')
 
-  it('global event is reported even when skill is not applied when notifyIfSkillNotApplied=true ', () => {
-    cy.createDefaultProject()
-    cy.reportSkillForUser('IronMan', 'user1')
+      cy.get('[data-cy=globalEventResult]').should('be.empty');
+    })
+  }
+  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
+    it('global event is not reported when skill is not applied (skill reported directly to backend endpoint)', () => {
+      cy.createDefaultProject()
+      cy.reportSkillForUser('IronMan', 'user1')
 
-    cy.visit("/native/index.html");
-    
-    const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
-    Cypress.Commands.add("clickSubmit", () => {
-      cy.get(`${sendEventViaDropdownId} .btn`).click();
-    });
+      cy.visit("/native/index.html");
 
-    cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+      cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
-    cy.get('[type="checkbox"]').check() 
-    cy.clickSubmit()
+      cy.reportSkillForUser('IronMan', 'user1')
 
-    cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
-    cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 0')
-    cy.get('[data-cy=globalEventResult]').contains('"skillApplied": false')
-    cy.get('[data-cy=globalEventResult]').contains('"explanation": "This skill reached its maximum points"')
-  })
+      cy.get('[data-cy=globalEventResult]').should('be.empty');
+    })
+  }
+  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
+    it('global event is not reported when skill is not applied', () => {
+      cy.createDefaultProject()
+      cy.reportSkillForUser('IronMan', 'user1')
+
+      cy.visit("/native/index.html");
+
+      const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
+      Cypress.Commands.add("clickSubmit", () => {
+        cy.get(`${sendEventViaDropdownId} .btn`).click();
+      });
+
+      cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+
+      cy.clickSubmit()
+
+      cy.get('[data-cy=globalEventResult]').should('be.empty');
+    })
+  }
+
+  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
+    it('global event is reported even when skill is not applied when notifyIfSkillNotApplied=true ', () => {
+      cy.createDefaultProject()
+      cy.reportSkillForUser('IronMan', 'user1')
+
+      cy.visit("/native/index.html");
+
+      const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
+      Cypress.Commands.add("clickSubmit", () => {
+        cy.get(`${sendEventViaDropdownId} .btn`).click();
+      });
+
+      cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
+
+      cy.get('[type="checkbox"]').check()
+      cy.clickSubmit()
+
+      cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
+      cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 0')
+      cy.get('[data-cy=globalEventResult]').contains('"skillApplied": false')
+      cy.get('[data-cy=globalEventResult]').contains('"explanation": "This skill reached its maximum points"')
+    })
+  }
 
   it("skill display", () => {
     cy.createDefaultTinyProject();

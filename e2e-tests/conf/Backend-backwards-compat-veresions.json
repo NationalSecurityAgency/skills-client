@@ -1,0 +1,46 @@
+{
+  "skills-example-client-vue": [
+    [
+      {
+        "dep": "@skills/skills-client-vue",
+        "version": "1.0.5"
+      }
+    ],
+    [
+      {
+        "dep": "@skills/skills-client-vue",
+        "version": "1.0.4"
+      }
+    ]
+  ],
+  "skills-example-client-react": [
+    [
+      {
+        "dep": "@skills/skills-client-react",
+        "version": "1.0.4"
+      },
+      {
+        "dep": "@skills/skills-client-reporter",
+        "version": "1.0.1"
+      },
+      {
+        "dep": "@skills/skills-client-configuration",
+        "version": "1.0.0"
+      }
+    ],
+    [
+      {
+        "dep": "@skills/skills-client-react",
+        "version": "1.0.3"
+      },
+      {
+        "dep": "@skills/skills-client-reporter",
+        "version": "1.0.1"
+      },
+      {
+        "dep": "@skills/skills-client-configuration",
+        "version": "1.0.0"
+      }
+    ]
+  ]
+}

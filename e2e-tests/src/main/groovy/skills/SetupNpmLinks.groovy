@@ -5,6 +5,7 @@ import callStack.profiler.Profile
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
 
+import javax.print.attribute.SetOfIntegerSyntax
 import java.nio.file.Files
 
 @Slf4j
@@ -12,30 +13,37 @@ class SetupNpmLinks {
 
     static void main(String[] args) {
         boolean shouldNotPrune = args.find({ it.equalsIgnoreCase("--noPrune") })
-        new SetupNpmLinks(shouldPrune: !shouldNotPrune).doLink()
+        new SetupNpmLinks(shouldPrune: !shouldNotPrune).init().doLink()
         log.info("Execution Prof:\n{}", CProf.prettyPrint())
     }
 
+    // configure
     File root = new File("./")
     boolean shouldPrune = false
+
+    // private
     TitlePrinter titlePrinter = new TitlePrinter()
+    List<NpmProj> projs
+    SetupNpmLinks init(){
+        projs = new NpmProjBuilder(loc: root).build()
+        return this
+    }
 
     @Profile
     void doLink() {
         log.info("Should Prune = [{}]", shouldPrune)
-        List<NpmProj> projs = new NpmProjBuilder(loc: root).build()
-
-        removeAnyExistingLinks(projs)
-        npmInstall(projs)
-        createLinks(projs)
-        npmLinkToSkills(projs)
-        npmLinkToReact(projs)
-        validateLinks(projs)
-        build(projs)
+        assert projs
+        removeAnyExistingLinks()
+        npmInstall()
+        createLinks()
+        npmLinkToSkills()
+        npmLinkToReact()
+        validateLinks()
+        build()
     }
 
     @Profile
-    private void removeAnyExistingLinks(List<NpmProj> projs) {
+    void removeAnyExistingLinks() {
         titlePrinter.printTitle("removing existing links")
         projs.each { NpmProj proj ->
             File moduleDir = proj.getSkillsModulesDir(false)
@@ -56,7 +64,7 @@ class SetupNpmLinks {
     }
 
     @Profile
-    private void build(List<NpmProj> projs) {
+    private void build() {
         titlePrinter.printTitle("build")
         projs.each { NpmProj npmProj ->
             npmProj.exec("npm run build")
@@ -64,7 +72,7 @@ class SetupNpmLinks {
     }
 
     @Profile
-    private void validateLinks(List<NpmProj> projs) {
+    private void validateLinks() {
         titlePrinter.printTitle("validate links")
         projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
             titlePrinter.printSubTitle("validating [${npmProj.getSkillsModulesDir().absolutePath}]")
@@ -82,7 +90,7 @@ class SetupNpmLinks {
     }
 
     @Profile
-    private void npmLinkToSkills(List<NpmProj> projs) {
+    private void npmLinkToSkills() {
         titlePrinter.printTitle("link")
         projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
             npmProj.getSkillsModulesDir().eachFile { File module ->
@@ -93,7 +101,7 @@ class SetupNpmLinks {
     }
 
     @Profile
-    private void npmLinkToReact(List<NpmProj> projs) {
+    private void npmLinkToReact() {
         titlePrinter.printTitle("link react")
         projs.findAll({ it.reactApp }).each { NpmProj npmProj ->
             File reactModuleDir = projs.find { it.reactModule }.getReactModuleDir()
@@ -103,7 +111,7 @@ class SetupNpmLinks {
     }
 
     @Profile
-    private void createLinks(List<NpmProj> projs) {
+    private void createLinks() {
         titlePrinter.printTitle("create links")
         projs.findAll({ it.doOthersLinkToMe }).each {
             titlePrinter.printSubTitle("create link for ${it.loc.name}")
@@ -114,7 +122,7 @@ class SetupNpmLinks {
     }
 
     @Profile
-    private void npmInstall(List<NpmProj> projs) {
+    private void npmInstall() {
         titlePrinter.printTitle("npm prune and npm install")
         projs.each {
             titlePrinter.printSubTitle("install and prune ${it.loc.name}")
