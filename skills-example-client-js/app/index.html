@@ -20,7 +20,7 @@
       });
 
     SkillsReporter.SkillsReporter.addSuccessHandler((result) => {
-      document.querySelector('#global-event-result-container').innerHTML = JSON.stringify(result, null, 2);
+      document.querySelector('#global-event-result-container-js').innerHTML = JSON.stringify(result, null, 2);
     });
 
     const reportSkill = (skillId) => {
@@ -63,7 +63,7 @@
           Include Skills Not Applied: <input type="checkbox" id="all-events-check" onclick="toggleAllEvents()">
         </div>
         <div id="globalEventResult" class="border rounded p-3 mb-5 bg-light">
-          <pre id="global-event-result-container" data-cy="globalEventResult"></pre>
+          <pre id="global-event-result-container-js" data-cy="globalEventResult"></pre>
         </div>
         <div>
           <h5 class="text-info"><strong>Skills Directive - Click Event</strong></h5>
