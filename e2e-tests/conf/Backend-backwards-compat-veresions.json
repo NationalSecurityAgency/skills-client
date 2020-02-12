@@ -27,11 +27,13 @@
         "dep": "@skills/skills-client-configuration",
         "version": "1.0.0"
       }
-    ],
+    ]
+  ],
+  "skills-example-client-js": [
     [
       {
-        "dep": "@skills/skills-client-react",
-        "version": "1.0.3"
+        "dep": "@skills/skills-client-js",
+        "version": "1.0.2"
       },
       {
         "dep": "@skills/skills-client-reporter",

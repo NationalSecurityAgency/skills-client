@@ -3,8 +3,6 @@ package skills
 import callStack.profiler.CProf
 import callStack.profiler.Profile
 import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-import groovy.transform.ToString
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
 import skills.backwardsCompat.BackwardCompatHelper
@@ -80,17 +78,7 @@ class ReleaseDashboard {
                     for (Deps depsForThisRun in testDeps.runWithDeps)
                         if (!coveredDeps.contains(depsForThisRun.uuid)) {
                             NpmProj packageToChange = projectOps.allProj.find({ it.name == testDeps.projName })
-                            assert packageToChange
-                            def json = packageToChange.getPackageJson()
-                            depsForThisRun.deps.each { Dep depToChange ->
-                                def foundDep = json.dependencies."${depToChange.name}"
-                                assert foundDep
-                                json.dependencies."${depToChange.name}" = depToChange.version
-                            }
-                            String jsonToSave = JsonOutput.prettyPrint(JsonOutput.toJson(json))
-                            File f = new File(packageToChange.loc, "package.json")
-                            assert f.exists()
-                            f.write(jsonToSave)
+                            updatePackageJsonDeps(packageToChange, depsForThisRun)
 
                             coveredDeps.add(depsForThisRun.uuid)
                             thisRun.add(depsForThisRun)
@@ -107,15 +95,34 @@ class ReleaseDashboard {
                     }
 
                     String output = thisRun.collect { "${it.projName}. Versions ${it.deps.collect({ "${it.name}:${it.version}" }).join(", ")}" }.join("\n")
-                    titlePrinter.printSubTitle("Running with: \n$output\n")
+                    titlePrinter.printTitle("Running cypress test with: \n$output\n")
                     projectOps.buildClientExamplesApp()
-                    runCypressTests(projectOps, "!!!!FAILED!!!! while running with:\n${output}", thisRun.deps.collect({ "${it.name}=${it.version}" }))
+                    runCypressTests(projectOps, output, "!!!!FAILED!!!! while running with:\n${output}", thisRun.deps.flatten().collect({ "${it.name}=${it.version}" }))
                 }
             }
         }
     }
 
-    private void runCypressTests(ProjectsOps projectOps, String errMessage = "!!!!FAILED!!!! while running latest code using 'npm link'", List<String> env = []) {
+    private Object updatePackageJsonDeps(NpmProj packageToChange, Deps depsForThisRun) {
+        assert packageToChange
+        def json = packageToChange.getPackageJson()
+        depsForThisRun.deps.each { Dep depToChange ->
+            def foundDep = json.dependencies."${depToChange.name}"
+            assert foundDep
+            json.dependencies."${depToChange.name}" = depToChange.version
+        }
+        String jsonToSave = JsonOutput.prettyPrint(JsonOutput.toJson(json))
+        File f = new File(packageToChange.loc, "package.json")
+        assert f.exists()
+        f.write(jsonToSave)
+
+        // sanity check
+        depsForThisRun.deps.each { Dep depToChange ->
+            assert packageToChange.packageJson.dependencies."$depToChange.name" == depToChange.version
+        }
+    }
+
+    private void runCypressTests(ProjectsOps projectOps, String clientLibsMsg = "latest", String errMessage = "!!!!FAILED!!!! while running latest code using 'npm link'", List<String> env = []) {
         File backendJar = workDir.listFiles().find({ it.name.startsWith("backend") && it.name.endsWith("jar") })
 
         assert backendJar.exists()
@@ -128,13 +135,13 @@ class ReleaseDashboard {
         FileUtils.copyFile(examplesJar, new File(serviceJars, examplesJar.name))
 
         try {
-            projectOps.runCypressTests(new File(workDir, "skills-client-examples/e2e-tests"), backendJar.name, env)
-        } catch (Throwable t){
+            String msg = "\nbackend jar: ${backendJar.name},\nclientLibs:\n${clientLibsMsg}"
+            projectOps.runCypressTests(new File(workDir, "skills-client-examples/e2e-tests"), msg, env)
+        } catch (Throwable t) {
             log.error(errMessage)
             throw t;
         }
     }
-
 }
 
 

@@ -36,16 +36,23 @@ class ProcessRunner {
             log.info("Executing: [${cmd}] in [$loc.absoluteFile.absolutePath]")
             Process p = cmd.execute(null, loc)
 
-            if (printOutput) {
-                TeeOutputStream teeOutputStream = new TeeOutputStream(Slf4jStream.ofCaller().asInfo(), sout)
-                TeeOutputStream teeErrorStream = new TeeOutputStream(Slf4jStream.ofCaller().asError(), serr)
-                p.consumeProcessOutput(teeOutputStream, teeErrorStream)
-            } else {
-                p.consumeProcessOutput(sout, serr)
-            }
-
             if (waitForOutput) {
                 p.waitFor(5, TimeUnit.MINUTES)
+                if (printOutput) {
+                    TeeOutputStream teeOutputStream = new TeeOutputStream(Slf4jStream.ofCaller().asInfo(), sout)
+                    TeeOutputStream teeErrorStream = new TeeOutputStream(Slf4jStream.ofCaller().asError(), serr)
+                    p.waitForProcessOutput(teeOutputStream, teeErrorStream)
+                } else {
+                    p.waitForProcessOutput(sout, serr)
+                }
+            } else {
+                if (printOutput) {
+                    TeeOutputStream teeOutputStream = new TeeOutputStream(Slf4jStream.ofCaller().asInfo(), sout)
+                    TeeOutputStream teeErrorStream = new TeeOutputStream(Slf4jStream.ofCaller().asError(), serr)
+                    p.consumeProcessOutput(teeOutputStream, teeErrorStream)
+                } else {
+                    p.consumeProcessOutput(sout, serr)
+                }
             }
 
             String errMsg = serr ? new String(serr.toByteArray()) : ""

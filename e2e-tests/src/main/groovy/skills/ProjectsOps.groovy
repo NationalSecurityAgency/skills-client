@@ -58,7 +58,7 @@ class ProjectsOps {
         for (NpmProj proj in allProj.findAll({ it.doOthersLinkToMe })) {
             titlePrinter.printSubTitle("checking ${proj.name}")
             if (proj.hasUnreleasedChanges()) {
-                log.info("${proj.name} has has changes let's release")
+                log.info("${proj.name} has changes! Will need to release!")
                 numProjChanged++
             } else {
                 log.info("${proj.name} has no changes. Release is not needed!")
@@ -77,8 +77,8 @@ class ProjectsOps {
 
 
     @Profile
-    void runCypressTests(File location, String version, List<String> cypressEnv = []) {
-        titlePrinter.printTitle("Start backend version [${version}] and examples")
+    void runCypressTests(File location, String msg, List<String> cypressEnv = []) {
+        titlePrinter.printTitle("Running cypress tests: [${msg}]")
         killServerProcesses()
         try {
             new ProcessRunner(loc: location, waitForOutput: false).run("npm run backend:start:release &")
@@ -88,7 +88,7 @@ class ProjectsOps {
             new ProcessRunner(loc: location).run("npm run backend:waitToStart")
             new ProcessRunner(loc: location).run("npm run examples:waitToStart")
 
-            titlePrinter.printTitle("Run Cypress Tests against backend version [${version}]")
+            titlePrinter.printSubTitle("Starting Cypress tests [${msg}]")
 
             String env = cypressEnv ? " --env ${cypressEnv.join(",")}" : ""
             new ProcessRunner(loc: location).run("npx cypress run${env}")
