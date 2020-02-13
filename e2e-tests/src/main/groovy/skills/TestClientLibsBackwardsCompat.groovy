@@ -83,25 +83,25 @@ class TestClientLibsBackwardsCompat {
         }
 
         titlePrinter.printTitle("OK Everything looks good! Let's release")
-        boolean dryRun = true
-        for (NpmProj proj in allProj.findAll({ it.doOthersLinkToMe })) {
-            titlePrinter.printTitle("Release for ${proj.name}")
-            if (proj.hasUnreleasedChanges()) {
-                log.info("${proj.name} has has changes let's release")
-                proj.exec("npm install", dryRun)
-                proj.exec("npm run build", dryRun)
-                proj.exec("release-it --ci ${typeOfRelease}", dryRun)
-
-                List<NpmProjRel> updateVersion = rels.findAll({ it.to.name == proj.name })
-                for (NpmProjRel updateRel in updateVersion) {
-                    log.info("  Update version for [${updateRel.from.name}]: [${updateRel.from.getDepVersion("@skills/${updateRel.to.name}")}] -> [${updateRel.to.version}]")
-                    updateRel.from.exec("npm install --save @skills/${updateRel.to.name}@${updateRel.to.version}", dryRun)
-                    updateRel.from.exec("git push", dryRun)
-                }
-            } else {
-                log.info("${proj.name} has no changes. Release is not needed!")
-            }
-        }
+//        boolean dryRun = true
+//        for (NpmProj proj in allProj.findAll({ it.doOthersLinkToMe })) {
+//            titlePrinter.printTitle("Release for ${proj.name}")
+//            if (proj.hasUnreleasedChanges()) {
+//                log.info("${proj.name} has has changes let's release")
+//                proj.exec("npm install", dryRun)
+//                proj.exec("npm run build", dryRun)
+//                proj.exec("release-it --ci ${typeOfRelease}", dryRun)
+//
+//                List<NpmProjRel> updateVersion = rels.findAll({ it.to.name == proj.name })
+//                for (NpmProjRel updateRel in updateVersion) {
+//                    log.info("  Update version for [${updateRel.from.name}]: [${updateRel.from.getDepVersion("@skills/${updateRel.to.name}")}] -> [${updateRel.to.version}]")
+//                    updateRel.from.exec("npm install --save @skills/${updateRel.to.name}@${updateRel.to.version}", dryRun)
+//                    updateRel.from.exec("git push", dryRun)
+//                }
+//            } else {
+//                log.info("${proj.name} has no changes. Release is not needed!")
+//            }
+//        }
     }
 
 //    private void runCypressTests(String version) {

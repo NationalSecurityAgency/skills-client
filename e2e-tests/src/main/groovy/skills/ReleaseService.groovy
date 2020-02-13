@@ -36,7 +36,7 @@ class ReleaseService {
     ReleaseMode releaseMode
     String baseBranch = "master"
     boolean dryRun = true
-    File workDir = new File("./e2e-tests/target/${this.class.name}/")
+    File workDir = new File("./e2e-tests/target/${this.class.simpleName}/")
     String nexusHost = "http://ip-10-113-80-244.evoforge.org"
     SupportedProjects proj
     String optionalSubjProject = "backend"
@@ -61,15 +61,7 @@ class ReleaseService {
         String projName = proj.name
         titlePrinter.printTitle("Let's release. Project=[${projName}], Release Mode=[${releaseMode}], Dry Run=[${dryRun}]")
         log.info("Project name [${projName}]")
-        if (workDir.exists()) {
-            FileUtils.deleteDirectory(workDir)
-            log.info("Removed [{}]", workDir.absoluteFile.absolutePath)
-        }
-
-        if (!workDir.exists()) {
-            workDir.mkdirs()
-            log.info("Created [{}]", workDir.absoluteFile.absolutePath)
-        }
+        DirHelper.createEmptyDirClearIfExist(workDir)
 
 
         new ProcessRunner(loc: workDir).run("git clone git@gitlab.evoforge.org:skills/${projName}.git")
@@ -142,6 +134,7 @@ class ReleaseService {
 
         titlePrinter.printTitle('ALL DONE')
     }
+
 
     private void validateNoTag(File projRootDir, String tag) {
         String res = new ProcessRunner(loc: projRootDir, printOutput: false).run("git tag").sout
