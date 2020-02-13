@@ -11,13 +11,13 @@ import skills.backwardsCompat.Deps
 import skills.backwardsCompat.TestDeps
 
 @Slf4j
-class ReleaseDashboard {
+class TestDashboardBackwardCompat {
 
     static void main(String[] args) {
-        new ReleaseDashboard().release()
+        new TestDashboardBackwardCompat().release()
     }
 
-    File workDir = new File("./e2e-tests/target/releaseDashboardWorkDir/")
+    File workDir = new File("./e2e-tests/target/${this.class.name}/")
     // private
     TitlePrinter titlePrinter = new TitlePrinter()
     enum Stage {
@@ -66,41 +66,47 @@ class ReleaseDashboard {
         }
 
         if (stages.contains(Stage.RunCypressForBackwardCompat)) {
-            titlePrinter.printTitle("Running Backwards Compat tests")
-            new SetupNpmLinks(root: workDir).init().removeAnyExistingLinks()
-            List<TestDeps> toTest = new BackwardCompatHelper().load()
-            List<String> coveredDeps = []
-            boolean performWork = true
-            while (performWork) {
-                List<Deps> thisRun = []
-                toTest.each { TestDeps testDeps ->
-                    depsLoop:
-                    for (Deps depsForThisRun in testDeps.runWithDeps)
-                        if (!coveredDeps.contains(depsForThisRun.uuid)) {
-                            NpmProj packageToChange = projectOps.allProj.find({ it.name == testDeps.projName })
-                            updatePackageJsonDeps(packageToChange, depsForThisRun)
+            runBackwardsCompatTests(projectOps)
+        }
+    }
 
-                            coveredDeps.add(depsForThisRun.uuid)
-                            thisRun.add(depsForThisRun)
-                            break depsLoop;
-                        }
-                }
+    private void runBackwardsCompatTests(ProjectsOps projectOps) {
+        titlePrinter.printTitle("Running Backwards Compat tests")
+        new SetupNpmLinks(root: workDir).init().removeAnyExistingLinks()
+        List<TestDeps> toTest = new BackwardCompatHelper().load()
+        List<String> coveredDeps = []
+        boolean performWork = true
+        while (performWork) {
+            List<Deps> thisRun = []
+            toTest.each { TestDeps testDeps ->
+                depsLoop:
+                for (Deps depsForThisRun in testDeps.runWithDeps)
+                    if (!coveredDeps.contains(depsForThisRun.uuid)) {
+                        NpmProj packageToChange = projectOps.allProj.find({ it.name == testDeps.projName })
+                        updatePackageJsonDeps(packageToChange, depsForThisRun)
 
-                performWork = !thisRun.isEmpty();
-
-                if (performWork) {
-                    titlePrinter.printSubTitle("Prune old versions")
-                    projectOps.allProj.findAll({ it.name.startsWith("skills-example-client") }).each {
-                        it.exec("npm prune")
+                        coveredDeps.add(depsForThisRun.uuid)
+                        thisRun.add(depsForThisRun)
+                        break depsLoop;
                     }
+            }
 
-                    String output = thisRun.collect { "${it.projName}. Versions ${it.deps.collect({ "${it.name}:${it.version}" }).join(", ")}" }.join("\n")
-                    titlePrinter.printTitle("Running cypress test with: \n$output\n")
-                    projectOps.buildClientExamplesApp()
-                    runCypressTests(projectOps, output, "!!!!FAILED!!!! while running with:\n${output}", thisRun.deps.flatten().collect({ "${it.name}=${it.version}" }))
+            performWork = !thisRun.isEmpty();
+
+            if (performWork) {
+                titlePrinter.printSubTitle("Prune old versions")
+                projectOps.allProj.findAll({ it.name.startsWith("skills-example-client") }).each {
+                    it.exec("npm prune")
                 }
+
+                String output = thisRun.collect { "${it.projName}. Versions ${it.deps.collect({ "${it.name}:${it.version}" }).join(", ")}" }.join("\n")
+                titlePrinter.printTitle("Running cypress test with: \n$output\n")
+                projectOps.buildClientExamplesApp()
+                runCypressTests(projectOps, output, "!!!!FAILED!!!! while running with:\n${output}", thisRun.deps.flatten().collect({ "${it.name}=${it.version}" }))
             }
         }
+
+        titlePrinter.printTitle("SUCCESS!! ALL tests passed!")
     }
 
     private Object updatePackageJsonDeps(NpmProj packageToChange, Deps depsForThisRun) {
@@ -122,7 +128,7 @@ class ReleaseDashboard {
         }
     }
 
-    private void runCypressTests(ProjectsOps projectOps, String clientLibsMsg = "latest", String errMessage = "!!!!FAILED!!!! while running latest code using 'npm link'", List<String> env = []) {
+    private void runCypressTests(ProjectsOps projectOps, String clientLibsMsg = " Latest using npm link", String errMessage = "!!!!FAILED!!!! while running latest code using 'npm link'", List<String> env = []) {
         File backendJar = workDir.listFiles().find({ it.name.startsWith("backend") && it.name.endsWith("jar") })
 
         assert backendJar.exists()

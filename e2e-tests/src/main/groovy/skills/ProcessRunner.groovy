@@ -37,7 +37,6 @@ class ProcessRunner {
             Process p = cmd.execute(null, loc)
 
             if (waitForOutput) {
-                p.waitFor(5, TimeUnit.MINUTES)
                 if (printOutput) {
                     TeeOutputStream teeOutputStream = new TeeOutputStream(Slf4jStream.ofCaller().asInfo(), sout)
                     TeeOutputStream teeErrorStream = new TeeOutputStream(Slf4jStream.ofCaller().asError(), serr)
@@ -45,6 +44,8 @@ class ProcessRunner {
                 } else {
                     p.waitForProcessOutput(sout, serr)
                 }
+                p.waitFor(5, TimeUnit.MINUTES)
+
             } else {
                 if (printOutput) {
                     TeeOutputStream teeOutputStream = new TeeOutputStream(Slf4jStream.ofCaller().asInfo(), sout)
