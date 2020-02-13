@@ -51,5 +51,7 @@ class ReleaseClientLibs {
                 log.info("${proj.name} has no changes. Release is not needed!")
             }
         }
+
+        titlePrinter.printTitle("ALL DONE!")
     }
 }
