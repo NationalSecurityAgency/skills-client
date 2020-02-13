@@ -35,7 +35,7 @@ class ReleaseClientLibs {
         for (NpmProj proj in npmProjects.allProj.findAll({ it.doOthersLinkToMe })) {
             titlePrinter.printTitle("Release for ${proj.name}")
             if (proj.hasUnreleasedChanges()) {
-                log.info("${proj.name} has has changes let's release")
+                log.info("${proj.name} has changes let's release")
                 proj.exec("npm prune", dryRun)
                 proj.exec("npm install", dryRun)
                 proj.exec("npm run build", dryRun)
