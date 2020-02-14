@@ -5,7 +5,7 @@
   "homepage": "/react/",
   "dependencies": {
     "@skills/skills-client-configuration": "1.1.0",
-    "@skills/skills-client-react": "1.1.0",
+    "@skills/skills-client-react": "1.1.1",
     "@skills/skills-client-reporter": "1.1.1",
     "axios": "0.19.0",
     "bootstrap": "4.3.1",
