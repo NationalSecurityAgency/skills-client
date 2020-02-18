@@ -1,7 +1,6 @@
 package skills
 
 import groovy.util.logging.Slf4j
-import org.apache.commons.io.FileUtils
 
 @Slf4j
 class ReleaseService {
@@ -18,8 +17,8 @@ class ReleaseService {
         Boolean notDryRun = args.find({ it.equalsIgnoreCase("-notDryRun") })
 
         String projNameStr = args.find({ it.startsWith("-proj=") })
-        assert projNameStr, "Must provide -proj=${SupportedProjects.values().collect { it.name() }.join("|")}"
-        SupportedProjects proj = SupportedProjects.valueOf(projNameStr.split("-proj=")[1])
+        assert projNameStr, "Must provide -proj=${SupportedProject.values().collect { it.name() }.join("|")}"
+        SupportedProject proj = SupportedProject.valueOf(projNameStr.split("-proj=")[1])
 
         String patchBranch = "master"
         if (releaseMode == ReleaseMode.Patch){
@@ -28,9 +27,8 @@ class ReleaseService {
             patchBranch = patchBranchParam.split("-patchBranch=")[1]
         }
 
-
-
-        new ReleaseService(releaseMode: releaseMode, dryRun: !notDryRun, proj: proj, baseBranch: patchBranch).release()
+        String optionalSubProject = proj == SupportedProject.SkillsService ? "backend" : null
+        new ReleaseService(releaseMode: releaseMode, dryRun: !notDryRun, proj: proj, baseBranch: patchBranch, optionalSubProject: optionalSubProject).release()
     }
 
     ReleaseMode releaseMode
@@ -38,19 +36,19 @@ class ReleaseService {
     boolean dryRun = true
     File workDir = new File("./e2e-tests/target/${this.class.simpleName}/")
     String nexusHost = "http://ip-10-113-80-244.evoforge.org"
-    SupportedProjects proj
-    String optionalSubjProject = "backend"
+    SupportedProject proj
+    String optionalSubProject
 
     enum ReleaseMode {
         Major, Minor, Patch
     }
 
-    enum SupportedProjects {
+    enum SupportedProject {
         SkillsService("skills-service"), UserInfoService("user-info-service");
 
         String name
 
-        SupportedProjects(String name) {
+        SupportedProject(String name) {
             this.name = name;
         }
     }
@@ -88,13 +86,13 @@ class ReleaseService {
 
 
 
-        new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("mvn versions:set -DnewVersion=${releaseVersion}")
+        new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("mvn versions:set -DnewVersion=${releaseVersion} -DgenerateBackupPoms=false")
 
         log.info("---- Build and upload jar ----")
         new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("mvn --batch-mode package -DskipTests")
         File jar
-        if (optionalSubjProject) {
-            jar = new File(projRootDir, "${optionalSubjProject}/target").listFiles().find { it.name.startsWith(optionalSubjProject) && it.name.endsWith(".jar") }
+        if (optionalSubProject) {
+            jar = new File(projRootDir, "${optionalSubProject}/target").listFiles().find { it.name.startsWith(optionalSubProject) && it.name.endsWith(".jar") }
         } else {
             jar = new File(projRootDir, "target").listFiles().find { it.name.startsWith(projName) && it.name.endsWith(".jar") }
         }
@@ -104,11 +102,11 @@ class ReleaseService {
         log.info("---- Finished Building Jar ----")
         // account for dry run
         String jarFilePath = jar?.absoluteFile?.absolutePath
-        new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("mvn --batch-mode deploy:deploy-file -DpomFile=${optionalSubjProject ? "$optionalSubjProject/" : ""}pom.xml -Dfile=${jarFilePath} -Durl=${nexusHost}/repository/maven-releases/ -DrepositoryId=nexus-releases")
+        new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("mvn --batch-mode deploy:deploy-file -DpomFile=${optionalSubProject ? "$optionalSubProject/" : ""}pom.xml -Dfile=${jarFilePath} -Durl=${nexusHost}/repository/maven-releases/ -DrepositoryId=nexus-releases")
         log.info("---- Finished Uploading Jar ----")
 
-        new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git commit -m \"creating release version ${releaseVersion}\"")
-        new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git tag -a ${releaseVersion} -m \"tag release version ${releaseVersion}\"")
+        new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git commit -a -m creating_release_version_${releaseVersion}")
+        new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git tag -a ${releaseVersion} -m tag_release_version_${releaseVersion}")
         new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git push")
         new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git push origin ${releaseVersion}")
 
@@ -117,9 +115,9 @@ class ReleaseService {
             new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git checkout -b ${branchName}")
 
             String branchSnapshot = incrementVersion(releaseVersion, ReleaseMode.Patch) + "-SNAPSHOT"
-            new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("mvn versions:set -DnewVersion=${branchSnapshot}")
+            new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("mvn versions:set -DnewVersion=${branchSnapshot} -DgenerateBackupPoms=false")
 
-            new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git commit -m \"creating patch branch [${branchSnapshot}]\"")
+            new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git commit -a -m creating_patch_branch_[${branchSnapshot}]")
             new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git push -u origin ${branchName}")
 
 
@@ -128,8 +126,8 @@ class ReleaseService {
         }
 
 
-        new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("mvn versions:set -DnewVersion=${nextSnapshotVersion}")
-        new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git commit -m \"prep master for the next dev version [${nextSnapshotVersion}]\"")
+        new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("mvn versions:set -DnewVersion=${nextSnapshotVersion} -DgenerateBackupPoms=false")
+        new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git commit -a -m prep_master_for_the_next_dev_version_[${nextSnapshotVersion}]")
         new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git push")
 
         titlePrinter.printTitle('ALL DONE')
