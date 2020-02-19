@@ -36,7 +36,7 @@ build:
     - mvn --batch-mode clean install
     - mkdir -p ./skills-service/
     - cd ./skills-service/
-    // neet to figure out a better way to locate the jar file...
+    # neet to figure out a better way to locate the jar file...
     - mvn --batch-mode dependency:get -Dartifact=skills:backend:1.1.2-SNAPSHOT:jar -Dtransitive=false -Ddest=backend-toTest.jar
     - cd ..
     - ls ./
