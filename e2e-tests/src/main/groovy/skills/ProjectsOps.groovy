@@ -7,7 +7,7 @@ import org.apache.commons.io.FileUtils
 @Slf4j
 class ProjectsOps {
 
-    File releaseDir
+    File workDir
 
     // private
     TitlePrinter titlePrinter = new TitlePrinter()
@@ -16,21 +16,21 @@ class ProjectsOps {
 
     List<NpmProj> getAllProj() {
         if (!allProjCached) {
-            allProjCached = new NpmProjBuilder(loc: releaseDir).build()
+            allProjCached = new NpmProjBuilder(loc: workDir).build()
         }
         return allProjCached
     }
 
     @Profile
     private void clearWorkDir() {
-        log.info("releaseDir is [${releaseDir.absolutePath}]")
-        if (releaseDir.exists()) {
-            FileUtils.deleteDirectory(releaseDir)
-            log.info("removed previous release dir [{}]", releaseDir.absolutePath)
+        log.info("releaseDir is [${workDir.absolutePath}]")
+        if (workDir.exists()) {
+            FileUtils.deleteDirectory(workDir)
+            log.info("removed previous release dir [{}]", workDir.absolutePath)
         }
 
-        assert !releaseDir.exists()
-        releaseDir.mkdirs()
+        assert !workDir.exists()
+        workDir.mkdirs()
     }
 
     @Profile
@@ -41,7 +41,7 @@ class ProjectsOps {
         projToCheckOut.add(examplesProj)
         log.info("Cloning $projToCheckOut")
         for (String projName in projToCheckOut) {
-            new ProcessRunner(loc: releaseDir).run("git clone git@gitlab.evoforge.org:skills/${projName}.git")
+            new ProcessRunner(loc: workDir).run("git clone git@gitlab.evoforge.org:skills/${projName}.git")
         }
     }
 
@@ -71,7 +71,7 @@ class ProjectsOps {
     @Profile
     void buildClientExamplesApp() {
         titlePrinter.printTitle("Building Client Examples App")
-        File loc = new File(releaseDir, "skills-client-examples")
+        File loc = new File(workDir, "skills-client-examples")
         new ProcessRunner(loc: loc).run("mvn --batch-mode clean package")
     }
 

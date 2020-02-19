@@ -26,7 +26,7 @@ class ReleaseClientLibs {
         titlePrinter.printTitle("Release Client Libs: Release type=[${releaseType}]")
         DirHelper.createEmptyDirClearIfExist(workDir)
 
-        ProjectsOps npmProjects = new ProjectsOps(releaseDir: workDir)
+        ProjectsOps npmProjects = new ProjectsOps(workDir: workDir)
         npmProjects.checkoutLinkedNpmLibs()
 
         List<NpmProjRel> rels = new NpmProjBuilder(loc: workDir).buildRelMap()

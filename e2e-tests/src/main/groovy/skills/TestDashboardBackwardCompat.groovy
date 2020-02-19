@@ -23,7 +23,7 @@ class TestDashboardBackwardCompat {
         String backendVersionStr = args.find({ it.startsWith("-backendVersion=") })
         assert backendVersionStr, "Must supply -backendVersion param"
         String backendVersion = backendVersionStr.split("-backendVersion=")[1]
-        new TestDashboardBackwardCompat(backendVersion: backendVersion).release()
+        new TestDashboardBackwardCompat(backendVersion: backendVersion).test()
     }
 
     String backendVersion
@@ -42,21 +42,23 @@ class TestDashboardBackwardCompat {
             Stage.RunCypressForBackwardCompat,
     ]
 
-    void release() {
-        doRelease()
+    void test() {
+        doTest()
         log.info("Profile \n{}", CProf.prettyPrint())
     }
 
     @Profile
-    private void doRelease() {
+    private void doTest() {
+
         titlePrinter.printTitle("Release Dashboard")
-        ProjectsOps projectOps = new ProjectsOps(releaseDir: workDir)
+        ProjectsOps projectOps = new ProjectsOps(workDir: workDir)
         if (stages.contains(Stage.CheckoutLinked)) {
             projectOps.checkoutLinkedNpmLibs();
         }
 
         if (stages.contains(Stage.DownloadBackendJar)) {
             DownloadServiceJars downloadServiceJars = new DownloadServiceJars(outputDir: workDir)
+            downloadServiceJars.cleanOutputDir()
             downloadServiceJars.download("backend", backendVersion)
         }
 
