@@ -14,9 +14,19 @@ import skills.backwardsCompat.TestDeps
 class TestDashboardBackwardCompat {
 
     static void main(String[] args) {
-        new TestDashboardBackwardCompat().release()
+        if (!args){
+            println "FAILED! Missing param. Usage: TestDashboardBackwardCompat -backendVersion=<version>\n" +
+                    "  Example: TestDashboardBackwardCompat -backendVersion=1.1.2-SNAPSHOT"
+            System.exit(-1)
+        }
+
+        String backendVersionStr = args.find({ it.startsWith("-backendVersion=") })
+        assert backendVersionStr, "Must supply -backendVersion param"
+        String backendVersion = backendVersionStr.split("-backendVersion=")[1]
+        new TestDashboardBackwardCompat(backendVersion: backendVersion).release()
     }
 
+    String backendVersion
     File workDir = new File("./e2e-tests/target/${TestDashboardBackwardCompat.class.simpleName}/")
     // private
     TitlePrinter titlePrinter = new TitlePrinter()
@@ -47,7 +57,7 @@ class TestDashboardBackwardCompat {
 
         if (stages.contains(Stage.DownloadBackendJar)) {
             DownloadServiceJars downloadServiceJars = new DownloadServiceJars(outputDir: workDir)
-            downloadServiceJars.downloadLatestBackendSnapshot()
+            downloadServiceJars.download("backend", backendVersion)
         }
 
         if (projectOps.doClientLibsNeedsToBeReleased()) {
