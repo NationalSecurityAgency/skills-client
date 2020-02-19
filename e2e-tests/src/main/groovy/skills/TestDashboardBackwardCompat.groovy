@@ -17,7 +17,7 @@ class TestDashboardBackwardCompat {
         new TestDashboardBackwardCompat().release()
     }
 
-    File workDir = new File("./e2e-tests/target/${this.class.name}/")
+    File workDir = new File("./e2e-tests/target/${TestDashboardBackwardCompat.class.simpleName}/")
     // private
     TitlePrinter titlePrinter = new TitlePrinter()
     enum Stage {
@@ -74,39 +74,50 @@ class TestDashboardBackwardCompat {
         titlePrinter.printTitle("Running Backwards Compat tests")
         new SetupNpmLinks(root: workDir).init().removeAnyExistingLinks()
         List<TestDeps> toTest = new BackwardCompatHelper().load()
+        int runNumber = 1
         List<String> coveredDeps = []
         boolean performWork = true
         while (performWork) {
             List<Deps> thisRun = []
+            boolean stillWork = false;
             toTest.each { TestDeps testDeps ->
+                boolean found = false;
                 depsLoop:
-                for (Deps depsForThisRun in testDeps.runWithDeps)
+                for (Deps depsForThisRun in testDeps.runWithDeps) {
                     if (!coveredDeps.contains(depsForThisRun.uuid)) {
                         NpmProj packageToChange = projectOps.allProj.find({ it.name == testDeps.projName })
                         updatePackageJsonDeps(packageToChange, depsForThisRun)
 
                         coveredDeps.add(depsForThisRun.uuid)
                         thisRun.add(depsForThisRun)
+                        found = true;
+                        stillWork = true;
                         break depsLoop;
                     }
+                }
+                // use the earliest (last in the list) if one is not found
+                if (!found){
+                    thisRun.add(testDeps.runWithDeps.last())
+                }
             }
 
-            performWork = !thisRun.isEmpty();
+            performWork = stillWork;
 
             if (performWork) {
-                titlePrinter.printSubTitle("Prune old versions")
+                titlePrinter.printSubTitle("Run #[${runNumber}]: Prune old versions")
                 projectOps.allProj.findAll({ it.name.startsWith("skills-example-client") }).each {
                     it.exec("npm prune")
                 }
 
                 String output = thisRun.collect { "${it.projName}. Versions ${it.deps.collect({ "${it.name}:${it.version}" }).join(", ")}" }.join("\n")
-                titlePrinter.printTitle("Running cypress test with: \n$output\n")
+                titlePrinter.printTitle("Run #[${runNumber}]: Running cypress test with: \n$output\n")
                 projectOps.buildClientExamplesApp()
                 runCypressTests(projectOps, output, "!!!!FAILED!!!! while running with:\n${output}", thisRun.deps.flatten().collect({ "${it.name}=${it.version}" }))
+                runNumber++
             }
         }
 
-        titlePrinter.printTitle("SUCCESS!! ALL tests passed!")
+        titlePrinter.printTitle("SUCCESS!! ALL tests passed! [${runNumber-1}] executions using different lib versions.")
     }
 
     private Object updatePackageJsonDeps(NpmProj packageToChange, Deps depsForThisRun) {

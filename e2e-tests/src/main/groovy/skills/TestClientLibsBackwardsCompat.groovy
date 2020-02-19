@@ -71,7 +71,7 @@ class TestClientLibsBackwardsCompat {
         }
 
         titlePrinter.printTitle("Download latest skills-example-service")
-        downloadServiceJars.download("skills-example-service", "1.0-SNAPSHOT")
+        downloadServiceJars.download("skills-example-service", "1.1.2-SNAPSHOT")
 
         List<String> versions = getBackendVersionsToTest()
         titlePrinter.printTitle("Backend versions to test: ${versions}")
