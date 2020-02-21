@@ -5,11 +5,11 @@ stages:
   - deploy
 
 .setup_node: &setup_node
-  - cat /etc/os-release
-  - curl -sL https://rpm.nodesource.com/setup_12.x | bash -
-  - apt-get install -y nodejs
-  - node -v
-  - npm -v
+- cat /etc/os-release
+- curl -sL https://rpm.nodesource.com/setup_12.x | bash -
+- apt-get install -y nodejs
+- node -v
+- npm -v
 
 build:
   image: maven:3.6.0-jdk-11
