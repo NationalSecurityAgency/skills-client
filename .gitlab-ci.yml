@@ -11,10 +11,11 @@ build:
     - ./ci/setupNode.sh
     - ./ci/setupRepos.sh
   script:
+    - cd ../
     - mkdir -p ./skills-service/
     - cd ./skills-service/
-    - ../ci/downloadLatestBackend.sh
-    - cd ../../
+    - ../skills-client-examples/ci/downloadLatestBackend.sh
+    - cd ../
     - ./skills-client-examples/ci/checkoutClientLibs.sh
     - cd skills-client-examples/e2e-tests
     - mvn --batch-mode clean package
