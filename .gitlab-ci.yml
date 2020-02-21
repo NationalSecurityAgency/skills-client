@@ -11,20 +11,19 @@ build:
     - ./ci/setupNode.sh
     - ./ci/setupRepos.sh
   script:
-    - cd ../
     - mkdir -p ./skills-service/
     - cd ./skills-service/
-    - ../skills-client-examples/ci/downloadLatestBackend.sh
-    - cd ../
+    - ../ci/downloadLatestBackend.sh
+    - cd ../../
     - ./skills-client-examples/ci/checkoutClientLibs.sh
     - cd skills-client-examples/e2e-tests
     - mvn --batch-mode clean package
     - java -cp target/skills-example-e2e-*.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.PropertiesLauncher
     - cd ..
     - mvn --batch-mode clean install
-    - cd ..
     - ls ./
     - ls ./skills-service
+    - ls ../
   artifacts:
     paths:
       - ./skills-example-service/target/skills-example-service-*.jar
