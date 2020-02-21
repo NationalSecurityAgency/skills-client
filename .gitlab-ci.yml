@@ -4,7 +4,7 @@ stages:
   - pushToNexus
   - deploy
 
-.setup_node: &setup_node
+.setupnode_before: &setupnode_before
 - cat /etc/os-release
 - curl -sL https://rpm.nodesource.com/setup_12.x | bash -
 - apt-get install -y nodejs
@@ -15,7 +15,7 @@ build:
   image: maven:3.6.0-jdk-11
   stage: build
   before_script:
-    - *setup_node
+    - *setupnode_before
   script:
     - echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
     - cat ~/.npmrc
