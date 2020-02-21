@@ -13,7 +13,7 @@ build:
   script:
     - mkdir -p ./skills-service/
     - cd ./skills-service/
-    - ./ci/downloadLatestBackend.sh
+    - ../ci/downloadLatestBackend.sh
     - cd ..
     - ./ci/checkoutClientLibs.sh
     - cd skills-client-examples/e2e-tests
