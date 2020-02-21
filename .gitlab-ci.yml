@@ -14,7 +14,7 @@ build:
     - mkdir -p ./skills-service/
     - cd ./skills-service/
     - ../ci/downloadLatestBackend.sh
-    - cd ..
+    - cd ../../
     - ./ci/checkoutClientLibs.sh
     - cd skills-client-examples/e2e-tests
     - mvn --batch-mode clean package
