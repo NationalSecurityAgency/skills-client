@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+apt-get install -y gawk
+
 majorVersion=1.1
 latestSnapVersion=`curl -s http://$NEXUS_SERVER/repository/maven-snapshots/skills/backend/maven-metadata.xml | grep "<version>${majorVersion}" | gawk -F "version>" '{print $2}' | gawk -F "<" '{print $1}' | sort | tac  | head -n 1`
 
