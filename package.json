@@ -7,7 +7,7 @@
     "lint": "npx eslint src/*",
     "clean": "rm -rf dist",
     "build": "npm run test && npm run clean && npx rollup -c",
-    "deploy-to-examples": "npm run build && cp ./dist/skills-display-js.umd.min.js ../../skills-examples/skills-example-client-js/app/assets/js/@skills/skills-client-js/",
+    "deploy-to-examples": "npm run build && cp ./dist/skills-display-js.umd.min.js ../skills-examples/skills-example-client-js/app/assets/js/@skills/skills-client-js/dist",
     "test": "NODE_ENV=test jest --coverage",
     "test-watch": "npx jest --passWithNoTests --coverage --watch",
     "prepublishOnly": "npm run build"
