@@ -24,3 +24,4 @@
 /.nb-gradle/
 /build/
 node_modules
+coverage
