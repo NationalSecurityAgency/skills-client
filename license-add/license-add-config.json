@@ -1,0 +1,19 @@
+{
+  "ignore": [ ".git", "coverage", ".*", "*.iml", "babel.config.js", "nwb.config.js", "lib/**", "umd/**", "es/**"],
+  "license": "license-add/LICENSE-HEADER.txt",
+  "licenseFormats": {
+    "js": {
+      "prepend": "/*",
+      "append": " */",
+      "eachLine": {
+        "prepend": " * "
+      }
+    },
+    "dotfile": {
+      "eachLine": {
+        "prepend": "# "
+      }
+    }
+  },
+  "trailingWhitespace": "TRIM"
+}

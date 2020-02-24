@@ -1,6 +1,8 @@
 {
   "name": "@skills/skills-client-react",
   "version": "1.1.1",
+  "license": "Apache-2.0",
+  "description": "SkillTree Client Lib - React",
   "main": "lib/index.js",
   "module": "es/index.js",
   "files": [
@@ -10,7 +12,11 @@
     "umd"
   ],
   "scripts": {
-    "build": "nwb build-react-component --copy-files",
+    "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;Apache-2.0' --summary",
+    "licenseHeaderCheck": " npx license-check-and-add check -f license-add/license-add-config.json",
+    "licenseHeaderAdd": " npx license-check-and-add add -f license-add/license-add-config.json",
+    "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck ",
+    "build": "npm run licenseCheck && nwb build-react-component --copy-files",
     "clean": "nwb clean-module && nwb clean-demo",
     "prepublishOnly": "npm run build",
     "start": "nwb serve-react-demo",
@@ -22,14 +28,15 @@
     "type": "git",
     "url": "git@gitlab.evoforge.org:skills/skills-client-react.git"
   },
-  "author": "Skills Team",
-  "license": "ISC",
+  "author": "SkillTree Team",
   "peerDependencies": {
     "react": "16.X",
     "react-dom": "16.X",
     "prop-types": "15.X"
   },
   "devDependencies": {
+    "license-check-and-add": "3.0.4",
+    "license-checker": "25.0.1",
     "nwb": "0.23.x",
     "react": "16.11.0",
     "react-dom": "16.11.0",
