@@ -13,6 +13,10 @@
       "eachLine": {
         "prepend": "# "
       }
+    },
+    "md": {
+      "prepend": "<!---",
+      "append": " -->"
     }
   },
   "trailingWhitespace": "TRIM"
