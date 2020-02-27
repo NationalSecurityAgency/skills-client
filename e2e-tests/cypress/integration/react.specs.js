@@ -19,45 +19,6 @@ const wsTimeout = 2000;
 const iFrameTimeout = 3000;
 
 context('React Tests', () => {
-    it('level component should be reactive', () => {
-        cy.createDefaultProject()
-        const sendEventViaDropdownId = '#exampleDirectiveClickEvent';
-        Cypress.Commands.add("clickSubmit", () => {
-            cy.get(`${sendEventViaDropdownId} .btn`).click()
-        })
-        Cypress.Commands.add("selectSkill", (skill) => {
-            cy.get(`${sendEventViaDropdownId} select`).select(`${skill}`)
-        })
-
-        cy.visit('/react/index.html#/')
-
-        cy.contains('Level 0')
-
-        cy.selectSkill('IronMan')
-        cy.clickSubmit()
-        cy.contains('Level 1')
-
-        cy.selectSkill('Thor')
-        cy.clickSubmit()
-        cy.contains('Level 2')
-
-        cy.selectSkill('subj1_skill0')
-        cy.clickSubmit()
-        cy.contains('Level 3')
-
-        cy.selectSkill('subj1_skill1')
-        cy.clickSubmit()
-        cy.contains('Level 3')
-
-        cy.selectSkill('subj2_skill0')
-        cy.clickSubmit()
-        cy.contains('Level 4')
-
-        cy.selectSkill('subj2_skill1')
-        cy.clickSubmit()
-        cy.contains('Level 5')
-    })
-
     if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.0')) {
         it('level component should be reactive (skills reported directly to backend endpoint)', () => {
             cy.createDefaultProject()
@@ -103,6 +64,45 @@ context('React Tests', () => {
             cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
         })
     }
+
+    it('level component should be reactive', () => {
+        cy.createDefaultProject()
+        const sendEventViaDropdownId = '#exampleDirectiveClickEvent';
+        Cypress.Commands.add("clickSubmit", () => {
+            cy.get(`${sendEventViaDropdownId} .btn`).click()
+        })
+        Cypress.Commands.add("selectSkill", (skill) => {
+            cy.get(`${sendEventViaDropdownId} select`).select(`${skill}`)
+        })
+
+        cy.visit('/react/index.html#/')
+
+        cy.contains('Level 0')
+
+        cy.selectSkill('IronMan')
+        cy.clickSubmit()
+        cy.contains('Level 1')
+
+        cy.selectSkill('Thor')
+        cy.clickSubmit()
+        cy.contains('Level 2')
+
+        cy.selectSkill('subj1_skill0')
+        cy.clickSubmit()
+        cy.contains('Level 3')
+
+        cy.selectSkill('subj1_skill1')
+        cy.clickSubmit()
+        cy.contains('Level 3')
+
+        cy.selectSkill('subj2_skill0')
+        cy.clickSubmit()
+        cy.contains('Level 4')
+
+        cy.selectSkill('subj2_skill1')
+        cy.clickSubmit()
+        cy.contains('Level 5')
+    })
 
     if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.0')) {
         it('global event does not update when skill reported for a different project', () => {
