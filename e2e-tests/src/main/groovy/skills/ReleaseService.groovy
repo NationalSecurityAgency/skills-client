@@ -1,3 +1,18 @@
+/*
+Copyright 2020 SkillTree
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 package skills
 
 import groovy.util.logging.Slf4j
@@ -12,8 +27,8 @@ class ReleaseService {
             System.exit(-1)
         }
         String releaseModeStr = args.find({ it.startsWith("-releaseMode=") })
-        assert releaseModeStr, "Must provide -releaseMode=${ReleaseMode.values().collect { it.name() }.join("|")}"
-        ReleaseMode releaseMode = ReleaseMode.valueOf(releaseModeStr.split("-releaseMode=")[1])
+        assert releaseModeStr, "Must provide -releaseMode=${ReleaseServiceMode.values().collect { it.name() }.join("|")}"
+        ReleaseServiceMode releaseMode = ReleaseServiceMode.valueOf(releaseModeStr.split("-releaseMode=")[1])
         Boolean notDryRun = args.find({ it.equalsIgnoreCase("-notDryRun") })
 
         String projNameStr = args.find({ it.startsWith("-proj=") })
@@ -21,7 +36,7 @@ class ReleaseService {
         SupportedProject proj = SupportedProject.valueOf(projNameStr.split("-proj=")[1])
 
         String patchBranch = "master"
-        if (releaseMode == ReleaseMode.Patch){
+        if (releaseMode == ReleaseServiceMode.Patch){
             String patchBranchParam = args.find({ it.startsWith("-patchBranch=") })
             assert patchBranchParam, "Must provide -patchBranch param when using -releaseMode=Patch"
             patchBranch = patchBranchParam.split("-patchBranch=")[1]
@@ -31,7 +46,7 @@ class ReleaseService {
         new ReleaseService(releaseMode: releaseMode, dryRun: !notDryRun, proj: proj, baseBranch: patchBranch, optionalSubProject: optionalSubProject).release()
     }
 
-    ReleaseMode releaseMode
+    ReleaseServiceMode releaseMode
     String baseBranch = "master"
     boolean dryRun = true
     File workDir = new File("./e2e-tests/target/${this.class.simpleName}/")
@@ -39,12 +54,12 @@ class ReleaseService {
     SupportedProject proj
     String optionalSubProject
 
-    enum ReleaseMode {
+    private static enum ReleaseServiceMode {
         Major, Minor, Patch
     }
 
     enum SupportedProject {
-        SkillsService("skills-service"), UserInfoService("user-info-service");
+        SkillsService("skills-service"), UserInfoService("user-info-service"), CallStackProf ("call-stack-profiler-core");
 
         String name
 
@@ -66,14 +81,14 @@ class ReleaseService {
         File projRootDir = new File(workDir, projName)
         assert projRootDir.exists()
         // if patch then move to its the branch
-        if (releaseMode == ReleaseMode.Patch) {
+        if (releaseMode == ReleaseServiceMode.Patch) {
             new ProcessRunner(loc: projRootDir).run("git checkout ${baseBranch}")
         }
         String releaseVersion = getReleaseVersion(projRootDir)
         validateNoTag(projRootDir, releaseVersion)
 
         // if major or minor version then create a branch, so it's ready for future patches
-        boolean createBranch = [ReleaseMode.Major, ReleaseMode.Minor].contains(releaseMode)
+        boolean createBranch = [ReleaseServiceMode.Major, ReleaseServiceMode.Minor].contains(releaseMode)
         String branchName = releaseVersion.split("\\.").toList().subList(0, 2).join(".") + ".X"
         if (createBranch) {
             validateNoBranch(projRootDir, branchName)
@@ -94,7 +109,8 @@ class ReleaseService {
         if (optionalSubProject) {
             jar = new File(projRootDir, "${optionalSubProject}/target").listFiles().find { it.name.startsWith(optionalSubProject) && it.name.endsWith(".jar") }
         } else {
-            jar = new File(projRootDir, "target").listFiles().find { it.name.startsWith(projName) && it.name.endsWith(".jar") }
+            List<File> jars = new File(projRootDir, "target").listFiles().findAll { it.name.endsWith(".jar") }
+            jar = jars.size() > 1 ? jars.find { it.name.startsWith(projName) } : jars.first()
         }
         if (!dryRun) {
             assert jar
@@ -114,7 +130,7 @@ class ReleaseService {
             titlePrinter.printSubTitle("Creating branch [${branchName}] for future patch work")
             new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git checkout -b ${branchName}")
 
-            String branchSnapshot = incrementVersion(releaseVersion, ReleaseMode.Patch) + "-SNAPSHOT"
+            String branchSnapshot = incrementVersion(releaseVersion, ReleaseServiceMode.Patch) + "-SNAPSHOT"
             new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("mvn versions:set -DnewVersion=${branchSnapshot} -DgenerateBackupPoms=false")
 
             new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git commit -a -m creating_patch_branch_[${branchSnapshot}]")
@@ -156,17 +172,17 @@ class ReleaseService {
         return newVersion
     }
 
-    private String incrementVersion(String version, ReleaseMode modeToUse) {
+    private String incrementVersion(String version, ReleaseServiceMode modeToUse) {
         String[] versionSlit = version.split("\\.")
         assert versionSlit.size() == 3
         switch (modeToUse) {
-            case ReleaseMode.Major:
+            case ReleaseServiceMode.Major:
                 versionSlit[0] = increment(versionSlit[0])
                 break;
-            case ReleaseMode.Minor:
+            case ReleaseServiceMode.Minor:
                 versionSlit[1] = increment(versionSlit[1])
                 break;
-            case ReleaseMode.Patch:
+            case ReleaseServiceMode.Patch:
                 versionSlit[2] = increment(versionSlit[2])
                 break;
         }
@@ -174,20 +190,20 @@ class ReleaseService {
         return newVersion
     }
 
-    private String nextMinorSnapshotVersion(String version, ReleaseMode modeToUse) {
+    private String nextMinorSnapshotVersion(String version, ReleaseServiceMode modeToUse) {
         String[] versionSlit = version.split("\\.")
         assert versionSlit.size() == 3
         switch (modeToUse) {
-            case ReleaseMode.Major:
+            case ReleaseServiceMode.Major:
                 versionSlit[0] = increment(versionSlit[0])
                 versionSlit[1] = 0
                 versionSlit[2] = 0
                 break;
-            case ReleaseMode.Minor:
+            case ReleaseServiceMode.Minor:
                 versionSlit[1] = increment(versionSlit[1])
                 versionSlit[2] = 0
                 break;
-            case ReleaseMode.Patch:
+            case ReleaseServiceMode.Patch:
                 versionSlit[2] = increment(versionSlit[2])
                 break;
         }
