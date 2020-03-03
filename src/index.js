@@ -15,3 +15,10 @@
  */
 export SkillsDisplay from './component/SkillsDisplay';
 export SkillsLevel from './component/SkillsLevel';
+export {
+  SkillsConfiguration,
+  SkillsReporter,
+  SUCCESS_EVENT,
+  FAILURE_EVENT,
+  SkillsDisplayJS,
+} from '@skills/skills-client-js';

@@ -15,8 +15,7 @@
  */
 import SkillsLevelService from './SkillsLevelService';
 
-import SkillsConfiguration from '@skills/skills-client-configuration';
-import { SkillsReporter } from '@skills/skills-client-reporter';
+import { SkillsConfiguration, SkillsReporter } from '@skills/skills-client-js';
 
 import React from 'react';
 import PropTypes from 'prop-types';

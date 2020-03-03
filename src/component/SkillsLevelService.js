@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import SkillsConfiguration from '@skills/skills-client-configuration';
+import { SkillsConfiguration } from '@skills/skills-client-js';
 
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import axios from 'axios';
