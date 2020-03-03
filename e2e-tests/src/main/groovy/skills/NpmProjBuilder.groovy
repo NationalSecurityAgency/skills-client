@@ -31,7 +31,7 @@ class NpmProjBuilder {
                 return f
             }
         }
-        throw new IllegalArgumentException("Failed to locate [$name] project")
+        throw new IllegalArgumentException("Failed to locate [$name] project. Startring seach point [${loc.absoluteFile.absolutePath}]")
     }
 
 

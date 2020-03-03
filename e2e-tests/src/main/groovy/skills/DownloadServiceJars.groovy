@@ -32,10 +32,12 @@ class DownloadServiceJars {
     @Profile
     void cleanOutputDir(){
         if (outputDir.exists()){
-            log.info("Removing [{}]", outputDir)
-            FileUtils.deleteDirectory(outputDir)
+            outputDir.listFiles().findAll({it.name.endsWith(".jar")}).each {
+                log.info("Removing [{}]", it)
+                it.delete()
+            }
         }
-        outputDir.mkdirs()
+//        outputDir.mkdirs()
     }
 
     @Profile
