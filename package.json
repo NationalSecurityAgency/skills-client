@@ -11,7 +11,7 @@
     "licenseHeaderCheck": " npx license-check-and-add check -f license-add/license-add-config.json",
     "licenseHeaderAdd": " npx license-check-and-add add -f license-add/license-add-config.json",
     "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck ",
-    "build": "npm run licenseCheck && npm run test && npm run clean && npx rollup --config",
+    "build": "npm run licenseCheck && npm run test && npm run clean && rollup --config",
     "deploy-to-examples": "npm run build && cp ./dist/skills-display-js.umd.min.js ../skills-examples/skills-example-client-js/app/assets/js/@skills/skills-client-js/dist",
     "test": "NODE_ENV=test jest --coverage",
     "test-watch": "npx jest --passWithNoTests --coverage --watch",
@@ -24,6 +24,7 @@
   "devDependencies": {
     "@babel/cli": "7.6.2",
     "@babel/core": "7.6.2",
+    "@babel/polyfill": "7.7.0",
     "@babel/preset-env": "7.6.2",
     "@rollup/plugin-commonjs": "11.0.2",
     "@rollup/plugin-replace": "2.3.1",
@@ -39,12 +40,13 @@
     "rollup": "1.31.1",
     "rollup-plugin-babel": "4.3.3",
     "rollup-plugin-eslint": "7.0.0",
-    "rollup-plugin-terser": "5.2.0"
+    "rollup-plugin-terser": "5.2.0",
+    "xhr-mock": "2.5.1"
   },
   "dependencies": {
-    "@skills/skills-client-configuration": "1.1.0",
-    "@skills/skills-client-reporter": "1.1.1",
     "axios": "0.19.0",
-    "postmate": "1.5.1"
+    "postmate": "1.5.1",
+    "sockjs-client": "1.4.0",
+    "webstomp-client": "1.2.6"
   }
 }

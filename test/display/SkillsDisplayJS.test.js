@@ -17,10 +17,10 @@ import Postmate from 'postmate';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
 
-import SkillsDisplayJS from '../src/SkillsDisplayJS.js';
-import ErrorPageUtils from '../src/ErrorPageUtils.js';
+import SkillsDisplayJS from '../../src/display/SkillsDisplayJS.js';
+import ErrorPageUtils from '../../src/display/ErrorPageUtils.js';
 
-jest.mock('../src/ErrorPageUtils.js');
+jest.mock('../../src/display/ErrorPageUtils.js');
 jest.mock('postmate');
 
 describe('SkillsDisplayJS', () => {

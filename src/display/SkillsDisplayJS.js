@@ -16,7 +16,7 @@
 import Postmate from 'postmate';
 import axios from 'axios';
 
-import { SkillsReporter } from '@skills/skills-client-reporter';
+import { SkillsReporter } from '../reporter/SkillsReporter';
 import ErrorPageUtils from './ErrorPageUtils';
 
 const SkillsConfiguration = SkillsReporter.getConf();

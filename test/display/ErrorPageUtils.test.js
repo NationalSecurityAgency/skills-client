@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import ErrorPageUtils from "../src/ErrorPageUtils";
+import ErrorPageUtils from "../../src/display/ErrorPageUtils";
 
 describe('ErrorPageUtils', () => {
     it('is found', () => {
