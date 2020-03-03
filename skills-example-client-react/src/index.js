@@ -20,7 +20,7 @@ import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import SkillsConfiguration from '@skills/skills-client-configuration';
+import { SkillsConfiguration } from '@skills/skills-client-react';
 
 axios.get("/api/config")
   .then((result) => {

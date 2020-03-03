@@ -30,7 +30,7 @@ const SampleCode = ({options, selectedTheme}) => {
 `,{indent_size: 4, indent_level: 2, end_with_newline: false, "html.format.contentUnformatted": "", "html.format.unformatted": ""});
 
         const js =  beautify(`
-import { SkillsDisplay } from '@skills/skills-client-vue';
+import { SkillsDisplay } from '@skills/skills-client-react';
     const selectedThemeObj = ${JSON.stringify(selectedTheme)};
     const MyComponent = () => {
         return (

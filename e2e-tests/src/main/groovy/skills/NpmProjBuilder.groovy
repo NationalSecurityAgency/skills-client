@@ -36,9 +36,7 @@ class NpmProjBuilder {
 
 
     private List<NpmProj> projs = [
-            new NpmProj(name: "skills-client-configuration", doOthersLinkToMe: true, hasLinksToOtherProjects: false),
-            new NpmProj(name: "skills-client-reporter", doOthersLinkToMe: true),
-            new NpmProj(name: "skills-client-js", doOthersLinkToMe: true),
+            new NpmProj(name: "skills-client-js", doOthersLinkToMe: true, hasLinksToOtherProjects: false),
             new NpmProj(name: "skills-client-vue", doOthersLinkToMe: true),
             new NpmProj(name: "skills-client-react", doOthersLinkToMe: true, reactModule: true),
             new NpmProj(name: "skills-example-client-js", doOthersLinkToMe: false),

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { SkillsReporter } from '@skills/skills-client-reporter';
+import { SkillsReporter } from '@skills/skills-client-react';
 import axios from 'axios';
 
 const beautify = require('js-beautify').js;
