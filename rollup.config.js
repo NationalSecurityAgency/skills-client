@@ -17,11 +17,17 @@ module.exports = {
     name: 'SkillsClientVue',
     format: 'umd',
     sourcemap: true,
-    globals: {
-      '@skills/skills-client-configuration': 'SkillsConfiguration' ,
-    },
+    // globals: {
+    //   '@skills/skills-client-configuration': 'SkillsConfiguration',
+    //   '@skills/skills-client-reporter': 'SkillsClientReporter',
+    //   '@skills/skills-client-js': 'SkillsClientJS',
+    // },
   },
-  external: ['@skills/skills-client-configuration'],
+  // external: [
+  //   '@skills/skills-client-configuration',
+  //   '@skills/skills-client-reporter',
+  //   '@skills/skills-client-js',
+  // ],
   preserveSymlinks: true,
   plugins: [
     peerDepsExternal(),
@@ -43,16 +49,7 @@ module.exports = {
       preferBuiltins: true,
       browser: true }),
     json(),
-    commonjs({
-      namedExports: {
-        '@skills/skills-client-reporter': [
-          'SkillsReporter',
-          'SUCCESS_EVENT',
-          'FAILURE_EVENT'
-        ],
-        '@skills/skills-client-js': [ 'SkillsDisplayJS', ],
-      },
-    }),
+    commonjs(),
     VuePlugin(),
     terser(),
   ],

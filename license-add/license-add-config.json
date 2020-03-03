@@ -1,5 +1,5 @@
 {
-  "ignore": [ ".git", "coverage", ".*", "*.iml", "babel.config.js", "rollup.config.js"],
+  "ignore": [ ".git", "coverage", ".*/**", ".*", "*.iml", "babel.config.js", "rollup.config.js"],
   "license": "license-add/LICENSE-HEADER.txt",
   "licenseFormats": {
     "js": {

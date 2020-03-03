@@ -3,15 +3,14 @@
   "version": "1.1.1",
   "license": "Apache-2.0",
   "description": "SkillTree Client Lib - Vue.js",
-  "main": "dist/skills-client-vue.umd.js",
-  "module": "dist/skills-client-vue.esm.js",
-  "unpkg": "dist/skills-client-vue.min.js",
+  "main": "dist/skills-client-vue.umd.min.js",
+  "module": "dist/skills-client-vue.esm.min.js",
   "scripts": {
     "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;Apache-2.0' --summary",
     "licenseHeaderCheck": " npx license-check-and-add check -f license-add/license-add-config.json",
     "licenseHeaderAdd": " npx license-check-and-add add -f license-add/license-add-config.json",
     "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck ",
-    "build": "npm run licenseCheck && npm run build:umd & npm run build:es & npm run build:unpkg",
+    "build": "npm run licenseCheck && rollup --config",
     "build:umd": "rollup -c --format umd --file dist/skills-client-vue.umd.js",
     "build:es": "rollup -c --format es --file dist/skills-client-vue.esm.js",
     "build:unpkg": "rollup -c --format iife --file dist/skills-client-vue.min.js",
@@ -55,9 +54,7 @@
     "vue-template-compiler": "2.6.10"
   },
   "dependencies": {
-    "@skills/skills-client-configuration": "1.1.0",
     "@skills/skills-client-js": "1.1.1",
-    "@skills/skills-client-reporter": "1.1.1",
     "axios": "0.19.0",
     "axios-auth-refresh": "1.0.7",
     "lodash": "4.17.15",

@@ -16,9 +16,15 @@
 import SkillsDirective from './directive/SkillsReporterDirective';
 import SkillsDisplay from './component/SkillsDisplay.vue';
 import SkillsLevel from './component/SkillsLevel.vue';
-import SkillsConfiguration from '@skills/skills-client-configuration';
-import { SkillsReporter, SUCCESS_EVENT, FAILURE_EVENT } from '@skills/skills-client-reporter';
-import { SkillsDisplayJS } from '@skills/skills-client-js';
+// import SkillsConfiguration from '@skills/skills-client-configuration';
+// import { SkillsReporter, SUCCESS_EVENT, FAILURE_EVENT } from '@skills/skills-client-reporter';
+import { 
+  SkillsConfiguration, 
+  SkillsReporter, 
+  SUCCESS_EVENT, 
+  FAILURE_EVENT, 
+  SkillsDisplayJS 
+} from '@skills/skills-client-js';
 
 const install = (Vue) => {
   Vue.directive('skills', SkillsDirective);

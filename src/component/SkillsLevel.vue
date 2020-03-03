@@ -24,8 +24,8 @@ limitations under the License.
 <script>
   import SkillsLevelService from '@/component/SkillsLevelService';
 
-  import SkillsConfiguration from '@skills/skills-client-configuration';
-  import { SkillsReporter } from '@skills/skills-client-reporter';
+  // import SkillsConfiguration from '@skills/skills-client-configuration';
+  import { SkillsConfiguration, SkillsReporter } from '@skills/skills-client-js';
 
   const emptyArrayIfNull = value => value ? value : [];
 
