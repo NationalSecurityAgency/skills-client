@@ -99,7 +99,15 @@ class ReleaseService {
         log.info("Base branch name: [{}]", baseBranch)
         log.info("Next snapshot version: [{}]", nextSnapshotVersion)
 
-
+        def findJar = { List<File> jars ->
+            if(!jars || jars.size() == 0) {
+                return null
+            } else if (jars.size() > 1){
+                return jars.find { it.name.startsWith(projName) }
+            } else {
+                return jars.first()
+            }
+        }
 
         new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("mvn versions:set -DnewVersion=${releaseVersion} -DgenerateBackupPoms=false")
 
@@ -110,7 +118,7 @@ class ReleaseService {
             jar = new File(projRootDir, "${optionalSubProject}/target").listFiles().find { it.name.startsWith(optionalSubProject) && it.name.endsWith(".jar") }
         } else {
             List<File> jars = new File(projRootDir, "target").listFiles().findAll { it.name.endsWith(".jar") }
-            jar = jars.size() > 1 ? jars.find { it.name.startsWith(projName) } : jars.first()
+            jar = findJar(jars)
         }
         if (!dryRun) {
             assert jar
