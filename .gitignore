@@ -3,3 +3,5 @@ dist/
 /skills-client-js.iml
 /.idea/
 /coverage/
+
+.history

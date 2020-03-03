@@ -1,50 +1,50 @@
 import { eslint } from 'rollup-plugin-eslint';
 import { terser } from 'rollup-plugin-terser';
 import babel from 'rollup-plugin-babel';
-import resolve from 'rollup-plugin-node-resolve';
-import json from 'rollup-plugin-json';
-import commonjs from 'rollup-plugin-commonjs';
-import replace from 'rollup-plugin-replace';
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import commonjs from '@rollup/plugin-commonjs';
+import replace from '@rollup/plugin-replace';
+import resolve from '@rollup/plugin-node-resolve';
 
-module.exports = {
+const baseConfig = {
   input: 'src/index.js',
+  preserveSymlinks: true,
+  plugins: [
+    eslint(),
+    babel({
+      exclude: 'node_modules/**',
+    }),
+    resolve({
+      browser: true,
+    }),
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    }),
+    commonjs(),
+    terser(), // comment out to remove minimization
+  ],
+};
+
+const umdConfig = {
+  external: ['@skills/skills-client-configuration'],
   output: {
-    file: 'dist/skills-display-js.umd.min.js',
-    name: 'SkillsClient',
+    file: 'dist/skills-client-js.umd.min.js',
+    name: 'SkillsClientJS',
     format: 'umd',
     sourcemap: true,
     globals: {
       '@skills/skills-client-configuration': 'SkillsConfiguration',
     },
   },
-  external: ['@skills/skills-client-configuration'],
-  preserveSymlinks: true,
-  plugins: [
-    peerDepsExternal(),
-    eslint(),
-    babel({
-      exclude: 'node_modules/**',
-    }),
-    resolve({
-      jsnext: true,
-      preferBuiltins: true,
-      browser: true,
-    }),
-    json(),
-    replace({
-      'process.env.NODE_ENV': JSON.stringify('production'),
-    }),
-    commonjs({
-      namedExports: {
-        '@skills/skills-client-reporter': [
-          'SkillsReporter',
-          'SUCCESS_EVENT',
-          'FAILURE_EVENT',
-        ],
-      },
-    }),
-    // comment out to remove minimization
-    terser(),
-  ],
 };
+const esmConfig = {
+  output: {
+    file: 'dist/skills-client-js.esm.min.js',
+    format: 'esm',
+    sourcemap: true,
+  },
+};
+
+module.exports = [
+  { ...umdConfig, ...baseConfig },
+  { ...esmConfig, ...baseConfig },
+];

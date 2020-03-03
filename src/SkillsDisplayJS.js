@@ -16,9 +16,10 @@
 import Postmate from 'postmate';
 import axios from 'axios';
 
-import SkillsConfiguration from '@skills/skills-client-configuration';
+import { SkillsReporter } from '@skills/skills-client-reporter';
 import ErrorPageUtils from './ErrorPageUtils';
 
+const SkillsConfiguration = SkillsReporter.getConf();
 let uniqueId = 0;
 
 export default class SkillsDisplayJS {

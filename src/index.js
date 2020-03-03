@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 import { SkillsReporter, SUCCESS_EVENT, FAILURE_EVENT } from '@skills/skills-client-reporter';
-import SkillsConfiguration from '@skills/skills-client-configuration';
+// import SkillsConfiguration from '@skills/skills-client-configuration';
 import SkillsDisplayJS from './SkillsDisplayJS';
+
+const SkillsConfiguration = SkillsReporter.getConf();
 
 export {
   SkillsConfiguration,
