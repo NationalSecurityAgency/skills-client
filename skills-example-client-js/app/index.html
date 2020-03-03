@@ -25,31 +25,33 @@ limitations under the License.
   <script type="text/javascript" src="./assets/js/axios/dist/axios.min.js"></script>
   <script type="text/javascript" src="./assets/js/js-beautify/js/lib/beautify.js"></script>
 
-  <script type="text/javascript" src="assets/js/@skills/skills-client-configuration/dist/SkillsConfiguration.umd.min.js"></script>
-  <script type="text/javascript" src="assets/js/@skills/skills-client-reporter/dist/SkillsReporter.umd.min.js"></script>
+  <script type="module">
+    import { SkillsReporter, SkillsConfiguration } from './assets/js/@skills/skills-client-js/dist/skills-client-js.esm.min.js'
 
-  <script type="text/javascript">
     axios.get("/api/config")
       .then((result) => {
-        SkillsConfiguration.default.configure(result.data);
+        SkillsConfiguration.configure(result.data);
       });
 
-    SkillsReporter.SkillsReporter.addSuccessHandler((result) => {
+      SkillsReporter.addSuccessHandler((result) => {
       document.querySelector('#global-event-result-container-js').innerHTML = JSON.stringify(result, null, 2);
     });
 
     const reportSkill = (skillId) => {
-      SkillsReporter.SkillsReporter.reportSkill(skillId)
+      SkillsReporter.reportSkill(skillId)
         .then((response) => {
           document.querySelector('#report-result-container').innerHTML = JSON.stringify(response, null, 2);
         });
     };
+    document.querySelector('#exampleDirectiveClickEvent').addEventListener('click', () => { reportSkill('IronMan'); });
 
     const toggleAllEvents = () => {
       const notifyIfSkillNotApplied = document.querySelector('#all-events-check').checked
-      SkillsReporter.SkillsReporter.configure( {notifyIfSkillNotApplied });
+      SkillsReporter.configure( { notifyIfSkillNotApplied });
     }
+    document.querySelector('#all-events-check').addEventListener('click', toggleAllEvents);
   </script>
+
 </head>
 <body>
 
@@ -75,7 +77,7 @@ limitations under the License.
         <h2>Report Skills Examples</h2>
         <div class="text-primary">Global Event Result:</div>
         <div>
-          Include Skills Not Applied: <input type="checkbox" id="all-events-check" onclick="toggleAllEvents()">
+          Include Skills Not Applied: <input type="checkbox" id="all-events-check">
         </div>
         <div id="globalEventResult" class="border rounded p-3 mb-5 bg-light">
           <pre id="global-event-result-container-js" data-cy="globalEventResult"></pre>
@@ -93,8 +95,7 @@ limitations under the License.
           <div class="card card-body mt-3">
             <div id="exampleDirectiveClickEvent">
               <button
-                class="btn btn-outline-primary"
-                onclick="reportSkill('IronMan')">
+                class="btn btn-outline-primary">
                 Report Skill
               </button>
             </div>
