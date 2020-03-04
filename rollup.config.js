@@ -25,15 +25,11 @@ const baseConfig = {
 };
 
 const umdConfig = {
-  external: ['@skills/skills-client-configuration'],
   output: {
     file: 'dist/skills-client-js.umd.min.js',
-    name: 'SkillsClientJS',
+    name: 'SkillsClient',
     format: 'umd',
     sourcemap: true,
-    globals: {
-      '@skills/skills-client-configuration': 'SkillsConfiguration',
-    },
   },
 };
 const esmConfig = {
