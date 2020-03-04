@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "node copyDeps.js",
-    "serve": "npx live-server --port=8092 --open=app --cors --proxy=/api:http://localhost:8090/api --proxy=/native:http://localhost:8092/app --proxy=/assets:http://localhost:8092/app/assets",
+    "serve": "npx live-server --no-browser --port=8092 --open=app --cors --proxy=/api:http://localhost:8090/api --proxy=/native:http://localhost:8092/app --proxy=/assets:http://localhost:8092/app/assets",
     "test": "npm run test",
     "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;Apache-2.0' --summary",
     "licenseHeaderCheck": "license-check-and-add check -f '../license-add/license-add-config.json'",

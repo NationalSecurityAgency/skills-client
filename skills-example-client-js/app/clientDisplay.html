@@ -27,8 +27,7 @@ limitations under the License.
   <script type="text/javascript" src="./assets/js/js-beautify/js/lib/beautify.js"></script>
   <script type="text/javascript" src="./assets/js/bootstrap/dist/js/bootstrap.bundle.js"></script>
 
-  <script type="text/javascript" src="assets/js/@skills/skills-client-configuration/dist/SkillsConfiguration.umd.min.js"></script>
-  <script type="text/javascript" src="assets/js/@skills/skills-client-js/dist/skills-display-js.umd.min.js"></script>
+  <script type="text/javascript" src="assets/js/@skills/skills-client-js/dist/skills-client-js.umd.min.js"></script>
 
   <script type="text/javascript">
     const params = new URLSearchParams(window.location.search);
@@ -66,7 +65,7 @@ limitations under the License.
             axisLabelColor: 'white',
           },
           tiles: {
-            backgroundColor:'#152E4d',
+            backgroundColor: '#152E4d',
             watermarkIconColor: '#a6c5f7',
           },
           graphLegendBorderColor: '1px solid grey',
@@ -101,10 +100,10 @@ limitations under the License.
 
     axios.get("/api/config")
       .then((result) => {
-        SkillsConfiguration.default.configure(result.data);
+        SkillsClient.SkillsConfiguration.configure(result.data);
       });
 
-    SkillsConfiguration.default.afterConfigure().then(() => {
+    SkillsClient.SkillsConfiguration.afterConfigure().then(() => {
       const initializeSkillsDisplay = () => {
         const theme = getTheme();
 
