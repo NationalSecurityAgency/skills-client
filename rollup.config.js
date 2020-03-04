@@ -5,8 +5,12 @@ import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
 import resolve from '@rollup/plugin-node-resolve';
 
-const baseConfig = {
+module.exports = {
   input: 'src/index.js',
+  output: {
+    // need to pass in format, file (and name if format == umd) via cmd line
+    sourcemap: true,
+  },
   preserveSymlinks: true,
   plugins: [
     eslint(),
@@ -23,24 +27,3 @@ const baseConfig = {
     terser(), // comment out to remove minimization
   ],
 };
-
-const umdConfig = {
-  output: {
-    file: 'dist/skills-client-js.umd.min.js',
-    name: 'SkillsClient',
-    format: 'umd',
-    sourcemap: true,
-  },
-};
-const esmConfig = {
-  output: {
-    file: 'dist/skills-client-js.esm.min.js',
-    format: 'esm',
-    sourcemap: true,
-  },
-};
-
-module.exports = [
-  { ...umdConfig, ...baseConfig },
-  { ...esmConfig, ...baseConfig },
-];
