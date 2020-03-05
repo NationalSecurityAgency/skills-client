@@ -5,6 +5,7 @@ import path from 'path';
 import alias from '@rollup/plugin-alias';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
 import VuePlugin from 'rollup-plugin-vue';
 
 const projectRootDir = path.resolve(__dirname);
@@ -31,6 +32,9 @@ module.exports = {
     }),
     resolve({
       browser: true,
+    }),
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production'),
     }),
     commonjs(),
     VuePlugin(),
