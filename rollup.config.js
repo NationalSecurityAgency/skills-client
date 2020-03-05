@@ -1,36 +1,21 @@
 import { eslint } from 'rollup-plugin-eslint';
 import { terser } from 'rollup-plugin-terser';
-import alias from '@rollup/plugin-alias';
 import babel from 'rollup-plugin-babel';
-import resolve from '@rollup/plugin-node-resolve';
-import json from 'rollup-plugin-json';
-import commonjs from 'rollup-plugin-commonjs';
-import VuePlugin from 'rollup-plugin-vue';
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import path from 'path';
+import alias from '@rollup/plugin-alias';
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import VuePlugin from 'rollup-plugin-vue';
 
 const projectRootDir = path.resolve(__dirname);
 module.exports = {
   input: 'src/index.js',
   output: {
-    file: 'dist/skills-client-vue.umd.min.js',
-    name: 'SkillsClientVue',
-    format: 'umd',
+    // need to pass in format, file (and name if format == umd) via cmd line
     sourcemap: true,
-    // globals: {
-    //   '@skills/skills-client-configuration': 'SkillsConfiguration',
-    //   '@skills/skills-client-reporter': 'SkillsClientReporter',
-    //   '@skills/skills-client-js': 'SkillsClientJS',
-    // },
   },
-  // external: [
-  //   '@skills/skills-client-configuration',
-  //   '@skills/skills-client-reporter',
-  //   '@skills/skills-client-js',
-  // ],
   preserveSymlinks: true,
   plugins: [
-    peerDepsExternal(),
     eslint(),
     babel({
       exclude: 'node_modules/**',
@@ -45,10 +30,8 @@ module.exports = {
       ],
     }),
     resolve({
-      jsnext: true,
-      preferBuiltins: true,
-      browser: true }),
-    json(),
+      browser: true,
+    }),
     commonjs(),
     VuePlugin(),
     terser(),
