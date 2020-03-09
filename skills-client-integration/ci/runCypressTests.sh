@@ -13,9 +13,17 @@
 # limitations under the License.
 #!/usr/bin/env bash
 
-echo "------- START: Setup npm links -------"
+echo "------- START: Run Cypress Tests -------"
 cd skills-client-integration/skills-int-e2e-test
-mvn --batch-mode clean package
-java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.PropertiesLauncher
+npm install
+
+# start services and wait
+npm run backend:start:ci &
+npm run examples:start &
+npm run backend:waitToStart
+npm run examples:waitToStart
+
+# run tests
+npm run cy:run
 cd ../../
-echo "------- DONE: Setup npm links -------"
+echo "------- DONE: Run Cypress Tests -------"
