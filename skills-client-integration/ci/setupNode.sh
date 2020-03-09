@@ -15,7 +15,8 @@
 
 echo "------- START: Setup Node -------"
 cat /etc/os-release
-curl -sL https://deb.nodesource.com/setup_13.x | bash -
+#curl -sL https://deb.nodesource.com/setup_13.x | bash -
+curl -sL https://deb.nodesource.com/setup_12.x | bash -
 apt-get install -y nodejs
 node -v
 npm -v
