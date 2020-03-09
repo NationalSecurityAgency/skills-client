@@ -3,7 +3,7 @@
     <mirrors>
         <mirror>
             <id>nexus</id>
-            <url>http://$NEXUS_SERVER/repository/maven-public/</url>
+            <url>http://NEXUS_SERVER/repository/maven-public/</url>
             <mirrorOf>*</mirrorOf>
         </mirror>
     </mirrors>
