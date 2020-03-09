@@ -50,7 +50,7 @@
 							<overwrite>true</overwrite>
 							<resources>
 								<resource>
-									<directory>${project.parent.basedir}/skills-example-client-vue/dist</directory>
+									<directory>${project.parent.basedir}/skills-int-client-vue/dist</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -71,7 +71,7 @@
 							<overwrite>true</overwrite>
 							<resources>
 								<resource>
-									<directory>${project.parent.basedir}/skills-example-client-react/build</directory>
+									<directory>${project.parent.basedir}/skills-int-client-react/build</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -92,7 +92,7 @@
 							<overwrite>true</overwrite>
 							<resources>
 								<resource>
-									<directory>${project.parent.basedir}/skills-example-client-js/app</directory>
+									<directory>${project.parent.basedir}/skills-int-client-js/app</directory>
 								</resource>
 							</resources>
 						</configuration>

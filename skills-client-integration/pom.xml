@@ -24,13 +24,14 @@
     </licenses>
 
     <modules>
-	<module>skills-int-client-js</module>
+	    <module>skills-int-client-js</module>
         <module>skills-int-client-vue</module>
         <module>skills-int-client-react</module>
         <module>skills-int-service</module>
         <module>skills-int-e2e-test</module>
     </modules>
     <properties>
+        <!--suppress UnresolvedMavenProperty -->
         <nexusServer>${nexus.url}</nexusServer>
     </properties>
 

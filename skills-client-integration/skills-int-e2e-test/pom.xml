@@ -8,7 +8,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>skills-int-e2e-test</artifactId>
-    <description>End to End tests for Skills client libs using skills-examples app</description>
+    <description>End to End tests for Skills client libs using skills-int-service app</description>
 
     <properties>
     </properties>
