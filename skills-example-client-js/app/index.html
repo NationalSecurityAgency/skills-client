@@ -1,0 +1,125 @@
+<!--
+Copyright 2020 SkillTree
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Skills Examples - Native Javascript</title>
+
+  <link rel="stylesheet" type="text/css" href="./assets/app.css"/>
+  <link rel="stylesheet" type="text/css" href="./assets/js/bootstrap/dist/css/bootstrap.css">
+
+  <script type="text/javascript" src="./assets/js/axios/dist/axios.min.js"></script>
+  <script type="text/javascript" src="./assets/js/js-beautify/js/lib/beautify.js"></script>
+
+  <script type="module">
+    import { SkillsReporter, SkillsConfiguration } from './assets/js/@skills/skills-client-js/dist/skills-client-js.esm.min.js'
+
+    axios.get("/api/config")
+      .then((result) => {
+        SkillsConfiguration.configure(result.data);
+      });
+
+      SkillsReporter.addSuccessHandler((result) => {
+      document.querySelector('#global-event-result-container-js').innerHTML = JSON.stringify(result, null, 2);
+    });
+
+    const reportSkill = (skillId) => {
+      SkillsReporter.reportSkill(skillId)
+        .then((response) => {
+          document.querySelector('#report-result-container').innerHTML = JSON.stringify(response, null, 2);
+        });
+    };
+    document.querySelector('#exampleDirectiveClickEvent').addEventListener('click', () => { reportSkill('IronMan'); });
+
+    const toggleAllEvents = () => {
+      const notifyIfSkillNotApplied = document.querySelector('#all-events-check').checked
+      SkillsReporter.configure( { notifyIfSkillNotApplied });
+    }
+    document.querySelector('#all-events-check').addEventListener('click', toggleAllEvents);
+  </script>
+
+</head>
+<body>
+
+<div id="app">
+  <div>
+    <div>
+      <nav class="navbar navbar-dark bg-info">
+        <a href="#" class="navbar-brand">Native Javascript Integration Examples</a>
+
+        <ul class="navbar-nav flex-row mr-auto">
+          <li class="nav-item active pr-3">
+            <a class="nav-link" href="javascript:void(0)">Report Skill Events</a>
+          </li>
+          <li class="nav-item pr-3">
+            <a class="nav-link" href="clientDisplay.html">User Display</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="container-fluid mt-3">
+      <div class="container">
+        <h2>Report Skills Examples</h2>
+        <div class="text-primary">Global Event Result:</div>
+        <div>
+          Include Skills Not Applied: <input type="checkbox" id="all-events-check">
+        </div>
+        <div id="globalEventResult" class="border rounded p-3 mb-5 bg-light">
+          <pre id="global-event-result-container-js" data-cy="globalEventResult"></pre>
+        </div>
+        <div>
+          <h5 class="text-info"><strong>Skills Directive - Click Event</strong></h5>
+          <div class="card card-body bg-light">
+            <pre class="m-0 sample-code">
+<code class="javascript">SkillsReporter.reportSkill(this.skill)
+  .then((res) => {
+    this.reportResult = res;
+});</code></pre>
+
+          </div>
+          <div class="card card-body mt-3">
+            <div id="exampleDirectiveClickEvent">
+              <button
+                class="btn btn-outline-primary">
+                Report Skill
+              </button>
+            </div>
+            <hr>
+            <div class="text-primary">Result:</div>
+            <div class="border rounded p-3 bg-light">
+              <pre id="report-result-container"></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5"></div>
+
+      </div>
+    </div>
+
+    <footer class="text-muted bg-light py-5">
+      <div class="container">
+        <p>Native Javascript Examples Guide</p>
+        <p></p>
+      </div>
+    </footer>
+  </div>
+</div>
+
+</body>
+</html>

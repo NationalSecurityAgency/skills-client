@@ -1,0 +1,37 @@
+{
+  "ignore": [ ".git", "coverage", ".*/**", ".*", "*.iml", "babel.config.js",
+    "rollup.config.js", "app/assets/**", "target/**", "pom.xml",
+    "build/**", "**/robots.txt", "**.svg", "vue.config.js",
+    "cypress/videos/**", "**/*.jar", "**.xml", "src/license/*.properties"
+  ],
+  "license": "../license-add/LICENSE-HEADER.txt",
+  "licenseFormats": {
+    "js": {
+      "prepend": "/*",
+      "append": " */",
+      "eachLine": {
+        "prepend": " * "
+      }
+    },
+    "dotfile": {
+      "eachLine": {
+        "prepend": "# "
+      }
+    },
+    "md": {
+      "prepend": "<!---",
+      "append": " -->"
+    },
+    "sql": {
+      "eachLine": {
+        "prepend": "-- "
+      }
+    },
+    "properties": {
+      "eachLine": {
+        "prepend": "# "
+      }
+    }
+  },
+  "trailingWhitespace": "TRIM"
+}

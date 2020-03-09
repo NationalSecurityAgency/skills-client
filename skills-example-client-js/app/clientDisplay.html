@@ -1,0 +1,195 @@
+<!--
+Copyright 2020 SkillTree
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Skills Examples - Native Javascript</title>
+
+  <link rel="stylesheet" type="text/css" href="./assets/app.css"/>
+  <link rel="stylesheet" type="text/css" href="./assets/js/bootstrap/dist/css/bootstrap.css">
+
+  <script type="text/javascript" src="./assets/js/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="./assets/js/axios/dist/axios.min.js"></script>
+  <script type="text/javascript" src="./assets/js/js-beautify/js/lib/beautify.js"></script>
+  <script type="text/javascript" src="./assets/js/bootstrap/dist/js/bootstrap.bundle.js"></script>
+
+  <script type="text/javascript" src="assets/js/@skills/skills-client-js/dist/skills-client-js.umd.min.js"></script>
+
+  <script type="text/javascript">
+    const params = new URLSearchParams(window.location.search);
+    const isSummaryOnly = params.get('isSummaryOnly') ? JSON.parse(params.get('isSummaryOnly')) : false;
+
+    const options = {
+      autoScrollStrategy: 'top-of-page',
+      isSummaryOnly,
+    };
+    const themes = {
+      default: {
+        name: 'Bright (default)',
+        theme: {
+          backgroundColor: '#f7f7f7',
+        },
+      },
+      darkBlue: {
+        name: 'Dark Blue',
+        theme: {
+          backgroundColor: '#626d7d',
+          pageTitleTextColor: 'white',
+          textSecondaryColor: 'white',
+          textPrimaryColor: 'white',
+          stars: {
+            unearnedColor: '#787886',
+            earnedColor: 'gold',
+          },
+          progressIndicators: {
+            beforeTodayColor: '#3e4d44',
+            earnedTodayColor: '#667da4',
+            completeColor: '#59ad52',
+            incompleteColor: '#cdcdcd',
+          },
+          charts: {
+            axisLabelColor: 'white',
+          },
+          tiles: {
+            backgroundColor: '#152E4d',
+            watermarkIconColor: '#a6c5f7',
+          },
+          graphLegendBorderColor: '1px solid grey',
+        },
+      }
+    };
+
+    const applyTheme = (theme) => {
+      const params = new URLSearchParams(window.location.search);
+      params.set('themeName', theme.name);
+      window.location.search = params;
+    };
+
+    const setDisplayType = () => {
+      const params = new URLSearchParams(window.location.search);
+      params.set('isSummaryOnly', !options.isSummaryOnly);
+      window.location.search = params;
+    };
+
+    const getTheme = () => {
+      const params = new URLSearchParams(window.location.search);
+      let themeName = params.get('themeName') ? params.get('themeName') : 'Bright (default)';
+      const themeObject = Object.values(themes).find(it => it.name === themeName);
+      return themeObject;
+    };
+
+    const getVersion = () => {
+      const params = new URLSearchParams(window.location.search);
+      let version = params.get('skillsVersion') ? params.get('skillsVersion') : null;
+      return version;
+    };
+
+    axios.get("/api/config")
+      .then((result) => {
+        SkillsClient.SkillsConfiguration.configure(result.data);
+      });
+
+    SkillsClient.SkillsConfiguration.afterConfigure().then(() => {
+      const initializeSkillsDisplay = () => {
+        const theme = getTheme();
+
+        document.body.style.backgroundColor = theme.theme.backgroundColor;
+        const defaultThemeElement = document.querySelector('#default-theme-dropdown-item');
+        const darkBlueThemeElement = document.querySelector('#darkblue-theme-dropdown-item');
+        if (theme.name === themes.darkBlue.name) {
+          darkBlueThemeElement.classList.add('active');
+        } else {
+          defaultThemeElement.classList.add('active');
+        }
+
+        const clientDisplay = new SkillsClient.SkillsDisplayJS({
+          options,
+          version: getVersion(),
+          theme: theme.theme,
+        });
+        clientDisplay.attachTo(document.querySelector('#skills-client-display'));
+      };
+      if (document.readyState === "complete"
+        || document.readyState === "loaded"
+        || document.readyState === "interactive") {
+        initializeSkillsDisplay();
+      } else {
+        document.addEventListener("DOMContentLoaded", initializeSkillsDisplay);
+      }
+    });
+  </script>
+</head>
+<body>
+
+<div id="app">
+  <div>
+    <div>
+      <nav class="navbar navbar-dark bg-info">
+        <a href="#" class="navbar-brand">Native Javascript Integration Examples</a>
+
+        <ul class="navbar-nav flex-row mr-auto">
+          <li class="nav-item pr-3">
+            <a class="nav-link" href="index.html">Report Skill Events</a>
+          </li>
+          <li class="nav-item active pr-3">
+            <a class="nav-link" href="javascript:void(0)">User Display</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="container-fluid mt-3">
+      <div class="container">
+        <div class="form-row align-items-center">
+          <div class="d-inline dropdown">
+            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Change Theme
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="javascript:void(0)" id="default-theme-dropdown-item" onclick="applyTheme(themes.default)">Bright (Default)</a>
+              <a class="dropdown-item" href="javascript:void(0)" id="darkblue-theme-dropdown-item" onclick="applyTheme(themes.darkBlue)">Dark Blue</a>
+            </div>
+          </div>
+
+          <div class="d-inline custom-control custom-checkbox mx-2">
+            <input type="checkbox" class="custom-control-input" id="displayTypeControl" onclick="setDisplayType()" checked>
+            <label class="custom-control-label" for="displayTypeControl">Summary Only</label>
+          </div>
+
+        </div>
+        <div
+          style="min-height: 860px">
+          <div id="skills-client-display" />
+        </div>
+      </div>
+    </div>
+
+    <footer class="text-muted bg-light py-5">
+      <div class="container">
+        <p>Native Javascript Examples Guide</p>
+        <p></p>
+      </div>
+    </footer>
+  </div>
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript">
+  document.getElementById("displayTypeControl").checked = isSummaryOnly;
+</script>

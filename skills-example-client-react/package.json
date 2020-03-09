@@ -1,0 +1,51 @@
+{
+  "name": "skills-example-client-react",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "description": "SkillTree Client Lib Integration Tests - React",
+  "homepage": "/react/",
+  "dependencies": {
+    "@skills/skills-client-react": "1.1.1",
+    "axios": "0.19.0",
+    "bootstrap": "4.3.1",
+    "core-js": "3.2.1",
+    "highlightjs": "9.12.0",
+    "js-beautify": "1.10.2",
+    "react": "16.11.0",
+    "react-bootstrap": "1.0.0-beta.14",
+    "react-dom": "16.11.0",
+    "react-highlight": "0.12.0",
+    "react-router": "5.1.2",
+    "react-router-dom": "5.1.2"
+  },
+  "scripts": {
+    "start": "PORT=8083 react-scripts start",
+    "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;BSD-3;BSD-2-Clause;Apache-2.0' --summary",
+    "licenseHeaderCheck": "license-check-and-add check -f '../license-add/license-add-config.json'",
+    "licenseHeaderAdd": "license-check-and-add add -f ../license-add/license-add-config.json",
+    "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck ",
+    "build": "npm run licenseCheck && react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "license-check-and-add": "^3.0.4",
+    "license-checker": "^25.0.1",
+    "react-scripts": "3.2.0"
+  }
+}

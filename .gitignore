@@ -1,0 +1,41 @@
+.idea
+*.iml
+static
+dist
+!skills-example-client-js/app/**/dist/
+target
+skills-example-service/src/main/resources/public/native
+skills-example-service/src/main/resources/public/vuejs
+skills-example-service/src/main/resources/public/react
+
+.DS_Store
+node_modules
+target/
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+.project
+.classpath
+package-lock.json
+.settings
+e2e-tests/cypress/videos/vue.specs.js-compressed.mp4
+e2e-tests/cypress/videos/vue.specs.js.mp4
+skills-example-client-js/app/assets/js/*
+
+.history

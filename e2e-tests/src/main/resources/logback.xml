@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="fileAppenderAll" class="ch.qos.logback.core.FileAppender">
+        <file>target/release-all.log</file>
+        <encoder>
+            <pattern>%d [%thread] %level %mdc %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="fileAppenderCommands" class="ch.qos.logback.core.FileAppender">
+        <file>target/release-commands.log</file>
+        <encoder>
+            <pattern>%d [%thread] %level %mdc %logger{50} - %msg%n</pattern>
+        </encoder>
+
+        <filter class="skills.log.ClassNameFilter">
+            <className>org.zeroturnaround.exec.stream.slf4j.Slf4jStream$ofCaller</className>
+            <onMatch>DENY</onMatch>
+        </filter>
+    </appender>
+
+<!--    <logger name="org.zeroturnaround.exec.stream.slf4j.Slf4jStream" level="fatal"/>-->
+    <root level="info">
+        <appender-ref ref="fileAppenderAll"/>
+        <appender-ref ref="fileAppenderCommands"/>
+    </root>
+</configuration>
