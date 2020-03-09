@@ -6,10 +6,10 @@
 
     <parent>
         <groupId>skills</groupId>
-        <artifactId>skills-examples</artifactId>
+        <artifactId>skills-client-integration</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>skills-example-client-js</artifactId>
+    <artifactId>skills-int-client-vue</artifactId>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,8 +32,7 @@
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v11.6.0</nodeVersion>
-                            <!--<npmVersion>3.10.10</npmVersion>-->
+                            <nodeVersion>v13.6.0</nodeVersion>
                         </configuration>
                     </execution>
                     <execution>
@@ -43,7 +42,7 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>--unsafe-perm install</arguments>
+                            <arguments>install</arguments>
                         </configuration>
                     </execution>
                     <execution>
@@ -72,4 +71,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

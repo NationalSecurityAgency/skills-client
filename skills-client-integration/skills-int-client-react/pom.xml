@@ -6,10 +6,10 @@
 
     <parent>
         <groupId>skills</groupId>
-        <artifactId>skills-examples</artifactId>
+        <artifactId>skills-client-integration</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>skills-example-client-react</artifactId>
+    <artifactId>skills-int-client-react</artifactId>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

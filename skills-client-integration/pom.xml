@@ -11,7 +11,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>skills</groupId>
-    <artifactId>skills-examples</artifactId>
+    <artifactId>skills-client-integration</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
@@ -24,11 +24,11 @@
     </licenses>
 
     <modules>
-        <module>skills-example-client-vue</module>
-        <module>skills-example-client-react</module>
-        <module>skills-example-client-js</module>
-        <module>skills-example-service</module>
-        <module>e2e-tests</module>
+	<module>skills-int-client-js</module>
+        <module>skills-int-client-vue</module>
+        <module>skills-int-client-react</module>
+        <module>skills-int-service</module>
+        <module>skills-int-e2e-test</module>
     </modules>
     <properties>
         <nexusServer>${nexus.url}</nexusServer>

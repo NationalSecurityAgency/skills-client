@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>skills</groupId>
-		<artifactId>skills-examples</artifactId>
+		<artifactId>skills-client-integration</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>skills-example-service</artifactId>
+	<artifactId>skills-int-service</artifactId>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
