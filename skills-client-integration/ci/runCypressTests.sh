@@ -18,9 +18,9 @@ npm install
 
 # start services and wait
 npm run backend:start:ci &
-npm run examples:start &
+npm run integration:start &
 npm run backend:waitToStart
-npm run examples:waitToStart
+npm run integration:waitToStart
 
 # run tests
 npm run cy:run
