@@ -2,3 +2,4 @@
 /**/node_modules
 /skills-client-js/coverage/
 /skills-client-js/dist/
+/skills-client-integration/skills-int-service/src/main/resources/public/
