@@ -39,3 +39,4 @@ e2e-tests/cypress/videos/vue.specs.js.mp4
 skills-example-client-js/app/assets/js/*
 
 .history
+/skills-int-client-js/app/assets/js/

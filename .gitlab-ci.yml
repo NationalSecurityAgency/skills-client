@@ -18,4 +18,6 @@ build:
     paths:
       - ./skills-client-integration/skills-int-service/target/*.jar
       - ./skills-client-integration/skills-int-service/target/*.log
+      - ./skills-client-integration/skills-int-e2e-test/target/*.jar
+      - ./skills-client-integration/skills-int-e2e-test/target/*.log
       - ./skills-service/*.jar

@@ -1,1 +1,4 @@
 /.idea/
+/**/node_modules
+/skills-client-js/coverage/
+/skills-client-js/dist/
