@@ -66,6 +66,7 @@ const getAuthenticationToken = function getAuthenticationToken(authenticator) {
   });
 };
 
+const jsSkillsClientVersion = '__skillsClientVersion__';
 const exportObject = {
   configure({
     serviceUrl,
@@ -73,6 +74,12 @@ const exportObject = {
     authenticator,
     authToken,
   }) {
+    if (!this.skillsClientVersion) {
+      // this will be replaced at build time with the current skills-client-js
+      // version. extensions of the plain JS client (vue, react, etc), should
+      // override with their version before configure() is called
+      this.skillsClientVersion = jsSkillsClientVersion;
+    }
     this.projectId = projectId;
     this.serviceUrl = serviceUrl;
     this.authenticator = authenticator;

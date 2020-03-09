@@ -16,9 +16,7 @@
 import SkillsDirective from './directive/SkillsReporterDirective';
 import SkillsDisplay from './component/SkillsDisplay.vue';
 import SkillsLevel from './component/SkillsLevel.vue';
-// import SkillsConfiguration from '@skills/skills-client-configuration';
-// import { SkillsReporter, SUCCESS_EVENT, FAILURE_EVENT } from '@skills/skills-client-reporter';
-import { 
+import {
   SkillsConfiguration, 
   SkillsReporter, 
   SUCCESS_EVENT, 
@@ -36,6 +34,7 @@ if (window.Vue) {
 }
 
 SkillsDirective.install = install;
+SkillsConfiguration.skillsClientVersion = '__skillsClientVersion__';
 
 export {
   SkillsDirective,

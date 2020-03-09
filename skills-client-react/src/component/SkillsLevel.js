@@ -27,13 +27,6 @@ let currentLevel = 0;
 const SkillsLevel = ({projectId}) => {
     const [skillLevel, setSkillLevel] = React.useState(currentLevel);
 
-    const getProjectId = () => {
-        if (!projectId) {
-            return SkillsConfiguration.getProjectId();
-        }
-        return projectId;
-    };
-
     const update = (details) => {
         const completed = emptyArrayIfNull(details.completed);
 
@@ -52,6 +45,13 @@ const SkillsLevel = ({projectId}) => {
     React.useEffect(() => {
         SkillsReporter.addSuccessHandler(update);
 
+        const getProjectId = () => {
+            if (!projectId) {
+                return SkillsConfiguration.getProjectId();
+            }
+            return projectId;
+        };
+
         SkillsConfiguration.afterConfigure()
             .then(() => {
                 SkillsLevelService.getSkillLevel(getProjectId())
@@ -60,7 +60,7 @@ const SkillsLevel = ({projectId}) => {
                         currentLevel = result;
                     });
             });
-    },[]);
+    },[projectId]);
 
 
     return (

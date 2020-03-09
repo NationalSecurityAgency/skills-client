@@ -7,6 +7,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import VuePlugin from 'rollup-plugin-vue';
+import pkg from "./package.json";
 
 const projectRootDir = path.resolve(__dirname);
 module.exports = {
@@ -35,6 +36,7 @@ module.exports = {
     }),
     replace({
       'process.env.NODE_ENV': JSON.stringify('production'),
+      '__skillsClientVersion__': JSON.stringify(`${pkg.name}-${pkg.version}`),
     }),
     commonjs(),
     VuePlugin(),

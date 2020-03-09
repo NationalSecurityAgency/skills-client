@@ -13,12 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export SkillsDisplay from './component/SkillsDisplay';
-export SkillsLevel from './component/SkillsLevel';
+import SkillsDisplay from './component/SkillsDisplay';
+import SkillsLevel from './component/SkillsLevel';
+import {
+  SkillsConfiguration,
+  SkillsReporter,
+  SUCCESS_EVENT,
+  FAILURE_EVENT,
+  SkillsDisplayJS
+} from '@skills/skills-client-js';
+
+SkillsConfiguration.skillsClientVersion = '__skillsClientVersion__';
+
 export {
   SkillsConfiguration,
   SkillsReporter,
   SUCCESS_EVENT,
   FAILURE_EVENT,
   SkillsDisplayJS,
-} from '@skills/skills-client-js';
+  SkillsDisplay,
+  SkillsLevel
+};
