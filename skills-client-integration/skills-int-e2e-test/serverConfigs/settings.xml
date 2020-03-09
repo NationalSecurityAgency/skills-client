@@ -11,12 +11,12 @@
         <server>
             <id>nexus-snapshots</id>
             <username>admin</username>
-            <password>$NEXUS_PASS</password>
+            <password>NEXUS_PASS</password>
         </server>
         <server>
             <id>nexus-releases</id>
             <username>admin</username>
-            <password>$NEXUS_PASS</password>
+            <password>NEXUS_PASS</password>
         </server>
     </servers>
     <profiles>
