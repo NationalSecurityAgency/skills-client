@@ -1,0 +1,21 @@
+stages:
+  - build
+
+build:
+  image: maven:3.6.0-jdk-11
+  stage: build
+  before_script:
+    - ./skills-client-integration/ci/setupNode.sh
+    - ./skills-client-integration/ci/setupRepos.sh
+  script:
+    - ./skills-client-integration/ci/downloadLatestBackend.sh
+    - ./skills-client-integration/ci/setupNpmLinks.sh
+    - mvn --batch-mode clean install
+    - ls ./
+    - ls ./skills-service
+    - ls ../
+  artifacts:
+    paths:
+      - ./skills-client-integration/skills-int-service/target/*.jar
+      - ./skills-client-integration/skills-int-service/target/*.log
+      - ./skills-service/*.jar
