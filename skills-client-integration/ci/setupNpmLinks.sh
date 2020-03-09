@@ -13,7 +13,9 @@
 # limitations under the License.
 #!/usr/bin/env bash
 
+echo "------- START: Setup npm link -------"
 cd skills-client-integration/skills-int-e2e-test
 mvn --batch-mode clean package
 java -cp target/skills-example-e2e-*.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.PropertiesLauncher
 cd ../../
+echo "------- DONE: Setup Node -------"

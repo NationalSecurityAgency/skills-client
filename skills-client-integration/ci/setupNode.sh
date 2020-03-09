@@ -13,8 +13,10 @@
 # limitations under the License.
 #!/usr/bin/env bash
 
+echo "------- START: Setup Node -------"
 cat /etc/os-release
 curl -sL https://deb.nodesource.com/setup_13.x | bash -
 apt-get install -y nodejs
 node -v
 npm -v
+echo "------- DONE: Setup Node -------"

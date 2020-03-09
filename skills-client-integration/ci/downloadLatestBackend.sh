@@ -13,6 +13,8 @@
 # limitations under the License.
 #!/usr/bin/env bash
 
+echo "------- START: Download Latest Backend Jar -------"
+
 apt-get install -y gawk
 
 majorVersion=1.1
@@ -20,7 +22,7 @@ latestSnapVersion=`curl -s http://$NEXUS_SERVER/repository/maven-snapshots/skill
 
 if [ -z "$latestSnapVersion" ]
 then
-      echo "Failed to locate SNAPSHOT version that start with ${1}"
+      echo "Failed to locate SNAPSHOT version that start with ${majorVersion}"
       exit -1
 fi
 
@@ -28,3 +30,4 @@ mkdir -p ./skills-service/
 cd ./skills-service/
 mvn --batch-mode dependency:get -Dartifact=skills:backend:${latestSnapVersion}:jar -Dtransitive=false -Ddest=backend-toTest.jar
 cd ../
+echo "------- DONE: Download Latest Backend Jar -------"
