@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #!/usr/bin/env bash
-
 echo "------- START: Run Cypress Tests -------"
 cd skills-client-integration/skills-int-e2e-test
 npm install

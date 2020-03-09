@@ -23,16 +23,16 @@ build:
       - ./skills-client-integration/skills-int-e2e-test/target/*.log
       - ./skills-service/*.jar
 
-#testCypress:
-#  image: olehsrh/cypress:1
-#  stage: testCypress
-#  before_script:
-#    - ./skills-client-integration/ci/setupRepos.sh
-#  script:
-#    - ./skills-client-integration/ci/runCypressTests.sh
-#  artifacts:
-#    when: always
-#    paths:
-#      - ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
-#      - ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
-#    expire_in: 1 day
+testCypress:
+  image: olehsrh/cypress:1
+  stage: testCypress
+  before_script:
+    - ./skills-client-integration/ci/setupRepos.sh
+  script:
+    - ./skills-client-integration/ci/runCypressTests.sh
+  artifacts:
+    when: always
+    paths:
+      - ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
+      - ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
+    expire_in: 1 day
