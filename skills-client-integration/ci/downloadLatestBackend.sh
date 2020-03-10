@@ -14,6 +14,8 @@
 #!/usr/bin/env bash
 
 echo "------- START: Download Latest Backend Jar -------"
+set -e
+set -o pipefail
 
 apt-get install -y gawk
 
