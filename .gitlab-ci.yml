@@ -67,6 +67,9 @@ deploy:
     - sshpass -p $CI_PASSWORD scp -r skills-int-service.jar ${CI_USERNAME}@${CI_IP}:${DEST_PATH}/skills-deploy/skills-client-integration/
     - sshpass -p $CI_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no $CI_USERNAME@$CI_IP "cd ${DEST_PATH}/skills-deploy/skills-client-integration && ./runDeploy.sh"
   only:
-    - $BRANCH_TO_DEPLOY
+    refs:
+      - branches
+    variables:
+      - $BRANCH_TO_DEPLOY
 
 
