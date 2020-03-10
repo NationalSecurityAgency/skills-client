@@ -17,8 +17,17 @@ echo "------- START: Download Latest Backend Jar -------"
 
 apt-get install -y gawk
 
-majorVersion=1.1
+myGitBranch=`git rev-parse --abbrev-ref HEAD`
+echo "My Git Branch: [${myGitBranch}]"
+
+majorVersion=''
+if [ "${myGitBranch}" != "master" ]
+then
+    majorVersion=`echo ${myGitBranch} | gawk -F "." '{print $1"."$2}'`
+fi
+echo "Version to look for is [${majorVersion}], if blank then latest version will be used!"
 latestSnapVersion=`curl -s http://$NEXUS_SERVER/repository/maven-snapshots/skills/backend/maven-metadata.xml | grep "<version>${majorVersion}" | gawk -F "version>" '{print $2}' | gawk -F "<" '{print $1}' | sort | tac  | head -n 1`
+echo "Latest snapshot version: [${latestSnapVersion}]"
 
 if [ -z "$latestSnapVersion" ]
 then
