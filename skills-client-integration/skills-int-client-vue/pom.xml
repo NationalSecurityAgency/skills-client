@@ -32,7 +32,7 @@
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v13.6.0</nodeVersion>
+                            <nodeVersion>${node.version}</nodeVersion>
                         </configuration>
                     </execution>
                     <execution>

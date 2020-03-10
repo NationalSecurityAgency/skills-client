@@ -43,12 +43,15 @@ then
     else
         echo "Building from skill-service [${switchToBranch}] branch"
     fi
+    echo "Checking out ${switchToBranch}"
     git checkout ${switchToBranch} --
+    echo "git status:"
     git status
     mvn --batch-mode package -DskipTests
 else
     mkdir -p ./skills-service/
     cd ./skills-service/
+    echo "Downloading: ${latestSnapVersion}"
     mvn --batch-mode dependency:get -Dartifact=skills:backend:${latestSnapVersion}:jar -Dtransitive=false -Ddest=backend-toTest.jar
 fi
 
