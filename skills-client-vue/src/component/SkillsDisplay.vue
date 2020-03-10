@@ -55,7 +55,7 @@ limitations under the License.
         default: 0,
       },
       userId: {
-        type: String,
+        type: [String, Object],
         required: false,
         default: null,
       },
