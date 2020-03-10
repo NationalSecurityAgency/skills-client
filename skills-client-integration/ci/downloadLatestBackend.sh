@@ -17,7 +17,7 @@ echo "------- START: Download Latest Backend Jar -------"
 
 apt-get install -y gawk
 
-myGitBranch=`git rev-parse --abbrev-ref HEAD`
+myGitBranch=`git branch | grep "*" | gawk '{print $2}'`
 echo "My Git Branch: [${myGitBranch}]"
 
 majorVersion=''
