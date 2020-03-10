@@ -41,9 +41,10 @@ then
     then
         echo "Building from skill-service master branch"
     else
-        echo "Building from skill-service ${switchToBranch} branch"
+        echo "Building from skill-service [${switchToBranch}] branch"
     fi
-    git checkout ${switchToBranch}
+    git checkout ${switchToBranch} --
+    git status
     mvn --batch-mode package -DskipTests
 else
     mkdir -p ./skills-service/
