@@ -17,10 +17,10 @@ echo "------- START: Download Latest Backend Jar -------"
 
 apt-get install -y gawk
 
-myGitBranch=`git branch | grep "*" | gawk '{print $2}'`
+# on CI server this will be a detached repo and won't have branch info, so the current commit must be matched against server
+myGitBranch=` git ls-remote --heads origin | grep $(git rev-parse HEAD) | gawk -F'/' '{print $3}'`
 echo "My Git Branch: [${myGitBranch}]"
 
-git branch
 majorVersion=''
 if [ "${myGitBranch}" != "master" ]
 then
