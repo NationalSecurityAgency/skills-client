@@ -51,6 +51,7 @@ pushToNexus:
     paths:
       - skills-client-integration/skills-int-service/target/skills-int-service-*.jar
 
+
 deploy:
   image: alpine:latest
   stage: deploy
