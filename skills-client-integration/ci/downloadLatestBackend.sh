@@ -24,15 +24,19 @@ apt-get install -y gawk
 myGitBranch=`git ls-remote --heads origin | grep $(git rev-parse HEAD) | gawk -F'refs/heads/' '{print $2}'`
 echo "My Git Branch: [${myGitBranch}]"
 
-majorVersion=''
-if [ "${myGitBranch}" != "master" ]
+latestSnapVersion=''
+if "${myGitBranch}" | sed 's/\.X$//' || "${myGitBranch}" == "master"
 then
-    majorVersion=`echo ${myGitBranch} | gawk -F "." '{print $1"."$2}'`
+    majorVersion=''
+    if [ "${myGitBranch}" != "master" ]
+    then
+        majorVersion=`echo ${myGitBranch} | gawk -F "." '{print $1"."$2}'`
+    fi
+
+    echo "Version to look for is [${majorVersion}], if blank then latest version will be used!"
+    latestSnapVersion=`curl -s http://$NEXUS_SERVER/repository/maven-snapshots/skills/backend/maven-metadata.xml | grep "<version>${majorVersion}" | gawk -F "version>" '{print $2}' | gawk -F "<" '{print $1}' | sort | tac  | head -n 1`
+    echo "Latest snapshot version: [${latestSnapVersion}]"
 fi
-echo "Version to look for is [${majorVersion}], if blank then latest version will be used!"
-echo 'curl -s http://$NEXUS_SERVER/repository/maven-snapshots/skills/backend/maven-metadata.xml | grep "<version>${majorVersion}" | gawk -F "version>" '{print $2}' | gawk -F "<" '{print $1}' | sort | tac  | head -n 1'
-latestSnapVersion=`curl -s http://$NEXUS_SERVER/repository/maven-snapshots/skills/backend/maven-metadata.xml | grep "<version>${majorVersion}" | gawk -F "version>" '{print $2}' | gawk -F "<" '{print $1}' | sort | tac  | head -n 1`
-echo "Latest snapshot version: [${latestSnapVersion}]"
 
 if [ -z "$latestSnapVersion" ]
 then
