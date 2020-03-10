@@ -14,6 +14,7 @@
 #!/usr/bin/env bash
 
 echo "------- START: Download Latest Backend Jar -------"
+# exit if a command returns non-zero exit code
 set -e
 set -o pipefail
 
@@ -29,6 +30,7 @@ then
     majorVersion=`echo ${myGitBranch} | gawk -F "." '{print $1"."$2}'`
 fi
 echo "Version to look for is [${majorVersion}], if blank then latest version will be used!"
+echo 'curl -s http://$NEXUS_SERVER/repository/maven-snapshots/skills/backend/maven-metadata.xml | grep "<version>${majorVersion}" | gawk -F "version>" '{print $2}' | gawk -F "<" '{print $1}' | sort | tac  | head -n 1'
 latestSnapVersion=`curl -s http://$NEXUS_SERVER/repository/maven-snapshots/skills/backend/maven-metadata.xml | grep "<version>${majorVersion}" | gawk -F "version>" '{print $2}' | gawk -F "<" '{print $1}' | sort | tac  | head -n 1`
 echo "Latest snapshot version: [${latestSnapVersion}]"
 
