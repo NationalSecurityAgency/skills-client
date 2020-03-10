@@ -20,6 +20,7 @@ apt-get install -y gawk
 myGitBranch=`git branch | grep "*" | gawk '{print $2}'`
 echo "My Git Branch: [${myGitBranch}]"
 
+git branch
 majorVersion=''
 if [ "${myGitBranch}" != "master" ]
 then
