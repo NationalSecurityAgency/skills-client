@@ -71,6 +71,6 @@ deploy:
     refs:
       - branches
     variables:
-      - $BRANCH_TO_DEPLOY
+      - $BRANCH_TO_DEPLOY == $CI_COMMIT_REF_NAME
 
 
