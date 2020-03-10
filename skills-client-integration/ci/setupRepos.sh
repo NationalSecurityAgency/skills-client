@@ -16,6 +16,7 @@
 echo "------- START: Setup Repos -------"
 echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
 cat ~/.npmrc
+echo "pass: $NEXUS_PASS"
 cat ./skills-client-integration/skills-int-e2e-test/serverConfigs/settings.xml | sed s/NEXUS_SERVER/$NEXUS_SERVER/ | sed s/NEXUS_PASS/$NEXUS_PASS/ > ~/.m2/settings.xml
 cat ~/.m2/settings.xml
 echo "------- DONE: Setup Repos -------"
