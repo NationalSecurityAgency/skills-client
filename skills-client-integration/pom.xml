@@ -14,9 +14,6 @@
     <artifactId>skills-client-integration</artifactId>
     <packaging>pom</packaging>
     <version>1.0.1-SNAPSHOT</version>
-    <properties>
-        <node.version>v12.16.1</node.version>
-    </properties>
 
     <licenses>
         <license>
@@ -36,6 +33,7 @@
     <properties>
         <!--suppress UnresolvedMavenProperty -->
         <nexusServer>${nexus.url}</nexusServer>
+        <node.version>v12.16.1</node.version>
     </properties>
 
     <distributionManagement>
