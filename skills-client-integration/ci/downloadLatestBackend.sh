@@ -18,7 +18,7 @@ echo "------- START: Download Latest Backend Jar -------"
 apt-get install -y gawk
 
 # on CI server this will be a detached repo and won't have branch info, so the current commit must be matched against server
-myGitBranch=` git ls-remote --heads origin | grep $(git rev-parse HEAD) | gawk -F'/' '{print $3}'`
+myGitBranch=`git ls-remote --heads origin | grep $(git rev-parse HEAD) | gawk -F'refs/heads/' '{print $2}'`
 echo "My Git Branch: [${myGitBranch}]"
 
 majorVersion=''
@@ -32,12 +32,15 @@ echo "Latest snapshot version: [${latestSnapVersion}]"
 
 if [ -z "$latestSnapVersion" ]
 then
-      echo "Failed to locate SNAPSHOT version that start with ${majorVersion}"
-      exit -1
+   echo "Failed to locate SNAPSHOT version let's checkout master"
+   git clone https://${DEPLOY_TOKEN_SKILLS_SERVICE}:${DEPLOY_TOKEN_SKILLS_SERVICE_PASS}@gitlab.evoforge.org/skills/skills-service.git
+   cd ./skills-service/
+   mvn --batch-mode package -DskipTests
+else
+    mkdir -p ./skills-service/
+    cd ./skills-service/
+    mvn --batch-mode dependency:get -Dartifact=skills:backend:${latestSnapVersion}:jar -Dtransitive=false -Ddest=backend-toTest.jar
 fi
 
-mkdir -p ./skills-service/
-cd ./skills-service/
-mvn --batch-mode dependency:get -Dartifact=skills:backend:${latestSnapVersion}:jar -Dtransitive=false -Ddest=backend-toTest.jar
 cd ../
 echo "------- DONE: Download Latest Backend Jar -------"
