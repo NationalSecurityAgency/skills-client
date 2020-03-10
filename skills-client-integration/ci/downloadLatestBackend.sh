@@ -35,6 +35,7 @@ then
     echo "Failed to locate SNAPSHOT on nexus. Let's checkout skill-service code and build it ourselves."
     git clone https://${DEPLOY_TOKEN_SKILLS_SERVICE}:${DEPLOY_TOKEN_SKILLS_SERVICE_PASS}@gitlab.evoforge.org/skills/skills-service.git
     cd ./skills-service/
+    git branch -a | grep dimay
     switchToBranch=`git branch -a | grep ${myGitBranch}`
     if [ -z "$switchToBranch" ]
     then
