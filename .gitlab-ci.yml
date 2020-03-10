@@ -50,8 +50,6 @@ pushToNexus:
   artifacts:
     paths:
       - skills-client-integration/skills-int-service/target/skills-int-service-*.jar
-  only:
-    - master
 
 deploy:
   image: alpine:latest
