@@ -71,6 +71,12 @@ class NpmProj {
         slurper.parse(new File(loc, "package.json"))
     }
 
+    List<String> getSkillsDependenciesFromPackageJson() {
+        return packageJson.dependencies.findAll {
+            it.key.toString().startsWith("@skills")
+        }.collect { it.key }
+    }
+
     String getVersion() {
         return packageJson.version
     }

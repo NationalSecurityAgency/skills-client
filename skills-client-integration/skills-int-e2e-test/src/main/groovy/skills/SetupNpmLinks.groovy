@@ -27,13 +27,13 @@ import java.nio.file.Files
 class SetupNpmLinks {
 
     static void main(String[] args) {
-        boolean shouldNotPrune = args.find({ it.equalsIgnoreCase("--noPrune") })
-        new SetupNpmLinks(shouldPrune: !shouldNotPrune).init().doLink()
+        boolean shouldPrune = args.find({ it.equalsIgnoreCase("--prune") })
+        new SetupNpmLinks(shouldPrune: shouldPrune).init().doLink()
         log.info("Execution Prof:\n{}", CProf.prettyPrint())
     }
 
     // configure
-    File root = new File("./")
+    File root = new File("./skills-client-integration")
     boolean shouldPrune = false
 
     // private
@@ -92,8 +92,10 @@ class SetupNpmLinks {
         projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
             titlePrinter.printSubTitle("validating [${npmProj.getSkillsModulesDir().absolutePath}]")
             npmProj.exec("ls -l node_modules/@skills/")
-            npmProj.getSkillsModulesDir().eachFile {
-                assert Files.isSymbolicLink(it.toPath())
+            npmProj.skillsDependenciesFromPackageJson.each {
+                File shouldBeSymbolic = new File(npmProj.loc, "node_modules/${it}")
+                assert shouldBeSymbolic.exists()
+                assert Files.isSymbolicLink(shouldBeSymbolic.toPath())
             }
         }
 
@@ -108,9 +110,9 @@ class SetupNpmLinks {
     private void npmLinkToSkills() {
         titlePrinter.printTitle("link")
         projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
-            npmProj.getSkillsModulesDir().eachFile { File module ->
-                titlePrinter.printSubTitle("Linking module [${module.absolutePath}]")
-                npmProj.exec("npm link @skills/${module.name}".toString())
+            npmProj.skillsDependenciesFromPackageJson.each {
+                titlePrinter.printSubTitle("Linking module [${it}]")
+                npmProj.exec("npm link ${it}".toString())
             }
         }
     }
