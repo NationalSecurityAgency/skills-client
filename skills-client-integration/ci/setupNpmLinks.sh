@@ -19,6 +19,8 @@ set -o pipefail
 echo "------- START: Setup npm links -------"
 cd skills-client-integration/skills-int-e2e-test
 mvn --batch-mode clean package
+ls target/skills-int-e2e-test-*.jar
+ll target/skills-int-e2e-test-*.jar
 java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.PropertiesLauncher
 cd ../../
 echo "------- DONE: Setup npm links -------"
