@@ -18,7 +18,7 @@ echo "------- START: Download Latest Backend Jar -------"
 set -e
 set -o pipefail
 
-#apt-get install -y gawk
+apt-get install -y gawk
 
 # on CI server this will be a detached repo and won't have branch info, so the current commit must be matched against server
 myGitBranch=`git ls-remote --heads origin | grep $(git rev-parse HEAD) | gawk -F'refs/heads/' '{print $2}'`
