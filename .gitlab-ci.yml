@@ -13,9 +13,6 @@ build:
   script:
     - ./skills-client-integration/ci/setupNpmLinks.sh
     - cd ./skills-client-integration
-    - ls -la skills-int-client-react/node_modules/react
-    - ls -la skills-int-client-react/node_modules/react/
-    - ls -la ../skills-client-react/node_modules/react/
     - mvn --batch-mode clean install
     - cd ../
     - ./skills-client-integration/ci/downloadLatestBackend.sh
