@@ -17,10 +17,22 @@
             <onMatch>DENY</onMatch>
         </filter>
     </appender>
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d [%thread] %level %mdc %logger{50} - %msg%n
+            </Pattern>
+        </layout>
+        <filter class="skills.log.ClassNameFilter">
+            <className>org.zeroturnaround.exec.stream.slf4j.Slf4jStream$ofCaller</className>
+            <onMatch>DENY</onMatch>
+        </filter>
+    </appender>
 
 <!--    <logger name="org.zeroturnaround.exec.stream.slf4j.Slf4jStream" level="fatal"/>-->
     <root level="info">
         <appender-ref ref="fileAppenderAll"/>
         <appender-ref ref="fileAppenderCommands"/>
+        <appender-ref ref="consoleAppender"/>
     </root>
 </configuration>
