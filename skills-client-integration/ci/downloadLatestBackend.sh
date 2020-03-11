@@ -18,16 +18,13 @@ echo "------- START: Download Latest Backend Jar -------"
 set -e
 set -o pipefail
 
-apt-get install -y gawk
+#apt-get install -y gawk
 
 # on CI server this will be a detached repo and won't have branch info, so the current commit must be matched against server
 myGitBranch=`git ls-remote --heads origin | grep $(git rev-parse HEAD) | gawk -F'refs/heads/' '{print $2}'`
 echo "My Git Branch: [${myGitBranch}]"
 
-latestSnapVersion=''
-endsWithX=`echo ${myGitBranch} | grep '.X$'`
-echo "Branch ends with .X: ${endsWithX}"
-if [ $endsWithX -eq 0 ] || [ "${myGitBranch}" == "master" ]
+if [[ "$myGitBranch" =~ .*\.X$ ]] || [ "${myGitBranch}" == "master" ]
 then
     echo "Will download artifact from Nexus"
     majorVersion=''
