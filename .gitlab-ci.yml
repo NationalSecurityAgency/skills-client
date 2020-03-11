@@ -16,8 +16,8 @@ build:
     - ls -la skills-int-client-react/node_modules/react
     - ls -la skills-int-client-react/node_modules/react/
     - ls -la ../skills-client-react/node_modules/react/
-    - cd ../
     - mvn --batch-mode clean install
+    - cd ../
     - ./skills-client-integration/ci/downloadLatestBackend.sh
   artifacts:
     paths:
