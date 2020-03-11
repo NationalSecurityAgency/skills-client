@@ -33,7 +33,7 @@ class SetupNpmLinks {
     }
 
     // configure
-    File root = new File("./skills-client-integration")
+    File root = new File("./")
     boolean shouldPrune = false
 
     // private
