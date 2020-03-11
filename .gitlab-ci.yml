@@ -12,9 +12,12 @@ build:
     - ./skills-client-integration/ci/setupRepos.sh
   script:
     - ./skills-client-integration/ci/setupNpmLinks.sh
-    - ./skills-client-integration/ci/downloadLatestBackend.sh
     - cd ./skills-client-integration
     - mvn --batch-mode clean install
+    - ls -la skills-int-client-react/node_modules/react
+    - ls -la skills-int-client-react/node_modules/react/
+    - cd ../
+    - ./skills-client-integration/ci/downloadLatestBackend.sh
   artifacts:
     paths:
       - ./skills-client-integration/skills-int-service/target/*.jar
