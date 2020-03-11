@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #!/usr/bin/env bash
-
+# exit if a command returns non-zero exit code
+set -e
+set -o pipefail
 echo "------- START: Setup Repos -------"
 echo "@skills:registry=http://$NEXUS_SERVER/repository/skills-registry/" > ~/.npmrc
 cat ~/.npmrc
