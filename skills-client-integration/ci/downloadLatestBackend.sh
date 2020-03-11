@@ -57,6 +57,7 @@ else
     echo "git status:"
     git status
     mvn --batch-mode package -DskipTests
+    mv backend/target/.*jar ./
 fi
 
 cd ../
