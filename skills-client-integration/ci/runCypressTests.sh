@@ -13,6 +13,10 @@
 # limitations under the License.
 #!/usr/bin/env bash
 echo "------- START: Run Cypress Tests -------"
+# exit if a command returns non-zero exit code
+set -e
+set -o pipefail
+
 cd skills-client-integration/skills-int-e2e-test
 npm install
 
