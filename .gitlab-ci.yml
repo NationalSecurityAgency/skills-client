@@ -14,8 +14,6 @@ build:
     - ./skills-client-integration/ci/setupNpmLinks.sh
     - cd ./skills-client-integration
     - mvn --batch-mode clean install
-    - ls -la skills-int-client-react/node_modules/react
-    - ls -la skills-int-client-react/node_modules/react/
     - cd ../
     - ./skills-client-integration/ci/downloadLatestBackend.sh
   artifacts:
@@ -54,7 +52,11 @@ pushToNexus:
   artifacts:
     paths:
       - skills-client-integration/skills-int-service/target/skills-int-service-*.jar
-
+  only:
+    refs:
+      - branches
+    variables:
+      - $BRANCH_TO_DEPLOY == $CI_COMMIT_REF_NAME
 
 deploy:
   image: alpine:latest
