@@ -344,4 +344,24 @@ context('Vue Tests', () => {
             cy.wrap(body).contains('Earn up to 100 points')
         })
     });
+
+    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
+      it('skillsClientVersion is reported correctly', () => {
+          cy.createDefaultProject()
+          cy.visit('/vuejs#/')
+        
+          cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
+          
+          cy.wait('@reportClientVersion')
+          cy.get('@reportClientVersion').then((xhr) => {
+              expect(xhr.status).to.eq(200)
+              expect(xhr.responseBody).to.have.property('success').to.eq(true)
+          });
+          cy.get('@reportClientVersion').should((xhr) => {
+            expect(xhr.request.body, 'request body').
+              to.have.property('skillsClientVersion').
+              and.to.contain('@skills/skills-client-vue-')
+          });
+      })
+    }
 })

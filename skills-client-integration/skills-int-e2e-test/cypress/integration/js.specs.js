@@ -279,4 +279,25 @@ context("Native JS Tests", () => {
       cy.wrap(body).contains(v0Points);
     });
   });
+
+  if (Utils.versionLaterThan('@skills/skills-client-js', '1.1.1')) {
+    it('skillsClientVersion is reported correctly', () => {
+        cy.createDefaultProject()
+        cy.visit("/native/index.html");
+      
+        cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
+        
+        cy.wait('@reportClientVersion')
+        cy.get('@reportClientVersion').then((xhr) => {
+            expect(xhr.status).to.eq(200)
+            expect(xhr.responseBody).to.have.property('success').to.eq(true)
+        });
+        cy.get('@reportClientVersion').should((xhr) => {
+          expect(xhr.request.body, 'request body').
+            to.have.property('skillsClientVersion').
+            and.to.contain('@skills/skills-client-js-')
+        });
+    })
+  }
+
 });
