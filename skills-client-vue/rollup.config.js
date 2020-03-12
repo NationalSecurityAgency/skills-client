@@ -36,7 +36,7 @@ module.exports = {
     }),
     replace({
       'process.env.NODE_ENV': JSON.stringify('production'),
-      '__skillsClientVersion__': JSON.stringify(`${pkg.name}-${pkg.version}`),
+      __skillsClientVersion__: `${pkg.name}-${pkg.version}`,
     }),
     commonjs(),
     VuePlugin(),
