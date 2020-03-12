@@ -15,7 +15,7 @@ build:
     - cd ./skills-client-integration
     - mvn --batch-mode clean install
     - cd ../
-    - ./skills-client-integration/ci/downloadLatestBackend.sh
+    - ./skills-client-integration/ci/getSkillsService.sh
   artifacts:
     paths:
       - ./skills-client-integration/skills-int-service/target/*.jar
