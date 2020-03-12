@@ -44,7 +44,6 @@ else
     echo "Will checkout skill-service code and build it."
     git clone https://${DEPLOY_TOKEN_SKILLS_SERVICE}:${DEPLOY_TOKEN_SKILLS_SERVICE_PASS}@gitlab.evoforge.org/skills/skills-service.git
     cd ./skills-service/
-    git branch -a | grep dimay
     switchToBranch=`git branch -a | grep ${myGitBranch}`
     if [ -z "$switchToBranch" ]
     then
@@ -57,7 +56,8 @@ else
     echo "git status:"
     git status
     mvn --batch-mode package -DskipTests
-    mv backend/target/.*jar ./
+    jar=$(ls ./backend/target/*.jar)
+    mv $jar ./
 fi
 
 cd ../
