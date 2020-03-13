@@ -25,7 +25,7 @@ class NpmProjBuilder {
     File loc = new File("./")
 
     private File locate(String name) {
-        List<File> toCheck = [new File(loc, name), new File(loc, "skills-client-examples/$name"), new File(loc, "../$name"), new File(loc, "../../$name")]
+        List<File> toCheck = [new File(loc, name), new File(loc, "skills-client-integration/$name"), new File(loc, "../$name"), new File(loc, "../../$name")]
         for (File f : toCheck) {
             if (f.exists()) {
                 return f

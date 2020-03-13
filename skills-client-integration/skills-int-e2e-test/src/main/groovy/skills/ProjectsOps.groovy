@@ -26,14 +26,17 @@ class ProjectsOps {
 
     // private
     TitlePrinter titlePrinter = new TitlePrinter()
-    String examplesProj = "skills-client-examples"
     private List<NpmProj> allProjCached
 
     List<NpmProj> getAllProj() {
         if (!allProjCached) {
-            allProjCached = new NpmProjBuilder(loc: workDir).build()
+            allProjCached = new NpmProjBuilder(loc: skillsClient).build()
         }
         return allProjCached
+    }
+
+    File getSkillsClient(){
+        new File(workDir, "skills-client")
     }
 
     @Profile
@@ -51,12 +54,13 @@ class ProjectsOps {
     @Profile
     void checkoutLinkedNpmLibs() {
         clearWorkDir()
-        titlePrinter.printTitle("Checkout client lib projects from git")
-        List<String> projToCheckOut = new NpmProjBuilder(locate: false).build().findAll({ it.doOthersLinkToMe }).collect({ it.name })
-        projToCheckOut.add(examplesProj)
-        log.info("Cloning $projToCheckOut")
-        for (String projName in projToCheckOut) {
-            new ProcessRunner(loc: workDir).run("git clone git@gitlab.evoforge.org:skills/${projName}.git")
+        titlePrinter.printTitle("Checkout skills-client")
+
+        String myBranch = new ProcessRunner(loc: workDir).run("git ls-remote --heads origin | grep \$(git rev-parse HEAD) | gawk -F'refs/heads/' '{print \$2}'").sout
+        log.info("My Branch is: ${myBranch}")
+        new ProcessRunner(loc: workDir).run("git clone git@gitlab.evoforge.org:skills/skills-client.git")
+        if (myBranch != "master") {
+            new ProcessRunner(loc: workDir).run("git checkout ${myBranch}")
         }
     }
 
@@ -84,24 +88,24 @@ class ProjectsOps {
     }
 
     @Profile
-    void buildClientExamplesApp() {
+    void buildClientIntApp() {
         titlePrinter.printTitle("Building Client Examples App")
-        File loc = new File(workDir, "skills-client-examples")
+        File loc = new File(skillsClient, "skills-client-integration")
         new ProcessRunner(loc: loc).run("mvn --batch-mode clean package")
     }
 
 
     @Profile
-    void runCypressTests(File location, String msg, List<String> cypressEnv = []) {
+    void runCypressTests(File location, String msg, List<String> cypressEnv = [], String npmIntegrationNamespace = "integration") {
         titlePrinter.printTitle("Running cypress tests: [${msg}]")
         killServerProcesses()
         try {
             new ProcessRunner(loc: location, waitForOutput: false).run("npm run backend:start:release &")
-            new ProcessRunner(loc: location, waitForOutput: false).run("npm run examples:start:release &")
+            new ProcessRunner(loc: location, waitForOutput: false).run("npm run ${npmIntegrationNamespace}:start:release &")
             // this will install cypress, can do that while servers are starting
             new ProcessRunner(loc: location).run("npm install")
             new ProcessRunner(loc: location).run("npm run backend:waitToStart")
-            new ProcessRunner(loc: location).run("npm run examples:waitToStart")
+            new ProcessRunner(loc: location).run("npm run ${npmIntegrationNamespace}:waitToStart")
 
             titlePrinter.printSubTitle("Starting Cypress tests [${msg}]")
 
@@ -113,7 +117,7 @@ class ProjectsOps {
     }
 
     private void killServerProcesses() {
-        new ProcessUtils().killProcessIfContainsStr(":serverConfigs/backend_application.properties")
+        new ProcessUtils().killProcessIfContainsStr(":serverConfigs/integration_application.properties")
         new ProcessUtils().killProcessIfContainsStr(":serverConfigs/examples_application.properties")
     }
 
