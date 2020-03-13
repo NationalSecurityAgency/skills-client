@@ -14,8 +14,17 @@
  * limitations under the License.
  */
 import Utils from "./Utils";
-const wsTimeout = 3000;
 const iFrameTimeout = 3000;
+
+Cypress.Commands.add('visitHomePage', () => {
+  cy.visit("/native/index.html", {
+    onBeforeLoad(win) {
+      cy.spy(win, 'postMessage').as('postMessage')
+    }
+  });
+  // wait for web socket to connect
+  cy.get('@postMessage').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
+});
 
 context("Native JS Tests", () => {
   if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
@@ -26,31 +35,27 @@ context("Native JS Tests", () => {
       Cypress.Commands.add("clickSubmit", () => {
         cy.get(`${sendEventViaDropdownId} .btn`).click();
       });
-      cy.visit("/native/index.html");
 
-      cy.wait(wsTimeout); // allow for the ui web-socket handshake to complete
-
+      cy.visitHomePage();
       cy.clickSubmit();
 
-      cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
-      cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
-      cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
-      cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
+      cy.get('pre[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
+      cy.get('pre[data-cy=globalEventResult]').contains('"pointsEarned": 50')
+      cy.get('pre[data-cy=globalEventResult]').contains('"skillApplied": true')
+      cy.get('pre[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
     });
   }
   if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
     it("global event show correct results (skills reported directly to backend endpoint)", () => {
       cy.createDefaultProject();
-      cy.visit("/native/index.html");
 
-      cy.wait(wsTimeout); // allow for the ui web-socket handshake to complete
-
+      cy.visitHomePage();
       cy.reportSkillForUser("IronMan", "user1");
 
-      cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
-      cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
-      cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
-      cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
+      cy.get('pre[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
+      cy.get('pre[data-cy=globalEventResult]').contains('"pointsEarned": 50')
+      cy.get('pre[data-cy=globalEventResult]').contains('"skillApplied": true')
+      cy.get('pre[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
     });
   }
 
@@ -58,13 +63,11 @@ context("Native JS Tests", () => {
     it('global event does not update when skill reported for a different project', () => {
       cy.createDefaultProject()
       cy.createDefaultTinyProject('proj2')
-      cy.visit("/native/index.html");
 
-      cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
-
+      cy.visitHomePage();
       cy.reportSkillForUser('IronMan', 'user1', 'proj2')
 
-      cy.get('[data-cy=globalEventResult]').should('be.empty');
+      cy.get('pre[data-cy=globalEventResult]').should('be.empty');
     })
   }
   if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
@@ -72,10 +75,7 @@ context("Native JS Tests", () => {
       cy.createDefaultProject()
       cy.reportSkillForUser('IronMan', 'user1')
 
-      cy.visit("/native/index.html");
-
-      cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
-
+      cy.visitHomePage();
       cy.reportSkillForUser('IronMan', 'user1')
 
       cy.get('[data-cy=globalEventResult]').should('be.empty');
@@ -86,18 +86,14 @@ context("Native JS Tests", () => {
       cy.createDefaultProject()
       cy.reportSkillForUser('IronMan', 'user1')
 
-      cy.visit("/native/index.html");
-
+      cy.visitHomePage();
       const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
       Cypress.Commands.add("clickSubmit", () => {
         cy.get(`${sendEventViaDropdownId} .btn`).click();
       });
-
-      cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
-
       cy.clickSubmit()
 
-      cy.get('[data-cy=globalEventResult]').should('be.empty');
+      cy.get('pre[data-cy=globalEventResult]').should('be.empty');
     })
   }
 
@@ -106,22 +102,19 @@ context("Native JS Tests", () => {
       cy.createDefaultProject()
       cy.reportSkillForUser('IronMan', 'user1')
 
-      cy.visit("/native/index.html");
-
       const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
       Cypress.Commands.add("clickSubmit", () => {
         cy.get(`${sendEventViaDropdownId} .btn`).click();
       });
 
-      cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
-
+      cy.visitHomePage();
       cy.get('[type="checkbox"]').check()
       cy.clickSubmit()
 
-      cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
-      cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 0')
-      cy.get('[data-cy=globalEventResult]').contains('"skillApplied": false')
-      cy.get('[data-cy=globalEventResult]').contains('"explanation": "This skill reached its maximum points"')
+      cy.get('pre[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
+      cy.get('pre[data-cy=globalEventResult]').contains('"pointsEarned": 0')
+      cy.get('pre[data-cy=globalEventResult]').contains('"skillApplied": false')
+      cy.get('pre[data-cy=globalEventResult]').contains('"explanation": "This skill reached its maximum points"')
     })
   }
 
@@ -283,10 +276,10 @@ context("Native JS Tests", () => {
   if (Utils.versionLaterThan('@skills/skills-client-js', '1.1.1')) {
     it('skillsClientVersion is reported correctly', () => {
         cy.createDefaultProject()
-        cy.visit("/native/index.html");
       
         cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
-        
+      
+        cy.visitHomePage();  
         cy.wait('@reportClientVersion')
         cy.get('@reportClientVersion').then((xhr) => {
             expect(xhr.status).to.eq(200)
