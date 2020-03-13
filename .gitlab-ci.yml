@@ -11,16 +11,18 @@ build:
     - ./skills-client-integration/ci/setupNode.sh
     - ./skills-client-integration/ci/setupRepos.sh
   script:
-    - ./skills-client-integration/ci/downloadLatestBackend.sh
     - ./skills-client-integration/ci/setupNpmLinks.sh
     - cd ./skills-client-integration
     - mvn --batch-mode clean install
+    - cd ../
+    - ./skills-client-integration/ci/getSkillsService.sh
   artifacts:
     paths:
       - ./skills-client-integration/skills-int-service/target/*.jar
       - ./skills-client-integration/skills-int-service/target/*.log
       - ./skills-client-integration/skills-int-e2e-test/target/*.jar
       - ./skills-client-integration/skills-int-e2e-test/target/*.log
+      - ./skills-client-integration/target/*.log
       - ./skills-service/*.jar
 
 testCypress:
@@ -50,7 +52,11 @@ pushToNexus:
   artifacts:
     paths:
       - skills-client-integration/skills-int-service/target/skills-int-service-*.jar
-
+  only:
+    refs:
+      - branches
+    variables:
+      - $BRANCH_TO_DEPLOY == $CI_COMMIT_REF_NAME
 
 deploy:
   image: alpine:latest
