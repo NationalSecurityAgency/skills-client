@@ -15,15 +15,25 @@
  */
 import Utils from "./Utils";
 const iFrameTimeout = 3000;
+let skillsWebsocketConnected
 
 Cypress.Commands.add('visitHomePage', () => {
-  cy.visit("/native/index.html", {
+  skillsWebsocketConnected = null;
+  cy.visit('/native/index.html', {
     onBeforeLoad(win) {
+      skillsWebsocketConnected = cy.spy().as('skillsWebsocketConnected')
+      const postMessage = win.postMessage.bind(win)
+      win.postMessage = (what, target) => {
+        if (Cypress._.isPlainObject(what) && what.skillsWebsocketConnected) {
+          skillsWebsocketConnected(what)
+        }
+        return postMessage(what, target)
+      }
       cy.spy(win, 'postMessage').as('postMessage')
     }
   });
   // wait for web socket to connect
-  cy.get('@postMessage').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
+  cy.get('@skillsWebsocketConnected').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
 });
 
 context("Native JS Tests", () => {
@@ -279,7 +289,7 @@ context("Native JS Tests", () => {
       
         cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
       
-        cy.visitHomePage();  
+        cy.visit('/native/index.html')  
         cy.wait('@reportClientVersion')
         cy.get('@reportClientVersion').then((xhr) => {
             expect(xhr.status).to.eq(200)

@@ -15,8 +15,27 @@
  */
 import Utils from "./Utils";
 
-const wsTimeout = 2000;
 const iFrameTimeout = 3000;
+let skillsWebsocketConnected
+
+Cypress.Commands.add('visitHomePage', () => {
+  skillsWebsocketConnected = null;
+  cy.visit('/vuejs#/', {
+    onBeforeLoad(win) {
+      skillsWebsocketConnected = cy.spy().as('skillsWebsocketConnected')
+      const postMessage = win.postMessage.bind(win)
+      win.postMessage = (what, target) => {
+        if (Cypress._.isPlainObject(what) && what.skillsWebsocketConnected) {
+          skillsWebsocketConnected(what)
+        }
+        return postMessage(what, target)
+      }
+      cy.spy(win, 'postMessage').as('postMessage')
+    }
+  });
+  // wait for web socket to connect
+  cy.get('@skillsWebsocketConnected').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
+});
 
 context('Vue Tests', () => {
 
@@ -30,7 +49,7 @@ context('Vue Tests', () => {
             cy.get(`${sendEventViaDropdownId} .multiselect`).type(`${skill}{enter}`)
         })
 
-        cy.visit('/vuejs#/')
+        cy.visitHomePage();
 
         cy.contains('Level 0')
 
@@ -62,10 +81,9 @@ context('Vue Tests', () => {
     if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
         it('level component should be reactive (skills reported directly to backend endpoint)', () => {
             cy.createDefaultProject()
-            cy.visit('/vuejs#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'user1')
             cy.contains('Level 1')
@@ -90,10 +108,9 @@ context('Vue Tests', () => {
     if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
         it('global event show correct results', () => {
             cy.createDefaultProject()
-            cy.visit('/vuejs#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'user1')
 
@@ -108,10 +125,9 @@ context('Vue Tests', () => {
         it('global event does not update when skill reported for a different project', () => {
             cy.createDefaultProject()
             cy.createDefaultTinyProject('proj2')
-            cy.visit('/vuejs#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'user1', 'proj2')
 
@@ -124,10 +140,9 @@ context('Vue Tests', () => {
             cy.createDefaultProject()
             cy.reportSkillForUser('IronMan', 'user1')
 
-            cy.visit('/vuejs#/')
+            cy.visitHomePage();
 
             cy.contains('Level 1')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'user1')
             cy.contains('Level 1')
@@ -142,10 +157,9 @@ context('Vue Tests', () => {
             Cypress.Commands.add("reportSkill", (skillId) => {
                 cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
             })
-            cy.visit('/vuejs#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'unknown@skills.org')
             cy.contains('Level 0')
@@ -178,7 +192,7 @@ context('Vue Tests', () => {
         cy.createDefaultProject(1, 2, 50, 2)
         cy.server().route('POST', '/api/projects/proj1/skills/Thor').as('postSkill')
 
-        cy.visit('/vuejs#/')
+        cy.visitHomePage();
 
         Cypress.Commands.add("typeToInput", (skillApplied = true) => {
             cy.get('#SkillsDirectiveInputEvent input').type('h')
@@ -198,7 +212,7 @@ context('Vue Tests', () => {
         cy.createDefaultTinyProject()
         cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
 
-        cy.visit('/vuejs#/')
+        cy.visitHomePage();
 
         cy.get('#SkillsDirectiveErrorwithButton button').click()
         cy.wait('@postSkill');
@@ -212,7 +226,7 @@ context('Vue Tests', () => {
         cy.createDefaultTinyProject()
         cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
 
-        cy.visit('/vuejs#/')
+        cy.visitHomePage();
 
         cy.get('#SkillsDirectiveErrorwithInput input').type('h')
         cy.wait('@postSkill');

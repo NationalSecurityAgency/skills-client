@@ -15,17 +15,35 @@
  */
 import Utils from "./Utils";
 
-const wsTimeout = 2000;
 const iFrameTimeout = 3000;
+let skillsWebsocketConnected
+
+Cypress.Commands.add('visitHomePage', () => {
+  skillsWebsocketConnected = null;
+  cy.visit('/react/index.html#/', {
+    onBeforeLoad(win) {
+      skillsWebsocketConnected = cy.spy().as('skillsWebsocketConnected')
+      const postMessage = win.postMessage.bind(win)
+      win.postMessage = (what, target) => {
+        if (Cypress._.isPlainObject(what) && what.skillsWebsocketConnected) {
+          skillsWebsocketConnected(what)
+        }
+        return postMessage(what, target)
+      }
+      cy.spy(win, 'postMessage').as('postMessage')
+    }
+  });
+  // wait for web socket to connect
+  cy.get('@skillsWebsocketConnected').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
+});
 
 context('React Tests', () => {
     if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.0')) {
         it('level component should be reactive (skills reported directly to backend endpoint)', () => {
             cy.createDefaultProject()
-            cy.visit('/react/index.html#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'user1')
             cy.contains('Level 1')
@@ -50,10 +68,9 @@ context('React Tests', () => {
     if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.0')) {
         it('global event show correct results', () => {
             cy.createDefaultProject()
-            cy.visit('/react/index.html#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'user1')
             cy.contains('Level 1')
@@ -75,7 +92,7 @@ context('React Tests', () => {
             cy.get(`${sendEventViaDropdownId} select`).select(`${skill}`)
         })
 
-        cy.visit('/react/index.html#/')
+        cy.visitHomePage();
 
         cy.contains('Level 0')
 
@@ -108,10 +125,9 @@ context('React Tests', () => {
         it('global event does not update when skill reported for a different project', () => {
             cy.createDefaultProject()
             cy.createDefaultTinyProject('proj2')
-            cy.visit('/react/index.html#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'user1', 'proj2')
 
@@ -123,10 +139,9 @@ context('React Tests', () => {
     if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.0')) {
         it('level component should not update when admin reports skill for other user', () => {
             cy.createDefaultProject()
-            cy.visit('/react/index.html#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'unknown@skills.org')
             cy.contains('Level 0')
@@ -256,7 +271,7 @@ context('React Tests', () => {
     });
 
     if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
-      it('skillsClientVersion is reported correctly', () => {
+      it.only('skillsClientVersion is reported correctly', () => {
           cy.createDefaultProject()
           cy.visit('/react/index.html#/')
         
