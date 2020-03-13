@@ -22,6 +22,28 @@ if (!window.process) {
   };
 }
 
+const jsSkillsClientVersion = '__skillsClientVersion__';
+const reportSkillsClientVersion = (conf) => new Promise((resolve, reject) => {
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', `${conf.getServiceUrl()}/api/projects/${conf.getProjectId()}/skillsClientVersion`);
+  xhr.withCredentials = true;
+  if (!conf.isPKIMode()) {
+    xhr.setRequestHeader('Authorization', `Bearer ${conf.getAuthToken()}`);
+  }
+  xhr.onreadystatechange = () => {
+    if (xhr.readyState === 4) {
+      if (xhr.status !== 200) {
+        reject(new Error('Unable to report skillsClientVersion'));
+      } else {
+        resolve(JSON.parse(xhr.response));
+      }
+    }
+  };
+
+  xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+  xhr.send(JSON.stringify({ skillsClientVersion: conf.skillsClientVersion }));
+});
+
 let waitForInitializePromise = null;
 let initializedResolvers = null;
 
@@ -36,8 +58,9 @@ const initializeAfterConfigurePromise = () => {
   }
 };
 
-const setInitialized = () => {
+const setInitialized = (conf) => {
   initializedResolvers.resolve();
+  reportSkillsClientVersion(conf);
 };
 
 initializeAfterConfigurePromise();
@@ -66,7 +89,6 @@ const getAuthenticationToken = function getAuthenticationToken(authenticator) {
   });
 };
 
-const jsSkillsClientVersion = '__skillsClientVersion__';
 const exportObject = {
   configure({
     serviceUrl,
@@ -88,10 +110,10 @@ const exportObject = {
       getAuthenticationToken(this.getAuthenticator())
         .then((token) => {
           this.setAuthToken(token);
-          setInitialized();
+          setInitialized(this);
         });
     } else {
-      setInitialized();
+      setInitialized(this);
     }
   },
 
