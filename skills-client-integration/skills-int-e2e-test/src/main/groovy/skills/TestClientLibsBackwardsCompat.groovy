@@ -53,8 +53,8 @@ class TestClientLibsBackwardsCompat {
         List<NpmProjRel> rels = new NpmProjBuilder(loc: workDir).buildRelMap()
         rels.each { log.info("${it.from.name} (${it.from.version}) => ${it.to.name} (${it.to.version})") }
 
-        if (!doWeNeedToRelease(npmProjects)) {
-//            return
+        if (!npmProjects.hasUnreleasedChanges()) {
+            return
         }
 
         String examplesProjName = "skills-example-service"
@@ -79,17 +79,6 @@ class TestClientLibsBackwardsCompat {
     private List<String> getBackendVersionsToTest() {
         List<String> versions = new NexusHelper().getReleaseVersionsStaringWith("1.1")
         return versions.findAll({ !backendExcludedVersions.contains(it) })
-    }
-
-    boolean doWeNeedToRelease(ProjectsOps npmProjects) {
-        titlePrinter.printTitle("check if there is a need to release")
-        int numProjChanged = npmProjects.getNumClientLibsNeedsToRelease()
-        if (numProjChanged == 0) {
-            titlePrinter.printTitle("Client libs have not changed. So no reason to test!")
-            return false
-        }
-        titlePrinter.printTitle("Code changes in [${numProjChanged}] projects, let's start testing")
-        return true
     }
 
 }

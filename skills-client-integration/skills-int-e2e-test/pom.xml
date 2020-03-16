@@ -62,6 +62,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.vdurmont</groupId>
+            <artifactId>semver4j</artifactId>
+            <version>3.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -131,6 +136,7 @@
                                 <licenseMerge>Eclipse Public License - Version 1.0|Eclipse Public License 1.0</licenseMerge>
                                 <licenseMerge>The 3-Clause BSD License|New BSD License</licenseMerge>
                                 <licenseMerge>Eclipse Public License - Version 1.0|Eclipse Public License - v 1.0</licenseMerge>
+                                <licenseMerge>MIT License|The MIT License</licenseMerge>
                             </licenseMerges>
                         </configuration>
                     </execution>

@@ -52,40 +52,21 @@ class ProjectsOps {
     }
 
     @Profile
-    void checkoutLinkedNpmLibs() {
+    void checkoutLinkedNpmLibs(String switchToBranch = null) {
         clearWorkDir()
         titlePrinter.printTitle("Checkout skills-client")
 
-        String myBranch = new ProcessRunner(loc: workDir).run("git ls-remote --heads origin | grep \$(git rev-parse HEAD) | gawk -F'refs/heads/' '{print \$2}'").sout
-        log.info("My Branch is: ${myBranch}")
         new ProcessRunner(loc: workDir).run("git clone git@gitlab.evoforge.org:skills/skills-client.git")
-        if (myBranch != "master") {
-            new ProcessRunner(loc: workDir).run("git checkout ${myBranch}")
+        if (switchToBranch && switchToBranch != "master") {
+            new ProcessRunner(loc: workDir).run("git checkout ${switchToBranch}")
         }
     }
 
-
-    @Profile
-    boolean doClientLibsNeedsToBeReleased() {
-        getNumClientLibsNeedsToRelease() > 0
+    boolean hasUnreleasedChanges(){
+        // TODO: check specific projects using 'git diff'
+        return true
     }
 
-    @Profile
-    int getNumClientLibsNeedsToRelease() {
-        titlePrinter.printTitle("check if there is a need to release")
-        int numProjChanged = 0
-        for (NpmProj proj in allProj.findAll({ it.doOthersLinkToMe })) {
-            titlePrinter.printSubTitle("checking ${proj.name}")
-            if (proj.hasUnreleasedChanges()) {
-                log.info("${proj.name} has changes! Will need to release!")
-                numProjChanged++
-            } else {
-                log.info("${proj.name} has no changes. Release is not needed!")
-            }
-        }
-
-        return numProjChanged
-    }
 
     @Profile
     void buildClientIntApp() {

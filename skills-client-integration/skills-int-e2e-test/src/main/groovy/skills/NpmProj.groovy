@@ -85,15 +85,4 @@ class NpmProj {
         return packageJson.dependencies."$dep"
     }
 
-    void gitPullRebase(boolean dryRun = false) {
-        new ProcessRunner(loc: loc, dryRun: dryRun).run("git pull --rebase")
-    }
-
-    boolean hasUnreleasedChanges() {
-        ProcessRunner.ProcessRes processRes = new ProcessRunner(loc: loc, printOutput: false).run("git diff ${version}".toString())
-        if (processRes.sout) {
-            return true
-        }
-        return false
-    }
 }
