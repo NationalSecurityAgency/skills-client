@@ -29,7 +29,9 @@ git clone https://${DEPLOY_TOKEN_SKILLS_SERVICE}:${DEPLOY_TOKEN_SKILLS_SERVICE_P
 cd ./skills-service/
 
 switchToBranch=$BRANCH_TO_DEPLOY_SKILLS_SERVICE
+echo "Default branch to consider [${switchToBranch}]"
 matchingBranch=`git branch -a | grep "* ${myGitBranch}" | gawk '{print $2}'`
+echo "Matching branch to consider [${matchingBranch}]"
 if [[ "$myGitBranch" == *\.X ]] || [[ "$myGitBranch" == "master" ]] || [[ -z "$matchingBranch" ]]
 then
     echo "Building from skill-service from configured [${switchToBranch}] branch"
