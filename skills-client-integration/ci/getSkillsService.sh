@@ -34,7 +34,8 @@ then
     echo "$myGitBranch ends with .X, assuming it belongs with skill platform CI"
     switchToBranch=$BRANCH_TO_DEPLOY_SKILLS_SERVICE
     echo "Building from skill-service from ${switchToBranch}"
-else
+else if [[ "$myGitBranch" != "master" ]]
+then
     switchToBranch=`git branch -a | grep ${myGitBranch}`
     if [ -z "$switchToBranch" ]
     then
@@ -49,7 +50,7 @@ then
     exit -1
 fi
 
-echo "Checking out ${switchToBranch}"
+echo "Checking out [${switchToBranch}]"
 git checkout ${switchToBranch} --
 
 echo "git status:"
