@@ -21,7 +21,7 @@ set -o pipefail
 apt-get install -y gawk
 
 # on CI server this will be a detached repo and won't have branch info, so the current commit must be matched against server
-myGitBranch=`git branch | grep "* " | gawk '{print $2}'`
+myGitBranch=`git branch`
 echo "My Git Branch: [${myGitBranch}]"
 
 echo "Checkout skill-service code and build it."
