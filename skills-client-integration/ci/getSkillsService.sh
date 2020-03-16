@@ -16,7 +16,7 @@
 echo "------- START: Download Latest Backend Jar -------"
 # exit if a command returns non-zero exit code
 set -e
-set -o pipefail
+#set -o pipefail
 
 apt-get install -y gawk
 
