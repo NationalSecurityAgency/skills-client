@@ -56,7 +56,7 @@ pushToNexus:
     refs:
       - branches
     variables:
-      - $BRANCH_TO_DEPLOY == $CI_COMMIT_REF_NAME
+      - $BRANCH_TO_DEPLOY_SKILLS_CLIENT == $CI_COMMIT_REF_NAME
 
 deploy:
   image: alpine:latest
@@ -77,6 +77,6 @@ deploy:
     refs:
       - branches
     variables:
-      - $BRANCH_TO_DEPLOY == $CI_COMMIT_REF_NAME
+      - $BRANCH_TO_DEPLOY_SKILLS_CLIENT == $CI_COMMIT_REF_NAME
 
 
