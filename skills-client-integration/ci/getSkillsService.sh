@@ -34,7 +34,7 @@ if [[ "$myGitBranch" == *\.X ]] || [[ "$myGitBranch" == "master" ]] || [[ -z "$m
 then
     echo "Building from skill-service from configured [${switchToBranch}] branch"
 else
-    switchToBranch=matchingBranch
+    switchToBranch=$matchingBranch
     echo "Found matching branch [${switchToBranch}]"
 fi
 
