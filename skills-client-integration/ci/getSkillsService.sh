@@ -44,6 +44,9 @@ then
     else
         echo "Found matching branch for skill-service => [${switchToBranch}]"
     fi
+else
+    switchToBranch=$BRANCH_TO_DEPLOY_SKILLS_SERVICE
+    echo "Building from skill-service from ${switchToBranch}"
 fi
 
 if [[ -z "$switchToBranch" ]]
