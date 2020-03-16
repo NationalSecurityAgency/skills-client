@@ -27,17 +27,34 @@ echo "My Git Branch: [${myGitBranch}]"
 echo "Checkout skill-service code and build it."
 git clone https://${DEPLOY_TOKEN_SKILLS_SERVICE}:${DEPLOY_TOKEN_SKILLS_SERVICE_PASS}@gitlab.evoforge.org/skills/skills-service.git
 cd ./skills-service/
-switchToBranch=`git branch -a | grep ${myGitBranch}`
+
+switchToBranch="master"
+if [[ "$myGitBranch" == *\.X ]]
+then
+    echo "$myGitBranch ends with .X, assuming it belongs with skill platform CI"
+    switchToBranch=$BRANCH_TO_DEPLOY_SKILLS_SERVICE
+    echo "Building from skill-service from ${switchToBranch}"
+else
+    switchToBranch=`git branch -a | grep ${myGitBranch}`
+    if [ -z "$switchToBranch" ]
+    then
+        switchToBranch=$BRANCH_TO_DEPLOY_SKILLS_SERVICE
+        echo "Building from skill-service from ${switchToBranch}"
+    else
+        echo "Found matching branch for skill-service => [${switchToBranch}]"
+    fi
+fi
 if [ -z "$switchToBranch" ]
 then
-    echo "Building from skill-service master branch"
-else
-    echo "Building from skill-service [${switchToBranch}] branch"
+    exit -1
 fi
+
 echo "Checking out ${switchToBranch}"
 git checkout ${switchToBranch} --
+
 echo "git status:"
 git status
+
 mvn --batch-mode package -DskipTests
 jar=$(ls ./backend/target/*.jar)
 mv $jar ./
