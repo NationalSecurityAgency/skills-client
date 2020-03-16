@@ -30,7 +30,7 @@ cd ./skills-service/
 
 switchToBranch=$BRANCH_TO_DEPLOY_SKILLS_SERVICE
 echo "Default branch to consider [${switchToBranch}]"
-matchingBranch=""
+matchingBranch=`git branch -a`
 echo "Matching branch to consider [${matchingBranch}]"
 if [[ "$myGitBranch" == *\.X ]] || [[ "$myGitBranch" == "master" ]] || [[ -z "$matchingBranch" ]]
 then
