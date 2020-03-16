@@ -28,21 +28,14 @@ echo "Checkout skill-service code and build it."
 git clone https://${DEPLOY_TOKEN_SKILLS_SERVICE}:${DEPLOY_TOKEN_SKILLS_SERVICE_PASS}@gitlab.evoforge.org/skills/skills-service.git
 cd ./skills-service/
 
-switchToBranch="master"
-if [[ "$myGitBranch" == *\.X ]]
+switchToBranch=$BRANCH_TO_DEPLOY_SKILLS_SERVICE
+matchingBranch=`git branch -a | grep "* ${myGitBranch}" | gawk '{print $2}'`
+if [[ "$myGitBranch" == *\.X ]] || [[ "$myGitBranch" == "master" ]] || [[ -z "$matchingBranch" ]]
 then
-    echo "$myGitBranch ends with .X, assuming it belongs with skill platform CI"
-    switchToBranch=$BRANCH_TO_DEPLOY_SKILLS_SERVICE
-    echo "Building from skill-service from ${switchToBranch}"
+    echo "Building from skill-service from configured [${switchToBranch}] branch"
 else
-    switchToBranch=`git branch -a | grep "* ${myGitBranch}" | gawk '{print $2}'`
-    if [ -z "$switchToBranch" ]
-    then
-        switchToBranch=$BRANCH_TO_DEPLOY_SKILLS_SERVICE
-        echo "Building from skill-service from ${switchToBranch}"
-    else
-        echo "Found matching branch for skill-service => [${switchToBranch}]"
-    fi
+    switchToBranch=matchingBranch
+    echo "Found matching branch [${switchToBranch}]"
 fi
 
 if [[ -z "$switchToBranch" ]]
