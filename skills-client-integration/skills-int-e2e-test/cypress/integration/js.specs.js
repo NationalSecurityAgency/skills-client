@@ -37,7 +37,7 @@ Cypress.Commands.add('visitHomePage', () => {
 });
 
 context("Native JS Tests", () => {
-  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
+  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.1')) {
     it("global event show correct results", () => {
       cy.createDefaultProject();
 
@@ -55,7 +55,7 @@ context("Native JS Tests", () => {
       cy.get('pre[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
     });
   }
-  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
+  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.1')) {
     it("global event show correct results (skills reported directly to backend endpoint)", () => {
       cy.createDefaultProject();
 
@@ -69,7 +69,7 @@ context("Native JS Tests", () => {
     });
   }
 
-  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
+  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.1')) {
     it('global event does not update when skill reported for a different project', () => {
       cy.createDefaultProject()
       cy.createDefaultTinyProject('proj2')
@@ -80,7 +80,7 @@ context("Native JS Tests", () => {
       cy.get('pre[data-cy=globalEventResult]').should('be.empty');
     })
   }
-  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
+  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.1')) {
     it('global event is not reported when skill is not applied (skill reported directly to backend endpoint)', () => {
       cy.createDefaultProject()
       cy.reportSkillForUser('IronMan', 'user1')
@@ -91,7 +91,7 @@ context("Native JS Tests", () => {
       cy.get('[data-cy=globalEventResult]').should('be.empty');
     })
   }
-  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
+  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.1')) {
     it('global event is not reported when skill is not applied', () => {
       cy.createDefaultProject()
       cy.reportSkillForUser('IronMan', 'user1')
@@ -107,7 +107,7 @@ context("Native JS Tests", () => {
     })
   }
 
-  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.0')) {
+  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.1')) {
     it('global event is reported even when skill is not applied when notifyIfSkillNotApplied=true ', () => {
       cy.createDefaultProject()
       cy.reportSkillForUser('IronMan', 'user1')

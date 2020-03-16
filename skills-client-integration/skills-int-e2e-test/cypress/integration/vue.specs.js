@@ -39,46 +39,48 @@ Cypress.Commands.add('visitHomePage', () => {
 
 context('Vue Tests', () => {
 
-    it('level component should be reactive', () => {
-        cy.createDefaultProject()
-        const sendEventViaDropdownId = '#PureJSReportAnySkill';
-        Cypress.Commands.add("clickSubmit", () => {
-            cy.get(`${sendEventViaDropdownId} .btn`).click()
-        })
-        Cypress.Commands.add("selectSkill", (skill) => {
-            cy.get(`${sendEventViaDropdownId} .multiselect`).type(`${skill}{enter}`)
-        })
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
+      it('level component should be reactive', () => {
+          cy.createDefaultProject()
+          const sendEventViaDropdownId = '#PureJSReportAnySkill';
+          Cypress.Commands.add("clickSubmit", () => {
+              cy.get(`${sendEventViaDropdownId} .btn`).click()
+          })
+          Cypress.Commands.add("selectSkill", (skill) => {
+              cy.get(`${sendEventViaDropdownId} .multiselect`).type(`${skill}{enter}`)
+          })
 
-        cy.visitHomePage();
+          cy.visitHomePage();
 
-        cy.contains('Level 0')
+          cy.contains('Level 0')
 
-        cy.selectSkill('IronMan')
-        cy.clickSubmit()
-        cy.contains('Level 1')
+          cy.selectSkill('IronMan')
+          cy.clickSubmit()
+          cy.contains('Level 1')
 
-        cy.selectSkill('Thor')
-        cy.clickSubmit()
-        cy.contains('Level 2')
+          cy.selectSkill('Thor')
+          cy.clickSubmit()
+          cy.contains('Level 2')
 
-        cy.selectSkill('subj1_skill0')
-        cy.clickSubmit()
-        cy.contains('Level 3')
+          cy.selectSkill('subj1_skill0')
+          cy.clickSubmit()
+          cy.contains('Level 3')
 
-        cy.selectSkill('subj1_skill1')
-        cy.clickSubmit()
-        cy.contains('Level 3')
+          cy.selectSkill('subj1_skill1')
+          cy.clickSubmit()
+          cy.contains('Level 3')
 
-        cy.selectSkill('subj2_skill0')
-        cy.clickSubmit()
-        cy.contains('Level 4')
+          cy.selectSkill('subj2_skill0')
+          cy.clickSubmit()
+          cy.contains('Level 4')
 
-        cy.selectSkill('subj2_skill1')
-        cy.clickSubmit()
-        cy.contains('Level 5')
-    })
+          cy.selectSkill('subj2_skill1')
+          cy.clickSubmit()
+          cy.contains('Level 5')
+      })
+    }
 
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
         it('level component should be reactive (skills reported directly to backend endpoint)', () => {
             cy.createDefaultProject()
             cy.visitHomePage();
@@ -105,7 +107,7 @@ context('Vue Tests', () => {
         })
     }
 
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
         it('global event show correct results', () => {
             cy.createDefaultProject()
             cy.visitHomePage();
@@ -121,7 +123,7 @@ context('Vue Tests', () => {
             cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
         })
     }
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
         it('global event does not update when skill reported for a different project', () => {
             cy.createDefaultProject()
             cy.createDefaultTinyProject('proj2')
@@ -135,7 +137,7 @@ context('Vue Tests', () => {
             cy.get('[data-cy=globalEventResult]').should('be.empty');
         })
     }
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
         it('global event is not reported when skill is not applied', () => {
             cy.createDefaultProject()
             cy.reportSkillForUser('IronMan', 'user1')
@@ -150,7 +152,7 @@ context('Vue Tests', () => {
             cy.get('[data-cy=globalEventResult]').should('be.empty');
         })
     }
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
         it('level component should not update when admin reports skill for other user', () => {
 
             cy.createDefaultProject()
