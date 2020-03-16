@@ -11,11 +11,11 @@ build:
     - ./skills-client-integration/ci/setupNode.sh
     - ./skills-client-integration/ci/setupRepos.sh
   script:
+    - ./skills-client-integration/ci/getSkillsService.sh
     - ./skills-client-integration/ci/setupNpmLinks.sh
     - cd ./skills-client-integration
     - mvn --batch-mode clean install
     - cd ../
-    - ./skills-client-integration/ci/getSkillsService.sh
   artifacts:
     paths:
       - ./skills-client-integration/skills-int-service/target/*.jar
