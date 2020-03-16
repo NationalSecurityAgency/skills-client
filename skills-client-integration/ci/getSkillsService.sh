@@ -34,9 +34,8 @@ then
     echo "$myGitBranch ends with .X, assuming it belongs with skill platform CI"
     switchToBranch=$BRANCH_TO_DEPLOY_SKILLS_SERVICE
     echo "Building from skill-service from ${switchToBranch}"
-elif [[ "$myGitBranch" != "master" ]]
-then
-    switchToBranch=`git branch -a | grep ${myGitBranch}`
+else
+    switchToBranch=`git branch -a | grep "* ${myGitBranch}" | gawk '{print $2}'`
     if [ -z "$switchToBranch" ]
     then
         switchToBranch=$BRANCH_TO_DEPLOY_SKILLS_SERVICE
@@ -44,9 +43,6 @@ then
     else
         echo "Found matching branch for skill-service => [${switchToBranch}]"
     fi
-else
-    switchToBranch=$BRANCH_TO_DEPLOY_SKILLS_SERVICE
-    echo "Building from skill-service from ${switchToBranch}"
 fi
 
 if [[ -z "$switchToBranch" ]]
