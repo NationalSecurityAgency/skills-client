@@ -23,8 +23,7 @@ import skills.TitlePrinter
 class BackwardCompatHelper {
 
     List<TestDeps> load(){
-        File confJson = new File("./e2e-tests/conf/Backend-backwards-compat-veresions.json")
-        //new File(workDir, "${projectOps.examplesProj}/e2e-tests/conf/Backend-backwards-compat-veresions.json")
+        File confJson = new File(getClass().getResource('/skills-service-backwards-compat-lib-versions.json').toURI())
         def versionConf = new JsonSlurper().parse(confJson)
         List<TestDeps> buildWithDeps = versionConf.collect { libItem ->
             String libName = libItem.key

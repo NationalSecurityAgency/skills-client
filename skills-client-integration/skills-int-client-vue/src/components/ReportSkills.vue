@@ -17,7 +17,7 @@ limitations under the License.
     <div class="container">
         <h2>Report Skills Examples</h2>
         <div class="text-primary">Global Event Result:</div>
-        <div id="globalEventResult" class="border rounded p-3 bg-light">
+        <div id="globalEventResultDiv" class="border rounded p-3 bg-light">
             <pre data-cy="globalEventResult">{{ globalEventResult }}</pre>
         </div>
         <code-example

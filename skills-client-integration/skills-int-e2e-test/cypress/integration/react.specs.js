@@ -15,17 +15,35 @@
  */
 import Utils from "./Utils";
 
-const wsTimeout = 2000;
 const iFrameTimeout = 3000;
+let skillsWebsocketConnected
+
+Cypress.Commands.add('visitHomePage', () => {
+  skillsWebsocketConnected = null;
+  cy.visit('/react/index.html#/', {
+    onBeforeLoad(win) {
+      skillsWebsocketConnected = cy.spy().as('skillsWebsocketConnected')
+      const postMessage = win.postMessage.bind(win)
+      win.postMessage = (what, target) => {
+        if (Cypress._.isPlainObject(what) && what.skillsWebsocketConnected) {
+          skillsWebsocketConnected(what)
+        }
+        return postMessage(what, target)
+      }
+      cy.spy(win, 'postMessage').as('postMessage')
+    }
+  });
+  // wait for web socket to connect
+  cy.get('@skillsWebsocketConnected').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
+});
 
 context('React Tests', () => {
-    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.0')) {
+    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
         it('level component should be reactive (skills reported directly to backend endpoint)', () => {
             cy.createDefaultProject()
-            cy.visit('/react/index.html#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'user1')
             cy.contains('Level 1')
@@ -47,13 +65,12 @@ context('React Tests', () => {
         })
     }
 
-    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.0')) {
+    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
         it('global event show correct results', () => {
             cy.createDefaultProject()
-            cy.visit('/react/index.html#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'user1')
             cy.contains('Level 1')
@@ -65,53 +82,54 @@ context('React Tests', () => {
         })
     }
 
-    it('level component should be reactive', () => {
-        cy.createDefaultProject()
-        const sendEventViaDropdownId = '#exampleDirectiveClickEvent';
-        Cypress.Commands.add("clickSubmit", () => {
-            cy.get(`${sendEventViaDropdownId} .btn`).click()
-        })
-        Cypress.Commands.add("selectSkill", (skill) => {
-            cy.get(`${sendEventViaDropdownId} select`).select(`${skill}`)
-        })
+    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
+      it('level component should be reactive', () => {
+          cy.createDefaultProject()
+          const sendEventViaDropdownId = '#exampleDirectiveClickEvent';
+          Cypress.Commands.add("clickSubmit", () => {
+              cy.get(`${sendEventViaDropdownId} .btn`).click()
+          })
+          Cypress.Commands.add("selectSkill", (skill) => {
+              cy.get(`${sendEventViaDropdownId} select`).select(`${skill}`)
+          })
 
-        cy.visit('/react/index.html#/')
+          cy.visitHomePage();
 
-        cy.contains('Level 0')
+          cy.contains('Level 0')
 
-        cy.selectSkill('IronMan')
-        cy.clickSubmit()
-        cy.contains('Level 1')
+          cy.selectSkill('IronMan')
+          cy.clickSubmit()
+          cy.contains('Level 1')
 
-        cy.selectSkill('Thor')
-        cy.clickSubmit()
-        cy.contains('Level 2')
+          cy.selectSkill('Thor')
+          cy.clickSubmit()
+          cy.contains('Level 2')
 
-        cy.selectSkill('subj1_skill0')
-        cy.clickSubmit()
-        cy.contains('Level 3')
+          cy.selectSkill('subj1_skill0')
+          cy.clickSubmit()
+          cy.contains('Level 3')
 
-        cy.selectSkill('subj1_skill1')
-        cy.clickSubmit()
-        cy.contains('Level 3')
+          cy.selectSkill('subj1_skill1')
+          cy.clickSubmit()
+          cy.contains('Level 3')
 
-        cy.selectSkill('subj2_skill0')
-        cy.clickSubmit()
-        cy.contains('Level 4')
+          cy.selectSkill('subj2_skill0')
+          cy.clickSubmit()
+          cy.contains('Level 4')
 
-        cy.selectSkill('subj2_skill1')
-        cy.clickSubmit()
-        cy.contains('Level 5')
-    })
+          cy.selectSkill('subj2_skill1')
+          cy.clickSubmit()
+          cy.contains('Level 5')
+      })
+    }
 
-    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.0')) {
+    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
         it('global event does not update when skill reported for a different project', () => {
             cy.createDefaultProject()
             cy.createDefaultTinyProject('proj2')
-            cy.visit('/react/index.html#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'user1', 'proj2')
 
@@ -120,13 +138,12 @@ context('React Tests', () => {
         })
     }
 
-    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.0')) {
+    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
         it('level component should not update when admin reports skill for other user', () => {
             cy.createDefaultProject()
-            cy.visit('/react/index.html#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'unknown@skills.org')
             cy.contains('Level 0')
@@ -255,4 +272,23 @@ context('React Tests', () => {
 
     });
 
+    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
+      it('skillsClientVersion is reported correctly', () => {
+          cy.createDefaultProject()
+          cy.visit('/react/index.html#/')
+        
+          cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
+          
+          cy.wait('@reportClientVersion')
+          cy.get('@reportClientVersion').then((xhr) => {
+              expect(xhr.status).to.eq(200)
+              expect(xhr.responseBody).to.have.property('success').to.eq(true)
+          });
+          cy.get('@reportClientVersion').should((xhr) => {
+            expect(xhr.request.body, 'request body').
+              to.have.property('skillsClientVersion').
+              and.to.contain('@skills/skills-client-react-')
+          });
+      })
+    }
 })

@@ -7,7 +7,7 @@
     <parent>
         <groupId>skills</groupId>
         <artifactId>skills-client-integration</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>skills-int-client-vue</artifactId>
 
@@ -32,7 +32,7 @@
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v13.6.0</nodeVersion>
+                            <nodeVersion>${node.version}</nodeVersion>
                         </configuration>
                     </execution>
                     <execution>

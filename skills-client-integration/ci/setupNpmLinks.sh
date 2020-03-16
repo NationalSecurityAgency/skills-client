@@ -12,10 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #!/usr/bin/env bash
+# exit if a command returns non-zero exit code
+set -e
+set -o pipefail
 
 echo "------- START: Setup npm links -------"
 cd skills-client-integration/skills-int-e2e-test
 mvn --batch-mode clean package
+ls -la target/skills-int-e2e-test-*.jar
+du -sh target/*
+java --version
 java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.PropertiesLauncher
 cd ../../
 echo "------- DONE: Setup npm links -------"

@@ -15,57 +15,77 @@
  */
 import Utils from "./Utils";
 
-const wsTimeout = 2000;
 const iFrameTimeout = 3000;
+let skillsWebsocketConnected
+
+Cypress.Commands.add('visitHomePage', () => {
+  skillsWebsocketConnected = null;
+  cy.visit('/vuejs#/', {
+    onBeforeLoad(win) {
+      skillsWebsocketConnected = cy.spy().as('skillsWebsocketConnected')
+      const postMessage = win.postMessage.bind(win)
+      win.postMessage = (what, target) => {
+        if (Cypress._.isPlainObject(what) && what.skillsWebsocketConnected) {
+          skillsWebsocketConnected(what)
+        }
+        return postMessage(what, target)
+      }
+      cy.spy(win, 'postMessage').as('postMessage')
+    }
+  });
+  // wait for web socket to connect
+  cy.get('@skillsWebsocketConnected').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
+});
 
 context('Vue Tests', () => {
 
-    it('level component should be reactive', () => {
-        cy.createDefaultProject()
-        const sendEventViaDropdownId = '#PureJSReportAnySkill';
-        Cypress.Commands.add("clickSubmit", () => {
-            cy.get(`${sendEventViaDropdownId} .btn`).click()
-        })
-        Cypress.Commands.add("selectSkill", (skill) => {
-            cy.get(`${sendEventViaDropdownId} .multiselect`).type(`${skill}{enter}`)
-        })
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
+      it('level component should be reactive', () => {
+          cy.createDefaultProject()
+          const sendEventViaDropdownId = '#PureJSReportAnySkill';
+          Cypress.Commands.add("clickSubmit", () => {
+              cy.get(`${sendEventViaDropdownId} .btn`).click()
+          })
+          Cypress.Commands.add("selectSkill", (skill) => {
+              cy.get(`${sendEventViaDropdownId} .multiselect`).type(`${skill}{enter}`)
+          })
 
-        cy.visit('/vuejs#/')
+          cy.visitHomePage();
 
-        cy.contains('Level 0')
+          cy.contains('Level 0')
 
-        cy.selectSkill('IronMan')
-        cy.clickSubmit()
-        cy.contains('Level 1')
+          cy.selectSkill('IronMan')
+          cy.clickSubmit()
+          cy.contains('Level 1')
 
-        cy.selectSkill('Thor')
-        cy.clickSubmit()
-        cy.contains('Level 2')
+          cy.selectSkill('Thor')
+          cy.clickSubmit()
+          cy.contains('Level 2')
 
-        cy.selectSkill('subj1_skill0')
-        cy.clickSubmit()
-        cy.contains('Level 3')
+          cy.selectSkill('subj1_skill0')
+          cy.clickSubmit()
+          cy.contains('Level 3')
 
-        cy.selectSkill('subj1_skill1')
-        cy.clickSubmit()
-        cy.contains('Level 3')
+          cy.selectSkill('subj1_skill1')
+          cy.clickSubmit()
+          cy.contains('Level 3')
 
-        cy.selectSkill('subj2_skill0')
-        cy.clickSubmit()
-        cy.contains('Level 4')
+          cy.selectSkill('subj2_skill0')
+          cy.clickSubmit()
+          cy.contains('Level 4')
 
-        cy.selectSkill('subj2_skill1')
-        cy.clickSubmit()
-        cy.contains('Level 5')
-    })
+          cy.selectSkill('subj2_skill1')
+          cy.clickSubmit()
+          cy.contains('Level 5')
+      })
+    }
 
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
         it('level component should be reactive (skills reported directly to backend endpoint)', () => {
             cy.createDefaultProject()
-            cy.visit('/vuejs#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'user1')
             cy.contains('Level 1')
@@ -87,13 +107,12 @@ context('Vue Tests', () => {
         })
     }
 
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
         it('global event show correct results', () => {
             cy.createDefaultProject()
-            cy.visit('/vuejs#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'user1')
 
@@ -104,14 +123,13 @@ context('Vue Tests', () => {
             cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
         })
     }
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
         it('global event does not update when skill reported for a different project', () => {
             cy.createDefaultProject()
             cy.createDefaultTinyProject('proj2')
-            cy.visit('/vuejs#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'user1', 'proj2')
 
@@ -119,15 +137,14 @@ context('Vue Tests', () => {
             cy.get('[data-cy=globalEventResult]').should('be.empty');
         })
     }
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
         it('global event is not reported when skill is not applied', () => {
             cy.createDefaultProject()
             cy.reportSkillForUser('IronMan', 'user1')
 
-            cy.visit('/vuejs#/')
+            cy.visitHomePage();
 
             cy.contains('Level 1')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'user1')
             cy.contains('Level 1')
@@ -135,17 +152,16 @@ context('Vue Tests', () => {
             cy.get('[data-cy=globalEventResult]').should('be.empty');
         })
     }
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.0')) {
+    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
         it('level component should not update when admin reports skill for other user', () => {
 
             cy.createDefaultProject()
             Cypress.Commands.add("reportSkill", (skillId) => {
                 cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
             })
-            cy.visit('/vuejs#/')
+            cy.visitHomePage();
 
             cy.contains('Level 0')
-            cy.wait(wsTimeout)  // allow for the ui web-socket handshake to complete
 
             cy.reportSkillForUser('IronMan', 'unknown@skills.org')
             cy.contains('Level 0')
@@ -178,7 +194,7 @@ context('Vue Tests', () => {
         cy.createDefaultProject(1, 2, 50, 2)
         cy.server().route('POST', '/api/projects/proj1/skills/Thor').as('postSkill')
 
-        cy.visit('/vuejs#/')
+        cy.visitHomePage();
 
         Cypress.Commands.add("typeToInput", (skillApplied = true) => {
             cy.get('#SkillsDirectiveInputEvent input').type('h')
@@ -198,7 +214,7 @@ context('Vue Tests', () => {
         cy.createDefaultTinyProject()
         cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
 
-        cy.visit('/vuejs#/')
+        cy.visitHomePage();
 
         cy.get('#SkillsDirectiveErrorwithButton button').click()
         cy.wait('@postSkill');
@@ -212,7 +228,7 @@ context('Vue Tests', () => {
         cy.createDefaultTinyProject()
         cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
 
-        cy.visit('/vuejs#/')
+        cy.visitHomePage();
 
         cy.get('#SkillsDirectiveErrorwithInput input').type('h')
         cy.wait('@postSkill');
@@ -344,4 +360,24 @@ context('Vue Tests', () => {
             cy.wrap(body).contains('Earn up to 100 points')
         })
     });
+
+    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
+      it('skillsClientVersion is reported correctly', () => {
+          cy.createDefaultProject()
+          cy.visit('/vuejs#/')
+        
+          cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
+          
+          cy.wait('@reportClientVersion')
+          cy.get('@reportClientVersion').then((xhr) => {
+              expect(xhr.status).to.eq(200)
+              expect(xhr.responseBody).to.have.property('success').to.eq(true)
+          });
+          cy.get('@reportClientVersion').should((xhr) => {
+            expect(xhr.request.body, 'request body').
+              to.have.property('skillsClientVersion').
+              and.to.contain('@skills/skills-client-vue-')
+          });
+      })
+    }
 })

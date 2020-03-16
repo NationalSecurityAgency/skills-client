@@ -71,6 +71,12 @@ class NpmProj {
         slurper.parse(new File(loc, "package.json"))
     }
 
+    List<String> getSkillsDependenciesFromPackageJson() {
+        return packageJson.dependencies.findAll {
+            it.key.toString().startsWith("@skills")
+        }.collect { it.key }
+    }
+
     String getVersion() {
         return packageJson.version
     }
@@ -79,15 +85,4 @@ class NpmProj {
         return packageJson.dependencies."$dep"
     }
 
-    void gitPullRebase(boolean dryRun = false) {
-        new ProcessRunner(loc: loc, dryRun: dryRun).run("git pull --rebase")
-    }
-
-    boolean hasUnreleasedChanges() {
-        ProcessRunner.ProcessRes processRes = new ProcessRunner(loc: loc, printOutput: false).run("git diff ${version}".toString())
-        if (processRes.sout) {
-            return true
-        }
-        return false
-    }
 }

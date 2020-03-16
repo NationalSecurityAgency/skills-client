@@ -14,30 +14,33 @@
 #!/usr/bin/env bash
 
 echo "------- START: Download Latest Backend Jar -------"
+# exit if a command returns non-zero exit code
+set -e
+set -o pipefail
 
 apt-get install -y gawk
 
 # on CI server this will be a detached repo and won't have branch info, so the current commit must be matched against server
-myGitBranch=` git ls-remote --heads origin | grep $(git rev-parse HEAD) | gawk -F'/' '{print $3}'`
+myGitBranch=`git ls-remote --heads origin | grep $(git rev-parse HEAD) | gawk -F'refs/heads/' '{print $2}'`
 echo "My Git Branch: [${myGitBranch}]"
 
-majorVersion=''
-if [ "${myGitBranch}" != "master" ]
-then
-    majorVersion=`echo ${myGitBranch} | gawk -F "." '{print $1"."$2}'`
-fi
-echo "Version to look for is [${majorVersion}], if blank then latest version will be used!"
-latestSnapVersion=`curl -s http://$NEXUS_SERVER/repository/maven-snapshots/skills/backend/maven-metadata.xml | grep "<version>${majorVersion}" | gawk -F "version>" '{print $2}' | gawk -F "<" '{print $1}' | sort | tac  | head -n 1`
-echo "Latest snapshot version: [${latestSnapVersion}]"
-
-if [ -z "$latestSnapVersion" ]
-then
-      echo "Failed to locate SNAPSHOT version that start with ${majorVersion}"
-      exit -1
-fi
-
-mkdir -p ./skills-service/
+echo "Checkout skill-service code and build it."
+git clone https://${DEPLOY_TOKEN_SKILLS_SERVICE}:${DEPLOY_TOKEN_SKILLS_SERVICE_PASS}@gitlab.evoforge.org/skills/skills-service.git
 cd ./skills-service/
-mvn --batch-mode dependency:get -Dartifact=skills:backend:${latestSnapVersion}:jar -Dtransitive=false -Ddest=backend-toTest.jar
+switchToBranch=`git branch -a | grep ${myGitBranch}`
+if [ -z "$switchToBranch" ]
+then
+    echo "Building from skill-service master branch"
+else
+    echo "Building from skill-service [${switchToBranch}] branch"
+fi
+echo "Checking out ${switchToBranch}"
+git checkout ${switchToBranch} --
+echo "git status:"
+git status
+mvn --batch-mode package -DskipTests
+jar=$(ls ./backend/target/*.jar)
+mv $jar ./
+
 cd ../
 echo "------- DONE: Download Latest Backend Jar -------"
