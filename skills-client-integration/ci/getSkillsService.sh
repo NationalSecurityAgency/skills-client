@@ -21,6 +21,7 @@ set -e
 apt-get install -y gawk
 
 # on CI server this will be a detached repo and won't have branch info, so the current commit must be matched against server
+git branch -a
 myGitBranch=`git ls-remote --heads origin | grep $(git rev-parse HEAD) | gawk -F'refs/heads/' '{print $2}'`
 echo "My Git Branch: [${myGitBranch}]"
 
