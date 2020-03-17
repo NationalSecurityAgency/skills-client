@@ -34,7 +34,7 @@ matchingBranch=`git branch -a | grep "remotes/origin/${myGitBranch}" | gawk -F'r
 echo "Matching branch to consider [${matchingBranch}]"
 if [[ "$myGitBranch" == *\.X ]] || [[ "$myGitBranch" == "master" ]] || [[ -z "$matchingBranch" ]]
 then
-    echo "Building from skill-service from configured [${switchToBranch}] branch"
+    echo "Building skill-service from configured [${switchToBranch}] branch"
 else
     switchToBranch=$matchingBranch
     echo "Found matching branch [${switchToBranch}]"
