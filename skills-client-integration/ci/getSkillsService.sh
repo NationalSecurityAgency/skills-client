@@ -13,7 +13,7 @@
 # limitations under the License.
 #!/usr/bin/env bash
 
-echo "------- START: Download Latest Backend Jar -------"
+echo "------- START: Build skills-service jar -------"
 # exit if a command returns non-zero exit code
 set -e
 #set -o pipefail
@@ -56,4 +56,4 @@ jar=$(ls ./backend/target/*.jar)
 mv $jar ./
 
 cd ../
-echo "------- DONE: Download Latest Backend Jar -------"
+echo "------- DONE: Build skills-service jar -------"
