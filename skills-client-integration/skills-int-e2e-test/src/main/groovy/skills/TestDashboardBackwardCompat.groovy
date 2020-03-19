@@ -129,7 +129,7 @@ class TestDashboardBackwardCompat {
             }
             new ProcessRunner(loc: workDir).run("git clone git@gitlab.evoforge.org:skills/skills-client-examples.git")
             File examplesProj = new File(workDir, "skills-client-examples")
-            new ProcessRunner(loc: examplesProj).run("git checkout 1.1.0")
+            new ProcessRunner(loc: examplesProj).run("git checkout 1.1.3")
             oldAPI.each { DepsRun depsRun ->
                 assert depsRun.isOldApi
                 List<Deps> thisRun = depsRun.deps
