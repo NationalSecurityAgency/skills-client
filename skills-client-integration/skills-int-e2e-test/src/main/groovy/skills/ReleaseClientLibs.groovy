@@ -19,7 +19,6 @@ import com.vdurmont.semver4j.Semver
 import groovy.json.JsonOutput
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang3.StringUtils
-import skills.backwardsCompat.Dep
 
 @Slf4j
 class ReleaseClientLibs {
@@ -33,12 +32,13 @@ class ReleaseClientLibs {
         Boolean notDryRun = args.find({ it.equalsIgnoreCase("-notDryRun") })
 
         String patchBranch = "master"
-        if (releaseType == ReleaseType.patch){
-            String param = "-patchBranch="
-            String patchBranchParam = args.find({ it.startsWith(param) })
-            assert patchBranchParam, "Must provide ${param} param when using -releaseType=patch"
-            patchBranch = patchBranchParam.split(param)[1]
-        }
+        // not doing branching in this script, for now?
+//        if (releaseType == ReleaseType.patch){
+//            String param = "-patchBranch="
+//            String patchBranchParam = args.find({ it.startsWith(param) })
+//            assert patchBranchParam, "Must provide ${param} param when using -releaseType=patch"
+//            patchBranch = patchBranchParam.split(param)[1]
+//        }
 
 
         new ReleaseClientLibs(releaseType: releaseType, dryRun: !notDryRun, baseBranch: patchBranch).release()

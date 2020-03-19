@@ -27,12 +27,11 @@
     "release": "release-it --dry-run"
   },
   "devDependencies": {
-    "cypress": "^4.0.1",
+    "cypress": "4.1.0",
     "license-check-and-add": "3.0.4",
     "license-checker": "25.0.1",
-    "release-it": "^12.4.3",
     "semver": "7.1.2",
-    "wait-on": "3.3.0",
+    "wait-on": "4.0.1",
     "wait-port": "0.2.7"
   },
   "dependencies": {}
