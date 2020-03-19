@@ -99,6 +99,7 @@ class ProjectsOps {
 
     private void killServerProcesses() {
         new ProcessUtils().killProcessIfContainsStr(":serverConfigs/integration_application.properties")
+        new ProcessUtils().killProcessIfContainsStr(":serverConfigs/backend_application.properties")
         new ProcessUtils().killProcessIfContainsStr(":serverConfigs/examples_application.properties")
     }
 
