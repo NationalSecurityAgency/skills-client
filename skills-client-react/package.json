@@ -40,6 +40,7 @@
     "@rollup/plugin-commonjs": "11.0.2",
     "@rollup/plugin-node-resolve": "7.1.1",
     "@rollup/plugin-replace": "2.3.1",
+    "eslint-config-airbnb-base": "14.0.0",
     "license-check-and-add": "3.0.4",
     "license-checker": "25.0.1",
     "react": "16.11.0",
