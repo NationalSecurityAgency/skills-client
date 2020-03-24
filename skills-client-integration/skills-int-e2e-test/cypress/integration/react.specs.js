@@ -16,32 +16,13 @@
 import Utils from "./Utils";
 
 const iFrameTimeout = 3000;
-let skillsWebsocketConnected
-
-Cypress.Commands.add('visitHomePage', () => {
-  skillsWebsocketConnected = null;
-  cy.visit('/react/index.html#/', {
-    onBeforeLoad(win) {
-      skillsWebsocketConnected = cy.spy().as('skillsWebsocketConnected')
-      const postMessage = win.postMessage.bind(win)
-      win.postMessage = (what, target) => {
-        if (Cypress._.isPlainObject(what) && what.skillsWebsocketConnected) {
-          skillsWebsocketConnected(what)
-        }
-        return postMessage(what, target)
-      }
-      cy.spy(win, 'postMessage').as('postMessage')
-    }
-  });
-  // wait for web socket to connect
-  cy.get('@skillsWebsocketConnected').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
-});
+const homePage = '/react/index.html#/'
 
 context('React Tests', () => {
     if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
         it('level component should be reactive (skills reported directly to backend endpoint)', () => {
             cy.createDefaultProject()
-            cy.visitHomePage();
+            cy.visitHomePage(homePage);
 
             cy.contains('Level 0')
 
@@ -68,7 +49,7 @@ context('React Tests', () => {
     if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
         it('global event show correct results', () => {
             cy.createDefaultProject()
-            cy.visitHomePage();
+            cy.visitHomePage(homePage);
 
             cy.contains('Level 0')
 
@@ -93,7 +74,7 @@ context('React Tests', () => {
               cy.get(`${sendEventViaDropdownId} select`).select(`${skill}`)
           })
 
-          cy.visitHomePage();
+          cy.visitHomePage(homePage);
 
           cy.contains('Level 0')
 
@@ -127,7 +108,7 @@ context('React Tests', () => {
         it('global event does not update when skill reported for a different project', () => {
             cy.createDefaultProject()
             cy.createDefaultTinyProject('proj2')
-            cy.visitHomePage();
+            cy.visitHomePage(homePage);
 
             cy.contains('Level 0')
 
@@ -141,7 +122,7 @@ context('React Tests', () => {
     if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
         it('level component should not update when admin reports skill for other user', () => {
             cy.createDefaultProject()
-            cy.visitHomePage();
+            cy.visitHomePage(homePage);
 
             cy.contains('Level 0')
 

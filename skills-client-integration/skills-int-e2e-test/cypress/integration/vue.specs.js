@@ -16,26 +16,7 @@
 import Utils from "./Utils";
 
 const iFrameTimeout = 3000;
-let skillsWebsocketConnected
-
-Cypress.Commands.add('visitHomePage', () => {
-  skillsWebsocketConnected = null;
-  cy.visit('/vuejs#/', {
-    onBeforeLoad(win) {
-      skillsWebsocketConnected = cy.spy().as('skillsWebsocketConnected')
-      const postMessage = win.postMessage.bind(win)
-      win.postMessage = (what, target) => {
-        if (Cypress._.isPlainObject(what) && what.skillsWebsocketConnected) {
-          skillsWebsocketConnected(what)
-        }
-        return postMessage(what, target)
-      }
-      cy.spy(win, 'postMessage').as('postMessage')
-    }
-  });
-  // wait for web socket to connect
-  cy.get('@skillsWebsocketConnected').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
-});
+const homePage = '/vuejs#/'
 
 context('Vue Tests', () => {
 
@@ -50,7 +31,7 @@ context('Vue Tests', () => {
               cy.get(`${sendEventViaDropdownId} .multiselect`).type(`${skill}{enter}`)
           })
 
-          cy.visitHomePage();
+          cy.visitHomePage(homePage);
 
           cy.contains('Level 0')
 
@@ -83,7 +64,7 @@ context('Vue Tests', () => {
     if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
         it('level component should be reactive (skills reported directly to backend endpoint)', () => {
             cy.createDefaultProject()
-            cy.visitHomePage();
+            cy.visitHomePage(homePage);
 
             cy.contains('Level 0')
 
@@ -110,7 +91,7 @@ context('Vue Tests', () => {
     if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
         it('global event show correct results', () => {
             cy.createDefaultProject()
-            cy.visitHomePage();
+            cy.visitHomePage(homePage);
 
             cy.contains('Level 0')
 
@@ -127,7 +108,7 @@ context('Vue Tests', () => {
         it('global event does not update when skill reported for a different project', () => {
             cy.createDefaultProject()
             cy.createDefaultTinyProject('proj2')
-            cy.visitHomePage();
+            cy.visitHomePage(homePage);
 
             cy.contains('Level 0')
 
@@ -142,7 +123,7 @@ context('Vue Tests', () => {
             cy.createDefaultProject()
             cy.reportSkillForUser('IronMan', 'user1')
 
-            cy.visitHomePage();
+            cy.visitHomePage(homePage);
 
             cy.contains('Level 1')
 
@@ -159,7 +140,7 @@ context('Vue Tests', () => {
             Cypress.Commands.add("reportSkill", (skillId) => {
                 cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
             })
-            cy.visitHomePage();
+            cy.visitHomePage(homePage);
 
             cy.contains('Level 0')
 
@@ -194,7 +175,7 @@ context('Vue Tests', () => {
         cy.createDefaultProject(1, 2, 50, 2)
         cy.server().route('POST', '/api/projects/proj1/skills/Thor').as('postSkill')
 
-        cy.visitHomePage();
+        cy.visitHomePage(homePage);
 
         Cypress.Commands.add("typeToInput", (skillApplied = true) => {
             cy.get('#SkillsDirectiveInputEvent input').type('h')
@@ -214,7 +195,7 @@ context('Vue Tests', () => {
         cy.createDefaultTinyProject()
         cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
 
-        cy.visitHomePage();
+        cy.visitHomePage(homePage);
 
         cy.get('#SkillsDirectiveErrorwithButton button').click()
         cy.wait('@postSkill');
@@ -228,7 +209,7 @@ context('Vue Tests', () => {
         cy.createDefaultTinyProject()
         cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
 
-        cy.visitHomePage();
+        cy.visitHomePage(homePage);
 
         cy.get('#SkillsDirectiveErrorwithInput input').type('h')
         cy.wait('@postSkill');

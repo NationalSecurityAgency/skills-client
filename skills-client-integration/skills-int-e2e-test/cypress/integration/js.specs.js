@@ -15,26 +15,7 @@
  */
 import Utils from "./Utils";
 const iFrameTimeout = 3000;
-let skillsWebsocketConnected
-
-Cypress.Commands.add('visitHomePage', () => {
-  skillsWebsocketConnected = null;
-  cy.visit('/native/index.html', {
-    onBeforeLoad(win) {
-      skillsWebsocketConnected = cy.spy().as('skillsWebsocketConnected')
-      const postMessage = win.postMessage.bind(win)
-      win.postMessage = (what, target) => {
-        if (Cypress._.isPlainObject(what) && what.skillsWebsocketConnected) {
-          skillsWebsocketConnected(what)
-        }
-        return postMessage(what, target)
-      }
-      cy.spy(win, 'postMessage').as('postMessage')
-    }
-  });
-  // wait for web socket to connect
-  cy.get('@skillsWebsocketConnected').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
-});
+const homePage = '/native/index.html'
 
 context("Native JS Tests", () => {
   if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.1')) {
@@ -46,7 +27,7 @@ context("Native JS Tests", () => {
         cy.get(`${sendEventViaDropdownId} .btn`).click();
       });
 
-      cy.visitHomePage();
+      cy.visitHomePage(homePage);
       cy.clickSubmit();
 
       cy.get('pre[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
@@ -59,7 +40,7 @@ context("Native JS Tests", () => {
     it("global event show correct results (skills reported directly to backend endpoint)", () => {
       cy.createDefaultProject();
 
-      cy.visitHomePage();
+      cy.visitHomePage(homePage);
       cy.reportSkillForUser("IronMan", "user1");
 
       cy.get('pre[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
@@ -74,7 +55,7 @@ context("Native JS Tests", () => {
       cy.createDefaultProject()
       cy.createDefaultTinyProject('proj2')
 
-      cy.visitHomePage();
+      cy.visitHomePage(homePage);
       cy.reportSkillForUser('IronMan', 'user1', 'proj2')
 
       cy.get('pre[data-cy=globalEventResult]').should('be.empty');
@@ -85,7 +66,7 @@ context("Native JS Tests", () => {
       cy.createDefaultProject()
       cy.reportSkillForUser('IronMan', 'user1')
 
-      cy.visitHomePage();
+      cy.visitHomePage(homePage);
       cy.reportSkillForUser('IronMan', 'user1')
 
       cy.get('[data-cy=globalEventResult]').should('be.empty');
@@ -96,7 +77,7 @@ context("Native JS Tests", () => {
       cy.createDefaultProject()
       cy.reportSkillForUser('IronMan', 'user1')
 
-      cy.visitHomePage();
+      cy.visitHomePage(homePage);
       const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
       Cypress.Commands.add("clickSubmit", () => {
         cy.get(`${sendEventViaDropdownId} .btn`).click();
@@ -117,7 +98,7 @@ context("Native JS Tests", () => {
         cy.get(`${sendEventViaDropdownId} .btn`).click();
       });
 
-      cy.visitHomePage();
+      cy.visitHomePage(homePage);
       cy.get('[type="checkbox"]').check()
       cy.clickSubmit()
 

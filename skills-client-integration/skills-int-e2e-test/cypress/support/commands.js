@@ -143,4 +143,21 @@ Cypress.Commands.add("iframe", (handleIframeBody) => {
     })
 });
 
-
+Cypress.Commands.add('visitHomePage', (homepage) => {
+    let skillsWebsocketConnected = null;
+    cy.visit(homepage, {
+        onBeforeLoad(win) {
+            skillsWebsocketConnected = cy.spy().as('skillsWebsocketConnected')
+            const postMessage = win.postMessage.bind(win)
+            win.postMessage = (what, target) => {
+                if (Cypress._.isPlainObject(what) && what.skillsWebsocketConnected) {
+                    skillsWebsocketConnected(what)
+                }
+                return postMessage(what, target)
+            }
+            cy.spy(win, 'postMessage').as('postMessage')
+        }
+    });
+    // wait for web socket to connect
+    cy.get('@skillsWebsocketConnected').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
+});
