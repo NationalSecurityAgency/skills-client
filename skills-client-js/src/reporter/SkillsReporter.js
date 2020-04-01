@@ -45,7 +45,7 @@ const connectWebsocket = (serviceUrl) => {
       stompClient.subscribe(topic, (update) => {
         callSuccessHandlers(JSON.parse(update.body));
       });
-      window.postMessage({ skillsWebsocketConnected: true });
+      window.postMessage({ skillsWebsocketConnected: true }, window.location.origin);
     });
   }
 };
