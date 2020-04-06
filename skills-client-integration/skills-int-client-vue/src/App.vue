@@ -20,7 +20,13 @@ limitations under the License.
             <navigation/>
 
             <b-container fluid class="mt-3">
-                <router-view/>
+                <div v-if="refreshPage">
+                    <router-view/>
+                </div>
+                <div v-else>
+                    <report-skills v-show="isPage('ReportSkills')"/>
+                    <show-skills v-show="isPage('ShowSkills')"/>
+                </div>
             </b-container>
 
             <skills-footer/>
@@ -31,20 +37,34 @@ limitations under the License.
 </template>
 
 <script>
-    import Navigation from "./components/Navigation";
-    import SkillsFooter from "./components/SkillsFooter";
-    import CustomizableHeader from "./components/CustomizableHeader"
-    import CustomizableFooter from "./components/CustomizableFooter"
+  import Navigation from "./components/Navigation";
+  import SkillsFooter from "./components/SkillsFooter";
+  import CustomizableHeader from "./components/CustomizableHeader"
+  import CustomizableFooter from "./components/CustomizableFooter"
+  import ReportSkills from './components/ReportSkills';
+  import ShowSkills from './components/skillsDisplay/ShowSkills';
 
-    export default {
-        name: 'app',
-        components: {
-            SkillsFooter,
-            Navigation,
-            CustomizableHeader,
-            CustomizableFooter,
-        },
-    }
+  export default {
+    name: 'app',
+    components: {
+      SkillsFooter,
+      Navigation,
+      CustomizableHeader,
+      CustomizableFooter,
+      ReportSkills,
+      ShowSkills,
+    },
+    computed: {
+      refreshPage() {
+        return Boolean(this.$route.query.refreshPage);
+      },
+    },
+    methods: {
+      isPage(component) {
+        return this.$route.name === component;
+      }
+    },
+  }
 </script>
 
 <style>

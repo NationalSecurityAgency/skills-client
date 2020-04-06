@@ -22,8 +22,16 @@ limitations under the License.
 
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
-                    <b-nav-item href="#" to="/">Report Skill Events</b-nav-item>
-                    <b-nav-item href="#" to="/showSkills">User Display</b-nav-item>
+                    <b-nav-item href="#" :to="{ name: 'ReportSkills', query: { refreshPage: this.refreshPage } }" :class="{ active: isPage('ReportSkills') }">Report Skill Events</b-nav-item>
+                    <b-nav-item href="#" :to="{ name: 'ShowSkills', query: { refreshPage: this.refreshPage } }" class="d-inline-block mr-3 border-right pr-2" :class="{ active: isPage('ShowSkills') }">User Display</b-nav-item>
+                    <b-nav-form>
+                        <b-form-checkbox v-model="refreshPage"
+                                         class="nav-label"
+                                         :class="{ active: refreshPage }"
+                                         switch>
+                            Refresh on Load
+                        </b-form-checkbox>
+                    </b-nav-form>
                 </b-navbar-nav>
             </b-collapse>
             <button
@@ -35,24 +43,35 @@ limitations under the License.
 </template>
 
 <script>
-    import { SkillsLevel } from '@skills/skills-client-vue';
+  import {SkillsLevel} from '@skills/skills-client-vue';
 
-    export default {
-        components: {
-            SkillsLevel,
-        },
-        data() {
-            return {
-                token: '',
-                version: 0,
-                projectId: 'movies',
-                serviceUrl: 'http://localhost:8080',
-                authenticationUrl: 'http://localhost:8090/api/users/user1/token',
-            };
-        },
-    }
+  export default {
+    components: {
+      SkillsLevel,
+    },
+    data() {
+      return {
+        token: '',
+        version: 0,
+        projectId: 'movies',
+        serviceUrl: 'http://localhost:8080',
+        authenticationUrl: 'http://localhost:8090/api/users/user1/token',
+        refreshPage: false,
+      };
+    },
+    methods: {
+      isPage(component) {
+        return this.$route.name === component;
+      }
+    },
+  }
 </script>
 
 <style scoped>
-
+    .nav-label {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    .active {
+        color: rgba(255, 255, 255);
+    }
 </style>
