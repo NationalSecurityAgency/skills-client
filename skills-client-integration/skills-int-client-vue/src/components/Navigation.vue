@@ -22,13 +22,14 @@ limitations under the License.
 
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
-                    <b-nav-item href="#" :to="{ name: 'ReportSkills', query: { refreshPage: this.refreshPage } }" :class="{ active: isPage('ReportSkills') }">Report Skill Events</b-nav-item>
-                    <b-nav-item href="#" :to="{ name: 'ShowSkills', query: { refreshPage: this.refreshPage } }" class="d-inline-block mr-3 border-right pr-2" :class="{ active: isPage('ShowSkills') }">User Display</b-nav-item>
+                    <b-nav-item href="#" :to="{ name: 'ReportSkills', query: { refreshPage: this.refreshPage } }" :class="{ active: isPage('ReportSkills') }" data-cy="reportSkillsLink">Report Skill Events</b-nav-item>
+                    <b-nav-item href="#" :to="{ name: 'ShowSkills', query: { refreshPage: this.refreshPage } }" class="d-inline-block mr-3 border-right pr-2" :class="{ active: isPage('ShowSkills') }" data-cy="userDisplayLink">User Display</b-nav-item>
                     <b-nav-form>
                         <b-form-checkbox v-model="refreshPage"
                                          class="nav-label"
                                          :class="{ active: refreshPage }"
-                                         switch>
+                                         switch
+                                         data-cy="refresh">
                             Refresh on Load
                         </b-form-checkbox>
                     </b-nav-form>
@@ -72,6 +73,6 @@ limitations under the License.
         color: rgba(255, 255, 255, 0.5);
     }
     .active {
-        color: rgba(255, 255, 255);
+        color: rgba(255, 255, 255, 1);
     }
 </style>
