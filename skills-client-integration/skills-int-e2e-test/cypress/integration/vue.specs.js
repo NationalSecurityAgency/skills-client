@@ -361,4 +361,40 @@ context('Vue Tests', () => {
           });
       })
     }
+
+    it('back button when when returning from an external page', () => {
+        cy.createDefaultTinyProject()
+        cy.server().route('/api/users/user1/token').as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+
+        // visit client display
+        cy.visit('/vuejs#/showSkills?refreshPage=false')
+        cy.wait('@getToken')
+
+        cy.iframe((body) => {
+          cy.wrap(body).find('[data-cy=back]').should('not.exist');
+          cy.wrap(body).contains('User Skills');
+
+          // navigate to Rank Overview w/ the back button
+          cy.wrap(body).find('[data-cy=myRank]').click();
+          cy.wrap(body).contains('Rank Overview');
+          cy.wrap(body).find('[data-cy=back]').should('exist');
+        });
+
+        // now visit the "Report Skills" (external) page
+        cy.get('[data-cy=reportSkillsLink]').click()
+        cy.contains('Report Skills Examples');
+
+        // go back to the the client display
+        cy.get('[data-cy=userDisplayLink]').click()
+        cy.iframe((body) => {
+          // still on the Rank Overview page
+          cy.wrap(body).contains('Rank Overview');
+
+          // click the back button and verify that we are still in the
+          // client display (main page), and not on the "Report Skills" page
+          cy.wrap(body).find('[data-cy=back]').click()
+          cy.wrap(body).contains('User Skills');
+        });
+    });
 })
