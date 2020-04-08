@@ -57,13 +57,17 @@ limitations under the License.
         projectId: 'movies',
         serviceUrl: 'http://localhost:8080',
         authenticationUrl: 'http://localhost:8090/api/users/user1/token',
-        refreshPage: false,
       };
     },
     methods: {
       isPage(component) {
         return this.$route.name === component;
       }
+    },
+    computed: {
+      refreshPage() {
+        return this.$route.query.refreshPage === "true";
+      },
     },
   }
 </script>

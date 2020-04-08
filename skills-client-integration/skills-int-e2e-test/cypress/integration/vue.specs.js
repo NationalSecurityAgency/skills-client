@@ -368,7 +368,7 @@ context('Vue Tests', () => {
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
 
         // visit client display
-        cy.visit('/vuejs#/showSkills')
+        cy.visit('/vuejs#/showSkills?refreshPage=false')
         cy.wait('@getToken')
 
         cy.iframe((body) => {

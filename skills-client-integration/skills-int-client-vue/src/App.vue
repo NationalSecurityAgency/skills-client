@@ -20,12 +20,12 @@ limitations under the License.
             <navigation/>
 
             <b-container fluid class="mt-3">
-                <div v-if="refreshPage">
-                    <router-view/>
-                </div>
-                <div v-else>
+                <div v-if="cacheComponents">
                     <report-skills v-show="isPage('ReportSkills')"/>
                     <show-skills v-show="isPage('ShowSkills')"/>
+                </div>
+                <div v-else>
+                    <router-view/>
                 </div>
             </b-container>
 
@@ -55,8 +55,8 @@ limitations under the License.
       ShowSkills,
     },
     computed: {
-      refreshPage() {
-        return Boolean(this.$route.query.refreshPage);
+      cacheComponents() {
+        return this.$route.query.refreshPage !== "true";
       },
     },
     methods: {
