@@ -56,7 +56,7 @@ limitations under the License.
     },
     computed: {
       cacheComponents() {
-        return this.$route.query.refreshPage !== "true";
+        return this.$route.query.refreshPage === "false" || this.$route.query.refreshPage === false;
       },
     },
     methods: {
