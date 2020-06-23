@@ -161,3 +161,20 @@ Cypress.Commands.add('visitHomePage', (homepage) => {
     // wait for web socket to connect
     cy.get('@skillsWebsocketConnected').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
 });
+
+Cypress.Commands.add("cdClickSubj", (body, subjIndex, expectedTitle) => {
+    cy.wrap(body).find(`.user-skill-subject-tile:nth-child(${subjIndex+1})`).first().click();
+    if (expectedTitle){
+        cy.wrap(body).contains(expectedTitle);
+    }
+});
+
+Cypress.Commands.add("cdBack", (body, expectedTitle = 'User Skills') => {
+    cy.wrap(body).find('[data-cy=back]').click()
+    cy.wrap(body).find('h2').contains(expectedTitle);
+
+    // back button should not exist on the home page, whose title is the default value
+    if (expectedTitle === 'User Skills'){
+        cy.wrap(body).find('[data-cy=back]').should('not.exist');
+    }
+});
