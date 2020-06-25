@@ -17,14 +17,20 @@
     "cy:open:dev:js": "cypress open --config baseUrl=http://localhost:8092",
     "cy:open:dev:react": "cypress open --config baseUrl=http://localhost:8083",
     "integration:start": "java -Dspring.config.location=classpath:/application.properties,file:serverConfigs/integration_application.properties -jar ../skills-int-service/target/skills-int-service-*.jar",
+    "integration:start:nohup": "mkdir -p ./logs && nohup npm run integration:start &> ./logs/integration-apps.out &",
     "integration:start:release": "java -Dspring.config.location=classpath:/application.properties,file:serverConfigs/integration_application.properties -jar ./target/servicesJars/skills-int-service-*.jar",
     "integration:waitToStart": "npx wait-on -t 40000 http://localhost:8090",
     "backend:start": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ../../../skills-service/backend/target/backend-*.jar",
+    "backend:start:nohup": "mkdir -p ./logs && nohup npm run backend:start &> ./logs/skills-service.out &",
     "backend:start:ci": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -Dlogging.level.org.springframework.web.socket=TRACE -Dlogging.level.skills.services.events.SkillEventPublisher=TRACE -Dlogging.level.org.springframework.messaging=TRACE -jar ../../skills-service/backend-*.jar",
     "backend:start:release": "java -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ./target/servicesJars/backend-*.jar",
     "backend:waitToStart": "npx wait-port -v -t 60000 localhost:8080",
     "backend:resetDb": "java -cp ./db/h2-1.4.200.jar org.h2.tools.RunScript -url jdbc:h2:tcp://localhost:9090/mem:skills -user sa -script ./db/reset.sql",
-    "release": "release-it --dry-run"
+    "release": "release-it --dry-run",
+    "cyServices:start:skills-service": "npm run backend:start:nohup && npm run backend:waitToStart && echo 'skill-service started!!'",
+    "cyServices:start:integration-apps": "npm run integration:start:nohup && npm run integration:waitToStart && echo 'integration apps started!!'",
+    "cyServices:start": "npm run cyServices:start:skills-service && npm run cyServices:start:integration-apps",
+    "cyServices:kill": "for procid in $(ps -aux | grep \"serverConfigs/.*properties\" | grep \"jar$\" | awk '{print $2}'); do echo \"killing ${procid}\"; kill -9 $procid; done"
   },
   "devDependencies": {
     "cypress": "4.1.0",

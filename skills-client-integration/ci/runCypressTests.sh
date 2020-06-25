@@ -21,10 +21,7 @@ cd skills-client-integration/skills-int-e2e-test
 npm install
 
 # start services and wait
-npm run backend:start:ci &
-npm run integration:start &
-npm run backend:waitToStart
-npm run integration:waitToStart
+npm run cyServices:start
 
 # run tests
 npm run cy:run

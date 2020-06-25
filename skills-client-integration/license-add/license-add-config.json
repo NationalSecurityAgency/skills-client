@@ -2,7 +2,8 @@
   "ignore": [ ".git", "coverage", ".*/**", ".*", "*.iml", "babel.config.js",
     "rollup.config.js", "app/assets/**", "target/**", "pom.xml",
     "build/**", "**/robots.txt", "**.svg", "vue.config.js",
-    "cypress/videos/**", "**/*.jar", "**.xml", "src/license/*.properties"
+    "cypress/videos/**", "**/*.jar", "**.xml", "src/license/*.properties",
+    "nohup.out", "logs/*"
   ],
   "license": "../license-add/LICENSE-HEADER.txt",
   "licenseFormats": {
