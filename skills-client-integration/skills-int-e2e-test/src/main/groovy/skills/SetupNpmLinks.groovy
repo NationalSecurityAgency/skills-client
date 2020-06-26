@@ -48,34 +48,12 @@ class SetupNpmLinks {
     void doLink() {
         log.info("Should Prune = [{}]", shouldPrune)
         assert projs
-        removeAnyExistingLinks()
-        npmInstall()
+        new RemoveNpmLinks(shouldPrune: shouldPrune).init().removeAnyExistingLinks()
         createLinks()
         npmLinkToSkills()
         npmLinkToReact()
         validateLinks()
         build()
-    }
-
-    @Profile
-    void removeAnyExistingLinks() {
-        titlePrinter.printTitle("removing existing links")
-        projs.each { NpmProj proj ->
-            File moduleDir = proj.getSkillsModulesDir(false)
-            if (moduleDir.exists()) {
-                moduleDir?.eachDir { File depDir ->
-                    log.info("Deleting [{}]", depDir.absoluteFile.absolutePath)
-                    FileUtils.deleteDirectory(depDir.absoluteFile)
-                }
-            }
-            if (proj.isReactApp()) {
-                File reactModuleDir = proj.getReactModuleDir(false)
-                if (reactModuleDir.exists()) {
-                    log.info("Deleting [{}]", reactModuleDir.absoluteFile.absolutePath)
-                    FileUtils.deleteDirectory(reactModuleDir.absoluteFile)
-                }
-            }
-        }
     }
 
     @Profile
@@ -135,18 +113,6 @@ class SetupNpmLinks {
             it.exec("ls")
             it.exec("node -v")
             it.exec("npm link")
-        }
-    }
-
-    @Profile
-    private void npmInstall() {
-        titlePrinter.printTitle("npm prune and npm install")
-        projs.each {
-            titlePrinter.printSubTitle("install and prune ${it.loc.name}")
-            if (shouldPrune) {
-                it.exec("npm prune")
-            }
-            it.exec("npm install")
         }
     }
 }

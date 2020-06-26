@@ -102,7 +102,7 @@ class TestDashboardBackwardCompat {
 
     private void runBackwardsCompatTests(ProjectsOps projectOps) {
         titlePrinter.printTitle("Running Backwards Compat tests")
-        new SetupNpmLinks(root: projectOps.skillsClient).init().removeAnyExistingLinks()
+        new RemoveNpmLinks(root: projectOps.skillsClient, npmInstall: false).init().removeAnyExistingLinks()
         List<TestDeps> toTest = new BackwardCompatHelper().load()
 
         List<DepsRun> runsToPerform = generateRuns(toTest)
