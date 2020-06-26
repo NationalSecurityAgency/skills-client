@@ -67,9 +67,9 @@ class RemoveNpmLinks {
 
     @Profile
     private void doNpmInstall() {
-        titlePrinter.printTitle("npm prune and npm install")
+        titlePrinter.printTitle("${(shouldPrune ? 'npm prune and ' : '')}npm install")
         projs.each {
-            titlePrinter.printSubTitle("install and prune ${it.loc.name}")
+            titlePrinter.printSubTitle("install ${(shouldPrune ? 'and prune ' : '')}${it.loc.name}")
             if (shouldPrune) {
                 it.exec("npm prune")
             }
