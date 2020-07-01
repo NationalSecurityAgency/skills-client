@@ -51,7 +51,7 @@ echo "git status:"
 git status
 
 mvn --batch-mode package -DskipTests
-jar=$(ls ./backend/target/*.jar)
+jar=$(ls ./service/target/*.jar)
 mv $jar ./
 
 cd ../
