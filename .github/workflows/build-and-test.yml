@@ -41,5 +41,8 @@ jobs:
         java -version
         npm -version
 
+    - name: build skill-service
+      run: ./skills-client-integration/ci/getSkillsService.sh
+
     - name: Build
       run: cd skills-client-js && npm install && npm run build
