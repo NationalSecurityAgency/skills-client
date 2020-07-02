@@ -35,6 +35,9 @@ jobs:
       with:
         java-version: '11.X.X' # The JDK version to make available on the path.
 
+    - name: npm install
+      uses: jaid/action-npm-install@v1.2.1
+
     - name: Print Versions
       run: |
         mvn --version
