@@ -42,7 +42,7 @@ jobs:
       run: |
         mvn --version
         java -version
-        npm -veresion
+        npm -version
 
     - name: Build
       run: cd skills-client-js && npm install && npm run build
