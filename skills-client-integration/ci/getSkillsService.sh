@@ -24,7 +24,7 @@ myGitBranch=${CI_COMMIT_REF_NAME}
 echo "My Git Branch: [${myGitBranch}]"
 
 echo "Checkout skill-service code and build it."
-git clone https://${DEPLOY_TOKEN_SKILLS_SERVICE}:${DEPLOY_TOKEN_SKILLS_SERVICE_PASS}@gitlab.evoforge.org/skills/skills-service.git
+git clone https://github.com/NationalSecurityAgency/skills-service.git
 cd ./skills-service/
 
 switchToBranch=$BRANCH_TO_DEPLOY_SKILLS_SERVICE
