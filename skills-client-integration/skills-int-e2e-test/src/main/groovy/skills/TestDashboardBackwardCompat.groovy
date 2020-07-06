@@ -15,8 +15,8 @@ limitations under the License.
 */
 package skills
 
-import callStack.profiler.CProf
-import callStack.profiler.Profile
+//import callStack.profiler.CProf
+//import callStack.profiler.Profile
 import groovy.json.JsonOutput
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
@@ -61,10 +61,10 @@ class TestDashboardBackwardCompat {
 
     void test() {
         doTest()
-        log.info("Profile \n{}", CProf.prettyPrint())
+//        log.info("Profile \n{}", CProf.prettyPrint())
     }
 
-    @Profile
+//    @Profile
     private void doTest() {
 
         titlePrinter.printTitle("Release Dashboard")

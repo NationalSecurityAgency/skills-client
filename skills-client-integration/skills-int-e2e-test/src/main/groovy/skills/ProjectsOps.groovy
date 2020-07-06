@@ -15,7 +15,7 @@ limitations under the License.
 */
 package skills
 
-import callStack.profiler.Profile
+//import callStack.profiler.Profile
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
 
@@ -39,7 +39,7 @@ class ProjectsOps {
         new File(workDir, "skills-client")
     }
 
-    @Profile
+//    @Profile
     private void clearWorkDir() {
         log.info("releaseDir is [${workDir.absolutePath}]")
         if (workDir.exists()) {
@@ -51,7 +51,7 @@ class ProjectsOps {
         workDir.mkdirs()
     }
 
-    @Profile
+//    @Profile
     void checkoutLinkedNpmLibs(String switchToBranch = null) {
         clearWorkDir()
         titlePrinter.printTitle("Checkout skills-client")
@@ -68,7 +68,7 @@ class ProjectsOps {
     }
 
 
-    @Profile
+//    @Profile
     void buildClientIntApp() {
         titlePrinter.printTitle("Building Client Examples App")
         File loc = new File(skillsClient, "skills-client-integration")
@@ -76,7 +76,7 @@ class ProjectsOps {
     }
 
 
-    @Profile
+//    @Profile
     void runCypressTests(File location, String msg, List<String> cypressEnv = [], String npmIntegrationNamespace = "integration") {
         titlePrinter.printTitle("Running cypress tests: [${msg}]")
         killServerProcesses()

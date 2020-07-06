@@ -15,8 +15,8 @@ limitations under the License.
 */
 package skills
 
-import callStack.profiler.CProf
-import callStack.profiler.Profile
+//import callStack.profiler.CProf
+//import callStack.profiler.Profile
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
 
@@ -25,7 +25,7 @@ class RemoveNpmLinks {
 
     static void main(String[] args) {
         new RemoveNpmLinks().init().removeAnyExistingLinks()
-        log.info("Execution Prof:\n{}", CProf.prettyPrint())
+//        log.info("Execution Prof:\n{}", CProf.prettyPrint())
     }
 
     File root = new File("./")
@@ -40,7 +40,7 @@ class RemoveNpmLinks {
         return this
     }
 
-    @Profile
+//    @Profile
     void removeAnyExistingLinks() {
         titlePrinter.printTitle("removing existing links")
         projs.each { NpmProj proj ->
@@ -65,7 +65,7 @@ class RemoveNpmLinks {
         }
     }
 
-    @Profile
+//    @Profile
     private void doNpmInstall() {
         titlePrinter.printTitle("${(shouldPrune ? 'npm prune and ' : '')}npm install")
         projs.each {

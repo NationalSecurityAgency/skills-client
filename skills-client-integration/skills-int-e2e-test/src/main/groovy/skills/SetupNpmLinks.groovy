@@ -15,8 +15,8 @@ limitations under the License.
 */
 package skills
 
-import callStack.profiler.CProf
-import callStack.profiler.Profile
+//import callStack.profiler.CProf
+//import callStack.profiler.Profile
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
 
@@ -29,7 +29,7 @@ class SetupNpmLinks {
     static void main(String[] args) {
         boolean shouldPrune = args.find({ it.equalsIgnoreCase("--prune") })
         new SetupNpmLinks(shouldPrune: shouldPrune).init().doLink()
-        log.info("Execution Prof:\n{}", CProf.prettyPrint())
+//        log.info("Execution Prof:\n{}", CProf.prettyPrint())
     }
 
     // configure
@@ -44,7 +44,7 @@ class SetupNpmLinks {
         return this
     }
 
-    @Profile
+//    @Profile
     void doLink() {
         log.info("Should Prune = [{}]", shouldPrune)
         assert projs
@@ -56,7 +56,7 @@ class SetupNpmLinks {
         build()
     }
 
-    @Profile
+//    @Profile
     private void build() {
         titlePrinter.printTitle("build")
         projs.each { NpmProj npmProj ->
@@ -64,7 +64,7 @@ class SetupNpmLinks {
         }
     }
 
-    @Profile
+//    @Profile
     private void validateLinks() {
         titlePrinter.printTitle("validate links")
         projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
@@ -84,7 +84,7 @@ class SetupNpmLinks {
         }
     }
 
-    @Profile
+//    @Profile
     private void npmLinkToSkills() {
         titlePrinter.printTitle("link")
         projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
@@ -95,7 +95,7 @@ class SetupNpmLinks {
         }
     }
 
-    @Profile
+//    @Profile
     private void npmLinkToReact() {
         titlePrinter.printTitle("link react")
         projs.findAll({ it.reactApp }).each { NpmProj npmProj ->
@@ -105,7 +105,7 @@ class SetupNpmLinks {
         }
     }
 
-    @Profile
+//    @Profile
     private void createLinks() {
         titlePrinter.printTitle("create links")
         projs.findAll({ it.doOthersLinkToMe }).each {

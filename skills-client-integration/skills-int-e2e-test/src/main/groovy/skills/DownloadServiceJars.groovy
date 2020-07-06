@@ -15,7 +15,7 @@ limitations under the License.
 */
 package skills
 
-import callStack.profiler.Profile
+//import callStack.profiler.Profile
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
 
@@ -29,7 +29,7 @@ class DownloadServiceJars {
     // internal
     TitlePrinter titlePrinter = new TitlePrinter()
 
-    @Profile
+//    @Profile
     void cleanOutputDir(){
         if (outputDir.exists()){
             outputDir.listFiles().findAll({it.name.endsWith(".jar")}).each {
@@ -40,7 +40,7 @@ class DownloadServiceJars {
 //        outputDir.mkdirs()
     }
 
-    @Profile
+//    @Profile
     void remove(String artifact, String version) {
         File jar = getJarLoc(artifact, version)
         if (jar.exists()){
@@ -49,7 +49,7 @@ class DownloadServiceJars {
         }
     }
 
-    @Profile
+//    @Profile
     void download(String artifact, String version) {
         assert outputDir
         if (!outputDir.exists()){

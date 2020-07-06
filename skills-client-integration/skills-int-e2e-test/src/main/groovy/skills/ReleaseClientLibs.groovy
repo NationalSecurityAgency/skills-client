@@ -18,7 +18,6 @@ package skills
 import com.vdurmont.semver4j.Semver
 import groovy.json.JsonOutput
 import groovy.util.logging.Slf4j
-import org.apache.commons.lang3.StringUtils
 
 @Slf4j
 class ReleaseClientLibs {
@@ -110,7 +109,7 @@ class ReleaseClientLibs {
 
     private void updateVersion(NpmProj npmProj, String newVersion) {
         assert npmProj
-        assert StringUtils.isNoneBlank(newVersion)
+        assert newVersion && newVersion.length() > 0
 
         def json = npmProj.getPackageJson()
         json.version = newVersion
