@@ -39,6 +39,7 @@
         "jest": "24.9.0",
         "license-check-and-add": "3.0.4",
         "license-checker": "25.0.1",
+        "regenerator-runtime": "0.13.5",
         "rollup": "1.31.1",
         "rollup-plugin-babel": "4.3.3",
         "rollup-plugin-eslint": "7.0.0",

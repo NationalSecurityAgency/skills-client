@@ -46,6 +46,7 @@ const reportSkillsClientVersion = (conf) => new Promise((resolve, reject) => {
 
 let waitForInitializePromise = null;
 let initializedResolvers = null;
+let initialized = false;
 
 const initializeAfterConfigurePromise = () => {
   if (!waitForInitializePromise) {
@@ -61,6 +62,7 @@ const initializeAfterConfigurePromise = () => {
 const setInitialized = (conf) => {
   initializedResolvers.resolve();
   reportSkillsClientVersion(conf);
+  initialized = true;
 };
 
 initializeAfterConfigurePromise();
@@ -138,6 +140,10 @@ const exportObject = {
 
   isPKIMode() {
     return this.getAuthenticator() === 'pki' || this.getAuthToken() === 'pki';
+  },
+
+  isInitialized() {
+    return initialized;
   },
 
   getProjectId() {

@@ -13,59 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import SkillsLevelService from './SkillsLevelService';
 
-import { SkillsConfiguration, SkillsReporter } from '@skills/skills-client-js';
+import { SkillsLevelJS } from '@skills/skills-client-js';
 
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const emptyArrayIfNull = value => value ? value : [];
-
-let currentLevel = 0;
-
 const SkillsLevel = ({projectId}) => {
-    const [skillLevel, setSkillLevel] = React.useState(currentLevel);
-
-    const update = (details) => {
-        const completed = emptyArrayIfNull(details.completed);
-
-        const level = completed.filter((message) => {
-            return message.id === 'OVERALL';
-        }).reduce((maxLevel, currentLevelUpdateObject) => {
-            const levelUpdate = currentLevelUpdateObject.level;
-            return maxLevel < levelUpdate ? levelUpdate : maxLevel;
-        }, currentLevel);
-
-        if(level > currentLevel) {
-            setSkillLevel(level);
-        }
-    };
 
     React.useEffect(() => {
-        SkillsReporter.addSuccessHandler(update);
-
-        const getProjectId = () => {
-            if (!projectId) {
-                return SkillsConfiguration.getProjectId();
-            }
-            return projectId;
-        };
-
-        SkillsConfiguration.afterConfigure()
-            .then(() => {
-                SkillsLevelService.getSkillLevel(getProjectId())
-                    .then((result) => {
-                        setSkillLevel(result);
-                        currentLevel = result;
-                    });
-            });
+        const skillLevel = new SkillsLevelJS(projectId);
+        skillLevel.attachTo('.skills-level-text-display')
     },[projectId]);
-
 
     return (
       <div>
-          <span className="skills-level-text-display">Level {Number(skillLevel)}</span>
+          <span className="skills-level-text-display"></span>
       </div>
     );
 };

@@ -21,7 +21,8 @@ import {
   SkillsReporter, 
   SUCCESS_EVENT, 
   FAILURE_EVENT, 
-  SkillsDisplayJS 
+  SkillsDisplayJS,
+  SkillsLevelJS
 } from '@skills/skills-client-js';
 
 const install = (Vue) => {
@@ -45,5 +46,6 @@ export {
   SUCCESS_EVENT,
   FAILURE_EVENT,
   SkillsDisplayJS,
+  SkillsLevelJS,
 };
 

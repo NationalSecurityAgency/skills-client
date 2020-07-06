@@ -26,7 +26,7 @@ limitations under the License.
   <script type="text/javascript" src="./assets/js/js-beautify/js/lib/beautify.js"></script>
 
   <script type="module">
-    import { SkillsReporter, SkillsConfiguration } from './assets/js/@skills/skills-client-js/dist/skills-client-js.esm.min.js'
+    import { SkillsReporter, SkillsConfiguration, SkillsLevelJS } from './assets/js/@skills/skills-client-js/dist/skills-client-js.esm.min.js'
 
     axios.get("/api/config")
       .then((result) => {
@@ -50,6 +50,12 @@ limitations under the License.
       SkillsReporter.configure( { notifyIfSkillNotApplied });
     }
     document.querySelector('#all-events-check').addEventListener('click', toggleAllEvents);
+
+    SkillsConfiguration.afterConfigure()
+      .then(() => {
+        const skillLevel = new SkillsLevelJS();
+        skillLevel.attachTo('#skillLevel')
+      });
   </script>
 
 </head>
@@ -69,6 +75,9 @@ limitations under the License.
             <a class="nav-link" href="clientDisplay.html">User Display</a>
           </li>
         </ul>
+        <button type="button" class="btn btn-primary">
+          <span id="skillLevel"/>
+        </button>
       </nav>
     </div>
 
