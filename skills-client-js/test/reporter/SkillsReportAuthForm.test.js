@@ -27,6 +27,10 @@ describe('authFormTests()', () => {
   beforeEach(() => {
     mock.setup();
     SkillsConfiguration.logout();
+    const url = /.*\/api\/projects\/proj1\/skillsClientVersion/;
+    mock.post(url, (req, res) => {
+      return res.status(200).body('{"success":true,"explanation":null}');
+    });
   });
 
   // put the real XHR object back and clear the mocks after each test

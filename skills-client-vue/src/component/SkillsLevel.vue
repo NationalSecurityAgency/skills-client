@@ -15,15 +15,13 @@ limitations under the License.
 */
 <template>
   <span
-    v-if="skillLevel !== null"
-    class="skills-level-text-display">
-    Level {{ skillLevel }}
-  </span>
+    v-show="skillLevel !== null"
+    ref="skillLevelRef"
+    class="skills-level-text-display" />
 </template>
 
 <script>
-  import SkillsLevelService from '@/component/SkillsLevelService';
-  import { SkillsConfiguration, SkillsReporter } from '@skilltree/skills-client-js';
+  import { SkillsConfiguration, SkillsLevelJS } from '@skilltree/skills-client-js';
 
   const emptyArrayIfNull = value => value ? value : [];
 
@@ -40,38 +38,21 @@ limitations under the License.
         skillLevel: null,
       };
     },
-    created() {
-      SkillsReporter.addSuccessHandler(this.update);
-    },
     mounted() {
-      this.getCurrentSkillLevel();
+      SkillsConfiguration.afterConfigure()
+        .then(() => {
+          const skillLevelJS = new SkillsLevelJS(this.getProjectId());
+          skillLevelJS.attachTo(this.$refs.skillLevelRef);
+          this.skillLevel = skillLevelJS.skillLevel;
+        });
     },
     methods: {
-      getCurrentSkillLevel() {
-        SkillsConfiguration.afterConfigure()
-          .then(() => {
-            SkillsLevelService.getSkillLevel(this.getProjectId())
-              .then((result) => {
-                this.skillLevel = result;
-              });
-        });
-      },
       getProjectId() {
         let projectId = this.projectId;
         if (!projectId) {
           projectId = SkillsConfiguration.getProjectId();
         }
         return projectId;
-      },
-      update(details) {
-        const completed = emptyArrayIfNull(details.completed);
-
-        this.skillLevel = completed.filter((message) => {
-          return message.id === 'OVERALL';
-        }).reduce((maxLevel, currentLevelUpdateObject) => {
-          const levelUpdate = currentLevelUpdateObject.level;
-          return maxLevel < levelUpdate ? levelUpdate : maxLevel;
-        }, this.skillLevel);
       },
     },
   };

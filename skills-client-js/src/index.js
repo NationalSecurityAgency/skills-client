@@ -16,6 +16,7 @@
 import { SkillsReporter, SUCCESS_EVENT, FAILURE_EVENT } from './reporter/SkillsReporter';
 import SkillsConfiguration from './config/SkillsConfiguration';
 import SkillsDisplayJS from './display/SkillsDisplayJS';
+import SkillsLevelJS from './display/SkillsLevelJS';
 
 export {
   SkillsConfiguration,
@@ -23,4 +24,5 @@ export {
   SUCCESS_EVENT,
   FAILURE_EVENT,
   SkillsDisplayJS,
+  SkillsLevelJS,
 };
