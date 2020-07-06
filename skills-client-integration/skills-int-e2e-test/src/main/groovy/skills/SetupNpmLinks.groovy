@@ -48,7 +48,7 @@ class SetupNpmLinks {
     void doLink() {
         log.info("Should Prune = [{}]", shouldPrune)
         assert projs
-        new RemoveNpmLinks(shouldPrune: shouldPrune).init().removeAnyExistingLinks()
+        new RemoveNpmLinks(shouldPrune: shouldPrune, npmInstall: false).init().removeAnyExistingLinks()
         createLinks()
         npmLinkToSkills()
         npmLinkToReact()
