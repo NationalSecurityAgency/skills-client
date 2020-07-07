@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-jest.mock('@skills/skills-client-js');
+jest.mock('@skilltree/skills-client-js');
 
 import SkillsDisplay from '@/component/SkillsDisplay.vue';
-import { SkillsDisplayJS } from '@skills/skills-client-js';
+import { SkillsDisplayJS } from '@skilltree/skills-client-js';
 
 import { shallowMount } from '@vue/test-utils';
 

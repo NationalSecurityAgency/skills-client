@@ -38,7 +38,7 @@ limitations under the License.
 <script>
   import CodeExample from "./CodeExample";
   import ReportAnySkill from "./ReportAnySkill";
-  import {SkillsReporter} from "@skills/skills-client-vue";
+  import {SkillsReporter} from "@skilltree/skills-client-vue";
 
   export default {
     name: "ReportSkills",

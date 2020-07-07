@@ -34,7 +34,7 @@ limitations under the License.
 
 <script>
     import axios from 'axios';
-    import { SkillsReporter } from '@skills/skills-client-vue';
+    import { SkillsReporter } from '@skilltree/skills-client-vue';
     import CodeExampleLayout from "./CodeExampleLayout";
 
     const beautify = require('js-beautify').js;

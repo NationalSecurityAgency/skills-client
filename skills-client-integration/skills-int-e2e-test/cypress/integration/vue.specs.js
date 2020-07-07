@@ -39,7 +39,7 @@ Cypress.Commands.add('visitHomePage', () => {
 
 context('Vue Tests', () => {
 
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
+    if (Utils.versionLaterThan("@skilltree/skills-client-vue", '1.1.1')) {
       it('level component should be reactive', () => {
           cy.createDefaultProject()
           const sendEventViaDropdownId = '#PureJSReportAnySkill';
@@ -80,7 +80,7 @@ context('Vue Tests', () => {
       })
     }
 
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
+    if (Utils.versionLaterThan("@skilltree/skills-client-vue", '1.1.1')) {
         it('level component should be reactive (skills reported directly to backend endpoint)', () => {
             cy.createDefaultProject()
             cy.visitHomePage();
@@ -107,7 +107,7 @@ context('Vue Tests', () => {
         })
     }
 
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
+    if (Utils.versionLaterThan("@skilltree/skills-client-vue", '1.1.1')) {
         it('global event show correct results', () => {
             cy.createDefaultProject()
             cy.visitHomePage();
@@ -123,7 +123,7 @@ context('Vue Tests', () => {
             cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
         })
     }
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
+    if (Utils.versionLaterThan("@skilltree/skills-client-vue", '1.1.1')) {
         it('global event does not update when skill reported for a different project', () => {
             cy.createDefaultProject()
             cy.createDefaultTinyProject('proj2')
@@ -137,7 +137,7 @@ context('Vue Tests', () => {
             cy.get('[data-cy=globalEventResult]').should('be.empty');
         })
     }
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
+    if (Utils.versionLaterThan("@skilltree/skills-client-vue", '1.1.1')) {
         it('global event is not reported when skill is not applied', () => {
             cy.createDefaultProject()
             cy.reportSkillForUser('IronMan', 'user1')
@@ -152,7 +152,7 @@ context('Vue Tests', () => {
             cy.get('[data-cy=globalEventResult]').should('be.empty');
         })
     }
-    if (Utils.versionLaterThan("@skills/skills-client-vue", '1.1.1')) {
+    if (Utils.versionLaterThan("@skilltree/skills-client-vue", '1.1.1')) {
         it('level component should not update when admin reports skill for other user', () => {
 
             cy.createDefaultProject()
@@ -361,13 +361,13 @@ context('Vue Tests', () => {
         })
     });
 
-    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
+    if (Utils.versionLaterThan('@skilltree/skills-client-react', '1.1.1')) {
       it('skillsClientVersion is reported correctly', () => {
           cy.createDefaultProject()
           cy.visit('/vuejs#/')
-        
+
           cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
-          
+
           cy.wait('@reportClientVersion')
           cy.get('@reportClientVersion').then((xhr) => {
               expect(xhr.status).to.eq(200)
@@ -376,7 +376,7 @@ context('Vue Tests', () => {
           cy.get('@reportClientVersion').should((xhr) => {
             expect(xhr.request.body, 'request body').
               to.have.property('skillsClientVersion').
-              and.to.contain('@skills/skills-client-vue-')
+              and.to.contain('@skilltree/skills-client-vue-')
           });
       })
     }

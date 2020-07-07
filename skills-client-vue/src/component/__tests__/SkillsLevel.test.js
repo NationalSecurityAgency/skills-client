@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-jest.mock('@skills/skills-client-js');
+jest.mock('@skilltree/skills-client-js');
 jest.mock('@/component/SkillsLevelService');
 
 import SkillsLevel from '@/component/SkillsLevel';
 import SkillsLevelService from '@/component/SkillsLevelService.js';
-import { SkillsConfiguration, SkillsReporter } from '@skills/skills-client-js';
+import { SkillsConfiguration, SkillsReporter } from '@skilltree/skills-client-js';
 
 import { shallowMount } from '@vue/test-utils';
 

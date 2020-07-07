@@ -35,7 +35,7 @@ limitations under the License.
 </template>
 
 <script>
-    import { SkillsLevel } from '@skills/skills-client-vue';
+    import { SkillsLevel } from '@skilltree/skills-client-vue';
 
     export default {
         components: {

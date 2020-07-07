@@ -18,7 +18,7 @@ limitations under the License.
 </template>
 
 <script>
-  import { SkillsDisplayJS } from '@skills/skills-client-js';
+  import { SkillsDisplayJS } from '@skilltree/skills-client-js';
 
   export default {
     props: {

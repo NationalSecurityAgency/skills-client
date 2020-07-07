@@ -16,7 +16,7 @@
 import React from 'react';
 import SkillsDisplayThemeFactory from './ThemeFactory.js';
 import SampleCode from './SampleCode';
-import { SkillsDisplay } from '@skills/skills-client-react';
+import { SkillsDisplay } from '@skilltree/skills-client-react';
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';

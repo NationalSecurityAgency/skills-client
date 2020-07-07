@@ -38,7 +38,7 @@ Cypress.Commands.add('visitHomePage', () => {
 });
 
 context('React Tests', () => {
-    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
+    if (Utils.versionLaterThan('@skilltree/skills-client-react', '1.1.1')) {
         it('level component should be reactive (skills reported directly to backend endpoint)', () => {
             cy.createDefaultProject()
             cy.visitHomePage();
@@ -65,7 +65,7 @@ context('React Tests', () => {
         })
     }
 
-    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
+    if (Utils.versionLaterThan('@skilltree/skills-client-react', '1.1.1')) {
         it('global event show correct results', () => {
             cy.createDefaultProject()
             cy.visitHomePage();
@@ -82,7 +82,7 @@ context('React Tests', () => {
         })
     }
 
-    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
+    if (Utils.versionLaterThan('@skilltree/skills-client-react', '1.1.1')) {
       it('level component should be reactive', () => {
           cy.createDefaultProject()
           const sendEventViaDropdownId = '#exampleDirectiveClickEvent';
@@ -123,7 +123,7 @@ context('React Tests', () => {
       })
     }
 
-    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
+    if (Utils.versionLaterThan('@skilltree/skills-client-react', '1.1.1')) {
         it('global event does not update when skill reported for a different project', () => {
             cy.createDefaultProject()
             cy.createDefaultTinyProject('proj2')
@@ -138,7 +138,7 @@ context('React Tests', () => {
         })
     }
 
-    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
+    if (Utils.versionLaterThan('@skilltree/skills-client-react', '1.1.1')) {
         it('level component should not update when admin reports skill for other user', () => {
             cy.createDefaultProject()
             cy.visitHomePage();
@@ -272,13 +272,13 @@ context('React Tests', () => {
 
     });
 
-    if (Utils.versionLaterThan('@skills/skills-client-react', '1.1.1')) {
+    if (Utils.versionLaterThan('@skilltree/skills-client-react', '1.1.1')) {
       it('skillsClientVersion is reported correctly', () => {
           cy.createDefaultProject()
           cy.visit('/react/index.html#/')
-        
+
           cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
-          
+
           cy.wait('@reportClientVersion')
           cy.get('@reportClientVersion').then((xhr) => {
               expect(xhr.status).to.eq(200)
@@ -287,7 +287,7 @@ context('React Tests', () => {
           cy.get('@reportClientVersion').should((xhr) => {
             expect(xhr.request.body, 'request body').
               to.have.property('skillsClientVersion').
-              and.to.contain('@skills/skills-client-react-')
+              and.to.contain('@skilltree/skills-client-react-')
           });
       })
     }

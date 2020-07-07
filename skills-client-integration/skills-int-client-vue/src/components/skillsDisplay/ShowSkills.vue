@@ -79,7 +79,7 @@ limitations under the License.
 </template>
 
 <script>
-  import { SkillsDisplay } from '@skills/skills-client-vue';
+  import { SkillsDisplay } from '@skilltree/skills-client-vue';
   import SkillsDisplayThemeFactory from './ThemeFactory.js';
 
   import Vue from 'vue';
@@ -120,7 +120,7 @@ limitations under the License.
     },
     computed: {
       sampleCode() {
-        return beautify(`import { SkillsDisplay, SkillsLevel } from '@skills/skills-client-vue';
+        return beautify(`import { SkillsDisplay, SkillsLevel } from '@skilltree/skills-client-vue';
 
                 export default {
                   components: {

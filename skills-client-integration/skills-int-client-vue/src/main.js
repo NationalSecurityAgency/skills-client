@@ -19,7 +19,7 @@ import Multiselect from 'vue-multiselect';
 import App from './App.vue';
 import router from './router';
 import axios from 'axios';
-import { SkillsDirective, SkillsConfiguration } from '@skills/skills-client-vue';
+import { SkillsDirective, SkillsConfiguration } from '@skilltree/skills-client-vue';
 import VueHighlightJS from 'vue-highlightjs'
 
 Vue.config.productionTip = false
