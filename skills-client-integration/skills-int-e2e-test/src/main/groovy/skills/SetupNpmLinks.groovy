@@ -61,6 +61,7 @@ class SetupNpmLinks {
     private void build() {
         titlePrinter.printTitle("build")
         projs.each { NpmProj npmProj ->
+            npmProj.exec("npm install")
             npmProj.exec("npm run build")
         }
     }
