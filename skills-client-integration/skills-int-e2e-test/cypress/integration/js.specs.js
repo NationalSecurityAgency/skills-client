@@ -284,7 +284,7 @@ context("Native JS Tests", () => {
     })
   }
 
-  if (Utils.versionLaterThan('@skills/skills-client-js', '1.2.0')) {
+  if (Utils.versionLaterThan('@skills/skills-client-js', '2.0.0')) {
     it('level component should be reactive', () => {
         cy.createDefaultProject()
         const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
