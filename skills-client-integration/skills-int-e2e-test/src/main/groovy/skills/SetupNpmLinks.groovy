@@ -39,8 +39,7 @@ class SetupNpmLinks {
     // private
     TitlePrinter titlePrinter = new TitlePrinter()
     List<NpmProj> projs
-
-    SetupNpmLinks init() {
+    SetupNpmLinks init(){
         projs = new NpmProjBuilder(loc: root).build()
         return this
     }
@@ -49,10 +48,10 @@ class SetupNpmLinks {
     void doLink() {
         log.info("Should Prune = [{}]", shouldPrune)
         assert projs
-        new RemoveNpmLinks(shouldPrune: shouldPrune, npmInstall: false).init().removeAnyExistingLinks()
+        new RemoveNpmLinks(shouldPrune: shouldPrune).init().removeAnyExistingLinks()
         createLinks()
-//        npmLinkToSkills()
-//        npmLinkToReact()
+        npmLinkToSkills()
+        npmLinkToReact()
         validateLinks()
         build()
     }
@@ -61,7 +60,6 @@ class SetupNpmLinks {
     private void build() {
         titlePrinter.printTitle("build")
         projs.each { NpmProj npmProj ->
-            npmProj.exec("npm install")
             npmProj.exec("npm run build")
         }
     }
@@ -115,28 +113,6 @@ class SetupNpmLinks {
             it.exec("ls")
             it.exec("node -v")
             it.exec("npm link")
-            linkToProj(it)
-        }
-    }
-
-    private void linkToProj(NpmProj linkToMe) {
-        println linkToMe.name
-
-        projs.each { NpmProj proj ->
-            proj.skillsDependenciesFromPackageJson.each {
-                if (it.endsWith(linkToMe.name)) {
-
-                    if (proj.reactApp) {
-                        File reactModuleDir = projs.find { it.reactModule }.getReactModuleDir()
-                        titlePrinter.printSubTitle("Linking react module [${reactModuleDir.absoluteFile.absolutePath}]")
-                        proj.exec("npm link ${reactModuleDir.absoluteFile.absolutePath}".toString())
-                    }
-                        titlePrinter.printSubTitle("Linking module [${proj.name}] -> [${it}]")
-                        proj.exec("npm link ${it}".toString())
-
-                }
-
-            }
         }
     }
 }
