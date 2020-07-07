@@ -17,7 +17,7 @@ import {
   SkillsReporter,
   SUCCESS_EVENT,
   FAILURE_EVENT
-} from '@skills/skills-client-js';
+} from '@skilltree/skills-client-js';
 
 import debounce from 'lodash/debounce';
 

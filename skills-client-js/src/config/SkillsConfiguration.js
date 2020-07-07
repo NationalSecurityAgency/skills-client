@@ -126,7 +126,7 @@ const exportObject = {
     if (!this.serviceUrl || !this.projectId || !this.authenticator) {
       errorMessage = 'You must configure a serviceUrl, projectId and authenticationUrl for SkillsReportService to use for the service';
       errorMessage += '';
-      errorMessage += 'import SkillsConfiguration from \'@skills/skills-client-configuration\';';
+      errorMessage += 'import SkillsConfiguration from \'@skilltree/skills-client-configuration\';';
       errorMessage += 'SkillsConfiguration.configure(serviceUrl, myProjectId, authenticationUrl);';
       errorMessage += '';
       errorMessage += 'SkillsConfiguration is a singleton and you only have to do this once.';

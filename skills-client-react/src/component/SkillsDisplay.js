@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { SkillsDisplayJS } from '@skills/skills-client-js';
+import { SkillsDisplayJS } from '@skilltree/skills-client-js';
 import PropTypes from 'prop-types';
 import './SkillsDisplay.css';
 

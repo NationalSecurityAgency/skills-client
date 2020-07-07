@@ -84,7 +84,7 @@ class ReleaseClientLibs {
             proj.exec("npm prune", dryRun)
             proj.exec("npm install", dryRun)
             proj.exec("npm run build", dryRun)
-            proj.exec("npm publish", dryRun)
+            proj.exec("npm publish ", dryRun)
 
             List<NpmProjRel> updateVersion = rels.findAll({ it.to.name == proj.name })
             for (NpmProjRel updateRel in updateVersion) {

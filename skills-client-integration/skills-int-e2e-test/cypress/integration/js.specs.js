@@ -18,7 +18,7 @@ const iFrameTimeout = 3000;
 const homePage = '/native/index.html'
 
 context("Native JS Tests", () => {
-  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.1')) {
+  if (Utils.versionLaterThan('@skilltree/skills-client-reporter', '1.1.1')) {
     it("global event show correct results", () => {
       cy.createDefaultProject();
 
@@ -36,7 +36,7 @@ context("Native JS Tests", () => {
       cy.get('pre[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
     });
   }
-  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.1')) {
+  if (Utils.versionLaterThan('@skilltree/skills-client-reporter', '1.1.1')) {
     it("global event show correct results (skills reported directly to backend endpoint)", () => {
       cy.createDefaultProject();
 
@@ -50,7 +50,7 @@ context("Native JS Tests", () => {
     });
   }
 
-  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.1')) {
+  if (Utils.versionLaterThan('@skilltree/skills-client-reporter', '1.1.1')) {
     it('global event does not update when skill reported for a different project', () => {
       cy.createDefaultProject()
       cy.createDefaultTinyProject('proj2')
@@ -61,7 +61,7 @@ context("Native JS Tests", () => {
       cy.get('pre[data-cy=globalEventResult]').should('be.empty');
     })
   }
-  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.1')) {
+  if (Utils.versionLaterThan('@skilltree/skills-client-reporter', '1.1.1')) {
     it('global event is not reported when skill is not applied (skill reported directly to backend endpoint)', () => {
       cy.createDefaultProject()
       cy.reportSkillForUser('IronMan', 'user1')
@@ -72,7 +72,7 @@ context("Native JS Tests", () => {
       cy.get('[data-cy=globalEventResult]').should('be.empty');
     })
   }
-  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.1')) {
+  if (Utils.versionLaterThan('@skilltree/skills-client-reporter', '1.1.1')) {
     it('global event is not reported when skill is not applied', () => {
       cy.createDefaultProject()
       cy.reportSkillForUser('IronMan', 'user1')
@@ -88,7 +88,7 @@ context("Native JS Tests", () => {
     })
   }
 
-  if (Utils.versionLaterThan('@skills/skills-client-reporter', '1.1.1')) {
+  if (Utils.versionLaterThan('@skilltree/skills-client-reporter', '1.1.1')) {
     it('global event is reported even when skill is not applied when notifyIfSkillNotApplied=true ', () => {
       cy.createDefaultProject()
       cy.reportSkillForUser('IronMan', 'user1')
@@ -264,13 +264,13 @@ context("Native JS Tests", () => {
     });
   });
 
-  if (Utils.versionLaterThan('@skills/skills-client-js', '1.1.1')) {
+  if (Utils.versionLaterThan('@skilltree/skills-client-js', '1.1.1')) {
     it('skillsClientVersion is reported correctly', () => {
         cy.createDefaultProject()
-      
+
         cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
-      
-        cy.visit('/native/index.html')  
+
+        cy.visit('/native/index.html')
         cy.wait('@reportClientVersion')
         cy.get('@reportClientVersion').then((xhr) => {
             expect(xhr.status).to.eq(200)
@@ -279,7 +279,7 @@ context("Native JS Tests", () => {
         cy.get('@reportClientVersion').should((xhr) => {
           expect(xhr.request.body, 'request body').
             to.have.property('skillsClientVersion').
-            and.to.contain('@skills/skills-client-js-')
+            and.to.contain('@skilltree/skills-client-js-')
         });
     })
   }

@@ -21,7 +21,7 @@ import {
   SUCCESS_EVENT,
   FAILURE_EVENT,
   SkillsDisplayJS
-} from '@skills/skills-client-js';
+} from '@skilltree/skills-client-js';
 
 SkillsConfiguration.skillsClientVersion = '__skillsClientVersion__';
 

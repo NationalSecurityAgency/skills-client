@@ -1,6 +1,6 @@
 {
-    "name": "@skills/skills-client-react",
-    "version": "2.0.0",
+    "name": "@skilltree/skills-client-react",
+    "version": "2.0.1",
     "license": "Apache-2.0",
     "description": "SkillTree Client Lib - React",
     "main": "dist/skills-client-react.umd.min.js",
@@ -20,10 +20,6 @@
         "watch": "npm run clean && rollup -c --watch",
         "test": "npx jest --passWithNoTests",
         "test-watch": "npx jest --passWithNoTests --watch"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git@gitlab.evoforge.org:skills/skills-client-react.git"
     },
     "author": "SkillTree Team",
     "peerDependencies": {
@@ -56,7 +52,7 @@
         "rollup-plugin-uglify": "6.0.3"
     },
     "dependencies": {
-        "@skills/skills-client-js": "2.0.0",
+        "@skilltree/skills-client-js": "2.0.1",
         "axios": "0.19.0",
         "axios-auth-refresh": "1.0.7"
     },

@@ -17,7 +17,7 @@ import React from "react";
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button"
-import { SkillsLevel } from '@skills/skills-client-react';
+import { SkillsLevel } from '@skilltree/skills-client-react';
 
 import {
   NavLink
