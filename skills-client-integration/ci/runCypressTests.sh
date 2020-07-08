@@ -21,12 +21,11 @@ cd skills-client-integration/skills-int-e2e-test
 npm install
 
 # start services and wait
-npm run backend:start:ci &
-npm run integration:start &
-npm run backend:waitToStart
-npm run integration:waitToStart
+npm run cyServices:start:skills-service:ci
+npm run cyServices:start:integration-apps
 
 # run tests
 npm run cy:run
 cd ../../
 echo "------- DONE: Run Cypress Tests -------"
+

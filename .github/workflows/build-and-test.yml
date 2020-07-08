@@ -49,6 +49,14 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
 
+    - name: Cache npm
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
     - name: build skill-service
       run: ./.github/workflows/scripts/getSkillsService.sh
 
@@ -64,32 +72,33 @@ jobs:
     - name: run cypress tests
       run: ./skills-client-integration/ci/runCypressTests.sh
 
-    - uses: actions/upload-artifact@v2
+    - name: upload skills service jar
+      uses: actions/upload-artifact@v2
       with:
-        name: skills-service_jar
+        name: skills-service jar
         path: ./skills-service/*.jar
 
-    - uses: actions/upload-artifact@v2
+    - name: upload integration app jar
+      uses: actions/upload-artifact@v2
       with:
-        name: skills-client-integration_logs
-        path: ./skills-client-integration/target/*.log
+        name: skills-int-service jar
+        path: ./skills-client-integration/skills-int-service/target/*.jar
 
-    - uses: actions/upload-artifact@v2
+    - name: upload services logs
+      uses: actions/upload-artifact@v2
       with:
-        name: skills-int-service_logs
-        path: ./skills-client-integration/skills-int-service/target/*.log
+        name: services logs generated during cypress tests
+        path: ./skills-client-integration/skills-int-e2e-test/target/logs/*.out
 
-    - uses: actions/upload-artifact@v2
-      with:
-        name: skills-int-e2e-test_logs
-        path: ./skills-client-integration/skills-int-e2e-test/target/*.log
 
-    - uses: actions/upload-artifact@v2
+    - name: upload cypress videos
+      uses: actions/upload-artifact@v2
       with:
-        name: cypress-tests_videos
+        name: cypress tests videos
         path: ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
 
-    - uses: actions/upload-artifact@v2
+    - name: cypress screenshots
+      uses: actions/upload-artifact@v2
       with:
-        name: cypress-tests_screenshots
+        name: cypress tests screenshots
         path: ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
