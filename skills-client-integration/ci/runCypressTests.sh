@@ -26,6 +26,8 @@ npm run cyServices:start:integration-apps
 
 # run tests
 npm run cy:run
+
+npm run cyServices:kill
 cd ../../
 echo "------- DONE: Run Cypress Tests -------"
 

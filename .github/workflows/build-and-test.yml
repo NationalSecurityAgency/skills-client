@@ -84,12 +84,14 @@ jobs:
         name: skills-int-service jar
         path: ./skills-client-integration/skills-int-service/target/*.jar
 
+    - name: check logs dir
+      run: ls ./skills-client-integration/skills-int-e2e-test/target/logs/
+
     - name: upload services logs
       uses: actions/upload-artifact@v2
       with:
         name: services logs generated during cypress tests
         path: ./skills-client-integration/skills-int-e2e-test/target/logs/*.out
-
 
     - name: upload cypress videos
       uses: actions/upload-artifact@v2
