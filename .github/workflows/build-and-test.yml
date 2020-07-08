@@ -41,6 +41,14 @@ jobs:
         java -version
         npm -version
 
+    - name: Cache local Maven repository
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
     - name: build skill-service
       run: ./.github/workflows/scripts/getSkillsService.sh
 
@@ -55,3 +63,5 @@ jobs:
 
     - name: run cypress tests
       run: ./skills-client-integration/ci/runCypressTests.sh
+
+
