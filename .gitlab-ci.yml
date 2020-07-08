@@ -8,6 +8,7 @@ build:
   image: maven:3.6.0-jdk-11
   stage: build
   before_script:
+    - apt-get install -y gawk
     - ./skills-client-integration/ci/setupNode.sh
     - ./skills-client-integration/ci/setupRepos.sh
   script:

@@ -18,8 +18,6 @@ echo "------- START: Build skills-service jar -------"
 set -e
 #set -o pipefail
 
-apt-get install -y gawk
-
 myGitBranch=${CI_COMMIT_REF_NAME}
 echo "My Git Branch: [${myGitBranch}]"
 
