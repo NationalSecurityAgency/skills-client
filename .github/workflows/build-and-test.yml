@@ -42,7 +42,7 @@ jobs:
         npm -version
 
     - name: build skill-service
-      run: ./skills-client-integration/ci/getSkillsService.sh
+      run: ./.github/workflows/scripts/getSkillsService.sh
 
 #    - name: setup npm links
 #      run: ./skills-client-integration/ci/setupNpmLinks.sh
