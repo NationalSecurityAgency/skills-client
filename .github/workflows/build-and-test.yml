@@ -41,8 +41,8 @@ jobs:
         java -version
         npm -version
 
-#    - name: build skill-service
-#      run: ./skills-client-integration/ci/getSkillsService.sh
+    - name: build skill-service
+      run: ./skills-client-integration/ci/getSkillsService.sh
 
 #    - name: setup npm links
 #      run: ./skills-client-integration/ci/setupNpmLinks.sh
