@@ -73,12 +73,14 @@ jobs:
       run: ./skills-client-integration/ci/runCypressTests.sh
 
     - name: upload skills service jar
+      if: ${{ always() }}
       uses: actions/upload-artifact@v2
       with:
         name: skills-service jar
         path: ./skills-service/*.jar
 
     - name: upload integration app jar
+      if: ${{ always() }}
       uses: actions/upload-artifact@v2
       with:
         name: skills-int-service jar
@@ -88,12 +90,14 @@ jobs:
       run: ls ./skills-client-integration/skills-int-e2e-test/target/logs/
 
     - name: upload services logs
+      if: ${{ always() }}
       uses: actions/upload-artifact@v2
       with:
         name: services logs generated during cypress tests
         path: ./skills-client-integration/skills-int-e2e-test/target/logs/*.out
 
     - name: upload cypress videos
+      if: ${{ always() }}
       uses: actions/upload-artifact@v2
       with:
         name: cypress tests videos
@@ -101,6 +105,7 @@ jobs:
 
     - name: cypress screenshots
       uses: actions/upload-artifact@v2
+      if: ${{ always() }}
       with:
         name: cypress tests screenshots
         path: ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
