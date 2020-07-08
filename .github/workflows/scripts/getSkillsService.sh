@@ -19,8 +19,8 @@ set -e
 #set -o pipefail
 
 git branch
-
-myGitBranch=${CI_COMMIT_REF_NAME}
+git branch | grep \* | awk '{print $2}'
+myGitBranch=git branch | grep \* | awk '{print $2}'
 echo "My Git Branch: [${myGitBranch}]"
 
 echo "Checkout skill-service code and build it."
