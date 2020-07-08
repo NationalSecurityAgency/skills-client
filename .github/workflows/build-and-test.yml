@@ -41,11 +41,11 @@ jobs:
         java -version
         npm -version
 
-    - name: build skill-service
-      run: ./.github/workflows/scripts/getSkillsService.sh
+#    - name: build skill-service
+#      run: ./.github/workflows/scripts/getSkillsService.sh
 
-#    - name: setup npm links
-#      run: ./skills-client-integration/ci/setupNpmLinks.sh
+    - name: setup npm links
+      run: ./skills-client-integration/ci/setupNpmLinks.sh
 #
 #    - name: Build
 #      run: cd skills-client-js && npm install && npm run build
