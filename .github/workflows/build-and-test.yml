@@ -41,8 +41,8 @@ jobs:
         java -version
         npm -version
 
-#    - name: build skill-service
-#      run: ./.github/workflows/scripts/getSkillsService.sh
+    - name: build skill-service
+      run: ./.github/workflows/scripts/getSkillsService.sh
 
     - name: setup npm links
       run: ./skills-client-integration/ci/setupNpmLinks.sh
@@ -53,6 +53,5 @@ jobs:
         mvn --batch-mode clean install
         cd ../
 
-#
-#    - name: Build
-#      run: cd skills-client-js && npm install && npm run build
+    - name: run cypress tests
+      run: ./skills-client-integration/ci/runCypressTests.sh
