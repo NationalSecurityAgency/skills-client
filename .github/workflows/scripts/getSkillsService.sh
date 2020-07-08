@@ -20,14 +20,14 @@ set -e
 
 git branch
 git branch | grep \* | awk '{print $2}'
-myGitBranch=git branch | grep \* | awk '{print $2}'
+myGitBranch=`git branch | grep \* | awk '{print $2}'`
 echo "My Git Branch: [${myGitBranch}]"
 
 echo "Checkout skill-service code and build it."
 git clone https://github.com/NationalSecurityAgency/skills-service.git
 cd ./skills-service/
 
-switchToBranch=$BRANCH_TO_DEPLOY_SKILLS_SERVICE
+switchToBranch=$myGitBranch
 echo "Default branch to consider [${switchToBranch}]"
 matchingBranch=`git branch -a | grep "remotes/origin/${myGitBranch}" | gawk -F'remotes/origin/' '{print $2}' | cat`
 echo "Matching branch to consider [${matchingBranch}]"
