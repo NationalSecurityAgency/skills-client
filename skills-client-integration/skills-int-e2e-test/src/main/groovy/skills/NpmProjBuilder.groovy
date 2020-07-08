@@ -73,7 +73,7 @@ class NpmProjBuilder {
         List<NpmProj> resList = build()
         for (NpmProj from in resList.findAll({ it.hasLinksToOtherProjects })) {
             def packageJson = from.packageJson
-            List<String> skillsProjs = packageJson.dependencies.findAll { it.key.toString().startsWith("@skills") }.collect { it.key }
+            List<String> skillsProjs = packageJson.dependencies.findAll { it.key.toString().startsWith("@skilltree") }.collect { it.key }
             List<NpmProj> toProjs = skillsProjs.collect { String searchFor ->
                 return resList.find({ searchFor.endsWith(it.loc.name) })
             }

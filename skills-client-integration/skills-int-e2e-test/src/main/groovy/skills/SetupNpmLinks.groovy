@@ -69,7 +69,7 @@ class SetupNpmLinks {
         titlePrinter.printTitle("validate links")
         projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
             titlePrinter.printSubTitle("validating [${npmProj.getSkillsModulesDir().absolutePath}]")
-            npmProj.exec("ls -l node_modules/@skills/")
+            npmProj.exec("ls -l node_modules/@skilltree/")
             npmProj.skillsDependenciesFromPackageJson.each {
                 File shouldBeSymbolic = new File(npmProj.loc, "node_modules/${it}")
                 assert shouldBeSymbolic.exists()

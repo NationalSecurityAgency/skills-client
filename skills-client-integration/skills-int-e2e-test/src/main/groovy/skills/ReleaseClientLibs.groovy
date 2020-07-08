@@ -88,10 +88,10 @@ class ReleaseClientLibs {
 
             List<NpmProjRel> updateVersion = rels.findAll({ it.to.name == proj.name })
             for (NpmProjRel updateRel in updateVersion) {
-                String fromVersion = updateRel.from.getDepVersion("@skills/${updateRel.to.name}");
+                String fromVersion = updateRel.from.getDepVersion("@skilltree/${updateRel.to.name}");
                 if (!fromVersion.equalsIgnoreCase(updateRel.to.version)) {
                     log.info("  Update version for [${updateRel.from.name}]: ${updateRel.to.name} [${fromVersion}] -> [${newVersion}]")
-                    updateRel.from.exec("npm install --save-exact @skills/${updateRel.to.name}@${newVersion}", dryRun)
+                    updateRel.from.exec("npm install --save-exact @skilltree/${updateRel.to.name}@${newVersion}", dryRun)
                 } else {
                     log.info("   [${updateRel.from.name}]: is already up-to-date with version ${updateRel.to.name}:${updateRel.to.version}")
                 }

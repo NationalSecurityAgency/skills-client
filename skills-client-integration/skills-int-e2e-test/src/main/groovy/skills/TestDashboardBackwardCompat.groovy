@@ -231,7 +231,7 @@ class TestDashboardBackwardCompat {
                 }
             }
             if (stillWork) {
-                boolean isOldApi = thisRun.collect { it.deps.collect({it.name})}.flatten() .contains("@skills/skills-client-configuration")
+                boolean isOldApi = thisRun.collect { it.deps.collect({it.name})}.flatten() .contains("@skilltree/skills-client-configuration")
                 res.add(new DepsRun(deps: thisRun, isOldApi: isOldApi))
             }
             performWork = stillWork;

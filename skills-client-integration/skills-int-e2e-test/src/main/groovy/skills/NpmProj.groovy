@@ -26,7 +26,7 @@ class NpmProj {
     boolean doOthersLinkToMe
     String name
     File loc
-    // indicates whether it has node_modules/@skills/
+    // indicates whether it has node_modules/@skilltree/
     boolean hasLinksToOtherProjects = true
 
     // need extra npm link setup for react apps/modules
@@ -50,7 +50,7 @@ class NpmProj {
     }
 
     File getSkillsModulesDir(boolean checkForExistence = true) {
-        File skillsModules = new File(getNodeModulesDir(checkForExistence), "@skills/")
+        File skillsModules = new File(getNodeModulesDir(checkForExistence), "@skilltree/")
         if (checkForExistence) {
             assert skillsModules.exists()
         }
@@ -73,7 +73,7 @@ class NpmProj {
 
     List<String> getSkillsDependenciesFromPackageJson() {
         return packageJson.dependencies.findAll {
-            it.key.toString().startsWith("@skills")
+            it.key.toString().startsWith("@skilltree")
         }.collect { it.key }
     }
 
