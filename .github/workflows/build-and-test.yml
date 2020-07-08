@@ -64,4 +64,32 @@ jobs:
     - name: run cypress tests
       run: ./skills-client-integration/ci/runCypressTests.sh
 
+    - uses: actions/upload-artifact@v2
+      with:
+        name: skills-service_jar
+        path: ./skills-service/*.jar
 
+    - uses: actions/upload-artifact@v2
+      with:
+        name: skills-client-integration_logs
+        path: ./skills-client-integration/target/*.log
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: skills-int-service_logs
+        path: ./skills-client-integration/skills-int-service/target/*.log
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: skills-int-e2e-test_logs
+        path: ./skills-client-integration/skills-int-e2e-test/target/*.log
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cypress-tests_videos
+        path: ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: cypress-tests_screenshots
+        path: ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
