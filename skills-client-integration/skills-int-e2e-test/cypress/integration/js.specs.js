@@ -300,4 +300,20 @@ context("Native JS Tests", () => {
     })
   }
 
+  if (Utils.versionLaterThan('@skills/skills-client-js', '2.0.0')) {
+    it('level component should be reactive', () => {
+        cy.createDefaultProject()
+        const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
+        Cypress.Commands.add("clickSubmit", () => {
+          cy.get(`${sendEventViaDropdownId} .btn`).click();
+        });
+  
+        cy.visitHomePage(homePage);
+        cy.contains('Level 0')
+
+        cy.clickSubmit();
+        cy.contains('Level 1')
+    })
+  }
+
 });
