@@ -22,7 +22,7 @@
     "integration:waitToStart": "npx wait-on -t 40000 http://localhost:8090",
     "backend:start": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ../../../skills-service/service/target/skills-service-*.jar",
     "backend:start:nohup": "mkdir -p ./target/logs && nohup npm run backend:start &> ./target/logs/skills-service.out &",
-    "backend:start:ci": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -Dlogging.level.org.springframework.web.socket=TRACE -Dlogging.level.skills.services.events.SkillEventPublisher=TRACE -Dlogging.level.org.springframework.messaging=TRACE -jar ../../skills-service/skills-service-*.jar",
+    "backend:start:ci": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ../../skills-service/skills-service-*.jar",
     "backend:start:ci:nohup": "mkdir -p ./target/logs && nohup npm run backend:start:ci &> ./target/logs/skills-service.out &",
     "backend:start:release": "java -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ./target/servicesJars/skills-service-*.jar",
     "backend:waitToStart": "npx wait-port -v -t 60000 localhost:8080",

@@ -44,6 +44,22 @@ context('React Tests', () => {
             cy.reportSkillForUser('subj2_skill1', 'user1')
             cy.contains('Level 5')
         })
+
+        it('level component should load initial level', () => {
+            cy.createDefaultProject()
+            // cy.reportSkill('subj1_skill0')
+
+            // this will increment levels for the default user = skills@skills.org but Level and display components display data for 'user1'
+            // validate that level is still 0
+            cy.reportSkill('IronMan')
+            cy.visitHomePage(homePage);
+            cy.contains('Level 0')
+
+
+            cy.reportSkillForUser('IronMan', 'user1')
+            cy.visitHomePage(homePage);
+            cy.contains('Level 1')
+        })
     }
 
     if (Utils.versionLaterThan('@skilltree/skills-client-react', '1.1.1')) {
@@ -137,9 +153,8 @@ context('React Tests', () => {
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
         cy.visit('/react/index.html#/showSkills')
         cy.wait('@getToken')
-
+        cy.wait('@getToken')
         cy.iframe((body) => {
-            cy.wait('@getToken')
 
             cy.wrap(body).contains('My Level')
             cy.wrap(body).contains('50 Points earned Today')
@@ -158,8 +173,8 @@ context('React Tests', () => {
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
         cy.visit('/react/index.html#/showSkills?isSummaryOnly=true')
         cy.wait('@getToken')
+        cy.wait('@getToken')
         cy.iframe((body) => {
-            cy.wait('@getToken')
             cy.wrap(body).contains('My Level')
             cy.wrap(body).contains('50 Points earned Today')
             cy.wrap(body).contains('Subject 0').should('not.exist')

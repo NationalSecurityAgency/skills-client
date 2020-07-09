@@ -291,29 +291,28 @@ context("Native JS Tests", () => {
         Cypress.Commands.add("clickSubmit", () => {
           cy.get(`${sendEventViaDropdownId} .btn`).click();
         });
-  
+
         cy.visitHomePage(homePage);
         cy.contains('Level 0')
 
         cy.clickSubmit();
         cy.contains('Level 1')
     })
-  }
 
-  if (Utils.versionLaterThan('@skills/skills-client-js', '2.0.0')) {
-    it('level component should be reactive', () => {
-        cy.createDefaultProject()
-        const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
-        Cypress.Commands.add("clickSubmit", () => {
-          cy.get(`${sendEventViaDropdownId} .btn`).click();
-        });
-  
-        cy.visitHomePage(homePage);
-        cy.contains('Level 0')
+    it('level component should load initial level', () => {
+      cy.createDefaultProject()
 
-        cy.clickSubmit();
-        cy.contains('Level 1')
+      // this will increment levels for the default user = skills@skills.org but Level and display components display data for 'user1'
+      // validate that level is still 0
+      cy.reportSkill('subj1_skill0')
+      cy.visitHomePage(homePage);
+      cy.contains('Level 0')
+
+      cy.reportSkillForUser('subj1_skill0', 'user1')
+      cy.visitHomePage(homePage);
+      cy.contains('Level 1')
     })
   }
+
 
 });

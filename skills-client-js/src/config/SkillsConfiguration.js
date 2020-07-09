@@ -47,6 +47,8 @@ const reportSkillsClientVersion = (conf) => new Promise((resolve, reject) => {
 let waitForInitializePromise = null;
 let initializedResolvers = null;
 let initialized = false;
+// used purely to validate that configure is called before any other components are utilized
+let configureCalled = false;
 
 const initializeAfterConfigurePromise = () => {
   if (!waitForInitializePromise) {
@@ -63,6 +65,10 @@ const setInitialized = (conf) => {
   initializedResolvers.resolve();
   reportSkillsClientVersion(conf);
   initialized = true;
+};
+
+const setConfigureWasCalled = () => {
+  configureCalled = true;
 };
 
 initializeAfterConfigurePromise();
@@ -117,6 +123,7 @@ const exportObject = {
     } else {
       setInitialized(this);
     }
+    setConfigureWasCalled();
   },
 
   afterConfigure() {
@@ -144,6 +151,10 @@ const exportObject = {
 
   isInitialized() {
     return initialized;
+  },
+
+  wasConfigureCalled() {
+    return configureCalled;
   },
 
   getProjectId() {

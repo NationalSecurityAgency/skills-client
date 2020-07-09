@@ -22,13 +22,10 @@ const emptyArrayIfNull = (value) => (value || []);
 
 export default class SkillsLevelJS {
   constructor(projectId) {
-    if (!SkillsConfiguration.isInitialized()) {
-      throw new Error('SkillsConfiguration must be initialized before invoking SkillsLevelJS constructor.');
+    if (!SkillsConfiguration.wasConfigureCalled()) {
+      throw new Error('SkillsConfiguration.configure must be called before invoking SkillsLevelJS constructor.');
     }
     this._projectId = projectId;
-    if (!this._projectId) {
-      this._projectId = SkillsConfiguration.getProjectId();
-    }
   }
 
   attachTo(selectorOrElement) {
@@ -42,11 +39,20 @@ export default class SkillsLevelJS {
 
     this._skillLevelElement = skillLevelElement;
 
+
     // load initial skill level
-    axios.get(`${SkillsConfiguration.getServiceUrl()}/api/projects/${this._projectId}/level`, { withCredentials: true })
-      .then((result) => {
-        this.setSkillLevel(result.data);
-        SkillsReporter.addSuccessHandler(this.update.bind(this));
+    SkillsConfiguration.afterConfigure()
+      .then(() => {
+        if (!this._projectId) {
+          this._projectId = SkillsConfiguration.getProjectId();
+        }
+        const authToken = SkillsConfiguration.getAuthToken();
+        axios.defaults.headers.common.Authorization = `Bearer ${authToken}`;
+        axios.get(`${SkillsConfiguration.getServiceUrl()}/api/projects/${this._projectId}/level`, { withCredentials: true })
+          .then((result) => {
+            this.setSkillLevel(result.data);
+            SkillsReporter.addSuccessHandler(this.update.bind(this));
+          });
       });
   }
 

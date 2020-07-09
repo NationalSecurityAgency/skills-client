@@ -37,7 +37,7 @@ limitations under the License.
             </b-collapse>
             <button
               @click="$router.push('/showSkills')"
-              class="btn btn-primary"><skills-level /></button>
+              class="btn btn-primary level"><skills-level /></button>
         </b-navbar>
 
     </div>
@@ -74,5 +74,9 @@ limitations under the License.
     }
     .active {
         color: rgba(255, 255, 255, 1);
+    }
+    .level {
+        min-width: 4rem;
+        min-height: 2rem;
     }
 </style>

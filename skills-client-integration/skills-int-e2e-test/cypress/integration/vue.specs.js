@@ -59,6 +59,22 @@ context('Vue Tests', () => {
           cy.clickSubmit()
           cy.contains('Level 5')
       })
+
+      it('level component should load initial level', () => {
+          cy.createDefaultProject()
+          // cy.reportSkill('subj1_skill0')
+
+          // this will increment levels for the default user = skills@skills.org but Level and display components display data for 'user1'
+          // validate that level is still 0
+          cy.reportSkill('IronMan')
+          cy.visitHomePage(homePage);
+          cy.contains('Level 0')
+
+
+          cy.reportSkillForUser('IronMan', 'user1')
+          cy.visitHomePage(homePage);
+          cy.contains('Level 1')
+      })
     }
 
     if (Utils.versionLaterThan("@skilltree/skills-client-vue", '1.1.1')) {
@@ -433,7 +449,7 @@ context('Vue Tests', () => {
         // click the back button and verify that we are still in the
         // client display (Subject page)
         cy.cdBack(body, 'Subject 0');
-        
+
         // then back one more time and we should be back on the client display home page
         cy.cdBack(body, 'User Skills');
       });
