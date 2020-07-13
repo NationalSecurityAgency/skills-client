@@ -83,6 +83,3 @@ jobs:
           ./skills-client-integration/skills-int-e2e-test/target/logs/*.out
           ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
           ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
-
-    - name: check dirs
-      run: ls -R ./
