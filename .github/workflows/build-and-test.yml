@@ -60,29 +60,29 @@ jobs:
     - name: build skill-service
       run: ./.github/workflows/scripts/getSkillsService.sh
 
-#    - name: setup npm links
-#      run: ./.github/workflows/scripts/setupNpmLinks.sh
-#
-#    - name: build integration test apps
-#      run: |
-#        cd ./skills-client-integration
-#        mvn --batch-mode clean install
-#        cd ../
-#
-#    - name: run cypress tests
-#      run: ./.github/workflows/scripts/runCypressTests.sh
-#
-#    - name: upload result artifacts
-#      if: ${{ always() }}
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: skills-service jar
-#        path: |
-#          ./skills-service/*.jar
-#          ./skills-client-integration/skills-int-service/target/*.jar
-#          ./skills-client-integration/skills-int-e2e-test/target/logs/*.out
-#          ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
-#          ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
-#
-#    - name: check dirs
-#      run: ls -R ./skills-client-integration/
+    - name: setup npm links
+      run: ./.github/workflows/scripts/setupNpmLinks.sh
+
+    - name: build integration test apps
+      run: |
+        cd ./skills-client-integration
+        mvn --batch-mode clean install
+        cd ../
+
+    - name: run cypress tests
+      run: ./.github/workflows/scripts/runCypressTests.sh
+
+    - name: upload result artifacts
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: skills-service jar
+        path: |
+          ./skills-service/*.jar
+          ./skills-client-integration/skills-int-service/target/*.jar
+          ./skills-client-integration/skills-int-e2e-test/target/logs/*.out
+          ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
+          ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
+
+    - name: check dirs
+      run: ls -R ./
