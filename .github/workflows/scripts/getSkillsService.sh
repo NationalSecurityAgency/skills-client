@@ -27,13 +27,13 @@ echo "Checkout skill-service code and build it."
 git clone https://github.com/NationalSecurityAgency/skills-service.git
 cd ./skills-service/
 
-switchToBranch=$myGitBranch
-echo "Default branch to consider [${switchToBranch}]"
+switchToBranch="master"
+echo "Default branch to consider [${myGitBranch}]"
 matchingBranch=`git branch -a | grep "remotes/origin/${myGitBranch}" | gawk -F'remotes/origin/' '{print $2}' | cat`
 echo "Matching branch to consider [${matchingBranch}]"
 if [[ "$myGitBranch" == *\.X ]] || [[ "$myGitBranch" == "master" ]] || [[ -z "$matchingBranch" ]]
 then
-    echo "Building skill-service from configured [${switchToBranch}] branch"
+    echo "Building skill-service from [master] branch"
 else
     switchToBranch=$matchingBranch
     echo "Found matching branch [${switchToBranch}]"
