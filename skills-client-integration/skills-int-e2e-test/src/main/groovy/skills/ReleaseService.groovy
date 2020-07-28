@@ -50,7 +50,6 @@ class ReleaseService {
     String baseBranch = "master"
     boolean dryRun = true
     File workDir = new File("./e2e-tests/target/${this.class.simpleName}/")
-    String nexusHost = "http://ip-10-113-80-244.evoforge.org"
     SupportedProject proj
     String optionalSubProject
 
@@ -77,7 +76,7 @@ class ReleaseService {
         DirHelper.createEmptyDirClearIfExist(workDir)
 
 
-        new ProcessRunner(loc: workDir).run("git clone git@gitlab.evoforge.org:skills/${projName}.git")
+        new ProcessRunner(loc: workDir).run("git clone git@github.com:NationalSecurityAgency/${projName}.git")
         File projRootDir = new File(workDir, projName)
         assert projRootDir.exists()
         // if patch then move to its the branch
@@ -125,9 +124,9 @@ class ReleaseService {
         }
         log.info("---- Finished Building Jar ----")
         // account for dry run
-        String jarFilePath = jar?.absoluteFile?.absolutePath
-        new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("mvn --batch-mode deploy:deploy-file -DpomFile=${optionalSubProject ? "$optionalSubProject/" : ""}pom.xml -Dfile=${jarFilePath} -Durl=${nexusHost}/repository/maven-releases/ -DrepositoryId=nexus-releases")
-        log.info("---- Finished Uploading Jar ----")
+//        String jarFilePath = jar?.absoluteFile?.absolutePath
+//        new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("mvn --batch-mode deploy:deploy-file -DpomFile=${optionalSubProject ? "$optionalSubProject/" : ""}pom.xml -Dfile=${jarFilePath} -Durl=${host}/repository/maven-releases/ -DrepositoryId=nexus-releases")
+//        log.info("---- Finished Uploading Jar ----")
 
         new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git commit -a -m creating_release_version_${releaseVersion}")
         new ProcessRunner(loc: projRootDir, dryRun: dryRun).run("git tag -a ${releaseVersion} -m tag_release_version_${releaseVersion}")
