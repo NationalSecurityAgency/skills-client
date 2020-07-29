@@ -26,7 +26,8 @@ jobs:
       run: |
         mkdir tmp
         cd tmp
-        cp -r $GITHUB_WORKSPACE ./
+        pwd
+        cp -r $GITHUB_WORKSPACE/* ./
         ls -R ./
 
 
