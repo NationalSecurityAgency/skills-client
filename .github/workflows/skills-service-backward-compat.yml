@@ -24,8 +24,8 @@ jobs:
 
     - name: run cypress tests
       run: |
-        mkdir $GITHUB_WORKSPACE/tmp
-        cp -r $GITHUB_WORKSPACE/* $GITHUB_WORKSPACE/tmp/
-        ls -R $GITHUB_WORKSPACE/
+        mkdir workdir
+        cd workdir
+        git clone https://github.com/NationalSecurityAgency/skills-client.git
 
 
