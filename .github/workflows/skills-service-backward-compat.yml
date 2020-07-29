@@ -22,12 +22,11 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: run cypress tests
+    - name: check out working copy of skills-client
       run: |
-        mkdir workdir
-        cd workdir
+        mkdir -p ./target
+        cd ./target
         git clone https://github.com/NationalSecurityAgency/skills-client.git
+        cd skills-client
         git checkout 2.0.1
         git status
-
-
