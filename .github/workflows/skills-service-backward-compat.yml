@@ -24,10 +24,8 @@ jobs:
 
     - name: run cypress tests
       run: |
-        mkdir tmp
-        cd tmp
-        pwd
-        cp -r $GITHUB_WORKSPACE/* ./
-        ls -R ./
+        mkdir $GITHUB_WORKSPACE/tmp
+        cp -r $GITHUB_WORKSPACE/* $GITHUB_WORKSPACE/tmp/
+        ls -R $GITHUB_WORKSPACE/
 
 
