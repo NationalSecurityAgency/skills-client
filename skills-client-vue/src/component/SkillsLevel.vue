@@ -48,7 +48,7 @@ limitations under the License.
       getProjectId() {
         let projectId = this.project;
         if (!projectId) {
-          projectId = { SkillsConfiguration };
+          projectId = SkillsConfiguration.getProjectId();
         }
         return projectId;
       },
