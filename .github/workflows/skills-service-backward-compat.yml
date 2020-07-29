@@ -27,5 +27,7 @@ jobs:
         mkdir workdir
         cd workdir
         git clone https://github.com/NationalSecurityAgency/skills-client.git
+        git checkout 2.0.1
+        git status
 
 
