@@ -19,22 +19,22 @@ import { SkillsLevelJS } from '@skilltree/skills-client-js';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const SkillsLevel = ({projectId}) => {
+// eslint-disable-next-line object-curly-newline
+const SkillsLevel = ({ projectId }) => {
+  React.useEffect(() => {
+    const skillLevel = new SkillsLevelJS(projectId);
+    skillLevel.attachTo('.skills-level-text-display');
+  }, [projectId]);
 
-    React.useEffect(() => {
-        const skillLevel = new SkillsLevelJS(projectId);
-        skillLevel.attachTo('.skills-level-text-display')
-    },[projectId]);
-
-    return (
-      <div>
-          <span className="skills-level-text-display"></span>
-      </div>
-    );
+  return (
+    <div>
+      <span className="skills-level-text-display"></span>
+    </div>
+  );
 };
 
 SkillsLevel.propTypes = {
-    projectId: PropTypes.string
+  projectId: PropTypes.string,
 };
 
 export default SkillsLevel;

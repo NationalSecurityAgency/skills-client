@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { SkillsConfiguration } from '@skilltree/skills-client-js';
-
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import axios from 'axios';
 
@@ -22,10 +21,11 @@ const refreshAuthorization = (failedRequest) => {
   SkillsConfiguration.setAuthToken(null);
   return axios.get(SkillsConfiguration.getAuthenticator())
     .then((result) => {
-      const accessToken =  result.data.access_token;
+      const accessToken = result.data.access_token;
       SkillsConfiguration.setAuthToken(accessToken);
-      if (failedRequest) {
-        failedRequest.response.config.headers.Authorization = `Bearer ${accessToken}`;
+      const fr = failedRequest;
+      if (fr) {
+        fr.response.config.headers.Authorization = `Bearer ${accessToken}`;
       }
       axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
       return Promise.resolve();
@@ -39,12 +39,12 @@ export default {
   getSkillLevel(projectId) {
     let authenticationPromise = Promise.resolve();
     if (SkillsConfiguration.getAuthenticator() !== 'pki') {
-      if (!SkillsConfiguration.getAuthToken() ||!axios.defaults.headers.common.Authorization) {
+      if (!SkillsConfiguration.getAuthToken() || !axios.defaults.headers.common.Authorization) {
         authenticationPromise = refreshAuthorization();
       }
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       authenticationPromise.then(() => {
         axios.get(`${SkillsConfiguration.getServiceUrl()}/api/projects/${projectId}/level`, { withCredentials: true })
           .then((result) => {
@@ -52,5 +52,5 @@ export default {
           });
       });
     });
-  }
-}
+  },
+};

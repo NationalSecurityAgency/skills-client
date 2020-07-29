@@ -17,7 +17,8 @@
         "deploy-to-examples": "npm run build && cp ./dist/skills-display-js.umd.min.js ../skills-examples/skills-example-client-js/app/assets/js/@skilltree/skills-client-js/dist",
         "test": "NODE_ENV=test jest --coverage",
         "test-watch": "npx jest --passWithNoTests --coverage --watch",
-        "prepublishOnly": "npm run build"
+        "prepublishOnly": "npm run build",
+        "lint": "eslint --ext .js src/**"
     },
     "author": "SkillTree Team",
     "devDependencies": {

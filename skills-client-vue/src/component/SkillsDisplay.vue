@@ -41,7 +41,7 @@ limitations under the License.
           ];
           const options = { ...defaults, ...value };
           const passedOptions = Object.keys(options);
-          const isValidConfigOption = passedOptions.every(passedOption => configOptions.includes(passedOption));
+          const isValidConfigOption = passedOptions.every((passedOption) => configOptions.includes(passedOption));
           return isValidConfigOption;
         },
       },
@@ -79,4 +79,3 @@ limitations under the License.
     },
   };
 </script>
-

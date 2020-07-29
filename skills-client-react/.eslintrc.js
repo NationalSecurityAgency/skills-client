@@ -2,9 +2,17 @@
 
 module.exports = {
   root: true,
+  settings: {
+    react: {
+      version: "detect"
+    }
+  },
 
   parserOptions: {
     parser: 'babel-eslint',
+    ecmaFeatures: {
+      jsx: true
+    }
   },
 
   env: {
@@ -12,13 +20,11 @@ module.exports = {
     node: true,
   },
 
-  // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
-  // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
-  extends: ['airbnb-base', 'plugin:vue/essential'],
+  extends: ['airbnb-base', 'plugin:react-hooks/recommended', 'plugin:react/recommended'],
 
-  // required to lint *.vue files
   plugins: [
-    'vue',
+    'react-hooks',
+    'react'
   ],
 
   ignorePatterns: ["**/*.test.js"],
@@ -31,7 +37,6 @@ module.exports = {
       'always',
       {
         js: 'never',
-        vue: 'never',
       },
     ],
     'no-param-reassign': [
@@ -54,26 +59,6 @@ module.exports = {
       },
     ],
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    indent: 'off',
-    'vue/script-indent': [
-      'error',
-      2,
-      {
-        baseIndent: 1,
-        switchCase: 0,
-        ignores: [],
-      },
-    ],
-    'vue/max-attributes-per-line': [
-      2,
-      {
-        singleline: 5,
-        multiline: {
-          max: 5,
-          allowFirstLine: true,
-        },
-      },
-    ],
     'max-len': [
       'error',
       {

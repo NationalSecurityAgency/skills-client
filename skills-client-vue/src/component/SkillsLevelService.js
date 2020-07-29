@@ -22,10 +22,11 @@ const refreshAuthorization = (failedRequest) => {
   SkillsConfiguration.setAuthToken(null);
   return axios.get(SkillsConfiguration.getAuthenticator())
     .then((result) => {
-      const accessToken =  result.data.access_token;
+      const accessToken = result.data.access_token;
       SkillsConfiguration.setAuthToken(accessToken);
-      if (failedRequest) {
-        failedRequest.response.config.headers.Authorization = `Bearer ${accessToken}`;
+      const fr = failedRequest;
+      if (fr) {
+          fr.response.config.headers.Authorization = `Bearer ${accessToken}`;
       }
       axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
       return Promise.resolve();
@@ -44,7 +45,7 @@ export default {
       }
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       authenticationPromise.then(() => {
         axios.get(`${SkillsConfiguration.getServiceUrl()}/api/projects/${projectId}/level`, { withCredentials: true })
           .then((result) => {
@@ -52,5 +53,5 @@ export default {
           });
       });
     });
-  }
-}
+  },
+};
