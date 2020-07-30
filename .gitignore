@@ -6,6 +6,7 @@
 
 .history
 /target/
+/target/skills-clilent/
 /skills-client-integration/skills-int-e2e-test/logs/
 /skills-client-integration/skills-int-e2e-test/cypress/videos/
 /skills-client-integration/skills-int-e2e-test/cypress/screenshots/
