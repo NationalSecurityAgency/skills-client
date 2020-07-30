@@ -69,6 +69,7 @@ class ProcessRunner {
                 } else {
                     p.consumeProcessOutput(sout, serr)
                 }
+                p.waitFor(5, TimeUnit.MINUTES)
             }
 
             String errMsg = serr ? new String(serr.toByteArray()) : ""

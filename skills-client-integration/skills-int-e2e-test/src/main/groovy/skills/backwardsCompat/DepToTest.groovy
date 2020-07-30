@@ -18,8 +18,7 @@ package skills.backwardsCompat
 import groovy.transform.ToString
 
 @ToString(includeNames = true)
-@Deprecated
-class TestDeps {
-    String projName
-    List<Dep> runWithDeps
+class DepToTest {
+    String name
+    List<VersionToTest> versions
 }

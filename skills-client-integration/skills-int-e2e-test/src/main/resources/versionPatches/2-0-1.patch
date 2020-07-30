@@ -1,0 +1,339 @@
+diff --git a/skills-client-integration/skills-int-client-js/package.json b/skills-client-integration/skills-int-client-js/package.json
+index a844bc6..8bc7b38 100644
+--- a/skills-client-integration/skills-int-client-js/package.json
++++ b/skills-client-integration/skills-int-client-js/package.json
+@@ -28,4 +28,4 @@
+         "license-checker": "^25.0.1",
+         "live-server": "1.2.1"
+     }
+-}
++}
+\ No newline at end of file
+diff --git a/skills-client-integration/skills-int-client-react/package.json b/skills-client-integration/skills-int-client-react/package.json
+index cdf8d19..73abfc4 100644
+--- a/skills-client-integration/skills-int-client-react/package.json
++++ b/skills-client-integration/skills-int-client-react/package.json
+@@ -48,4 +48,4 @@
+         "license-checker": "^25.0.1",
+         "react-scripts": "3.2.0"
+     }
+-}
++}
+\ No newline at end of file
+diff --git a/skills-client-integration/skills-int-client-vue/package.json b/skills-client-integration/skills-int-client-vue/package.json
+index 046ba82..0ea733a 100644
+--- a/skills-client-integration/skills-int-client-vue/package.json
++++ b/skills-client-integration/skills-int-client-vue/package.json
+@@ -49,14 +49,18 @@
+             "plugin:vue/essential",
+             "eslint:recommended"
+         ],
+-        "rules": {},
++        "rules": {
++            
++        },
+         "parserOptions": {
+             "parser": "babel-eslint"
+         }
+     },
+     "postcss": {
+         "plugins": {
+-            "autoprefixer": {}
++            "autoprefixer": {
++                
++            }
+         }
+     }
+-}
++}
+\ No newline at end of file
+diff --git a/skills-client-integration/skills-int-e2e-test/package.json b/skills-client-integration/skills-int-e2e-test/package.json
+index 2dfe4e3..04a2791 100644
+--- a/skills-client-integration/skills-int-e2e-test/package.json
++++ b/skills-client-integration/skills-int-e2e-test/package.json
+@@ -18,12 +18,17 @@
+     "cy:open:dev:react": "cypress open --config baseUrl=http://localhost:8083",
+     "integration:start": "java -Dspring.config.location=classpath:/application.properties,file:serverConfigs/integration_application.properties -jar ../skills-int-service/target/skills-int-service-*.jar",
+     "integration:start:release": "java -Dspring.config.location=classpath:/application.properties,file:serverConfigs/integration_application.properties -jar ./target/servicesJars/skills-int-service-*.jar",
++    "integration:start:background": "mkdir -p ./target/logs && npm run integration:start > ./target/logs/integration-apps.out &",
+     "integration:waitToStart": "npx wait-on -t 40000 http://localhost:8090",
+     "backend:start": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ../../../skills-service/service/target/skills-service-*.jar",
+-    "backend:start:ci": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -Dlogging.level.org.springframework.web.socket=TRACE -Dlogging.level.skills.services.events.SkillEventPublisher=TRACE -Dlogging.level.org.springframework.messaging=TRACE -jar ../../skills-service/backend-*.jar",
+-    "backend:start:release": "java -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ./target/servicesJars/backend-*.jar",
++    "backend:start:ci": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -Dlogging.level.org.springframework.web.socket=TRACE -Dlogging.level.skills.services.events.SkillEventPublisher=TRACE -Dlogging.level.org.springframework.messaging=TRACE -jar ../../skills-service/skills-service-*.jar",
++    "backend:start:ci:background": "mkdir -p ./target/logs && npm run backend:start:ci > ./target/logs/skills-service.out &",
++    "backend:start:release": "java -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ./target/servicesJars/skills-service-*.jar",
+     "backend:waitToStart": "npx wait-port -v -t 60000 localhost:8080",
+     "backend:resetDb": "java -cp ./db/h2-1.4.200.jar org.h2.tools.RunScript -url jdbc:h2:tcp://localhost:9090/mem:skills -user sa -script ./db/reset.sql",
++    "cyServices:start:skills-service:ci": "npm run backend:start:ci:background && npm run backend:waitToStart && echo 'skill-service started!!'",
++    "cyServices:start:integration-apps": "npm run integration:start:background && npm run integration:waitToStart && echo 'integration apps started!!'",
++    "cyServices:kill": "for procid in $(ps -aux | grep \"serverConfigs/.*properties\" | grep \"jar$\" | awk '{print $2}'); do echo \"killing ${procid}\"; kill -9 $procid; done",
+     "release": "release-it --dry-run"
+   },
+   "devDependencies": {
+diff --git a/skills-client-integration/skills-int-e2e-test/pom.xml b/skills-client-integration/skills-int-e2e-test/pom.xml
+index 10d22b8..f28ba3e 100644
+--- a/skills-client-integration/skills-int-e2e-test/pom.xml
++++ b/skills-client-integration/skills-int-e2e-test/pom.xml
+@@ -37,12 +37,18 @@
+             <groupId>commons-io</groupId>
+             <artifactId>commons-io</artifactId>
+             <version>2.5</version>
+-        </dependency>
++    </dependency>
++       <dependency>
++         <groupId>org.apache.commons</groupId>
++         <artifactId>commons-lang3</artifactId>
++	  <version>3.3.2</version>
++	</dependency>
+         <dependency>
+             <groupId>org.zeroturnaround</groupId>
+             <artifactId>zt-exec</artifactId>
+             <version>1.11</version>
+-        </dependency>
++    </dependency>
++    <!--
+         <dependency>
+             <groupId>profile</groupId>
+             <artifactId>call-stack-profiler</artifactId>
+@@ -61,7 +67,8 @@
+                     <artifactId>slf4j-log4j12</artifactId>
+                 </exclusion>
+             </exclusions>
+-        </dependency>
++	    </dependency>
++    -->
+         <dependency>
+             <groupId>com.vdurmont</groupId>
+             <artifactId>semver4j</artifactId>
+diff --git a/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/DownloadServiceJars.groovy b/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/DownloadServiceJars.groovy
+index 80ed5f3..ad2889c 100644
+--- a/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/DownloadServiceJars.groovy
++++ b/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/DownloadServiceJars.groovy
+@@ -15,7 +15,7 @@ limitations under the License.
+ */
+ package skills
+ 
+-import callStack.profiler.Profile
++//import callStack.profiler.Profile
+ import groovy.util.logging.Slf4j
+ import org.apache.commons.io.FileUtils
+ 
+@@ -29,7 +29,7 @@ class DownloadServiceJars {
+     // internal
+     TitlePrinter titlePrinter = new TitlePrinter()
+ 
+-    @Profile
++  //  @Profile
+     void cleanOutputDir(){
+         if (outputDir.exists()){
+             outputDir.listFiles().findAll({it.name.endsWith(".jar")}).each {
+@@ -40,7 +40,7 @@ class DownloadServiceJars {
+ //        outputDir.mkdirs()
+     }
+ 
+-    @Profile
++    //@Profile
+     void remove(String artifact, String version) {
+         File jar = getJarLoc(artifact, version)
+         if (jar.exists()){
+@@ -49,7 +49,7 @@ class DownloadServiceJars {
+         }
+     }
+ 
+-    @Profile
++    //@Profile
+     void download(String artifact, String version) {
+         assert outputDir
+         if (!outputDir.exists()){
+diff --git a/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/NpmProjBuilder.groovy b/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/NpmProjBuilder.groovy
+index 168e90d..ea13f9c 100644
+--- a/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/NpmProjBuilder.groovy
++++ b/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/NpmProjBuilder.groovy
+@@ -15,7 +15,7 @@ limitations under the License.
+ */
+ package skills
+ 
+-import callStack.profiler.Profile
++//import callStack.profiler.Profile
+ import groovy.util.logging.Slf4j
+ 
+ @Slf4j
+@@ -57,7 +57,7 @@ class NpmProjBuilder {
+         }
+     }
+ 
+-    @Profile
++  //  @Profile
+     List<NpmProj> build() {
+         if (locate) {
+             for (NpmProj p : projs) {
+diff --git a/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/ProjectsOps.groovy b/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/ProjectsOps.groovy
+index 4b8ba60..724ca5b 100644
+--- a/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/ProjectsOps.groovy
++++ b/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/ProjectsOps.groovy
+@@ -15,7 +15,7 @@ limitations under the License.
+ */
+ package skills
+ 
+-import callStack.profiler.Profile
++//import callStack.profiler.Profile
+ import groovy.util.logging.Slf4j
+ import org.apache.commons.io.FileUtils
+ 
+@@ -39,7 +39,7 @@ class ProjectsOps {
+         new File(workDir, "skills-client")
+     }
+ 
+-    @Profile
++ //   @Profile
+     private void clearWorkDir() {
+         log.info("releaseDir is [${workDir.absolutePath}]")
+         if (workDir.exists()) {
+@@ -51,7 +51,7 @@ class ProjectsOps {
+         workDir.mkdirs()
+     }
+ 
+-    @Profile
++   // @Profile
+     void checkoutLinkedNpmLibs(String switchToBranch = null) {
+         clearWorkDir()
+         titlePrinter.printTitle("Checkout skills-client")
+@@ -68,7 +68,7 @@ class ProjectsOps {
+     }
+ 
+ 
+-    @Profile
++    //@Profile
+     void buildClientIntApp() {
+         titlePrinter.printTitle("Building Client Examples App")
+         File loc = new File(skillsClient, "skills-client-integration")
+@@ -76,7 +76,7 @@ class ProjectsOps {
+     }
+ 
+ 
+-    @Profile
++    //@Profile
+     void runCypressTests(File location, String msg, List<String> cypressEnv = [], String npmIntegrationNamespace = "integration") {
+         titlePrinter.printTitle("Running cypress tests: [${msg}]")
+         killServerProcesses()
+diff --git a/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/SetupNpmLinks.groovy b/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/SetupNpmLinks.groovy
+index 0193982..cfad14d 100644
+--- a/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/SetupNpmLinks.groovy
++++ b/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/SetupNpmLinks.groovy
+@@ -15,8 +15,8 @@ limitations under the License.
+ */
+ package skills
+ 
+-import callStack.profiler.CProf
+-import callStack.profiler.Profile
++//import callStack.profiler.CProf
++//import callStack.profiler.Profile
+ import groovy.util.logging.Slf4j
+ import org.apache.commons.io.FileUtils
+ 
+@@ -29,7 +29,7 @@ class SetupNpmLinks {
+     static void main(String[] args) {
+         boolean shouldPrune = args.find({ it.equalsIgnoreCase("--prune") })
+         new SetupNpmLinks(shouldPrune: shouldPrune).init().doLink()
+-        log.info("Execution Prof:\n{}", CProf.prettyPrint())
++        //log.info("Execution Prof:\n{}", CProf.prettyPrint())
+     }
+ 
+     // configure
+@@ -44,7 +44,7 @@ class SetupNpmLinks {
+         return this
+     }
+ 
+-    @Profile
++  //  @Profile
+     void doLink() {
+         log.info("Should Prune = [{}]", shouldPrune)
+         assert projs
+@@ -57,7 +57,7 @@ class SetupNpmLinks {
+         build()
+     }
+ 
+-    @Profile
++    //@Profile
+     void removeAnyExistingLinks() {
+         titlePrinter.printTitle("removing existing links")
+         projs.each { NpmProj proj ->
+@@ -78,7 +78,7 @@ class SetupNpmLinks {
+         }
+     }
+ 
+-    @Profile
++    //@Profile
+     private void build() {
+         titlePrinter.printTitle("build")
+         projs.each { NpmProj npmProj ->
+@@ -86,7 +86,7 @@ class SetupNpmLinks {
+         }
+     }
+ 
+-    @Profile
++    //@Profile
+     private void validateLinks() {
+         titlePrinter.printTitle("validate links")
+         projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
+@@ -106,7 +106,7 @@ class SetupNpmLinks {
+         }
+     }
+ 
+-    @Profile
++   // @Profile
+     private void npmLinkToSkills() {
+         titlePrinter.printTitle("link")
+         projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
+@@ -117,7 +117,7 @@ class SetupNpmLinks {
+         }
+     }
+ 
+-    @Profile
++    //@Profile
+     private void npmLinkToReact() {
+         titlePrinter.printTitle("link react")
+         projs.findAll({ it.reactApp }).each { NpmProj npmProj ->
+@@ -127,7 +127,7 @@ class SetupNpmLinks {
+         }
+     }
+ 
+-    @Profile
++    //@Profile
+     private void createLinks() {
+         titlePrinter.printTitle("create links")
+         projs.findAll({ it.doOthersLinkToMe }).each {
+@@ -138,7 +138,7 @@ class SetupNpmLinks {
+         }
+     }
+ 
+-    @Profile
++    //@Profile
+     private void npmInstall() {
+         titlePrinter.printTitle("npm prune and npm install")
+         projs.each {
+diff --git a/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/TestDashboardBackwardCompat.groovy b/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/TestDashboardBackwardCompat.groovy
+index 55c9c7c..d399b1b 100644
+--- a/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/TestDashboardBackwardCompat.groovy
++++ b/skills-client-integration/skills-int-e2e-test/src/main/groovy/skills/TestDashboardBackwardCompat.groovy
+@@ -15,8 +15,8 @@ limitations under the License.
+ */
+ package skills
+ 
+-import callStack.profiler.CProf
+-import callStack.profiler.Profile
++//import callStack.profiler.CProf
++//import callStack.profiler.Profile
+ import groovy.json.JsonOutput
+ import groovy.util.logging.Slf4j
+ import org.apache.commons.io.FileUtils
+@@ -64,7 +64,7 @@ class TestDashboardBackwardCompat {
+         log.info("Profile \n{}", CProf.prettyPrint())
+     }
+ 
+-    @Profile
++  //  @Profile
+     private void doTest() {
+ 
+         titlePrinter.printTitle("Release Dashboard")

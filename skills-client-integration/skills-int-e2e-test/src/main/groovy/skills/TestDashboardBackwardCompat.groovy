@@ -20,10 +20,16 @@ package skills
 import groovy.json.JsonOutput
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
+import org.springframework.core.io.Resource
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver
+import org.springframework.core.io.support.ResourcePatternResolver
 import skills.backwardsCompat.BackwardCompatHelper
 import skills.backwardsCompat.Dep
+import skills.backwardsCompat.DepToTest
 import skills.backwardsCompat.Deps
 import skills.backwardsCompat.TestDeps
+import skills.backwardsCompat.TestRun
+import skills.backwardsCompat.VersionToTest
 
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -31,253 +37,311 @@ import java.util.concurrent.atomic.AtomicInteger
 class TestDashboardBackwardCompat {
 
     static void main(String[] args) {
-        if (!args){
-            println "FAILED! Missing param. Usage: TestDashboardBackwardCompat -backendVersion=<version>\n" +
-                    "  Example: TestDashboardBackwardCompat -backendVersion=1.1.2-SNAPSHOT"
-            System.exit(-1)
-        }
+//        if (!args){
+//            println "FAILED! Missing param. Usage: TestDashboardBackwardCompat -backendVersion=<version>\n" +
+//                    "  Example: TestDashboardBackwardCompat -backendVersion=1.1.2-SNAPSHOT"
+//            System.exit(-1)
+//        }
 
-        String backendVersionStr = args.find({ it.startsWith("-backendVersion=") })
-        assert backendVersionStr, "Must supply -backendVersion param"
-        String backendVersion = backendVersionStr.split("-backendVersion=")[1]
-        new TestDashboardBackwardCompat(backendVersion: backendVersion).test()
+//        String backendVersionStr = args.find({ it.startsWith("-backendVersion=") })
+//        assert backendVersionStr, "Must supply -backendVersion param"
+//        String backendVersion = backendVersionStr.split("-backendVersion=")[1]
+        new TestDashboardBackwardCompat().testNew()
     }
 
-    String backendVersion
-    File workDir = new File("./target/${TestDashboardBackwardCompat.class.simpleName}/")
+//    String backendVersion
+    File workDir = new File("./target/skills-client")
     // private
     TitlePrinter titlePrinter = new TitlePrinter()
-    enum Stage {
-        CheckoutLinked, SetupNpmLinks, BuildLinkedExamplesApp, DownloadBackendJar, RunCypressAgainstLinked, RunCypressForBackwardCompat
-    }
-    List<Stage> stages = [
-            Stage.CheckoutLinked,
-            Stage.SetupNpmLinks,
-            Stage.BuildLinkedExamplesApp,
-            Stage.DownloadBackendJar,
-            Stage.RunCypressAgainstLinked,
-            Stage.RunCypressForBackwardCompat,
-    ]
 
-    void test() {
-        doTest()
-//        log.info("Profile \n{}", CProf.prettyPrint())
+    List<String> versionsToExclude = ["2.0.0"]
+
+    void checkoutWorkingCopy() {
+        if (workDir.exists()) {
+            FileUtils.deleteDirectory(workDir)
+            log.info("Removed [$workDir]")
+        }
+        new ProcessRunner(loc: workDir.parentFile).run("git clone https://github.com/NationalSecurityAgency/skills-client.git")
     }
 
-//    @Profile
-    private void doTest() {
-
-        titlePrinter.printTitle("Release Dashboard")
-        ProjectsOps projectOps = new ProjectsOps(workDir: workDir)
-        if (stages.contains(Stage.CheckoutLinked)) {
-            projectOps.checkoutLinkedNpmLibs();
-        }
-
-        if (stages.contains(Stage.DownloadBackendJar)) {
-            DownloadServiceJars downloadServiceJars = new DownloadServiceJars(outputDir: workDir)
-            downloadServiceJars.cleanOutputDir()
-            downloadServiceJars.download("backend", backendVersion)
-        }
-
-        testTheLatestLibCode(projectOps)
-
-        if (stages.contains(Stage.RunCypressForBackwardCompat)) {
-            runBackwardsCompatTests(projectOps)
-        }
+    private void copyServiceJar() {
+        File serviceDir = new File(workDir, "skills-service")
+        serviceDir.mkdir()
+        File serviceJar = new File("./skills-service").listFiles().find({ it.name.startsWith("skills-service") && it.name.endsWith(".jar") })
+        File dest = new File(serviceDir, serviceJar.name)
+        FileUtils.copyFile(serviceJar, dest)
+        assert dest.exists()
+        log.info("Copied service jar to [$dest]")
     }
 
-    private void testTheLatestLibCode(ProjectsOps projectOps) {
-        if (stages.contains(Stage.SetupNpmLinks)) {
-            new SetupNpmLinks(root: projectOps.skillsClient, shouldPrune: false).init().doLink()
-        }
+    void applyPatch(String version) {
+        /**
+         * To create patch file:
+         * git add .
+         * git diff --cached > X-X-X.patch
+         */
 
-        if (stages.contains(Stage.BuildLinkedExamplesApp)) {
-            projectOps.buildClientIntApp()
+        ClassLoader cl = this.getClass().getClassLoader()
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(cl)
+        Resource[] resources = resolver.getResources("classpath*:/versionPatches/*")
+        String patchFile = version.replace(".", "-") + ".patch"
+        Resource found = resources.find { it.filename.endsWith(patchFile) }
+        if (found) {
+            FileUtils.copyToFile(found.inputStream, new File(workDir, patchFile))
         }
-
-        if (stages.contains(Stage.RunCypressAgainstLinked)) {
-            runCypressTests(projectOps)
-        }
+        new ProcessRunner(loc: workDir).run("git apply ${patchFile}")
     }
 
-    private void runBackwardsCompatTests(ProjectsOps projectOps) {
-        titlePrinter.printTitle("Running Backwards Compat tests")
-        new RemoveNpmLinks(root: projectOps.skillsClient, npmInstall: false).init().removeAnyExistingLinks()
-        List<TestDeps> toTest = new BackwardCompatHelper().load()
+    void testNew() {
+        checkoutWorkingCopy()
+        File clientIntLoc = new File(workDir, "skills-client-integration")
+        File e2eLoc = new File(clientIntLoc, "skills-int-e2e-test")
 
-        List<DepsRun> runsToPerform = generateRuns(toTest)
+        String tagsStrs = new ProcessRunner(loc: new File("./")).run("git tag").sout
+        List<String> versionsToTest = tagsStrs.split("\n").toList();
+        versionsToTest.removeAll(versionsToExclude)
+        log.info("Versions to test:\n  ${versionsToTest.join("\n  ")}")
 
-        List<DepsRun> oldAPI = runsToPerform.findAll({ it.isOldApi })
-        List<DepsRun> newAPI = runsToPerform.findAll({ !it.isOldApi })
+        for (String version : versionsToTest) {
+            titlePrinter.printTitle("Testing version [${version}]")
 
-        AtomicInteger runNumber = new AtomicInteger(1)
-        handleOldAPI(oldAPI, runNumber)
+            new ProcessRunner(loc: workDir).run("git checkout ${version}")
+            assert new ProcessRunner(loc: workDir).run("git status").sout.contains(version)
+            applyPatch(version)
+            copyServiceJar()
 
-        List<NpmProj> intProjectsToUpdate = projectOps.allProj
-        buildIntegrationAppAndRunTests(projectOps, newAPI, intProjectsToUpdate, runNumber)
+            List<NpmProj> allProjects = new NpmProjBuilder(loc: workDir).build()
+            List<NpmProj> intProjs = allProjects.findAll({ it.hasLinksToOtherProjects && it.name.contains("-int-") })
 
-        titlePrinter.printTitle("SUCCESS!! ALL tests passed! [${runNumber.get()-1}] executions using different lib versions.")
-    }
-
-    private void handleOldAPI(List<DepsRun> oldAPI, AtomicInteger runNumber){
-        if (oldAPI){
-            titlePrinter.printSubTitle("Executing tests based on old api")
-            File clientExamples = new File(workDir, "skills-client-examples")
-            if (clientExamples.exists()){
-                FileUtils.deleteDirectory(clientExamples)
-                log.info("Removed [{}]", clientExamples.absolutePath)
-            }
-            new ProcessRunner(loc: workDir).run("git clone git@gitlab.evoforge.org:skills/skills-client-examples.git")
-            File examplesProj = new File(workDir, "skills-client-examples")
-            new ProcessRunner(loc: examplesProj).run("git checkout 1.1.3")
-            oldAPI.each { DepsRun depsRun ->
-                assert depsRun.isOldApi
-                List<Deps> thisRun = depsRun.deps
-                List<NpmProj> projs = []
-                thisRun.each { Deps projDeps ->
-                    File loc = new File(workDir, "skills-client-examples/${projDeps.projName}")
-                    assert loc.exists()
-                    NpmProj packageToChange = new NpmProj(loc: loc, name: projDeps.projName)
-                    updatePackageJsonDeps(packageToChange, projDeps)
-                    projs.add(packageToChange)
-                }
-
-                titlePrinter.printSubTitle("Run #[${runNumber.get()}]: Prune old versions")
-                projs.each {
-                    it.exec("npm prune")
-                }
-
-                String output = thisRun.collect { "${it.projName}. Versions ${it.deps.collect({ "${it.name}:${it.version}" }).join(", ")}" }.join("\n")
-                titlePrinter.printTitle("Run #[${runNumber.get()}], Old API=[${depsRun.isOldApi}]: Running cypress test with: \n$output\n")
-
-                new ProcessRunner(loc: examplesProj).run("mvn --batch-mode clean package")
-
-                File backendJar = workDir.listFiles().find({ it.name.startsWith("backend") && it.name.endsWith("jar") })
-
-                assert backendJar.exists()
-                File serviceJars = new File(examplesProj, "e2e-tests/target/servicesJars/")
-                serviceJars.mkdirs()
-                FileUtils.copyFile(backendJar, new File(serviceJars, backendJar.name))
-
-                File examplesJar = new File(examplesProj, "skills-example-service/target/").listFiles().find({ it.name.startsWith("skills-example-service") && it.name.endsWith("jar") })
-                assert examplesJar.exists()
-                FileUtils.copyFile(examplesJar, new File(serviceJars, examplesJar.name))
-
-                try {
-                    String clientLibsMsg = thisRun.deps.flatten().collect({ "${it.name}=${it.version}" })
-                    String msg = "\nbackend jar: ${backendJar.name},\nclientLibs:\n${clientLibsMsg}"
-                    ProjectsOps projectsOps = new ProjectsOps()
-                    projectsOps.runCypressTests(new File(examplesProj, "e2e-tests"), msg, thisRun.deps.flatten().collect({ "${it.name}=${it.version}" }), "examples")
-                } catch (Throwable t) {
-                    log.error("FAILED TO RUN: ${thisRun.deps.flatten().collect({ "${it.name}=${it.version}" })}")
-                    throw t;
-                }
-
-                runNumber.incrementAndGet()
-            }
-        }
-    }
-
-    private List<List<Deps>> buildIntegrationAppAndRunTests(ProjectsOps projectOps, List<DepsRun> runsToPerform, List<NpmProj> intProjectsToUpdate, AtomicInteger runNumber) {
-        runsToPerform.each {
-            List<Deps> thisRun = it.deps
-            thisRun.each { Deps projDeps ->
-                NpmProj packageToChange = intProjectsToUpdate.find({ it.name == projDeps.projName })
-                assert packageToChange, "Failed to find project with name ${projDeps.projName}"
-                updatePackageJsonDeps(packageToChange, projDeps)
+            titlePrinter.printSubTitle("[${version}]: Update package.json and prune")
+            intProjs.each { NpmProj intProj ->
+                String lookForDep = intProj.name.replaceAll("-int", "")
+                updatePackageJsonDeps(intProj, "@skilltree/$lookForDep", version)
+                intProj.exec("npm prune")
             }
 
-            titlePrinter.printSubTitle("Run #[${runNumber.get()}]: Prune old versions")
-            intProjectsToUpdate.findAll({ it.name.contains("-client-") }).each {
-                it.exec("npm prune")
-            }
+            titlePrinter.printSubTitle("[${version}]: Building Client Examples App")
+            new ProcessRunner(loc: clientIntLoc).run("mvn --batch-mode clean package")
 
-            String output = thisRun.collect { "${it.projName}. Versions ${it.deps.collect({ "${it.name}:${it.version}" }).join(", ")}" }.join("\n")
-            titlePrinter.printTitle("Run #[${runNumber.get()}], Old API=[${it.isOldApi}]: Running cypress test with: \n$output\n")
-            projectOps.buildClientIntApp()
-            runCypressTests(projectOps, output, "!!!!FAILED!!!! while running with:\n${output}", thisRun.deps.flatten().collect({ "${it.name}=${it.version}" }))
-            runNumber.incrementAndGet()
+            titlePrinter.printSubTitle("[${version}]: Running cypress test with")
+            String output = "Testing version [$version]"
+            runCypressTests(e2eLoc, output, "!!!!FAILED!!!! while running with:\n${output}")
         }
     }
 
-    class DepsRun {
-        List<Deps> deps
-        boolean isOldApi = false
-    }
-
-    private List<DepsRun> generateRuns(List<TestDeps> toTest) {
-        List<DepsRun> res = []
-        List<String> coveredDeps = []
-        boolean performWork = true
-
-        while (performWork) {
-            List<Deps> thisRun = []
-            boolean stillWork = false;
-            toTest.each { TestDeps testDeps ->
-                boolean found = false;
-                depsLoop:
-                for (Deps depsForThisRun in testDeps.runWithDeps) {
-                    if (!coveredDeps.contains(depsForThisRun.uuid)) {
-                        coveredDeps.add(depsForThisRun.uuid)
-                        thisRun.add(depsForThisRun)
-                        found = true;
-                        stillWork = true;
-                        break depsLoop;
-                    }
-                }
-                // use the earliest (last in the list) if one is not found
-                if (!found) {
-                    thisRun.add(testDeps.runWithDeps.last())
-                }
-            }
-            if (stillWork) {
-                boolean isOldApi = thisRun.collect { it.deps.collect({it.name})}.flatten() .contains("@skilltree/skills-client-configuration")
-                res.add(new DepsRun(deps: thisRun, isOldApi: isOldApi))
-            }
-            performWork = stillWork;
-        }
-
-        return res;
-    }
-
-    private Object updatePackageJsonDeps(NpmProj packageToChange, Deps depsForThisRun) {
-        assert packageToChange
-        assert depsForThisRun
+    private Object updatePackageJsonDeps(NpmProj packageToChange, String depName, String version) {
+        assert packageToChange && depName && version
         def json = packageToChange.getPackageJson()
-        depsForThisRun.deps.each { Dep depToChange ->
-            json.dependencies."${depToChange.name}" = depToChange.version
-        }
+        json.dependencies."${depName}" = version
         String jsonToSave = JsonOutput.prettyPrint(JsonOutput.toJson(json))
         File f = new File(packageToChange.loc, "package.json")
         assert f.exists()
         f.write(jsonToSave)
 
         // sanity check
-        depsForThisRun.deps.each { Dep depToChange ->
-            assert packageToChange.packageJson.dependencies."$depToChange.name" == depToChange.version
-        }
+        assert packageToChange.packageJson.dependencies."${depName}" == version
     }
 
-    private void runCypressTests(ProjectsOps projectOps, String clientLibsMsg = " Latest using npm link", String errMessage = "!!!!FAILED!!!! while running latest code using 'npm link'", List<String> env = []) {
-        File backendJar = workDir.listFiles().find({ it.name.startsWith("backend") && it.name.endsWith("jar") })
-
-        assert backendJar.exists()
-        File serviceJars = new File(projectOps.skillsClient, "skills-client-integration/skills-int-e2e-test/target/servicesJars/")
-        serviceJars.mkdirs()
-        FileUtils.copyFile(backendJar, new File(serviceJars, backendJar.name))
-
-        File examplesJar = new File(projectOps.skillsClient, "skills-client-integration/skills-int-service/target/").listFiles().find({ it.name.startsWith("skills-int-service") && it.name.endsWith("jar") })
-        assert examplesJar.exists()
-        FileUtils.copyFile(examplesJar, new File(serviceJars, examplesJar.name))
-
+    private void runCypressTests(File e2eProj, String clientLibsMsg = " Latest using npm link", String errMessage = "!!!!FAILED!!!! while running latest code using 'npm link'", List<String> env = []) {
         try {
-            String msg = "\nbackend jar: ${backendJar.name},\nclientLibs:\n${clientLibsMsg}"
-            projectOps.runCypressTests(new File(projectOps.skillsClient, "skills-client-integration/skills-int-e2e-test"), msg, env)
+            doRunCypressTests(e2eProj, clientLibsMsg, env)
         } catch (Throwable t) {
             log.error(errMessage)
             throw t;
         }
     }
+
+    private void doRunCypressTests(File e2eProj, String msg, List<String> cypressEnv = [], String npmIntegrationNamespace = "integration") {
+        titlePrinter.printTitle("Running cypress tests: [${msg}]")
+        new ProcessRunner(loc: e2eProj).run("npm install")
+        new ProcessRunner(loc: e2eProj, failWithErrMsg: false).run("npm run cyServices:kill")
+        try {
+            new ProcessRunner(loc: e2eProj, waitForOutput: false).run("npm run cyServices:start:skills-service:ci")
+            new ProcessRunner(loc: e2eProj, waitForOutput: false).run("npm run cyServices:start:integration-apps")
+
+            titlePrinter.printSubTitle("Starting Cypress tests [${msg}]")
+
+            String env = cypressEnv ? " --env ${cypressEnv.join(",")}" : ""
+            new ProcessRunner(loc: e2eProj).run("npx cypress run${env}")
+        } finally {
+            new ProcessRunner(loc: e2eProj, failWithErrMsg: false).run("npm run cyServices:kill")
+        }
+    }
+
+
+//    private List<TestRun> generateTestRuns(List<DepToTest> toTest) {
+//        DepToTest mostRuns = toTest.sort { it.versions.size() }.last()
+//        toTest.remove(mostRuns)
+//        return mostRuns.versions.collect { VersionToTest testMe ->
+//            testMe.tested = true
+//            List<VersionToTest> testRun = [testMe]
+//            toTest.each {
+//                VersionToTest versionToTest = it.versions.find { !it.tested }
+//                if (versionToTest) {
+//                    testRun.add(versionToTest)
+//                    versionToTest.tested = true
+//                } else {
+//                    testRun.add(it.versions.last())
+//                }
+//            }
+//
+//            new TestRun(versions: testRun)
+//        }
+//    }
+//
+//    enum Stage {
+//        CheckoutLinked, SetupNpmLinks, BuildLinkedExamplesApp, DownloadBackendJar, RunCypressAgainstLinked, RunCypressForBackwardCompat
+//    }
+//    List<Stage> stages = [
+//            Stage.CheckoutLinked,
+//            Stage.SetupNpmLinks,
+//            Stage.BuildLinkedExamplesApp,
+//            Stage.DownloadBackendJar,
+//            Stage.RunCypressAgainstLinked,
+//            Stage.RunCypressForBackwardCompat,
+//    ]
+//
+//    void test() {
+//        List<TestDeps> toTest = new BackwardCompatHelper().load()
+////        doTest()
+////        log.info("Profile \n{}", CProf.prettyPrint())
+//    }
+//
+////    @Profile
+//    private void doTest() {
+//
+//        titlePrinter.printTitle("Test Dashboard Backwards Compatibility")
+//        ProjectsOps projectOps = new ProjectsOps(workDir: workDir)
+//        if (stages.contains(Stage.CheckoutLinked)) {
+//            projectOps.checkoutLinkedNpmLibs();
+//        }
+//
+//        if (stages.contains(Stage.DownloadBackendJar)) {
+//            DownloadServiceJars downloadServiceJars = new DownloadServiceJars(outputDir: workDir)
+//            downloadServiceJars.cleanOutputDir()
+//            downloadServiceJars.download("backend", backendVersion)
+//        }
+//
+//        testTheLatestLibCode(projectOps)
+//
+//        if (stages.contains(Stage.RunCypressForBackwardCompat)) {
+//            runBackwardsCompatTests(projectOps)
+//        }
+//    }
+//
+//    private void testTheLatestLibCode(ProjectsOps projectOps) {
+//        if (stages.contains(Stage.SetupNpmLinks)) {
+//            new SetupNpmLinks(root: projectOps.skillsClient, shouldPrune: false).init().doLink()
+//        }
+//
+//        if (stages.contains(Stage.BuildLinkedExamplesApp)) {
+//            projectOps.buildClientIntApp()
+//        }
+//
+//        if (stages.contains(Stage.RunCypressAgainstLinked)) {
+//            runCypressTests(projectOps)
+//        }
+//    }
+//
+//    private void runBackwardsCompatTests(ProjectsOps projectOps) {
+//        titlePrinter.printTitle("Running Backwards Compat tests")
+//        new RemoveNpmLinks(root: projectOps.skillsClient, npmInstall: false).init().removeAnyExistingLinks()
+//        List<TestDeps> toTest = new BackwardCompatHelper().load()
+//
+//        List<DepsRun> runsToPerform = generateRuns(toTest)
+//
+//        List<DepsRun> newAPI = runsToPerform.findAll({ !it.isOldApi })
+//
+//        AtomicInteger runNumber = new AtomicInteger(1)
+//
+//        List<NpmProj> intProjectsToUpdate = projectOps.allProj
+//        buildIntegrationAppAndRunTests(projectOps, newAPI, intProjectsToUpdate, runNumber)
+//
+//        titlePrinter.printTitle("SUCCESS!! ALL tests passed! [${runNumber.get() - 1}] executions using different lib versions.")
+//    }
+//
+//    private List<List<Deps>> buildIntegrationAppAndRunTests(ProjectsOps projectOps, List<DepsRun> runsToPerform, List<NpmProj> intProjectsToUpdate, AtomicInteger runNumber) {
+//        runsToPerform.each {
+//            List<Deps> thisRun = it.deps
+//            thisRun.each { Deps projDeps ->
+//                NpmProj packageToChange = intProjectsToUpdate.find({ it.name == projDeps.projName })
+//                assert packageToChange, "Failed to find project with name ${projDeps.projName}"
+//                updatePackageJsonDepsOld(packageToChange, projDeps)
+//            }
+//
+//            titlePrinter.printSubTitle("Run #[${runNumber.get()}]: Prune old versions")
+//            intProjectsToUpdate.findAll({ it.name.contains("-client-") }).each {
+//                it.exec("npm prune")
+//            }
+//
+//            String output = thisRun.collect { "${it.projName}. Versions ${it.deps.collect({ "${it.name}:${it.version}" }).join(", ")}" }.join("\n")
+//            titlePrinter.printTitle("Run #[${runNumber.get()}], Old API=[${it.isOldApi}]: Running cypress test with: \n$output\n")
+//            projectOps.buildClientIntApp()
+//            runCypressTests(projectOps, output, "!!!!FAILED!!!! while running with:\n${output}", thisRun.deps.flatten().collect({ "${it.name}=${it.version}" }))
+//            runNumber.incrementAndGet()
+//        }
+//    }
+//
+//    class DepsRun {
+//        List<Deps> deps
+//        boolean isOldApi = false
+//    }
+//
+//    private List<DepsRun> generateRuns(List<TestDeps> toTest) {
+//        List<DepsRun> res = []
+//        List<String> coveredDeps = []
+//        boolean performWork = true
+//
+//        while (performWork) {
+//            List<Deps> thisRun = []
+//            boolean stillWork = false;
+//            toTest.each { TestDeps testDeps ->
+//                boolean found = false;
+//                depsLoop:
+//                for (Deps depsForThisRun in testDeps.runWithDeps) {
+//                    if (!coveredDeps.contains(depsForThisRun.uuid)) {
+//                        coveredDeps.add(depsForThisRun.uuid)
+//                        thisRun.add(depsForThisRun)
+//                        found = true;
+//                        stillWork = true;
+//                        break depsLoop;
+//                    }
+//                }
+//                // use the earliest (last in the list) if one is not found
+//                if (!found) {
+//                    thisRun.add(testDeps.runWithDeps.last())
+//                }
+//            }
+//            if (stillWork) {
+//                boolean isOldApi = thisRun.collect { it.deps.collect({ it.name }) }.flatten().contains("@skilltree/skills-client-configuration")
+//                res.add(new DepsRun(deps: thisRun, isOldApi: isOldApi))
+//            }
+//            performWork = stillWork;
+//        }
+//
+//        return res;
+//    }
+//
+//
+//    private Object updatePackageJsonDepsOld(NpmProj packageToChange, Deps depsForThisRun) {
+//        assert packageToChange
+//        assert depsForThisRun
+//        def json = packageToChange.getPackageJson()
+//        depsForThisRun.deps.each { Dep depToChange ->
+//            json.dependencies."${depToChange.name}" = depToChange.version
+//        }
+//        String jsonToSave = JsonOutput.prettyPrint(JsonOutput.toJson(json))
+//        File f = new File(packageToChange.loc, "package.json")
+//        assert f.exists()
+//        f.write(jsonToSave)
+//
+//        // sanity check
+//        depsForThisRun.deps.each { Dep depToChange ->
+//            assert packageToChange.packageJson.dependencies."$depToChange.name" == depToChange.version
+//        }
+//    }
+
+
 }
 
 
