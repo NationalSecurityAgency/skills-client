@@ -19,7 +19,8 @@
         "clean": "rm -rfv dist",
         "watch": "npm run clean && rollup -c --watch",
         "test": "npx jest --passWithNoTests",
-        "test-watch": "npx jest --passWithNoTests --watch"
+        "test-watch": "npx jest --passWithNoTests --watch",
+        "lint": "npx eslint --ext .js, src/**"
     },
     "author": "SkillTree Team",
     "peerDependencies": {
@@ -49,7 +50,10 @@
         "rollup-plugin-json": "4.0.0",
         "rollup-plugin-peer-deps-external": "^2.2.0",
         "rollup-plugin-terser": "5.1.2",
-        "rollup-plugin-uglify": "6.0.3"
+        "rollup-plugin-uglify": "6.0.3",
+        "eslint-plugin-react-hooks": "4.0.8",
+        "babel-eslint": "10.1.0",
+        "eslint-plugin-react": "7.20.5"
     },
     "dependencies": {
         "@skilltree/skills-client-js": "2.0.1",

@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import SkillsDirective from './directive/SkillsReporterDirective';
-import SkillsDisplay from './component/SkillsDisplay.vue';
-import SkillsLevel from './component/SkillsLevel.vue';
+import Vue from 'vue';
 import {
   SkillsConfiguration,
   SkillsReporter,
   SUCCESS_EVENT,
   FAILURE_EVENT,
   SkillsDisplayJS,
-  SkillsLevelJS
+  SkillsLevelJS,
 } from '@skilltree/skills-client-js';
+import SkillsDirective from './directive/SkillsReporterDirective';
+import SkillsDisplay from './component/SkillsDisplay.vue';
+import SkillsLevel from './component/SkillsLevel.vue';
 
-const install = (Vue) => {
-  Vue.directive('skills', SkillsDirective);
+const install = (vue) => {
+  vue.directive('skills', SkillsDirective);
 };
 
 if (window.Vue) {
@@ -48,4 +49,3 @@ export {
   SkillsDisplayJS,
   SkillsLevelJS,
 };
-

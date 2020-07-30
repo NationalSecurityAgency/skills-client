@@ -20,43 +20,42 @@ import './SkillsDisplay.css';
 
 let clientDisplay = null;
 const destroy = (cd) => {
-    if(cd){
-        cd.destroy();
-    }
+  if (cd) {
+    cd.destroy();
+  }
 };
+// eslint-disable-next-line object-curly-newline
+const SkillDisplay = ({ theme = null, version = null, userId = null, options = {} }) => {
+  React.useEffect(() => {
+    clientDisplay = new SkillsDisplayJS({
+      options,
+      theme,
+      version,
+      userId,
+    });
 
-const SkillDisplay = ({theme=null, version=null, userId=null, options={}}) => {
+    clientDisplay.attachTo(document.getElementById('clientSkillsDisplayContainer'));
 
-    React.useEffect(() => {
-        clientDisplay = new SkillsDisplayJS({
-            options: options,
-            theme: theme,
-            version: version,
-            userId: userId,
-        });
+    return () => {
+      destroy(clientDisplay);
+    };
+  }, [theme, version, userId, options]);
 
-        clientDisplay.attachTo(document.getElementById("clientSkillsDisplayContainer"));
-
-        return () => {
-            destroy(clientDisplay);
-        }
-    },[theme, version, userId, options]);
-
-    return ( <div id="clientSkillsDisplayContainer" /> );
+  return (<div id='clientSkillsDisplayContainer'/>);
 };
 
 SkillDisplay.propTypes = {
-    theme: PropTypes.object,
-    version: PropTypes.string,
-    userId: PropTypes.string,
-    options: PropTypes.shape({
-        serviceUrl: PropTypes.string,
-        projectId: PropTypes.string,
-        disableAutoScroll: PropTypes.bool,
-        autoScrollStrategy: PropTypes.string,
-        isSummaryOnly: PropTypes.bool,
-        scrollTopOffset: PropTypes.number,
-    }),
+  theme: PropTypes.object,
+  version: PropTypes.string,
+  userId: PropTypes.string,
+  options: PropTypes.shape({
+    serviceUrl: PropTypes.string,
+    projectId: PropTypes.string,
+    disableAutoScroll: PropTypes.bool,
+    autoScrollStrategy: PropTypes.string,
+    isSummaryOnly: PropTypes.bool,
+    scrollTopOffset: PropTypes.number,
+  }),
 };
 
 export default SkillDisplay;

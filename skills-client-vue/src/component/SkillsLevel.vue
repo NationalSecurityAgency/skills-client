@@ -23,8 +23,6 @@ limitations under the License.
 <script>
   import { SkillsConfiguration, SkillsLevelJS } from '@skilltree/skills-client-js';
 
-  const emptyArrayIfNull = value => value ? value : [];
-
   export default {
     props: {
       projectId: {
@@ -48,7 +46,7 @@ limitations under the License.
     },
     methods: {
       getProjectId() {
-        let projectId = this.projectId;
+        let projectId = this.project;
         if (!projectId) {
           projectId = SkillsConfiguration.getProjectId();
         }

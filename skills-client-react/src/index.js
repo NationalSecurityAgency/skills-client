@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import SkillsDisplay from './component/SkillsDisplay';
-import SkillsLevel from './component/SkillsLevel';
 import {
   SkillsConfiguration,
   SkillsReporter,
   SUCCESS_EVENT,
   FAILURE_EVENT,
-  SkillsDisplayJS
+  SkillsDisplayJS,
 } from '@skilltree/skills-client-js';
+import SkillsDisplay from './component/SkillsDisplay';
+import SkillsLevel from './component/SkillsLevel';
 
 SkillsConfiguration.skillsClientVersion = '__skillsClientVersion__';
 
@@ -32,5 +32,5 @@ export {
   FAILURE_EVENT,
   SkillsDisplayJS,
   SkillsDisplay,
-  SkillsLevel
+  SkillsLevel,
 };
