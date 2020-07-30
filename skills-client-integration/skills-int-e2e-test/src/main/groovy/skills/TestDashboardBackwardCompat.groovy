@@ -97,7 +97,8 @@ class TestDashboardBackwardCompat {
         File clientIntLoc = new File(workDir, "skills-client-integration")
         File e2eLoc = new File(clientIntLoc, "skills-int-e2e-test")
 
-        String tagsStrs = new ProcessRunner(loc: new File("./")).run("git tag").sout
+        String tagsStrs = new ProcessRunner(loc: workDir).run("git tag").sout
+        assert tagsStrs
         List<String> versionsToTest = tagsStrs.split("\n").toList();
         versionsToTest.removeAll(versionsToExclude)
         log.info("Versions to test:\n  ${versionsToTest.join("\n  ")}")
