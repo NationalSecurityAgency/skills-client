@@ -1,0 +1,18 @@
+<div>
+  <h5 class="text-info"><strong>{{ title }}</strong></h5>
+  <div class="card card-body bg-light">
+      <pre><code [highlight]="sampleCode" [languages]="['html', 'javascript']"></code></pre>
+  </div>
+  <div class="card card-body mt-3" [id]="formatId(title)">
+      <div id="exampleDirectiveClickEvent">
+        <div class="code-example">
+          <ng-template appPlaceholder></ng-template>
+        </div>
+      </div>
+      <hr>
+      <div class="text-primary">Result:</div>
+      <div class="border rounded p-3 bg-light">
+        <pre>{{ reportResult }}</pre>
+      </div>
+  </div>
+</div>

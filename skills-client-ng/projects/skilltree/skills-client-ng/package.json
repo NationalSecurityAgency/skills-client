@@ -1,0 +1,14 @@
+{
+  "name": "@skilltree/skills-client-ng",
+  "version": "0.0.1",
+  "scripts": {
+    "prepare": "node -e \"console.log('APP_VERSION = \\''+ process.env.npm_package_name + '-' + process.env.npm_package_version +'\\';')\" > src/version.js"
+  },
+  "peerDependencies": {
+    "@angular/common": "10.0.4",
+    "@angular/core": "10.0.4"
+  },
+  "dependencies": {
+    "tslib": "2.0.0"
+  }
+}

@@ -1,0 +1,7 @@
+<div ngbDropdown class="d-inline-block mx-2">
+  <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>{{skillId}}</button>
+  <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+    <button ngbDropdownItem *ngFor="let selectedSkill of available" (click)="setSelectedSkill(selectedSkill)">{{selectedSkill}}</button>
+  </div>
+</div>
+<button class="btn btn-outline-primary" [disabled]="!hasSelectedSkill()" (click)="reportSkill()">Report Skill</button>

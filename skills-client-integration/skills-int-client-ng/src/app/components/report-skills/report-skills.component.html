@@ -1,0 +1,20 @@
+<div class="container">
+  <h2>Report Skills Examples</h2>
+  <div class="text-primary">Global Event Result:</div>
+  <div id="globalEventResultDiv" class="border rounded p-3 bg-light">
+    <pre data-cy="globalEventResult">{{ globalEventResult }}</pre>
+  </div>
+
+  <div class="mt-5 mb-5" *ngFor="let example of examples">
+    <ng-template #examplesTarget></ng-template>
+  </div>
+</div>
+
+<footer class="text-muted bg-light py-5">
+  <div class="container">
+    <p class="float-right">
+      <a href="angular/reportSkills#">Back to top</a>
+    </p>
+    <p>Angular Examples Guide</p>
+  </div>
+</footer>
