@@ -22,29 +22,17 @@ import skills.TitlePrinter
 @Slf4j
 class BackwardCompatHelper {
 
-    List<TestDeps> load(){
-        File confJson = new File(getClass().getResource('/skills-service-backwards-compat-lib-versions.json').toURI())
-        def versionConf = new JsonSlurper().parse(confJson)
-        List<TestDeps> buildWithDeps = versionConf.collect { libItem ->
-            String libName = libItem.key
-            List<Deps> runWithDeps = libItem.value.collect { depsToUpdate ->
-                List<Dep> deps = depsToUpdate.collect {
-                    new Dep(name: it.dep, version: it.version)
-                }
-                new Deps(deps: deps, projName: libName)
-            }
+    private List<String> projects = ["skills-client-js", "skills-client-vue", "skills-client-react"]
 
-            new TestDeps(projName:libName, runWithDeps: runWithDeps)
+    List<DepToTest> load() {
+        return projects.collect { String projName ->
+            URL url = "https://registry.npmjs.org/@skilltree/${projName}".toURL()
+            String text = url.text
+            def clientJsInfo = new JsonSlurper().parseText(text)
+            List<String> versions = clientJsInfo.versions.collect { it.key }.sort()
+            return new DepToTest(name: projName, versions: versions.collect { new VersionToTest(version: it, projName: projName) })
         }
-
-        new TitlePrinter().printTitle("Backwards Compatibility Plan")
-        buildWithDeps.each {
-            log.info("[{}] test with the following deps:", it.projName)
-            it.runWithDeps.each { Deps deps ->
-                log.info("     {}", deps.deps.collect({"${it.name}:${it.version}"}).join(", "))
-            }
-        }
-
-        return buildWithDeps
     }
+
+
 }
