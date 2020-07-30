@@ -78,7 +78,7 @@ jobs:
       if: ${{ always() }}
       uses: actions/upload-artifact@v2
       with:
-        name: skills-service jar
+        name: result artifacts
         path: |
           ./skills-service/*.jar
           ./skills-client-integration/skills-int-service/target/*.jar
