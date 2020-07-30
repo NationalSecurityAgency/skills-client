@@ -67,7 +67,16 @@ class TestDashboardBackwardCompat {
     private void copyServiceJar() {
         File serviceDir = new File(workDir, "skills-service")
         serviceDir.mkdir()
-        File serviceJar = new File("./skills-service").listFiles().find({ it.name.startsWith("skills-service") && it.name.endsWith(".jar") })
+        log.info("Searching for jar, starting dir [${new File("./").absolutePath}]")
+        File serviceJar
+        ["./skills-service", "../../skills-service"].each {
+            if (!serviceJar) {
+                serviceJar = new File(it).listFiles().find({ it?.name.startsWith("skills-service") && it?.name.endsWith(".jar") })
+            }
+        }
+        assrert serviceJar
+//        File serviceJar = new File("./skills-service").listFiles().find({ it.name.startsWith("skills-service") && it.name.endsWith(".jar") })
+        assert serviceJar
         File dest = new File(serviceDir, serviceJar.name)
         FileUtils.copyFile(serviceJar, dest)
         assert dest.exists()
