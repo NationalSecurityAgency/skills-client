@@ -14,7 +14,8 @@ const routes: Routes = [{
 }, {
   path: 'angular/showSkills',
   component: SkillsDisplayComponent
-}
+},
+{ path: '**', component: ReportSkillsComponent }
 ];
 
 @NgModule({
