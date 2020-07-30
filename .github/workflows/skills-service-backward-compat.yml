@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name:  Backward Compatibility tests for skills-service
+name:  Skills-service Backward Compatibility
 
 on:
   push:
@@ -70,3 +70,11 @@ jobs:
     - name: see where dirs are
       run: ls -R ./
 
+    - name: upload result artifacts
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: result artifacts
+        path: |
+          ./skills-client-integration/skills-int-e2e-test/target/skills-client/skills-client-integration/skills-int-e2e-test/target/logs
+          ./skills-client-integration/skills-int-e2e-test/target/*.log
