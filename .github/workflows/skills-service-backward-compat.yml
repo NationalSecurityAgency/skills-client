@@ -67,14 +67,11 @@ jobs:
         java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.TestDashboardBackwardCompat org.springframework.boot.loader.PropertiesLauncher
         cd ../../
 
-    - name: see where dirs are
-      run: ls -R ./
-
     - name: upload result artifacts
       if: ${{ always() }}
       uses: actions/upload-artifact@v2
       with:
         name: result artifacts
         path: |
-          ./skills-client-integration/skills-int-e2e-test/target/skills-client/skills-client-integration/skills-int-e2e-test/target/logs
+          ./skills-client-integration/skills-int-e2e-test/target/skills-client/skills-client-integration/skills-int-e2e-test/target/logs/*.log
           ./skills-client-integration/skills-int-e2e-test/target/*.log
