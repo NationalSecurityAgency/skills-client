@@ -74,7 +74,7 @@ class TestDashboardBackwardCompat {
                 serviceJar = new File(it).listFiles().find({ it?.name.startsWith("skills-service") && it?.name.endsWith(".jar") })
             }
         }
-        assrert serviceJar
+        assert serviceJar
 //        File serviceJar = new File("./skills-service").listFiles().find({ it.name.startsWith("skills-service") && it.name.endsWith(".jar") })
         assert serviceJar
         File dest = new File(serviceDir, serviceJar.name)
