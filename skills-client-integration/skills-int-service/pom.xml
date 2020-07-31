@@ -63,6 +63,27 @@
 				<version>3.1.0</version>
 				<executions>
 					<execution>
+						<id>copy Angular frontend content</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/src/main/resources/public/angular</outputDirectory>
+							<overwrite>true</overwrite>
+							<resources>
+								<resource>
+									<directory>${project.parent.basedir}/skills-int-client-ng/dist/skills-int-client-ng</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
 						<id>copy React frontend content</id>
 						<phase>generate-resources</phase>
 						<goals>

@@ -7,6 +7,7 @@ target
 skills-example-service/src/main/resources/public/native
 skills-example-service/src/main/resources/public/vuejs
 skills-example-service/src/main/resources/public/react
+skills-example-service/src/main/resources/public/angular
 
 .DS_Store
 node_modules
