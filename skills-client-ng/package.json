@@ -1,24 +1,23 @@
 {
-  "name": "skills-client-ng",
+  "name": "skills-client-ng-parent",
   "version": "2.0.1",
   "license": "Apache-2.0",
   "description": "SkillTree Client Lib - Angular",
   "author": "SkillTree Team",
   "scripts": {
-    "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;Apache-2.0' --summary",
+    "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;Apache-2.0;0BSD' --summary",
     "licenseHeaderCheck": " npx license-check-and-add check -f license-add/license-add-config.json",
     "licenseHeaderAdd": " npx license-check-and-add add -f license-add/license-add-config.json",
     "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck ",
     "ng": "ng",
     "start": "ng serve",
     "serve": "ng serve",
-    "build": "npm run prepare && ng build --prod",
+    "build": "npm run licenseCheck && npm run prepare && ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "prepare": "cd projects/skilltree/skills-client-ng && npm run prepare && cd -"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "10.0.3",
     "@angular/common": "10.0.3",
