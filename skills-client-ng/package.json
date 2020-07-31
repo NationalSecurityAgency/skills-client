@@ -1,7 +1,14 @@
 {
   "name": "skills-client-ng",
   "version": "2.0.1",
+  "license": "Apache-2.0",
+  "description": "SkillTree Client Lib - Angular",
+  "author": "SkillTree Team",
   "scripts": {
+    "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;Apache-2.0' --summary",
+    "licenseHeaderCheck": " npx license-check-and-add check -f license-add/license-add-config.json",
+    "licenseHeaderAdd": " npx license-check-and-add add -f license-add/license-add-config.json",
+    "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck ",
     "ng": "ng",
     "start": "ng serve",
     "serve": "ng serve",
@@ -44,6 +51,8 @@
     "karma-coverage-istanbul-reporter": "3.0.2",
     "karma-jasmine": "3.3.0",
     "karma-jasmine-html-reporter": "1.5.0",
+    "license-check-and-add": "3.0.4",
+    "license-checker": "25.0.1",
     "ng-packagr": "10.0.0",
     "protractor": "7.0.0",
     "ts-node": "8.3.0",

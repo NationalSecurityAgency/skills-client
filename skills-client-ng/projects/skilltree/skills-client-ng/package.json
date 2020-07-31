@@ -1,6 +1,9 @@
 {
   "name": "@skilltree/skills-client-ng",
   "version": "2.0.1",
+  "license": "Apache-2.0",
+  "description": "SkillTree Client Lib - Angular",
+  "author": "SkillTree Team",
   "scripts": {
     "prepare": "node -e \"console.log('APP_VERSION = \\''+ process.env.npm_package_name + '-' + process.env.npm_package_version +'\\';')\" > src/version.js"
   },
