@@ -22,12 +22,8 @@ import ErrorPageUtils from './ErrorPageUtils';
 let uniqueId = 0;
 
 export default class SkillsDisplayJS {
-  constructor({
-    options,
-    theme,
-    version,
-    userId,
-  }) {
+  /* eslint-disable object-curly-newline */
+  constructor({ options, theme, version, userId } = {}) {
     this._validateOptions(options);
     this._options = { ...{ }, ...options };
     this._theme = theme;
