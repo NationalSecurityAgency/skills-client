@@ -64,6 +64,7 @@ jobs:
       run: |
         cd skills-client-integration/skills-int-e2e-test
         mvn --batch-mode clean package
+        export NO_COLOR=1
         java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.TestDashboardBackwardCompat org.springframework.boot.loader.PropertiesLauncher
         cd ../../
 
