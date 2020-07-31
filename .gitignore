@@ -14,5 +14,7 @@
 /skills-client-vue/package-lock.json
 /skills-client-react/package-lock.json
 /skills-client-js/package-lock.json
+/skills-client-ng/package-lock.json
 target
 
+/skills-client-ng/dist/
