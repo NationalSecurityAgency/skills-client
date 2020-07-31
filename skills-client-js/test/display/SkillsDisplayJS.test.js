@@ -483,6 +483,11 @@ describe('SkillsDisplayJS', () => {
         expect(client.options).toEqual({});
       });
 
+      it('supports empty constructor', () => {
+        let client = new SkillsDisplayJS();
+        expect(client.options).toEqual({});
+      });
+
       it('validates options', () => {
         const invalidOption = `${Math.random()}`;
         const options = {

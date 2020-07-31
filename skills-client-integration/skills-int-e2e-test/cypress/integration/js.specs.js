@@ -133,6 +133,30 @@ context("Native JS Tests", () => {
     });
   });
 
+  it("skill display - default options", () => {
+    cy.createDefaultTinyProject();
+    cy.server()
+      .route("/api/users/user1/token")
+      .as("getToken");
+    cy.backendPost("/api/projects/proj1/skills/Thor", {
+      userId: "user1",
+      timestamp: Date.now()
+    });
+    cy.visit("/native/clientDisplayDefaultOptions.html");
+    cy.wait(iFrameTimeout);
+
+    cy.iframe(body => {
+      cy.wrap(body).contains("My Level");
+      cy.wrap(body).contains("50 Points earned Today");
+      cy.wrap(body).contains("Subject 0");
+
+      cy.wrap(body)
+        .find(".skills-page-title-text-color")
+        .should("have.css", "background-color")
+        .and("equal", "rgb(255, 255, 255)");
+    });
+  });
+
   it("skill display - summary only", () => {
     cy.createDefaultTinyProject();
     cy.server()

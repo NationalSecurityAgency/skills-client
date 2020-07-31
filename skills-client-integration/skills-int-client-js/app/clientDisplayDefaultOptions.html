@@ -1,0 +1,91 @@
+<!--
+Copyright 2020 SkillTree
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Skills Examples - Native Javascript</title>
+
+  <link rel="stylesheet" type="text/css" href="./assets/app.css"/>
+  <link rel="stylesheet" type="text/css" href="./assets/js/bootstrap/dist/css/bootstrap.css">
+
+  <script type="text/javascript" src="./assets/js/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="./assets/js/axios/dist/axios.min.js"></script>
+  <script type="text/javascript" src="./assets/js/js-beautify/js/lib/beautify.js"></script>
+  <script type="text/javascript" src="./assets/js/bootstrap/dist/js/bootstrap.bundle.js"></script>
+
+  <script type="text/javascript" src="assets/js/@skilltree/skills-client-js/dist/skills-client-js.umd.min.js"></script>
+
+  <script type="text/javascript">
+    axios.get("/api/config")
+      .then((result) => {
+        SkillsClient.SkillsConfiguration.configure(result.data);
+      });
+
+    SkillsClient.SkillsConfiguration.afterConfigure().then(() => {
+      const initializeSkillsDisplay = () => {
+        const clientDisplay = new SkillsClient.SkillsDisplayJS();
+        clientDisplay.attachTo(document.querySelector('#skills-client-display'));
+      };
+      if (document.readyState === "complete"
+        || document.readyState === "loaded"
+        || document.readyState === "interactive") {
+        initializeSkillsDisplay();
+      } else {
+        document.addEventListener("DOMContentLoaded", initializeSkillsDisplay);
+      }
+    });
+  </script>
+</head>
+<body>
+
+<div id="app">
+  <div>
+    <div>
+      <nav class="navbar navbar-dark bg-info">
+        <a href="#" class="navbar-brand">Native Javascript Integration Examples</a>
+
+        <ul class="navbar-nav flex-row mr-auto">
+          <li class="nav-item pr-3">
+            <a class="nav-link" href="index.html">Report Skill Events</a>
+          </li>
+          <li class="nav-item active pr-3">
+            <a class="nav-link" href="javascript:void(0)">User Display</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="container-fluid mt-3">
+      <div class="container">
+        <div
+          style="min-height: 860px">
+          <div id="skills-client-display" />
+        </div>
+      </div>
+    </div>
+
+    <footer class="text-muted bg-light py-5">
+      <div class="container">
+        <p>Native Javascript Examples Guide</p>
+        <p></p>
+      </div>
+    </footer>
+  </div>
+</div>
+
+</body>
+</html>
