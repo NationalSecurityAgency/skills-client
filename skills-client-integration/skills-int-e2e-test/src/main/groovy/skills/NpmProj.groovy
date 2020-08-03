@@ -69,11 +69,11 @@ class NpmProj {
         return reactModule
     }
 
-    File getAngularModuleLinkDir(boolean createIfDoesNotExist = true) {
+    File getAngularModuleLinkDir(boolean checkForExistence = true) {
         // dist/skilltree/skills-client-ng
-        File ngModuleLinkDir = new File(new File(loc, "dist/"), this.name)
-        if (createIfDoesNotExist) {
-            assert ngModuleLinkDir.mkdirs()
+        File ngModuleLinkDir = new File(new File(new File(loc, "dist/"), "skilltree"), this.name)
+        if (checkForExistence) {
+            assert ngModuleLinkDir.exists()
         }
         return ngModuleLinkDir
     }
