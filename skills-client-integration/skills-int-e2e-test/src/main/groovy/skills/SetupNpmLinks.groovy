@@ -51,18 +51,29 @@ class SetupNpmLinks {
         new RemoveNpmLinks(shouldPrune: shouldPrune, npmInstall: false).init().removeAnyExistingLinks()
         createLinks()
         npmLinkToSkills()
+        install()
         npmLinkToReact()
         validateLinks()
         build()
     }
 
 //    @Profile
+    private void install() {
+        titlePrinter.printTitle("install")
+        projs.each { NpmProj npmProj ->
+            if (!npmProj.isAngularModule()) {
+                // angular modules were installed within createLinks()
+                npmProj.exec("npm install")
+            }
+        }
+    }
+
+//    @Profile
     private void build() {
-        titlePrinter.printTitle("install and build")
+        titlePrinter.printTitle("build")
         projs.each { NpmProj npmProj ->
             if (!npmProj.isAngularModule()) {
                 // angular modules were built within createLinks()
-                npmProj.exec("npm install")
                 npmProj.exec("npm run build")
             }
         }
