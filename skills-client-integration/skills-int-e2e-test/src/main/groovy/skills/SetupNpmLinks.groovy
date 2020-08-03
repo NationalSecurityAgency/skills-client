@@ -109,6 +109,10 @@ class SetupNpmLinks {
     private void createLinks() {
         titlePrinter.printTitle("create links")
         projs.findAll({ it.doOthersLinkToMe }).each {
+            if (it.isAngularModule()) {
+                File origLoc = it.loc;
+                it.loc = it.getAngularModuleLinkDir(true)
+            }
             titlePrinter.printSubTitle("create link for ${it.loc.name}")
             it.exec("ls")
             it.exec("node -v")
