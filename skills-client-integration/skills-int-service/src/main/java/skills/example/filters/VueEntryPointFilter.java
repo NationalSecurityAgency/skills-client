@@ -43,7 +43,6 @@ public class VueEntryPointFilter implements Filter {
             }
             if (isAngularEntryPoint(requestUri)) {
                 targetUri = "/angular/index.html";
-                System.out.println("\n\nFound angular request: ["+requestUri+"]\n\n");
             }
             httpServletRequest.getRequestDispatcher(targetUri).forward(request, response);
         } else {
