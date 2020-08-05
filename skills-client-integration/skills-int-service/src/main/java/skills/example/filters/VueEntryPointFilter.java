@@ -61,6 +61,6 @@ public class VueEntryPointFilter implements Filter {
         return requestUri.replaceAll("\\/", "").equals("vuejs");
     }
     private boolean isAngularEntryPoint(String requestUri) {
-        return requestUri.equals("/angular/reportSkills") || requestUri.equals("/angular/showSkills");
+        return requestUri.contains("/angular/reportSkills") || requestUri.contains("/angular/showSkills");
     }
 }
