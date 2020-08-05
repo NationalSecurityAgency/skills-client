@@ -16,7 +16,7 @@
 import Utils from "./Utils";
 
 const iFrameTimeout = 3000;
-const homePage = '/angular/index.html'
+const homePage = '/angular/reportSkills'
 
 context('Angular Tests', () => {
 
@@ -171,7 +171,7 @@ context('Angular Tests', () => {
 
         cy.server().route('POST', '/api/projects/proj1/skills/IronMan').as('postSkill')
 
-        cy.visit('/vuejs#/')
+        cy.visitHomePage(homePage);
 
         Cypress.Commands.add("clickOnDirectiveBtn", (skillApplied = true) => {
             cy.get('#SkillsDirectiveClickEvent button').click()
