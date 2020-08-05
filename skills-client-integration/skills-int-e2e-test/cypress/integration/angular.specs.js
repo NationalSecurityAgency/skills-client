@@ -342,7 +342,7 @@ context('Angular Tests', () => {
             cy.wrap(body).contains('Earn up to 200 points')
         })
 
-        cy.visit('/vuejs#/')
+        cy.visit('/angular/reportSkills')
         cy.visit('/angular/showSkills?skillsVersion=1')
         cy.wait('@getToken')
         cy.wait(iFrameTimeout);
@@ -350,7 +350,7 @@ context('Angular Tests', () => {
             cy.wrap(body).contains('Earn up to 150 points')
         })
 
-        cy.visit('/vuejs#/')
+        cy.visit('/angular/reportSkills')
         cy.visit('/angular/showSkills?skillsVersion=0')
         cy.wait('@getToken')
         cy.wait(iFrameTimeout);
