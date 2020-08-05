@@ -34,7 +34,7 @@
     <properties>
         <!--suppress UnresolvedMavenProperty -->
         <nexusServer>${nexus.url}</nexusServer>
-        <node.version>v11.6.0</node.version>
+        <node.version>v12.6.0</node.version>
     </properties>
 
     <distributionManagement>
