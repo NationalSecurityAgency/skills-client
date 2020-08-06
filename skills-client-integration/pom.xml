@@ -27,13 +27,14 @@
 	    <module>skills-int-client-js</module>
         <module>skills-int-client-vue</module>
         <module>skills-int-client-react</module>
+        <module>skills-int-client-ng</module>
         <module>skills-int-service</module>
         <module>skills-int-e2e-test</module>
     </modules>
     <properties>
         <!--suppress UnresolvedMavenProperty -->
         <nexusServer>${nexus.url}</nexusServer>
-        <node.version>v11.6.0</node.version>
+        <node.version>v12.6.0</node.version>
     </properties>
 
     <distributionManagement>

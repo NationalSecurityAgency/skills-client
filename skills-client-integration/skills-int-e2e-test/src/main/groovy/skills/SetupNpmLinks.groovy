@@ -48,19 +48,34 @@ class SetupNpmLinks {
     void doLink() {
         log.info("Should Prune = [{}]", shouldPrune)
         assert projs
-        new RemoveNpmLinks(shouldPrune: shouldPrune).init().removeAnyExistingLinks()
+        new RemoveNpmLinks(shouldPrune: shouldPrune, npmInstall: false).init().removeAnyExistingLinks()
         createLinks()
         npmLinkToSkills()
+        install()
         npmLinkToReact()
         validateLinks()
         build()
     }
 
 //    @Profile
+    private void install() {
+        titlePrinter.printTitle("install")
+        projs.each { NpmProj npmProj ->
+            if (!npmProj.isAngularModule()) {
+                // angular modules were installed within createLinks()
+                npmProj.exec("npm install")
+            }
+        }
+    }
+
+//    @Profile
     private void build() {
         titlePrinter.printTitle("build")
         projs.each { NpmProj npmProj ->
-            npmProj.exec("npm run build")
+            if (!npmProj.isAngularModule()) {
+                // angular modules were built within createLinks()
+                npmProj.exec("npm run build")
+            }
         }
     }
 
@@ -109,10 +124,21 @@ class SetupNpmLinks {
     private void createLinks() {
         titlePrinter.printTitle("create links")
         projs.findAll({ it.doOthersLinkToMe }).each {
+            File origLoc
+            if (it.isAngularModule()) {
+                titlePrinter.printTitle("install and build angular module")
+                it.exec("npm install")
+                it.exec("npm run build")
+                origLoc = it.loc;
+                it.loc = it.getAngularModuleLinkDir(true)
+            }
             titlePrinter.printSubTitle("create link for ${it.loc.name}")
             it.exec("ls")
             it.exec("node -v")
             it.exec("npm link")
+            if (it.isAngularModule()) {
+                it.loc = origLoc
+            }
         }
     }
 }

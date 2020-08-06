@@ -33,7 +33,11 @@ class NpmProj {
     boolean reactModule = false
     boolean reactApp = false
 
-    ProcessRunner.ProcessRes exec(String command, boolean dryRun = false) {
+    // need extra npm link setup for angular apps/modules
+    boolean angularModule = false
+    boolean angularApp = false
+
+    ProcessRunner.ProcessRes exec(String command, boolean dryRun = false, File loc = this.loc) {
         if (!dryRun) {
             log.info("${loc.name} command: ${command}")
         }
@@ -64,6 +68,16 @@ class NpmProj {
         }
         return reactModule
     }
+
+    File getAngularModuleLinkDir(boolean checkForExistence = true) {
+        // dist/skilltree/skills-client-ng
+        File ngModuleLinkDir = new File(new File(new File(loc, "dist/"), "skilltree"), this.name)
+        if (checkForExistence) {
+            assert ngModuleLinkDir.exists()
+        }
+        return ngModuleLinkDir
+    }
+
 
     static JsonSlurper slurper = new JsonSlurper()
 

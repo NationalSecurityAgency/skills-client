@@ -21,16 +21,15 @@ import { SkillsDisplayComponent } from './components/skills-display/skills-displ
 
 const routes: Routes = [{
   path: '',
-  redirectTo: 'angular/reportSkills',
+  redirectTo: 'reportSkills',
   pathMatch: 'full'
 }, {
-  path: 'angular/reportSkills',
+  path: 'reportSkills',
   component: ReportSkillsComponent
 }, {
-  path: 'angular/showSkills',
+  path: 'showSkills',
   component: SkillsDisplayComponent
-},
-{ path: '**', component: ReportSkillsComponent }
+}
 ];
 
 @NgModule({
