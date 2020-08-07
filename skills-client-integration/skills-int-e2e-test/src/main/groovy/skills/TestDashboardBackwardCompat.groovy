@@ -96,7 +96,7 @@ class TestDashboardBackwardCompat {
             applyPatch(version)
             copyServiceJar()
 
-            List<NpmProj> allProjects = new NpmProjBuilder(loc: workDir).build()
+            List<NpmProj> allProjects = new NpmProjBuilder(loc: workDir, version: version).build()
             List<NpmProj> intProjs = allProjects.findAll({ it.hasLinksToOtherProjects && it.name.contains("-int-") })
 
             titlePrinter.printSubTitle("[${version}]: Update package.json and prune")

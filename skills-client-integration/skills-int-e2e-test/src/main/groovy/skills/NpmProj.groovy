@@ -37,6 +37,9 @@ class NpmProj {
     boolean angularModule = false
     boolean angularApp = false
 
+    // for backwards compatibility testing
+    String initialVersion
+
     ProcessRunner.ProcessRes exec(String command, boolean dryRun = false, File loc = this.loc) {
         if (!dryRun) {
             log.info("${loc.name} command: ${command}")

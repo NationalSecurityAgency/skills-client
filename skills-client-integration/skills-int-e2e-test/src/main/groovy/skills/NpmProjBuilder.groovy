@@ -21,6 +21,7 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class NpmProjBuilder {
 
+    String version
     boolean locate = true
     File loc = new File("./")
 
@@ -41,14 +42,14 @@ class NpmProjBuilder {
 
 
     private List<NpmProj> projs = [
-            new NpmProj(name: "skills-client-js", doOthersLinkToMe: true, hasLinksToOtherProjects: false),
-            new NpmProj(name: "skills-client-vue", doOthersLinkToMe: true),
-            new NpmProj(name: "skills-client-react", doOthersLinkToMe: true, reactModule: true),
-            new NpmProj(name: "skills-client-ng", doOthersLinkToMe: true, angularModule: true),
-            new NpmProj(name: "skills-int-client-js", doOthersLinkToMe: false),
-            new NpmProj(name: "skills-int-client-vue", doOthersLinkToMe: false),
-            new NpmProj(name: "skills-int-client-react", doOthersLinkToMe: false, reactApp: true),
-            new NpmProj(name: "skills-int-client-ng", doOthersLinkToMe: false),
+            new NpmProj(name: "skills-client-js", doOthersLinkToMe: true, hasLinksToOtherProjects: false, initialVersion: '2.0.0'),
+            new NpmProj(name: "skills-client-vue", doOthersLinkToMe: true, initialVersion: '2.0.0'),
+            new NpmProj(name: "skills-client-react", doOthersLinkToMe: true, reactModule: true, initialVersion: '2.0.0'),
+            new NpmProj(name: "skills-client-ng", doOthersLinkToMe: true, angularModule: true, initialVersion: '3.0.0'),
+            new NpmProj(name: "skills-int-client-js", doOthersLinkToMe: false, initialVersion: '2.0.0'),
+            new NpmProj(name: "skills-int-client-vue", doOthersLinkToMe: false, initialVersion: '2.0.0'),
+            new NpmProj(name: "skills-int-client-react", doOthersLinkToMe: false, reactApp: true, initialVersion: '2.0.0'),
+            new NpmProj(name: "skills-int-client-ng", doOthersLinkToMe: false, initialVersion: '3.0.0'),
     ]
 
     private void assertExist() {
@@ -61,6 +62,9 @@ class NpmProjBuilder {
 
 //    @Profile
     List<NpmProj> build() {
+        if (this.version) {
+            projs.removeAll { it.initialVersion > this.version }
+        }
         if (locate) {
             for (NpmProj p : projs) {
                 p.loc = locate(p.name)
