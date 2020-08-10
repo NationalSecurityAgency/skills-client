@@ -15,9 +15,10 @@ limitations under the License.
 */
 package skills
 
-
+import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
+import org.springframework.boot.autoconfigure.jsonb.JsonbAutoConfiguration
 
 @Slf4j
 class TestClientLibsBackwardsCompat {
@@ -31,13 +32,15 @@ class TestClientLibsBackwardsCompat {
     private String serviceName = "skills-service"
 
     TestClientLibsBackwardsCompat init() {
+        JsonSlurper jsonSlurper = new JsonSlurper()
         ['./', './skills-client-integration/skills-int-e2e-test'].each {
-            File f = new File(it)
-            if (f.exists() && f.name == 'skills-int-e2e-test') {
-                e2eDir = f;
+            File f = new File(it, "package.json")
+            log.info("Checking [${f.absolutePath}] for e2e dir.")
+            if (f.exists() && jsonSlurper.parse(f).name == "skills-int-e2e-test") {
+                e2eDir = f.parentFile;
             }
         }
-        assert e2eDir.exists()
+        assert e2eDir?.exists()
         log.info("e2e dir: [${e2eDir.absolutePath}")
         return this
     }
@@ -47,7 +50,7 @@ class TestClientLibsBackwardsCompat {
         versions.each { File version ->
             titlePrinter.printTitle("Testing against backend version [${version.name}]")
             prepSkillsServiceJar(version)
-            doRunCypressTests(version)
+            doRunCypressTests(version.name)
         }
     }
 
