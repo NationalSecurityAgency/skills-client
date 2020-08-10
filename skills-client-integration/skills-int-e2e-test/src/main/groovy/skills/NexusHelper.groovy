@@ -15,6 +15,7 @@ limitations under the License.
 */
 package skills
 
+@Deprecated
 class NexusHelper {
 
     String nexusUrl = "http://ip-10-113-80-244.evoforge.org"

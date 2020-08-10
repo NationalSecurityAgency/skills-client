@@ -23,62 +23,90 @@ import org.apache.commons.io.FileUtils
 class TestClientLibsBackwardsCompat {
 
     static void main(String[] args) {
-        new TestClientLibsBackwardsCompat().test()
+        new TestClientLibsBackwardsCompat().init().test()
     }
 
-    TitlePrinter titlePrinter = new TitlePrinter()
-    File examplesLoc = new File('./')
-    File e2eDir = new File(examplesLoc, "e2e-tests")
-    File workDir = new File(e2eDir, "/target/${TestClientLibsBackwardsCompat.class.simpleName}")
+    private TitlePrinter titlePrinter = new TitlePrinter()
+    private File e2eDir
+    private String serviceName = "skills-service"
 
-    DownloadServiceJars downloadServiceJars = new DownloadServiceJars(outputDir: new File(e2eDir, "/target/servicesJars"))
+    TestClientLibsBackwardsCompat init() {
+        ['./', './skills-client-integration/skills-int-e2e-test'].each {
+            File f = new File(it)
+            if (f.exists() && f.name == 'skills-int-e2e-test') {
+                e2eDir = f;
+            }
+        }
+        assert e2eDir.exists()
+        log.info("e2e dir: [${e2eDir.absolutePath}")
+        return this
+    }
 
     void test() {
-        log.info("examplesLoc is [${examplesLoc.absolutePath}]")
-        log.info("e2eDir is [${examplesLoc.absolutePath}]")
-        downloadServiceJars.cleanOutputDir()
-        if (workDir.exists()){
-            log.info("Remove existing workdir [{}]", workDir)
-            FileUtils.deleteDirectory(workDir)
-        }
-        workDir.mkdirs()
-
-        ProjectsOps npmProjects = new ProjectsOps(workDir: workDir)
-        npmProjects.checkoutLinkedNpmLibs()
-
-        titlePrinter.printTitle("Identify Dependencies")
-        List<NpmProj> allProj = new NpmProjBuilder(loc: workDir).build()
-        allProj.each { log.info("Will consider project [{}]", it.loc.absolutePath) }
-
-        List<NpmProjRel> rels = new NpmProjBuilder(loc: workDir).buildRelMap()
-        rels.each { log.info("${it.from.name} (${it.from.version}) => ${it.to.name} (${it.to.version})") }
-
-        if (!npmProjects.hasUnreleasedChanges()) {
-            return
-        }
-
-        String examplesProjName = "skills-example-service"
-        String latestExamplesVersion = new NexusHelper(project: examplesProjName).getLatestSnapVersion()
-        titlePrinter.printTitle("Download latest examples - ${examplesProjName}:${latestExamplesVersion}")
-        downloadServiceJars.download(examplesProjName, latestExamplesVersion)
-
-        // support started in 1.1
         List<String> versions = getBackendVersionsToTest()
-        titlePrinter.printTitle("Backend versions to test: ${versions}")
-
-        versions.each { String version ->
-            titlePrinter.printTitle("Testing against backend version [${version}]")
-            downloadServiceJars.download("backend", version)
-            npmProjects.runCypressTests(e2eDir, "Testing with backend:${version}")
-            downloadServiceJars.remove("backend", version)
+        versions.each { File version ->
+            titlePrinter.printTitle("Testing against backend version [${version.name}]")
+            prepSkillsServiceJar(version)
+            doRunCypressTests(version)
         }
     }
 
-    private List<String> backendExcludedVersions = ["1.1.0"]
+    private void prepSkillsServiceJar(File jar) {
+        String child = "skills-client-integration"
+        File rootDir
+        ["./", "../", "../../"].each {
+            File dir = new File(it, child)
+            if (dir.exists()) {
+                rootDir = dir.parentFile.absoluteFile
+            }
+        }
 
-    private List<String> getBackendVersionsToTest() {
-        List<String> versions = new NexusHelper().getReleaseVersionsStaringWith("1.1")
-        return versions.findAll({ !backendExcludedVersions.contains(it) })
+        assert rootDir
+        File serviceDir = new File(rootDir, this.serviceName)
+        serviceDir.mkdirs()
+
+        File dest = new File(serviceDir, jar.name)
+        serviceDir.listFiles().each {
+            if (it.name.startsWith(serviceName) && it.name.endsWith(".jar")) {
+                log.info("Deleting [$it]")
+                FileUtils.forceDelete(it)
+            }
+        }
+        FileUtils.copyFile(jar, dest)
+        log.info("Copy [$jar] => [$dest]")
+    }
+
+    private List<File> getBackendVersionsToTest() {
+        List<File> versions = []
+        ["./", "../", "../../"].findAll {
+            File dir = new File(it, "skills-service-versions")
+            if (dir.exists()) {
+                dir.listFiles().each {
+                    if (it.name.startsWith(serviceName) && it.name.endsWith(".jar")) {
+                        versions.add(it)
+                    }
+                }
+            }
+        }
+        versions = versions.sort({ it.name })
+        titlePrinter.printTitle("Backend versions to test:\n  ${versions.join('\n  ')}\n")
+        return versions
+    }
+
+    private void doRunCypressTests(String version) {
+        titlePrinter.printTitle("Running cypress tests against skill-service: [${version}]")
+        new ProcessRunner(loc: e2eDir).run("npm install")
+        new ProcessRunner(loc: e2eDir, failWithErrMsg: false).run("npm run cyServices:kill")
+        try {
+            new ProcessRunner(loc: e2eDir, waitForOutput: false).run("npm run cyServices:start:skills-service:ci")
+            new ProcessRunner(loc: e2eDir, waitForOutput: false).run("npm run cyServices:start:integration-apps")
+
+            titlePrinter.printSubTitle("Starting Cypress to tests against skill-service: [${version}]")
+
+            new ProcessRunner(loc: e2eDir).run("npx cypress run")
+        } finally {
+            new ProcessRunner(loc: e2eDir, failWithErrMsg: false).run("npm run cyServices:kill")
+        }
     }
 
 }

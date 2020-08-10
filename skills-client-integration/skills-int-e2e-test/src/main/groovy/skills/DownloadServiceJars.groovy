@@ -20,6 +20,7 @@ import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
 
 @Slf4j
+@Deprecated
 class DownloadServiceJars {
 
     // configure
