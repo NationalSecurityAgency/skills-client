@@ -28,7 +28,6 @@
     "@angular/platform-browser-dynamic": "10.0.3",
     "@angular/router": "10.0.3",
     "@ng-bootstrap/ng-bootstrap": "7.0.0",
-    "@skilltree/skills-client-js": "2.0.1",
     "@skilltree/skills-client-ng": "2.0.1",
     "@types/js-beautify": "1.11.0",
     "axios": "0.19.2",
