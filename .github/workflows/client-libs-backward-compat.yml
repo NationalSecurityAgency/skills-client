@@ -71,6 +71,12 @@ jobs:
     - name: setup npm links
       run: ./.github/workflows/scripts/setupNpmLinks.sh
 
+    - name: build integration test apps
+      run: |
+        cd ./skills-client-integration
+        mvn --batch-mode clean install
+        cd ../
+
     - name: run backwards compat tests
       run: |
         cd skills-client-integration/skills-int-e2e-test

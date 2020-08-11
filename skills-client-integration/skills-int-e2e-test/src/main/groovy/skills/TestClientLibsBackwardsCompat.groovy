@@ -18,7 +18,6 @@ package skills
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
-import org.springframework.boot.autoconfigure.jsonb.JsonbAutoConfiguration
 
 @Slf4j
 class TestClientLibsBackwardsCompat {

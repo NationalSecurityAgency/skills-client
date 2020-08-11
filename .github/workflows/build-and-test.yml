@@ -73,13 +73,8 @@ jobs:
         mvn --batch-mode clean install
         cd ../
 
-    - name: skills-int-e2e-test install
-      run: |
-        cd skills-client-integration/skills-int-e2e-test
-        npm install
-        cd ../../
-
-
+    - name: run cypress tests
+      run: ./.github/workflows/scripts/runCypressTests.sh
 
     - name: upload result artifacts
       if: ${{ always() }}
