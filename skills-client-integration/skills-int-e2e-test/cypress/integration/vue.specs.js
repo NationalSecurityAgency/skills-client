@@ -378,80 +378,84 @@ context('Vue Tests', () => {
       })
     }
 
-    it('back button when when returning from an external page', () => {
-        cy.createDefaultTinyProject()
-        cy.server().route('/api/users/user1/token').as('getToken')
-        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+    if (Utils.skillsServiceVersionLaterThan('1.2.0')) {
+        it('back button when when returning from an external page', () => {
+            cy.createDefaultTinyProject()
+            cy.server().route('/api/users/user1/token').as('getToken')
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
 
-        // visit client display
-        cy.visit('/vuejs#/showSkills?refreshPage=false')
-        cy.wait('@getToken')
+            // visit client display
+            cy.visit('/vuejs#/showSkills?refreshPage=false')
+            cy.wait('@getToken')
 
-        cy.iframe((body) => {
-          cy.wrap(body).find('[data-cy=back]').should('not.exist');
-          cy.wrap(body).contains('User Skills');
+            cy.iframe((body) => {
+                cy.wrap(body).find('[data-cy=back]').should('not.exist');
+                cy.wrap(body).contains('User Skills');
 
-          // navigate to Rank Overview that contains the back button
-          cy.wrap(body).find('[data-cy=myRank]').click();
-          cy.wrap(body).contains('Rank Overview');
-          cy.wrap(body).find('[data-cy=back]').should('exist');
+                // navigate to Rank Overview that contains the back button
+                cy.wrap(body).find('[data-cy=myRank]').click();
+                cy.wrap(body).contains('Rank Overview');
+                cy.wrap(body).find('[data-cy=back]').should('exist');
+            });
+
+            // now visit the "Report Skills" (external) page
+            cy.get('[data-cy=reportSkillsLink]').click()
+            cy.contains('Report Skills Examples');
+
+            // switch back to the the client display
+            cy.get('[data-cy=userDisplayLink]').click()
+            // cy.iframe((body) => {
+            //   // verify we are still on the Rank Overview page
+            //   cy.wrap(body).contains('Rank Overview');
+            //
+            //   // click the back button and verify that we are still in the
+            //   // client display (main page), and not on the "Report Skills" page
+            //   cy.wrap(body).find('[data-cy=back]').click()
+            //   cy.wrap(body).contains('User Skills');
+            // });
         });
+    }
 
-        // now visit the "Report Skills" (external) page
-        cy.get('[data-cy=reportSkillsLink]').click()
-        cy.contains('Report Skills Examples');
+    if (Utils.skillsServiceVersionLaterThan('1.2.0')) {
+        it('back button when when returning from an external page - multiple layers deep', () => {
+            cy.createDefaultTinyProject()
+            cy.server().route('/api/users/user1/token').as('getToken')
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
 
-        // switch back to the the client display
-        cy.get('[data-cy=userDisplayLink]').click()
-        cy.iframe((body) => {
-          // verify we are still on the Rank Overview page
-          cy.wrap(body).contains('Rank Overview');
+            // visit client display
+            cy.visit('/vuejs#/showSkills?refreshPage=false')
+            cy.wait('@getToken')
 
-          // click the back button and verify that we are still in the
-          // client display (main page), and not on the "Report Skills" page
-          cy.wrap(body).find('[data-cy=back]').click()
-          cy.wrap(body).contains('User Skills');
+            cy.iframe((body) => {
+                cy.wrap(body).find('[data-cy=back]').should('not.exist');
+                cy.wrap(body).contains('User Skills');
+
+                // to subject page
+                cy.cdClickSubj(body, 0, 'Subject 0');
+
+                // navigate to Rank Overview that contains the back button
+                cy.wrap(body).find('[data-cy=myRank]').click();
+                cy.wrap(body).contains('Rank Overview');
+                cy.wrap(body).find('[data-cy=back]').should('exist');
+            });
+
+            // now visit the "Report Skills" (external) page
+            cy.get('[data-cy=reportSkillsLink]').click()
+            cy.contains('Report Skills Examples');
+
+            // switch back to the the client display
+            cy.get('[data-cy=userDisplayLink]').click()
+            cy.iframe((body) => {
+                // verify we are still on the Rank Overview page
+                cy.wrap(body).contains('Rank Overview');
+
+                // click the back button and verify that we are still in the
+                // client display (Subject page)
+                cy.cdBack(body, 'Subject 0');
+
+                // then back one more time and we should be back on the client display home page
+                cy.cdBack(body, 'User Skills');
+            });
         });
-    });
-
-    it('back button when when returning from an external page - multiple layers deep', () => {
-      cy.createDefaultTinyProject()
-      cy.server().route('/api/users/user1/token').as('getToken')
-      cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
-
-      // visit client display
-      cy.visit('/vuejs#/showSkills?refreshPage=false')
-      cy.wait('@getToken')
-
-      cy.iframe((body) => {
-        cy.wrap(body).find('[data-cy=back]').should('not.exist');
-        cy.wrap(body).contains('User Skills');
-
-        // to subject page
-        cy.cdClickSubj(body, 0, 'Subject 0');
-
-        // navigate to Rank Overview that contains the back button
-        cy.wrap(body).find('[data-cy=myRank]').click();
-        cy.wrap(body).contains('Rank Overview');
-        cy.wrap(body).find('[data-cy=back]').should('exist');
-      });
-
-      // now visit the "Report Skills" (external) page
-      cy.get('[data-cy=reportSkillsLink]').click()
-      cy.contains('Report Skills Examples');
-
-      // switch back to the the client display
-      cy.get('[data-cy=userDisplayLink]').click()
-      cy.iframe((body) => {
-        // verify we are still on the Rank Overview page
-        cy.wrap(body).contains('Rank Overview');
-
-        // click the back button and verify that we are still in the
-        // client display (Subject page)
-        cy.cdBack(body, 'Subject 0');
-
-        // then back one more time and we should be back on the client display home page
-        cy.cdBack(body, 'User Skills');
-      });
-  });
+    }
 })

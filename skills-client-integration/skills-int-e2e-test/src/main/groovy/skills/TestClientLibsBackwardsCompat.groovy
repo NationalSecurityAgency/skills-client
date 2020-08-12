@@ -46,10 +46,11 @@ class TestClientLibsBackwardsCompat {
 
     void test() {
         List<String> versions = getBackendVersionsToTest()
-        versions.each { File version ->
-            titlePrinter.printTitle("Testing against backend version [${version.name}]")
-            prepSkillsServiceJar(version)
-            doRunCypressTests(version.name)
+        versions.each { File versionFile ->
+            titlePrinter.printTitle("Testing against skills-service version [${versionFile.name}]")
+            prepSkillsServiceJar(versionFile)
+            String version = (versionFile.name =~ /(?i)skills-service-(.*).jar/)[0][1]
+            doRunCypressTests(versionFile.name, ["skills-service.minVersion=${version}"])
         }
     }
 
@@ -95,7 +96,7 @@ class TestClientLibsBackwardsCompat {
         return versions
     }
 
-    private void doRunCypressTests(String version) {
+    private void doRunCypressTests(String version, List<String> cypressEnv = []) {
         titlePrinter.printTitle("Running cypress tests against skill-service: [${version}]")
         new ProcessRunner(loc: e2eDir).run("npm install")
         new ProcessRunner(loc: e2eDir, failWithErrMsg: false).run("npm run cyServices:kill")
@@ -103,9 +104,9 @@ class TestClientLibsBackwardsCompat {
             new ProcessRunner(loc: e2eDir, waitForOutput: false).run("npm run cyServices:start:skills-service:ci")
             new ProcessRunner(loc: e2eDir, waitForOutput: false).run("npm run cyServices:start:integration-apps")
 
-            titlePrinter.printSubTitle("Starting Cypress to tests against skill-service: [${version}]")
-
-            new ProcessRunner(loc: e2eDir).run("npx cypress run")
+            String env = cypressEnv ? " --env ${cypressEnv.join(",")}" : ""
+            titlePrinter.printSubTitle("Starting Cypress to tests against skill-service: [${version}], env=[$env]")
+            new ProcessRunner(loc: e2eDir).run("npx cypress run${env}")
         } finally {
             new ProcessRunner(loc: e2eDir, failWithErrMsg: false).run("npm run cyServices:kill")
         }
