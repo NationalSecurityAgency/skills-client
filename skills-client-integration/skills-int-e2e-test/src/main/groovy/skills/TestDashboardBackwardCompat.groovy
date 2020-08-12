@@ -112,11 +112,10 @@ class TestDashboardBackwardCompat {
             titlePrinter.printSubTitle("[${version}]: Running cypress test with")
             String output = "Testing version [$version]"
             new CypressTestsHelper(e2eDir: e2eLoc).runCypressTests(output)
-//            runCypressTests(e2eLoc, output, "!!!!FAILED!!!! while running with:\n${output}")
         }
     }
 
-    private Object updatePackageJsonDeps(NpmProj packageToChange, String depName, String version) {
+    private void updatePackageJsonDeps(NpmProj packageToChange, String depName, String version) {
         assert packageToChange && depName && version
         def json = packageToChange.getPackageJson()
         json.dependencies."${depName}" = version
@@ -129,31 +128,6 @@ class TestDashboardBackwardCompat {
         assert packageToChange.packageJson.dependencies."${depName}" == version
     }
 
-    private void runCypressTests(File e2eProj, String clientLibsMsg = " Latest using npm link", String errMessage = "!!!!FAILED!!!! while running latest code using 'npm link'", List<String> env = []) {
-        try {
-            doRunCypressTests(e2eProj, clientLibsMsg, env)
-        } catch (Throwable t) {
-            log.error(errMessage)
-            throw t;
-        }
-    }
-
-    private void doRunCypressTests(File e2eProj, String msg, List<String> cypressEnv = [], String npmIntegrationNamespace = "integration") {
-        titlePrinter.printTitle("Running cypress tests: [${msg}]")
-        new ProcessRunner(loc: e2eProj).run("npm install")
-        new ProcessRunner(loc: e2eProj, failWithErrMsg: false).run("npm run cyServices:kill")
-        try {
-            new ProcessRunner(loc: e2eProj, waitForOutput: false).run("npm run cyServices:start:skills-service:ci")
-            new ProcessRunner(loc: e2eProj, waitForOutput: false).run("npm run cyServices:start:integration-apps")
-
-            titlePrinter.printSubTitle("Starting Cypress tests [${msg}]")
-
-            String env = cypressEnv ? " --env ${cypressEnv.join(",")}" : ""
-            new ProcessRunner(loc: e2eProj).run("npx cypress run${env}")
-        } finally {
-            new ProcessRunner(loc: e2eProj, failWithErrMsg: false).run("npm run cyServices:kill")
-        }
-    }
 }
 
 
