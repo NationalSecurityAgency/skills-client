@@ -56,7 +56,7 @@ class ProjectsOps {
         clearWorkDir()
         titlePrinter.printTitle("Checkout skills-client")
 
-        new ProcessRunner(loc: workDir).run("git clone git@gitlab.evoforge.org:skills/skills-client.git")
+        new ProcessRunner(loc: workDir).run("git clone git@github.com:NationalSecurityAgency/skills-client.git")
         if (switchToBranch && switchToBranch != "master") {
             new ProcessRunner(loc: workDir).run("git checkout ${switchToBranch}")
         }
@@ -65,42 +65,6 @@ class ProjectsOps {
     boolean hasUnreleasedChanges(){
         // TODO: check specific projects using 'git diff'
         return true
-    }
-
-
-//    @Profile
-    void buildClientIntApp() {
-        titlePrinter.printTitle("Building Client Examples App")
-        File loc = new File(skillsClient, "skills-client-integration")
-        new ProcessRunner(loc: loc).run("mvn --batch-mode clean package")
-    }
-
-
-//    @Profile
-    void runCypressTests(File location, String msg, List<String> cypressEnv = [], String npmIntegrationNamespace = "integration") {
-        titlePrinter.printTitle("Running cypress tests: [${msg}]")
-        killServerProcesses()
-        try {
-            new ProcessRunner(loc: location, waitForOutput: false).run("npm run backend:start:release &")
-            new ProcessRunner(loc: location, waitForOutput: false).run("npm run ${npmIntegrationNamespace}:start:release &")
-            // this will install cypress, can do that while servers are starting
-            new ProcessRunner(loc: location).run("npm install")
-            new ProcessRunner(loc: location).run("npm run backend:waitToStart")
-            new ProcessRunner(loc: location).run("npm run ${npmIntegrationNamespace}:waitToStart")
-
-            titlePrinter.printSubTitle("Starting Cypress tests [${msg}]")
-
-            String env = cypressEnv ? " --env ${cypressEnv.join(",")}" : ""
-            new ProcessRunner(loc: location).run("npx cypress run${env}")
-        } finally {
-            killServerProcesses()
-        }
-    }
-
-    private void killServerProcesses() {
-        new ProcessUtils().killProcessIfContainsStr(":serverConfigs/integration_application.properties")
-        new ProcessUtils().killProcessIfContainsStr(":serverConfigs/backend_application.properties")
-        new ProcessUtils().killProcessIfContainsStr(":serverConfigs/examples_application.properties")
     }
 
 }

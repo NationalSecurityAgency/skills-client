@@ -46,11 +46,12 @@ class TestClientLibsBackwardsCompat {
 
     void test() {
         List<String> versions = getBackendVersionsToTest()
+        CypressTestsHelper cypressTestsHelper = new CypressTestsHelper(e2eDir: e2eDir)
         versions.each { File versionFile ->
             titlePrinter.printTitle("Testing against skills-service version [${versionFile.name}]")
             prepSkillsServiceJar(versionFile)
             String version = (versionFile.name =~ /(?i)skills-service-(.*).jar/)[0][1]
-            doRunCypressTests(versionFile.name, ["skills-service.minVersion=${version}"])
+            cypressTestsHelper.runCypressTests("Client Lib Backwards Compat against [${versionFile.name}]", ["skills-service.minVersion=${version}"])
         }
     }
 
@@ -95,21 +96,4 @@ class TestClientLibsBackwardsCompat {
         titlePrinter.printTitle("Backend versions to test:\n  ${versions.join('\n  ')}\n")
         return versions
     }
-
-    private void doRunCypressTests(String version, List<String> cypressEnv = []) {
-        titlePrinter.printTitle("Running cypress tests against skill-service: [${version}]")
-        new ProcessRunner(loc: e2eDir).run("npm install")
-        new ProcessRunner(loc: e2eDir, failWithErrMsg: false).run("npm run cyServices:kill")
-        try {
-            new ProcessRunner(loc: e2eDir, waitForOutput: false).run("npm run cyServices:start:skills-service:ci")
-            new ProcessRunner(loc: e2eDir, waitForOutput: false).run("npm run cyServices:start:integration-apps")
-
-            String env = cypressEnv ? " --env ${cypressEnv.join(",")}" : ""
-            titlePrinter.printSubTitle("Starting Cypress to tests against skill-service: [${version}], env=[$env]")
-            new ProcessRunner(loc: e2eDir).run("npx cypress run${env}")
-        } finally {
-            new ProcessRunner(loc: e2eDir, failWithErrMsg: false).run("npm run cyServices:kill")
-        }
-    }
-
 }

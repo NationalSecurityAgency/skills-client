@@ -88,6 +88,7 @@ class TestDashboardBackwardCompat {
         versionsToTest.removeAll(versionsToExclude)
         log.info("Versions to test:\n  ${versionsToTest.join("\n  ")}")
 
+        CypressTestsHelper cypressTestsHelper = new CypressTestsHelper(e2eDir: e2eLoc)
         for (String version : versionsToTest) {
             titlePrinter.printTitle("Testing version [${version}]")
 
@@ -111,7 +112,7 @@ class TestDashboardBackwardCompat {
 
             titlePrinter.printSubTitle("[${version}]: Running cypress test with")
             String output = "Testing version [$version]"
-            runCypressTests(e2eLoc, output, "!!!!FAILED!!!! while running with:\n${output}")
+            cypressTestsHelper.runCypressTests("Skills-service backward compat against client libs version [$version]")
         }
     }
 
@@ -126,32 +127,6 @@ class TestDashboardBackwardCompat {
 
         // sanity check
         assert packageToChange.packageJson.dependencies."${depName}" == version
-    }
-
-    private void runCypressTests(File e2eProj, String clientLibsMsg = " Latest using npm link", String errMessage = "!!!!FAILED!!!! while running latest code using 'npm link'", List<String> env = []) {
-        try {
-            doRunCypressTests(e2eProj, clientLibsMsg, env)
-        } catch (Throwable t) {
-            log.error(errMessage)
-            throw t;
-        }
-    }
-
-    private void doRunCypressTests(File e2eProj, String msg, List<String> cypressEnv = [], String npmIntegrationNamespace = "integration") {
-        titlePrinter.printTitle("Running cypress tests: [${msg}]")
-        new ProcessRunner(loc: e2eProj).run("npm install")
-        new ProcessRunner(loc: e2eProj, failWithErrMsg: false).run("npm run cyServices:kill")
-        try {
-            new ProcessRunner(loc: e2eProj, waitForOutput: false).run("npm run cyServices:start:skills-service:ci")
-            new ProcessRunner(loc: e2eProj, waitForOutput: false).run("npm run cyServices:start:integration-apps")
-
-            titlePrinter.printSubTitle("Starting Cypress tests [${msg}]")
-
-            String env = cypressEnv ? " --env ${cypressEnv.join(",")}" : ""
-            new ProcessRunner(loc: e2eProj).run("npx cypress run${env}")
-        } finally {
-            new ProcessRunner(loc: e2eProj, failWithErrMsg: false).run("npm run cyServices:kill")
-        }
     }
 }
 
