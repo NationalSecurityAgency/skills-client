@@ -111,7 +111,8 @@ class TestDashboardBackwardCompat {
 
             titlePrinter.printSubTitle("[${version}]: Running cypress test with")
             String output = "Testing version [$version]"
-            runCypressTests(e2eLoc, output, "!!!!FAILED!!!! while running with:\n${output}")
+            new CypressTestsHelper(e2eDir: e2eLoc).runCypressTests(output)
+//            runCypressTests(e2eLoc, output, "!!!!FAILED!!!! while running with:\n${output}")
         }
     }
 
