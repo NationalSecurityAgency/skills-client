@@ -18,10 +18,17 @@ var semver = require('semver');
 export default {
     versionLaterThan (lib, minVersion){
         const versionToCompare = Cypress.env(lib);
-        if (!versionToCompare) {
+        return this.laterThanMinVersion(minVersion, versionToCompare);
+    },
+    skillsServiceVersionLaterThan(minVersion) {
+        const versionToCompare = Cypress.env('skills-service.minVersion');
+        return this.laterThanMinVersion(minVersion, versionToCompare);
+    },
+    laterThanMinVersion(minVersion, currentVersion) {
+        if (!currentVersion) {
             return true;
         }
-        const shouldSkip = semver.lt(versionToCompare, minVersion);
+        const shouldSkip = semver.lt(currentVersion, minVersion);
         return !shouldSkip;
     }
 }

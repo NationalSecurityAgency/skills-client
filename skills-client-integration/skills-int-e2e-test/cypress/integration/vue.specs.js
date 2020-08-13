@@ -20,150 +20,138 @@ const homePage = '/vuejs#/'
 
 context('Vue Tests', () => {
 
-    if (Utils.versionLaterThan("@skilltree/skills-client-vue", '1.1.1')) {
-      it('level component should be reactive', () => {
-          cy.createDefaultProject()
-          const sendEventViaDropdownId = '#PureJSReportAnySkill';
-          Cypress.Commands.add("clickSubmit", () => {
-              cy.get(`${sendEventViaDropdownId} .btn`).click()
-          })
-          Cypress.Commands.add("selectSkill", (skill) => {
-              cy.get(`${sendEventViaDropdownId} .multiselect`).type(`${skill}{enter}`)
-          })
-
-          cy.visitHomePage(homePage);
-
-          cy.contains('Level 0')
-
-          cy.selectSkill('IronMan')
-          cy.clickSubmit()
-          cy.contains('Level 1')
-
-          cy.selectSkill('Thor')
-          cy.clickSubmit()
-          cy.contains('Level 2')
-
-          cy.selectSkill('subj1_skill0')
-          cy.clickSubmit()
-          cy.contains('Level 3')
-
-          cy.selectSkill('subj1_skill1')
-          cy.clickSubmit()
-          cy.contains('Level 3')
-
-          cy.selectSkill('subj2_skill0')
-          cy.clickSubmit()
-          cy.contains('Level 4')
-
-          cy.selectSkill('subj2_skill1')
-          cy.clickSubmit()
-          cy.contains('Level 5')
-      })
-
-      it('level component should load initial level', () => {
-          cy.createDefaultProject()
-          // cy.reportSkill('subj1_skill0')
-
-          // this will increment levels for the default user = skills@skills.org but Level and display components display data for 'user1'
-          // validate that level is still 0
-          cy.reportSkill('IronMan')
-          cy.visitHomePage(homePage);
-          cy.contains('Level 0')
-
-
-          cy.reportSkillForUser('IronMan', 'user1')
-          cy.visitHomePage(homePage);
-          cy.contains('Level 1')
-      })
-    }
-
-    if (Utils.versionLaterThan("@skilltree/skills-client-vue", '1.1.1')) {
-        it('level component should be reactive (skills reported directly to backend endpoint)', () => {
-            cy.createDefaultProject()
-            cy.visitHomePage(homePage);
-
-            cy.contains('Level 0')
-
-            cy.reportSkillForUser('IronMan', 'user1')
-            cy.contains('Level 1')
-
-            cy.reportSkillForUser('Thor', 'user1')
-            cy.contains('Level 2')
-
-            cy.reportSkillForUser('subj1_skill0', 'user1')
-            cy.contains('Level 3')
-
-            cy.reportSkillForUser('subj1_skill1', 'user1')
-            cy.contains('Level 3')
-
-            cy.reportSkillForUser('subj2_skill0', 'user1')
-            cy.contains('Level 4')
-
-            cy.reportSkillForUser('subj2_skill1', 'user1')
-            cy.contains('Level 5')
+    it('level component should be reactive', () => {
+        cy.createDefaultProject()
+        const sendEventViaDropdownId = '#PureJSReportAnySkill';
+        Cypress.Commands.add("clickSubmit", () => {
+            cy.get(`${sendEventViaDropdownId} .btn`).click()
         })
-    }
-
-    if (Utils.versionLaterThan("@skilltree/skills-client-vue", '1.1.1')) {
-        it('global event show correct results', () => {
-            cy.createDefaultProject()
-            cy.visitHomePage(homePage);
-
-            cy.contains('Level 0')
-
-            cy.reportSkillForUser('IronMan', 'user1')
-
-            cy.contains('Level 1')
-            cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
-            cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
-            cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
-            cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
+        Cypress.Commands.add("selectSkill", (skill) => {
+            cy.get(`${sendEventViaDropdownId} .multiselect`).type(`${skill}{enter}`)
         })
-    }
-    if (Utils.versionLaterThan("@skilltree/skills-client-vue", '1.1.1')) {
-        it('global event does not update when skill reported for a different project', () => {
-            cy.createDefaultProject()
-            cy.createDefaultTinyProject('proj2')
-            cy.visitHomePage(homePage);
 
-            cy.contains('Level 0')
+        cy.visitHomePage(homePage);
 
-            cy.reportSkillForUser('IronMan', 'user1', 'proj2')
+        cy.contains('Level 0')
 
-            cy.contains('Level 0')
-            cy.get('[data-cy=globalEventResult]').should('be.empty');
+        cy.selectSkill('IronMan')
+        cy.clickSubmit()
+        cy.contains('Level 1')
+
+        cy.selectSkill('Thor')
+        cy.clickSubmit()
+        cy.contains('Level 2')
+
+        cy.selectSkill('subj1_skill0')
+        cy.clickSubmit()
+        cy.contains('Level 3')
+
+        cy.selectSkill('subj1_skill1')
+        cy.clickSubmit()
+        cy.contains('Level 3')
+
+        cy.selectSkill('subj2_skill0')
+        cy.clickSubmit()
+        cy.contains('Level 4')
+
+        cy.selectSkill('subj2_skill1')
+        cy.clickSubmit()
+        cy.contains('Level 5')
+    })
+
+    it('level component should load initial level', () => {
+        cy.createDefaultProject()
+        // cy.reportSkill('subj1_skill0')
+
+        // this will increment levels for the default user = skills@skills.org but Level and display components display data for 'user1'
+        // validate that level is still 0
+        cy.reportSkill('IronMan')
+        cy.visitHomePage(homePage);
+        cy.contains('Level 0')
+
+
+        cy.reportSkillForUser('IronMan', 'user1')
+        cy.visitHomePage(homePage);
+        cy.contains('Level 1')
+    })
+
+    it('level component should be reactive (skills reported directly to backend endpoint)', () => {
+        cy.createDefaultProject()
+        cy.visitHomePage(homePage);
+
+        cy.contains('Level 0')
+
+        cy.reportSkillForUser('IronMan', 'user1')
+        cy.contains('Level 1')
+
+        cy.reportSkillForUser('Thor', 'user1')
+        cy.contains('Level 2')
+
+        cy.reportSkillForUser('subj1_skill0', 'user1')
+        cy.contains('Level 3')
+
+        cy.reportSkillForUser('subj1_skill1', 'user1')
+        cy.contains('Level 3')
+
+        cy.reportSkillForUser('subj2_skill0', 'user1')
+        cy.contains('Level 4')
+
+        cy.reportSkillForUser('subj2_skill1', 'user1')
+        cy.contains('Level 5')
+    })
+
+    it('global event show correct results', () => {
+        cy.createDefaultProject()
+        cy.visitHomePage(homePage);
+
+        cy.contains('Level 0')
+
+        cy.reportSkillForUser('IronMan', 'user1')
+
+        cy.contains('Level 1')
+        cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
+        cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
+        cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
+        cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
+    })
+    it('global event does not update when skill reported for a different project', () => {
+        cy.createDefaultProject()
+        cy.createDefaultTinyProject('proj2')
+        cy.visitHomePage(homePage);
+
+        cy.contains('Level 0')
+
+        cy.reportSkillForUser('IronMan', 'user1', 'proj2')
+
+        cy.contains('Level 0')
+        cy.get('[data-cy=globalEventResult]').should('be.empty');
+    })
+    it('global event is not reported when skill is not applied', () => {
+        cy.createDefaultProject()
+        cy.reportSkillForUser('IronMan', 'user1')
+
+        cy.visitHomePage(homePage);
+
+        cy.contains('Level 1')
+
+        cy.reportSkillForUser('IronMan', 'user1')
+        cy.contains('Level 1')
+
+        cy.get('[data-cy=globalEventResult]').should('be.empty');
+    })
+    it('level component should not update when admin reports skill for other user', () => {
+
+        cy.createDefaultProject()
+        Cypress.Commands.add("reportSkill", (skillId) => {
+            cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
         })
-    }
-    if (Utils.versionLaterThan("@skilltree/skills-client-vue", '1.1.1')) {
-        it('global event is not reported when skill is not applied', () => {
-            cy.createDefaultProject()
-            cy.reportSkillForUser('IronMan', 'user1')
+        cy.visitHomePage(homePage);
 
-            cy.visitHomePage(homePage);
+        cy.contains('Level 0')
 
-            cy.contains('Level 1')
-
-            cy.reportSkillForUser('IronMan', 'user1')
-            cy.contains('Level 1')
-
-            cy.get('[data-cy=globalEventResult]').should('be.empty');
-        })
-    }
-    if (Utils.versionLaterThan("@skilltree/skills-client-vue", '1.1.1')) {
-        it('level component should not update when admin reports skill for other user', () => {
-
-            cy.createDefaultProject()
-            Cypress.Commands.add("reportSkill", (skillId) => {
-                cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
-            })
-            cy.visitHomePage(homePage);
-
-            cy.contains('Level 0')
-
-            cy.reportSkillForUser('IronMan', 'unknown@skills.org')
-            cy.contains('Level 0')
-        })
-    }
+        cy.reportSkillForUser('IronMan', 'unknown@skills.org')
+        cy.contains('Level 0')
+    })
 
     it('v-skill directive on click', () => {
         cy.createDefaultProject(1, 2, 50, 2)
@@ -358,100 +346,100 @@ context('Vue Tests', () => {
         })
     });
 
-    if (Utils.versionLaterThan('@skilltree/skills-client-react', '1.1.1')) {
-      it('skillsClientVersion is reported correctly', () => {
-          cy.createDefaultProject()
-          cy.visit('/vuejs#/')
+    it('skillsClientVersion is reported correctly', () => {
+        cy.createDefaultProject()
+        cy.visit('/vuejs#/')
 
-          cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
+        cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
 
-          cy.wait('@reportClientVersion')
-          cy.get('@reportClientVersion').then((xhr) => {
-              expect(xhr.status).to.eq(200)
-              expect(xhr.responseBody).to.have.property('success').to.eq(true)
-          });
-          cy.get('@reportClientVersion').should((xhr) => {
-            expect(xhr.request.body, 'request body').
-              to.have.property('skillsClientVersion').
-              and.to.contain('@skilltree/skills-client-vue-')
-          });
-      })
+        cy.wait('@reportClientVersion')
+        cy.get('@reportClientVersion').then((xhr) => {
+            expect(xhr.status).to.eq(200)
+            expect(xhr.responseBody).to.have.property('success').to.eq(true)
+        });
+        cy.get('@reportClientVersion').should((xhr) => {
+            expect(xhr.request.body, 'request body').to.have.property('skillsClientVersion').and.to.contain('@skilltree/skills-client-vue-')
+        });
+    })
+
+    if (Utils.skillsServiceVersionLaterThan('1.2.0')) {
+        it('back button when when returning from an external page', () => {
+            cy.createDefaultTinyProject()
+            cy.server().route('/api/users/user1/token').as('getToken')
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+
+            // visit client display
+            cy.visit('/vuejs#/showSkills?refreshPage=false')
+            cy.wait('@getToken')
+
+            cy.iframe((body) => {
+                cy.wrap(body).find('[data-cy=back]').should('not.exist');
+                cy.wrap(body).contains('User Skills');
+
+                // navigate to Rank Overview that contains the back button
+                cy.wrap(body).find('[data-cy=myRank]').click();
+                cy.wrap(body).contains('Rank Overview');
+                cy.wrap(body).find('[data-cy=back]').should('exist');
+            });
+
+            // now visit the "Report Skills" (external) page
+            cy.get('[data-cy=reportSkillsLink]').click()
+            cy.contains('Report Skills Examples');
+
+            // switch back to the the client display
+            cy.get('[data-cy=userDisplayLink]').click()
+            // cy.iframe((body) => {
+            //   // verify we are still on the Rank Overview page
+            //   cy.wrap(body).contains('Rank Overview');
+            //
+            //   // click the back button and verify that we are still in the
+            //   // client display (main page), and not on the "Report Skills" page
+            //   cy.wrap(body).find('[data-cy=back]').click()
+            //   cy.wrap(body).contains('User Skills');
+            // });
+        });
     }
 
-    it('back button when when returning from an external page', () => {
-        cy.createDefaultTinyProject()
-        cy.server().route('/api/users/user1/token').as('getToken')
-        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+    if (Utils.skillsServiceVersionLaterThan('1.2.0')) {
+        it('back button when when returning from an external page - multiple layers deep', () => {
+            cy.createDefaultTinyProject()
+            cy.server().route('/api/users/user1/token').as('getToken')
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
 
-        // visit client display
-        cy.visit('/vuejs#/showSkills?refreshPage=false')
-        cy.wait('@getToken')
+            // visit client display
+            cy.visit('/vuejs#/showSkills?refreshPage=false')
+            cy.wait('@getToken')
 
-        cy.iframe((body) => {
-          cy.wrap(body).find('[data-cy=back]').should('not.exist');
-          cy.wrap(body).contains('User Skills');
+            cy.iframe((body) => {
+                cy.wrap(body).find('[data-cy=back]').should('not.exist');
+                cy.wrap(body).contains('User Skills');
 
-          // navigate to Rank Overview that contains the back button
-          cy.wrap(body).find('[data-cy=myRank]').click();
-          cy.wrap(body).contains('Rank Overview');
-          cy.wrap(body).find('[data-cy=back]').should('exist');
+                // to subject page
+                cy.cdClickSubj(body, 0, 'Subject 0');
+
+                // navigate to Rank Overview that contains the back button
+                cy.wrap(body).find('[data-cy=myRank]').click();
+                cy.wrap(body).contains('Rank Overview');
+                cy.wrap(body).find('[data-cy=back]').should('exist');
+            });
+
+            // now visit the "Report Skills" (external) page
+            cy.get('[data-cy=reportSkillsLink]').click()
+            cy.contains('Report Skills Examples');
+
+            // switch back to the the client display
+            cy.get('[data-cy=userDisplayLink]').click()
+            cy.iframe((body) => {
+                // verify we are still on the Rank Overview page
+                cy.wrap(body).contains('Rank Overview');
+
+                // click the back button and verify that we are still in the
+                // client display (Subject page)
+                cy.cdBack(body, 'Subject 0');
+
+                // then back one more time and we should be back on the client display home page
+                cy.cdBack(body, 'User Skills');
+            });
         });
-
-        // now visit the "Report Skills" (external) page
-        cy.get('[data-cy=reportSkillsLink]').click()
-        cy.contains('Report Skills Examples');
-
-        // switch back to the the client display
-        cy.get('[data-cy=userDisplayLink]').click()
-        cy.iframe((body) => {
-          // verify we are still on the Rank Overview page
-          cy.wrap(body).contains('Rank Overview');
-
-          // click the back button and verify that we are still in the
-          // client display (main page), and not on the "Report Skills" page
-          cy.wrap(body).find('[data-cy=back]').click()
-          cy.wrap(body).contains('User Skills');
-        });
-    });
-
-    it('back button when when returning from an external page - multiple layers deep', () => {
-      cy.createDefaultTinyProject()
-      cy.server().route('/api/users/user1/token').as('getToken')
-      cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
-
-      // visit client display
-      cy.visit('/vuejs#/showSkills?refreshPage=false')
-      cy.wait('@getToken')
-
-      cy.iframe((body) => {
-        cy.wrap(body).find('[data-cy=back]').should('not.exist');
-        cy.wrap(body).contains('User Skills');
-
-        // to subject page
-        cy.cdClickSubj(body, 0, 'Subject 0');
-
-        // navigate to Rank Overview that contains the back button
-        cy.wrap(body).find('[data-cy=myRank]').click();
-        cy.wrap(body).contains('Rank Overview');
-        cy.wrap(body).find('[data-cy=back]').should('exist');
-      });
-
-      // now visit the "Report Skills" (external) page
-      cy.get('[data-cy=reportSkillsLink]').click()
-      cy.contains('Report Skills Examples');
-
-      // switch back to the the client display
-      cy.get('[data-cy=userDisplayLink]').click()
-      cy.iframe((body) => {
-        // verify we are still on the Rank Overview page
-        cy.wrap(body).contains('Rank Overview');
-
-        // click the back button and verify that we are still in the
-        // client display (Subject page)
-        cy.cdBack(body, 'Subject 0');
-
-        // then back one more time and we should be back on the client display home page
-        cy.cdBack(body, 'User Skills');
-      });
-  });
+    }
 })

@@ -11,7 +11,7 @@ name:  Skills-service Backward Compatibility
 #      - 'README.md'
 on:
   schedule:
-    - cron: '0 5 * * *'
+    - cron: '0 6 * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
