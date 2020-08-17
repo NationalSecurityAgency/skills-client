@@ -33,7 +33,7 @@ const reportSkillsClientVersion = (conf) => new Promise((resolve, reject) => {
   xhr.onreadystatechange = () => {
     if (xhr.readyState === 4) {
       if (xhr.status !== 200) {
-        reject(new Error('Unable to report skillsClientVersion'));
+        reject(new Error(`Unable to report skillsClientVersion.  Received status [${xhr.status}]`));
       } else {
         resolve(JSON.parse(xhr.response));
       }
