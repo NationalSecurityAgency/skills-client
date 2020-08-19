@@ -18,7 +18,7 @@ set -o pipefail
 
 echo "------- START: Setup npm links -------"
 cd skills-client-integration/skills-int-e2e-test
-mvn --batch-mode clean package
+mvn --batch-mode clean package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 ls -la target/skills-int-e2e-test-*.jar
 du -sh target/*
 java --version
