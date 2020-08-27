@@ -16,7 +16,7 @@
     "dependencies": {
         "@skilltree/skills-client-vue": "2.0.1",
         "axios": "0.19.0",
-        "bootstrap": "4.3.1",
+        "bootstrap": "4.5.1",
         "bootstrap-vue": "2.0.2",
         "core-js": "^3.2.1",
         "highlightjs": "9.12.0",
