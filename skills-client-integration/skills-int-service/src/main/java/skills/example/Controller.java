@@ -44,6 +44,12 @@ public class Controller {
     @Autowired
     SkillsConfig skillsConfig;
 
+    RestTemplate restTemplate;
+
+    public Controller(RestTemplateBuilder restTemplateBuilder) {
+        restTemplate = restTemplateBuilder.build();
+    }
+
     @CrossOrigin()
     @GetMapping("/users/{user}/token")
     public String getUserAuthToken1(@PathVariable String user) {
@@ -68,7 +74,8 @@ public class Controller {
     @GetMapping("/skills")
     List<String> getAvailableSkillIds() throws Exception{
         String skillsUrl = skillsConfig.getServiceUrl() + "/admin/projects/" + skillsConfig.getProjectId() + "/skills";
-        ResponseEntity<String> responseEntity = getRestTemplate().getForEntity(skillsUrl, String.class);
+        authIfNecessary();
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(skillsUrl, String.class);
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode topLevelTree = objectMapper.readTree(responseEntity.getBody());
         List<String> res = new ArrayList<>();
@@ -87,27 +94,13 @@ public class Controller {
 
     private String getSecret() {
         String secretUrl = skillsConfig.getServiceUrl() + "/admin/projects/" + skillsConfig.getProjectId() + "/clientSecret";
-        ResponseEntity<String> responseEntity = getRestTemplate().getForEntity(secretUrl, String.class);
+        authIfNecessary();
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(secretUrl, String.class);
         return responseEntity.getBody();
     }
 
-    private HttpClient getHttpClient() {
-        HttpClientBuilder builder = HttpClientBuilder.create();
-        builder.setSSLHostnameVerifier(new NoopHostnameVerifier());
-        builder.useSystemProperties();
-
-        return builder.build();
-    }
-
-    private RestTemplate getRestTemplate() {
-        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-        boolean pkiAuthMode = skillsConfig.getAuthMode().equalsIgnoreCase("pki");
-        HttpClient client = getHttpClient();
-        clientHttpRequestFactory.setHttpClient(client);
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setRequestFactory(clientHttpRequestFactory);
-
-        if (!pkiAuthMode) {
+    private void authIfNecessary() {
+        if (!skillsConfig.getAuthMode().equalsIgnoreCase("pki")) {
             // must configure HttpComponentsClientHttpRequestFactory as SpringTemplate does
             // not by default keeps track of session
             HttpHeaders headers = new HttpHeaders();
@@ -120,8 +113,6 @@ public class Controller {
             ResponseEntity<String> response = restTemplate.postForEntity(skillsConfig.getServiceUrl() + "/performLogin", request, String.class);
             assert response.getStatusCode() == HttpStatus.OK;
         }
-
-        return restTemplate;
     }
 
 }

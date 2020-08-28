@@ -35,26 +35,11 @@ public class SecurityRestTemplateCustomizer implements RestTemplateCustomizer {
 
     @Override
     public void customize(RestTemplate restTemplate) {
-
         HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
         boolean pkiAuthMode = skillsConfig.getAuthMode().equalsIgnoreCase("pki");
         HttpClient client = getHttpClient();
         clientHttpRequestFactory.setHttpClient(client);
         restTemplate.setRequestFactory(clientHttpRequestFactory);
-
-        if (!pkiAuthMode) {
-            // must configure HttpComponentsClientHttpRequestFactory as SpringTemplate does
-            // not by default keeps track of session
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-            params.add("username", skillsConfig.getUsername());
-            params.add("password", skillsConfig.getPassword());
-
-            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-            ResponseEntity<String> response = restTemplate.postForEntity(skillsConfig.getServiceUrl() + "/performLogin", request, String.class);
-            assert response.getStatusCode() == HttpStatus.OK;
-        }
     }
 
     private HttpClient getHttpClient() {
