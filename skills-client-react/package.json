@@ -6,7 +6,8 @@
     "main": "dist/skills-client-react.umd.min.js",
     "module": "dist/skills-client-react.esm.min.js",
     "files": [
-        "dist"
+        "dist",
+        "src"
     ],
     "scripts": {
         "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;Apache-2.0' --summary",
