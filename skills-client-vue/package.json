@@ -85,5 +85,23 @@
             ".*\\.(vue)$": "vue-jest",
             "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
         }
+    },
+    "keywords": [
+        "SkillTree",
+        "gamification",
+        "training",
+        "User Engagement",
+        "Rapid Integration",
+        "Vue",
+        "VueJS",
+        "Vue2"
+    ],
+    "homepage": "https://code.nsa.gov/skills-docs/",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com:NationalSecurityAgency/skills-client.git"
+    },
+    "bugs": {
+        "url": "https://github.com/NationalSecurityAgency/skills-client/issues"
     }
 }

@@ -57,5 +57,22 @@
     "ts-node": "8.3.0",
     "tslint": "6.1.0",
     "typescript": "3.9.5"
+  },
+  "keywords": [
+    "SkillTree",
+    "gamification",
+    "training",
+    "User Engagement",
+    "Rapid Integration",
+    "Angular",
+    "AngularJS"
+  ],
+  "homepage": "https://code.nsa.gov/skills-docs/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com:NationalSecurityAgency/skills-client.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NationalSecurityAgency/skills-client/issues"
   }
 }

@@ -62,5 +62,21 @@
     },
     "eslintConfig": {
         "extends": "react-app"
+    },
+    "keywords": [
+        "SkillTree",
+        "gamification",
+        "training",
+        "User Engagement",
+        "Rapid Integration",
+        "React"
+    ],
+    "homepage": "https://code.nsa.gov/skills-docs/",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com:NationalSecurityAgency/skills-client.git"
+    },
+    "bugs": {
+        "url": "https://github.com/NationalSecurityAgency/skills-client/issues"
     }
 }
