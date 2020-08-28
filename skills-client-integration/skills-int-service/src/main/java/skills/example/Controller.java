@@ -21,6 +21,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -41,6 +42,12 @@ public class Controller {
 
     @Autowired
     SkillsConfig skillsConfig;
+
+    RestTemplate restTemplate;
+
+    public Controller(RestTemplateBuilder restTemplateBuilder) {
+        restTemplate = restTemplateBuilder.build();
+    }
 
     @CrossOrigin()
     @GetMapping("/users/{user}/token")
@@ -66,7 +73,6 @@ public class Controller {
     @GetMapping("/skills")
     List<String> getAvailableSkillIds() throws Exception{
         String skillsUrl = skillsConfig.getServiceUrl() + "/admin/projects/" + skillsConfig.getProjectId() + "/skills";
-        RestTemplate restTemplate = getTemplateWithAuth();
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(skillsUrl, String.class);
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode topLevelTree = objectMapper.readTree(responseEntity.getBody());
@@ -86,35 +92,8 @@ public class Controller {
 
     private String getSecret() {
         String secretUrl = skillsConfig.getServiceUrl() + "/admin/projects/" + skillsConfig.getProjectId() + "/clientSecret";
-        RestTemplate restTemplate = getTemplateWithAuth();
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(secretUrl, String.class);
         return responseEntity.getBody();
-    }
-
-    private RestTemplate getTemplateWithAuth() {
-        RestTemplate restTemplate = new RestTemplate();
-        if (!skillsConfig.getAuthMode().equalsIgnoreCase("pki")) {
-            // must configure HttpComponentsClientHttpRequestFactory as SpringTemplate does
-            // not by default keeps track of session
-            restTemplate.setRequestFactory(getHttpRequestFactory());
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-            params.add("username", skillsConfig.getUsername());
-            params.add("password", skillsConfig.getPassword());
-
-            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-            ResponseEntity<String> response = restTemplate.postForEntity(skillsConfig.getServiceUrl() + "/performLogin", request, String.class);
-            assert response.getStatusCode() == HttpStatus.OK;
-        }
-        return restTemplate;
-    }
-
-    private ClientHttpRequestFactory getHttpRequestFactory() {
-        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-        HttpClient httpClient = HttpClientBuilder.create().setSSLHostnameVerifier(new AllowAllHostnameVerifier()).build();
-        clientHttpRequestFactory.setHttpClient(httpClient);
-        return clientHttpRequestFactory;
     }
 
 }
