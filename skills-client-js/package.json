@@ -49,5 +49,20 @@
         "postmate": "1.5.1",
         "sockjs-client": "1.4.0",
         "webstomp-client": "1.2.6"
+    },
+    "keywords": [
+        "SkillTree",
+        "gamification",
+        "training",
+        "User Engagement",
+        "Rapid Integration"
+    ],
+    "homepage": "https://code.nsa.gov/skills-docs/",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/NationalSecurityAgency/skills-client.git"
+    },
+    "bugs": {
+        "url": "https://github.com/NationalSecurityAgency/skills-client/issues"
     }
 }
