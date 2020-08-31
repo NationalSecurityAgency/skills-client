@@ -83,8 +83,8 @@ const getAuthenticationToken = function getAuthenticationToken(authenticator) {
         if (xhr.status !== 200) {
           reject(new Error(`SkillTree: Unable to authenticate using [${authenticator}] endpoint. Response Code=[${xhr.status}].\n
   Ideas to diagnose:\n
-      (1) verity that the authenticator property is correct.\n
-      (2) verity that the server providing the authenticator endpoint is responding (ex. daemon is running, network path is clear).\n
+      (1) verify that the authenticator property is correct.\n
+      (2) verify that the server providing the authenticator endpoint is responding (ex. daemon is running, network path is clear).\n
       (3) check logs on the server providing authenticator endpoint.\n
 Full Response=[${xhr.response}]`));
         } else {
@@ -92,7 +92,7 @@ Full Response=[${xhr.response}]`));
           if (!response.access_token) {
             reject(new Error(`SkillTree: Response from [${authenticator}] endpoint did have NOT have 'access_token' attribute. \n
   Ideas to diagnose:\n
-      (1) verity that the authenticator property is correct.\n
+      (1) verify that the authenticator property is correct.\n
       (2) check implementation of the authenticator endpoint; it must return payload that has 'access_token' attribute.\n
 Full Response=[${xhr.response}]`));
           } else {
