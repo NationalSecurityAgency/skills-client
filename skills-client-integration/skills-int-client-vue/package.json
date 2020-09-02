@@ -1,6 +1,6 @@
 {
     "name": "skills-int-client-vue",
-    "version": "2.0.1",
+    "version": "3.0.0",
     "license": "Apache-2.0",
     "description": "SkillTree Client Lib Integration Tests - Vue",
     "scripts": {
@@ -14,7 +14,7 @@
         "lint": "vue-cli-service lint"
     },
     "dependencies": {
-        "@skilltree/skills-client-vue": "2.0.1",
+        "@skilltree/skills-client-vue": "3.0.0",
         "axios": "0.19.0",
         "bootstrap": "4.3.1",
         "bootstrap-vue": "2.0.2",
@@ -50,14 +50,18 @@
             "plugin:vue/essential",
             "eslint:recommended"
         ],
-        "rules": {},
+        "rules": {
+            
+        },
         "parserOptions": {
             "parser": "babel-eslint"
         }
     },
     "postcss": {
         "plugins": {
-            "autoprefixer": {}
+            "autoprefixer": {
+                
+            }
         }
     }
 }
