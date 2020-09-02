@@ -14,5 +14,22 @@
   "dependencies": {
     "tslib": "2.0.0",
     "@skilltree/skills-client-js": "3.0.0"
+  },
+  "keywords": [
+    "SkillTree",
+    "gamification",
+    "training",
+    "User Engagement",
+    "Rapid Integration",
+    "Angular",
+    "AngularJS"
+  ],
+  "homepage": "https://code.nsa.gov/skills-docs/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NationalSecurityAgency/skills-client.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NationalSecurityAgency/skills-client/issues"
   }
 }
