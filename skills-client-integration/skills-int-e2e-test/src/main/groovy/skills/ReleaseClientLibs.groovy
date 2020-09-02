@@ -30,13 +30,7 @@ class ReleaseClientLibs {
         File workDir = scriptParamsHelper.getWorkingDir()
         ScriptParamsHelper.ReleaseMode releaseMode = scriptParamsHelper.getReleaseMode()
         Boolean notDryRun = scriptParamsHelper.getNotDryRun()
-
-        String patchBranch = "master"
-        if (releaseMode == ScriptParamsHelper.ReleaseMode.Patch){
-            patchBranch = scriptParamsHelper.getPatchBranch()
-        }
-
-        new ReleaseClientLibs(releaseMode: releaseMode, dryRun: !notDryRun, baseBranch: patchBranch, workDir:  workDir).release()
+        new ReleaseClientLibs(releaseMode: releaseMode, dryRun: !notDryRun, baseBranch: "master", workDir:  workDir).release()
     }
 
     ScriptParamsHelper.ReleaseMode releaseMode
@@ -108,6 +102,13 @@ class ReleaseClientLibs {
         assert npmProj.version == newVersion
         json.dependencies.findAll { it.key.startsWith(Vars.NpmNamespace) }.each {
             assert json.dependencies."${it.key}" == newVersion
+        }
+
+        if (npmProj.angularModule) {
+            File loc = new File(npmProj.loc, "projects/skilltree/skills-client-ng/")
+            assert loc.exists()
+            NpmProj angularProj = new NpmProj(loc: loc, name: loc.name, doOthersLinkToMe: true)
+            updateVersion(angularProj, newVersion)
         }
     }
 }
