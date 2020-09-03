@@ -40,8 +40,8 @@ export default {
     const container = createElem('div', undefined, undefined, 'text-align: center; padding-top: 3rem; color: #3e3c3c;');
     const imageContainer = createElem('p', container);
     createElem('span', imageContainer, '😕', 'font-size: 6rem; border: 1px solid #ccc !important; border-radius: 4px; padding: 1rem 4rem 1rem 4rem;');
-    createElem('p', container, 'Could NOT reach Skills Service.', 'font-size: 2rem; color: #460f0f;');
-    createElem('div', container, 'Please contact skills\'s server administrator. ');
+    createElem('p', container, 'Could NOT reach Skilltree Service.', 'font-size: 2rem; color: #460f0f;');
+    createElem('div', container, 'Please contact the skilltree server administrator. ');
     return container;
   },
 };

@@ -39,9 +39,9 @@ describe('ErrorPageUtils', () => {
                 <span style="font-size: 6rem; border: 1px solid #ccc !important; border-radius: 4px; padding: 1rem 4rem 1rem 4rem;">😕</span>
             </p>
             <p style="font-size: 2rem; color: #460f0f;">
-                Could NOT reach Skills Service.
+                Could NOT reach Skilltree Service.
             </p>
-            <div>Please contact skills's server administrator. </div>`
+            <div>Please contact the skilltree server administrator. </div>`
         const flattenHTML = expectedHTML.replace(/\n|\s{2,}/gi, '')
         expect(errPage.innerHTML).toBe(flattenHTML);
     });
