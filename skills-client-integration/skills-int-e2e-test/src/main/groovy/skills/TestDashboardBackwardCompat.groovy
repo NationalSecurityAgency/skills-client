@@ -91,6 +91,7 @@ class TestDashboardBackwardCompat {
         for (String version : versionsToTest) {
             titlePrinter.printTitle("Testing version [${version}]")
 
+            new ProcessRunner(loc: workDir).run("git checkout .")
             new ProcessRunner(loc: workDir).run("git checkout ${version}")
             assert new ProcessRunner(loc: workDir).run("git status").sout.contains(version)
             applyPatch(version)
