@@ -13,24 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package skills
+package skills.helpers
 
-import groovy.util.logging.Slf4j
-import org.apache.commons.io.FileUtils
-
-@Slf4j
-class DirHelper {
-
-    static void createEmptyDirClearIfExist(File workDir) {
-        if (workDir.exists()) {
-            FileUtils.deleteDirectory(workDir)
-            log.info("Removed [{}]", workDir.absoluteFile.absolutePath)
-        }
-
-        if (!workDir.exists()) {
-            workDir.mkdirs()
-            log.info("Created [{}]", workDir.absoluteFile.absolutePath)
-        }
-    }
-
+class Vars {
+    static String NpmNamespace  = "@skilltree"
 }

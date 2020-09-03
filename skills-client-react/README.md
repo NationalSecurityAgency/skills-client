@@ -14,4 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
  -->
 
-SkillTree Client Lib - React
+# SkillTree Client Lib - React
+
+<p>
+  <a href="https://www.npmjs.com/package/@skilltree/skills-client-react">
+    <img src="https://flat.badgen.net/npm/v/@skilltree/skills-client-react" alt="Current version">
+  </a>
+  <a href="https://www.npmjs.com/package/@skilltree/skills-client-react">
+    <img src="https://flat.badgen.net/npm/dt/@skilltree/skills-client-react" alt="npm downloads">
+  </a>
+  <a href="https://www.npmjs.com/package/@skilltree/skills-client-react">
+    <img src="https://flat.badgen.net/npm/dw/@skilltree/skills-client-react" alt="npm weekly downloads">
+  </a>
+  <a href="https://www.npmjs.com/package/@skilltree/skills-client-react">
+    <img src="https://img.shields.io/npm/l/@skilltree/skills-client-react.svg?sanitize=true" alt="License">
+  </a>
+</p>
+
+SkillTree is an innovative approach to implementing application training. SkillTree's ``skills-client-react`` project facilitates rapid integration with the SkillTree service. 
+
+To learn about the SkillTree platform please visit our [Official Documentation](https://code.nsa.gov/skills-docs/). 
+These pages provide in-depth guidance on the installation, usage and contribution.  
+
+## Installation and Usage
+
+To learn how to install and use this library please visit [SkillTree's React Integration Guide](https://code.nsa.gov/skills-docs/skills-client/react.html).

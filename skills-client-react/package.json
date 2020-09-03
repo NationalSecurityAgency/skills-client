@@ -1,12 +1,13 @@
 {
     "name": "@skilltree/skills-client-react",
-    "version": "2.0.1",
+    "version": "3.0.0",
     "license": "Apache-2.0",
     "description": "SkillTree Client Lib - React",
     "main": "dist/skills-client-react.umd.min.js",
     "module": "dist/skills-client-react.esm.min.js",
     "files": [
-        "dist"
+        "dist",
+        "src"
     ],
     "scripts": {
         "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;Apache-2.0' --summary",
@@ -56,11 +57,27 @@
         "eslint-plugin-react": "7.20.5"
     },
     "dependencies": {
-        "@skilltree/skills-client-js": "2.0.1",
+        "@skilltree/skills-client-js": "3.0.0",
         "axios": "0.19.0",
         "axios-auth-refresh": "1.0.7"
     },
     "eslintConfig": {
         "extends": "react-app"
+    },
+    "keywords": [
+        "SkillTree",
+        "gamification",
+        "training",
+        "User Engagement",
+        "Rapid Integration",
+        "React"
+    ],
+    "homepage": "https://code.nsa.gov/skills-docs/",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/NationalSecurityAgency/skills-client.git"
+    },
+    "bugs": {
+        "url": "https://github.com/NationalSecurityAgency/skills-client/issues"
     }
 }

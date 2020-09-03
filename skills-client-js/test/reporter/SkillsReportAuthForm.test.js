@@ -163,7 +163,7 @@ describe('authFormTests()', () => {
     try {
       await SkillsReporter.reportSkill('skill1');
     } catch (e) {
-      expect(e.message,).toMatch('You must configure a serviceUrl, projectId and authenticationUrl for SkillsReportService');
+      expect(e.message,).toMatch('SkillTree: SkillsConfiguration was not configured and serviceUrl, projectId and authenticationUrl are missing.');
     }
   });
 

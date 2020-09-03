@@ -18,6 +18,7 @@ package skills
 import groovy.json.JsonSlurper
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j
+import skills.helpers.Vars
 
 @ToString(includeNames = true, excludes = "packageJson")
 @Slf4j
@@ -90,7 +91,7 @@ class NpmProj {
 
     List<String> getSkillsDependenciesFromPackageJson() {
         return packageJson.dependencies.findAll {
-            it.key.toString().startsWith("@skilltree")
+            it.key.toString().startsWith(Vars.NpmNamespace)
         }.collect { it.key }
     }
 

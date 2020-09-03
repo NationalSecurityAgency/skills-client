@@ -1,6 +1,6 @@
 {
     "name": "@skilltree/skills-client-vue",
-    "version": "2.0.1",
+    "version": "3.0.0",
     "license": "Apache-2.0",
     "description": "SkillTree Client Lib - Vue.js",
     "main": "dist/skills-client-vue.umd.min.js",
@@ -53,14 +53,15 @@
         "vue-eslint-parser": "7.1.0"
     },
     "dependencies": {
-        "@skilltree/skills-client-js": "2.0.1",
+        "@skilltree/skills-client-js": "3.0.0",
         "axios": "0.19.2",
         "axios-auth-refresh": "1.0.7",
         "lodash": "4.17.20",
         "postmate": "1.5.2"
     },
     "files": [
-        "dist"
+        "dist",
+        "src"
     ],
     "jest": {
         "collectCoverage": true,
@@ -85,5 +86,23 @@
             ".*\\.(vue)$": "vue-jest",
             "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
         }
+    },
+    "keywords": [
+        "SkillTree",
+        "gamification",
+        "training",
+        "User Engagement",
+        "Rapid Integration",
+        "Vue",
+        "VueJS",
+        "Vue2"
+    ],
+    "homepage": "https://code.nsa.gov/skills-docs/",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/NationalSecurityAgency/skills-client.git"
+    },
+    "bugs": {
+        "url": "https://github.com/NationalSecurityAgency/skills-client/issues"
     }
 }
