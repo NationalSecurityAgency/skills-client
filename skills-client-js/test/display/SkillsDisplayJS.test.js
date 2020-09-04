@@ -113,9 +113,12 @@ describe('SkillsDisplayJS', () => {
         return mockIframeContainer;
       };
 
+      console.error = jest.fn();
+
       client.attachTo(mockIframeContainer);
 
       setTimeout(() => {
+        expect(console.error).toHaveBeenCalledWith('Please ensure the skilltree server is running. skilltree service URL: http://serviceUrlToNowhere');
         expect(ErrorPageUtils.removeAllChildren).toHaveBeenCalledWith(mockIframeContainer);
         expect(mockIframeContainer.appendChild).toHaveBeenCalledWith(mockErrorPage);
         expect(mockIframeContainer.setAttribute).toHaveBeenCalledWith('style', 'border: 5px; height: 20rem; width: 100%');

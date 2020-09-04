@@ -224,7 +224,7 @@ context('React Tests', () => {
         cy.visit('/react/index.html#/showSkills')
         cy.wait('@getStatus')
 
-        cy.contains('Could NOT reach Skills Service')
+        cy.contains('Could NOT reach Skilltree Service')
     });
 
     it('only display skills up-to the provided version', () => {

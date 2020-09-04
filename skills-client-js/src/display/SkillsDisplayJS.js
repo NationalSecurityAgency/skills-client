@@ -119,6 +119,13 @@ export default class SkillsDisplayJS {
   _checkAndHandleServiceStatus(iframeContainer) {
     axios.get(`${this.configuration.serviceUrl}/public/status`)
       .catch(() => {
+        let errorMessage = 'Please ensure the skilltree server is running';
+        if (this.configuration.serviceUrl.startsWith('https')) {
+          errorMessage += ' and that your browser trusts the server\'s certificate';
+        }
+        errorMessage += `. skilltree service URL: ${this.configuration.serviceUrl}`;
+        /* eslint-disable no-console */
+        console.error(errorMessage);
         ErrorPageUtils.removeAllChildren(iframeContainer);
         iframeContainer.appendChild(ErrorPageUtils.buildErrorPage());
         iframeContainer.setAttribute('style', 'border: 5px; height: 20rem; width: 100%');

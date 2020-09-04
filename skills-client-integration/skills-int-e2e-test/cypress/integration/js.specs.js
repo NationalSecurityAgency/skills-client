@@ -242,7 +242,7 @@ context("Native JS Tests", () => {
         cy.visit("/native/clientDisplay.html");
         cy.wait("@getStatus");
 
-        cy.contains("Could NOT reach Skills Service");
+        cy.contains("Could NOT reach Skilltree Service");
     });
 
     it("only display skills up-to the provided version", () => {
