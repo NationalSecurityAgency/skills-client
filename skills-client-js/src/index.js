@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import Logger from 'js-logger';
 import { SkillsReporter, SUCCESS_EVENT, FAILURE_EVENT } from './reporter/SkillsReporter';
 import SkillsConfiguration from './config/SkillsConfiguration';
 import SkillsDisplayJS from './display/SkillsDisplayJS';
@@ -25,4 +26,5 @@ export {
   FAILURE_EVENT,
   SkillsDisplayJS,
   SkillsLevelJS,
+  Logger,
 };

@@ -13,10 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import mock from 'xhr-mock';
 import SkillsConfiguration from '../../src/config/SkillsConfiguration.js';
-import {SkillsReporter} from "../../src";
 
 describe('SkillsConfiguration', () => {
+  // replace the real XHR object with the mock XHR object before each test
+  beforeEach(() => {
+    mock.setup();
+    SkillsConfiguration.logout();
+    const url = /.*\/api\/projects\/proj\/skillsClientVersion/;
+    mock.post(url, (req, res) => {
+      return res.status(200).body('{"success":true,"explanation":null}');
+    });
+    mock.get(/.*\/public\/status/, (req, res) => {
+      return res.status(200).body('{"loggingEnabled":false}');
+    });
+  });
+
+  // put the real XHR object back and clear the mocks after each test
+  afterEach(() => {
+    SkillsConfiguration.logout();
+    mock.teardown();
+  })
+
   describe('initialization', () => {
     it('exists', () => {
       expect(SkillsConfiguration).not.toBeNull();

@@ -24,7 +24,8 @@ import {
   SkillsReporter,
   SUCCESS_EVENT,
   FAILURE_EVENT,
-  SkillsDisplayJS
+  SkillsDisplayJS,
+  Logger
 } from '@skilltree/skills-client-js';
 
 export {
@@ -33,6 +34,7 @@ export {
   SUCCESS_EVENT,
   FAILURE_EVENT,
   SkillsDisplayJS,
+  Logger,
 };
 
 export * from './lib/components/skills-level.module';

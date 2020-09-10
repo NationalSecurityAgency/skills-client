@@ -19,6 +19,7 @@ import {
   SUCCESS_EVENT,
   FAILURE_EVENT,
   SkillsDisplayJS,
+  Logger,
 } from '@skilltree/skills-client-js';
 import SkillsDisplay from './component/SkillsDisplay';
 import SkillsLevel from './component/SkillsLevel';
@@ -33,4 +34,5 @@ export {
   SkillsDisplayJS,
   SkillsDisplay,
   SkillsLevel,
+  Logger,
 };

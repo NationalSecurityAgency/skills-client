@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import log from 'js-logger';
+
 if (!window.process) {
   // workaround for sockjs-client relying on 'process' variable being defined.
   // similar issue with 'global' variable discussed here:
@@ -44,6 +46,52 @@ const reportSkillsClientVersion = (conf) => new Promise((resolve, reject) => {
   xhr.send(JSON.stringify({ skillsClientVersion: conf.skillsClientVersion }));
 });
 
+const sendLogMessage = (conf, messages, context) => new Promise((resolve, reject) => {
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', `${conf.getServiceUrl()}/public/log`);
+  // xhr.withCredentials = true;
+  // if (!conf.isPKIMode()) {
+  //   xhr.setRequestHeader('Authorization', `Bearer ${conf.getAuthToken()}`);
+  // }
+  xhr.onreadystatechange = () => {
+    if (xhr.readyState === 4) {
+      if (xhr.status !== 200) {
+        reject(new Error(`Unable to send client log message.  Received status [${xhr.status}]`));
+      } else {
+        resolve(JSON.parse(xhr.response));
+      }
+    }
+  };
+
+  xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+  xhr.send(JSON.stringify({ message: messages[0], level: context.level }));
+});
+
+const configureLogging = (conf) => new Promise((resolve, reject) => {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', `${conf.getServiceUrl()}/public/status`);
+  xhr.onreadystatechange = () => {
+    if (xhr.readyState === 4) {
+      if (xhr.status !== 200) {
+        reject(new Error(`Unable to retrieve client configuration.  Received status [${xhr.status}]`));
+      } else {
+        const response = JSON.parse(xhr.response);
+        if (response.loggingEnabled) {
+          const consoleHandler = log.createDefaultHandler();
+          log.setHandler((messages, context) => {
+            consoleHandler(messages, context);
+            sendLogMessage(conf, messages, context);
+          });
+          log.setLevel(log[response.loggingLevel]);
+          log.info(`SkillConfiguration::Logger enabled, log level set to [${response.loggingLevel}]`);
+        }
+        resolve();
+      }
+    }
+  };
+  xhr.send();
+});
+
 let waitForInitializePromise = null;
 let initializedResolvers = null;
 let initialized = false;
@@ -62,9 +110,11 @@ const initializeAfterConfigurePromise = () => {
 };
 
 const setInitialized = (conf) => {
+  log.debug('SkillsConfiguration::calling initializedResolvers');
   initializedResolvers.resolve();
   reportSkillsClientVersion(conf);
   initialized = true;
+  log.debug('SkillsConfiguration::initialized');
 };
 
 const setConfigureWasCalled = () => {
@@ -132,16 +182,19 @@ const exportObject = {
     this.serviceUrl = serviceUrl;
     this.authenticator = authenticator;
     this.authToken = authToken;
-    if (!this.isPKIMode() && !this.getAuthToken()) {
-      getAuthenticationToken(this.getAuthenticator())
-        .then((token) => {
-          this.setAuthToken(token);
-          setInitialized(this);
-        });
-    } else {
-      setInitialized(this);
-    }
-    setConfigureWasCalled();
+    configureLogging(this).then(() => {
+      if (!this.isPKIMode() && !this.getAuthToken()) {
+        getAuthenticationToken(this.getAuthenticator())
+          .then((token) => {
+            this.setAuthToken(token);
+            setInitialized(this);
+          });
+      } else {
+        setInitialized(this);
+      }
+      setConfigureWasCalled();
+      log.info('SkillConfiguration::configured');
+    });
   },
 
   afterConfigure() {

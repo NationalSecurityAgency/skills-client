@@ -18,7 +18,7 @@ limitations under the License.
 </template>
 
 <script>
-  import { SkillsDisplayJS } from '@skilltree/skills-client-js';
+  import { SkillsDisplayJS, Logger } from '@skilltree/skills-client-js';
 
   export default {
     props: {
@@ -66,13 +66,16 @@ limitations under the License.
       },
     },
     mounted() {
+      Logger.info('SkillsDisplay::mounted');
       this.clientDisplay = new SkillsDisplayJS({
         options: this.options,
         version: this.version,
         theme: this.theme,
         userId: this.userId,
       });
+      Logger.info(`SkillsDisplay::created SkillsDisplayJS...calling attachTo for ref [${this.$refs.clientDisplayContainer}]`);
       this.clientDisplay.attachTo(this.$refs.clientDisplayContainer);
+      Logger.info('SkillsDisplay::attached to SkillsDisplayJS');
     },
     beforeDestroy() {
       this.clientDisplay.destroy();

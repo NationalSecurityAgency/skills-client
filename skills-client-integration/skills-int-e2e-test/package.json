@@ -22,7 +22,7 @@
     "integration:start:release": "java -Dspring.config.location=classpath:/application.properties,file:serverConfigs/integration_application.properties -jar ./target/servicesJars/skills-int-service-*.jar",
     "integration:waitToStart": "npx wait-on -t 40000 http://localhost:8090",
     "backend:start": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ../../../skills-service/service/target/skills-service-*.jar",
-    "backend:start:background": "mkdir -p ./target/logs && npm run backend:start > ./target/logs/skills-service.out &",
+    "backend:start:background": "mkdir -p ./target/logs && npm run backend:start | awk '/ClientLoggingController/{ print > \"./target/logs/skills-client.out\" }!/ClientLoggingController/{ print > \"./target/logs/skills-service.out\" }' &",
     "backend:start:ci": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ../../skills-service/skills-service-*.jar",
     "backend:start:ci:background": "mkdir -p ./target/logs && npm run backend:start:ci > ./target/logs/skills-service.out &",
     "backend:start:release": "java -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ./target/servicesJars/skills-service-*.jar",

@@ -19,9 +19,12 @@ import Multiselect from 'vue-multiselect';
 import App from './App.vue';
 import router from './router';
 import axios from 'axios';
-import { SkillsDirective, SkillsConfiguration } from '@skilltree/skills-client-vue';
+import { SkillsDirective, SkillsConfiguration, Logger } from '@skilltree/skills-client-vue';
 import VueHighlightJS from 'vue-highlightjs'
 
+// if (window.Cypress) {
+  window.skillsLogger = Logger;
+// }
 Vue.config.productionTip = false
 
 Vue.component('multiselect', Multiselect);
@@ -39,4 +42,5 @@ axios.get("/api/config")
       render: h => h(App),
       router,
     }).$mount('#app');
+    window.skillsLogger = Logger;
   });

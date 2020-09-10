@@ -21,6 +21,10 @@ const homePage = '/vuejs#/'
 context('Vue Tests', () => {
 
     it('level component should be reactive', () => {
+        // cy.window().then(win => {
+        //     const skillsLogger = win.skillsLogger;
+        //     skillsLogger.info('enter: level component should be reactive');
+        // })
         cy.createDefaultProject()
         const sendEventViaDropdownId = '#PureJSReportAnySkill';
         Cypress.Commands.add("clickSubmit", () => {
