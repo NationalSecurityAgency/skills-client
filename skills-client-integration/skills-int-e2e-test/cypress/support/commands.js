@@ -162,19 +162,25 @@ Cypress.Commands.add('visitHomePage', (homepage) => {
     cy.get('@skillsWebsocketConnected').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
 });
 
-Cypress.Commands.add("cdClickSubj", (body, subjIndex, expectedTitle) => {
-    cy.wrap(body).find(`.user-skill-subject-tile:nth-child(${subjIndex+1})`).first().click();
+Cypress.Commands.add("cdClickSubj", (subjIndex, expectedTitle) => {
+    cy.wrapIframe().find(`.user-skill-subject-tile:nth-child(${subjIndex+1})`).first().click();
     if (expectedTitle){
-        cy.wrap(body).contains(expectedTitle);
+        cy.wrapIframe().contains(expectedTitle);
     }
 });
 
-Cypress.Commands.add("cdBack", (body, expectedTitle = 'User Skills') => {
-    cy.wrap(body).find('[data-cy=back]').click()
-    cy.wrap(body).find('h2').contains(expectedTitle);
+Cypress.Commands.add("cdBack", (expectedTitle = 'User Skills') => {
+    cy.wrapIframe().find('[data-cy=back]').click()
+    cy.wrapIframe().find('h2').contains(expectedTitle);
 
     // back button should not exist on the home page, whose title is the default value
     if (expectedTitle === 'User Skills'){
-        cy.wrap(body).find('[data-cy=back]').should('not.exist');
+        cy.wrapIframe().find('[data-cy=back]').should('not.exist');
     }
+});
+
+Cypress.Commands.add('wrapIframe', () => {
+  return cy.get('iframe')
+      .its('0.contentDocument.body').should('not.be.empty')
+      .then(cy.wrap)
 });
