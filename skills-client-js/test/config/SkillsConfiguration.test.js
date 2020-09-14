@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 import mock from 'xhr-mock';
-import SkillsConfiguration from '../../src/config/SkillsConfiguration.js';
+import SkillsConfiguration from '../../src/config/SkillsConfiguration';
 
 describe('SkillsConfiguration', () => {
   // replace the real XHR object with the mock XHR object before each test
   beforeEach(() => {
     mock.setup();
     SkillsConfiguration.logout();
-    const url = /.*\/api\/projects\/proj\/skillsClientVersion/;
-    mock.post(url, (req, res) => {
-      return res.status(200).body('{"success":true,"explanation":null}');
-    });
+    const url = /.*\/api\/projects\/.*\/skillsClientVersion/;
+    mock.post(url, (req, res) => res.status(200).body('{"success":true,"explanation":null}'));
     mock.get(/.*\/public\/status/, (req, res) => {
       return res.status(200).body('{"loggingEnabled":false}');
     });
@@ -34,7 +32,7 @@ describe('SkillsConfiguration', () => {
   afterEach(() => {
     SkillsConfiguration.logout();
     mock.teardown();
-  })
+  });
 
   describe('initialization', () => {
     it('exists', () => {
@@ -62,7 +60,7 @@ describe('SkillsConfiguration', () => {
     describe('initializing', () => {
       describe('isPKIMode', () => {
         it('isPKIMode is false if authenticator is NOT \'pki\'', () => {
-          const mockAuthenticator = Math.random();
+          const mockAuthenticator = Math.random().toString();
 
           SkillsConfiguration.configure({
             authenticator: mockAuthenticator, projectId: 'proj', serviceUrl: 'http://somewhere',
@@ -177,9 +175,9 @@ describe('SkillsConfiguration', () => {
       });
 
       it('does not throw an error if everything is set', () => {
-        const mockProjectId = Math.random();
-        const mockServiceUrl = Math.random();
-        const mockAuthenticator = Math.random();
+        const mockProjectId = Math.random().toString();
+        const mockServiceUrl = Math.random().toString();
+        const mockAuthenticator = Math.random().toString();
 
         const configObject = {
           projectId: mockProjectId,

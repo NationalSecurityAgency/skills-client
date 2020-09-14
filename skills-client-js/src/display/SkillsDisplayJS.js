@@ -19,6 +19,7 @@ import log from 'js-logger';
 
 import SkillsConfiguration from '../config/SkillsConfiguration';
 import ErrorPageUtils from './ErrorPageUtils';
+import skillsService from '../SkillsService';
 
 let uniqueId = 0;
 
@@ -125,18 +126,18 @@ export default class SkillsDisplayJS {
   }
 
   _checkAndHandleServiceStatus(iframeContainer) {
-    if (!SkillsConfiguration.wasConfigureCalled()) {
+    if (!SkillsConfiguration.getServiceStatus()) {
       log.info('SkillsDisplayJS::SkillsConfiguration.configure() was not called, checking status endpoint.');
-      axios.get(`${this.configuration.serviceUrl}/public/status`)
-        .catch(() => {
+      skillsService.getServiceStatus(`${this.configuration.serviceUrl}/public/status`)
+        .catch((error) => {
           let errorMessage = 'Please ensure the skilltree server is running';
-          if (this.configuration.serviceUrl.startsWith('https')) {
+          if (this.configuration.serviceUrl && this.configuration.serviceUrl.startsWith('https')) {
             errorMessage += ' and that your browser trusts the server\'s certificate';
           }
           errorMessage += `. skilltree service URL: ${this.configuration.serviceUrl}`;
           /* eslint-disable no-console */
           console.error(errorMessage);
-          log.error(`SkillsDisplayJS::${errorMessage}`);
+          log.error(`SkillsDisplayJS::${errorMessage}`, error);
           ErrorPageUtils.removeAllChildren(iframeContainer);
           iframeContainer.appendChild(ErrorPageUtils.buildErrorPage());
           iframeContainer.setAttribute('style', 'border: 5px; height: 20rem; width: 100%');
