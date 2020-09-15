@@ -48,9 +48,5 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  if(cy.window().skillsLogger) {
-    cy.skillsLog(`Completed test [${Cypress.mocha.getRunner().test.title}]`)
-  } else { 
-    console.log('no skillsLogger found in window');
-  }
+  cy.skillsLog(`Completed test [${Cypress.mocha.getRunner().test.title}]`)
 })

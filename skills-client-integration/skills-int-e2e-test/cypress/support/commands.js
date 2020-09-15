@@ -188,5 +188,12 @@ Cypress.Commands.add('wrapIframe', () => {
 });
 
 Cypress.Commands.add('skillsLog', (message) => {
-  cy.window().then(win => win.skillsLogger.info(message));
+  cy.window().then(win => {
+    if (win.skillsLogger) {
+      win.skillsLogger.info(message) 
+    } else {
+      console.error('no skillsLogger found in window');
+      console.log(message);
+    }
+  });
 });
