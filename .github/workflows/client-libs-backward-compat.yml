@@ -92,3 +92,5 @@ jobs:
         name: result artifacts
         path: |
           ./skills-client-integration/skills-int-e2e-test/target/logs/*.log
+          ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
+          ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
