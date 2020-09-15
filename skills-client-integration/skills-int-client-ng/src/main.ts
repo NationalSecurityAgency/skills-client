@@ -16,7 +16,7 @@ limitations under the License.
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import axios from 'axios';
-import { SkillsConfiguration } from '@skilltree/skills-client-ng'
+import { SkillsConfiguration, Logger } from '@skilltree/skills-client-ng'
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
@@ -29,6 +29,9 @@ axios.get("/api/config")
     SkillsConfiguration.configure(result.data);
   })
   .then(() => {
+    if ((<any> window).Cypress) {
+      (<any> window).skillsLogger = Logger;
+    }
     platformBrowserDynamic().bootstrapModule(AppModule)
       .catch(err => console.error(err));
   })

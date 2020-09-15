@@ -38,7 +38,7 @@
     "dev:removeNpmLinks": "mvn --batch-mode clean package && java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.RemoveNpmLinks org.springframework.boot.loader.PropertiesLauncher"
   },
   "devDependencies": {
-    "cypress": "4.11.0",
+    "cypress": "^5.1.0",
     "license-check-and-add": "3.0.4",
     "license-checker": "25.0.1",
     "semver": "7.1.2",

@@ -160,6 +160,8 @@ Cypress.Commands.add('visitHomePage', (homepage) => {
     });
     // wait for web socket to connect
     cy.get('@skillsWebsocketConnected').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
+    cy.window().should('have.property', 'skillsLogger')
+    cy.skillsLog(`Visit Home page for test [${Cypress.mocha.getRunner().test.title}]`)
 });
 
 Cypress.Commands.add("cdClickSubj", (subjIndex, expectedTitle) => {
@@ -183,4 +185,8 @@ Cypress.Commands.add('wrapIframe', () => {
   return cy.get('iframe')
       .its('0.contentDocument.body').should('not.be.empty')
       .then(cy.wrap)
+});
+
+Cypress.Commands.add('skillsLog', (message) => {
+  cy.window().then(win => win.skillsLogger.info(message));
 });

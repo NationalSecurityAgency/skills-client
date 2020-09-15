@@ -20,7 +20,7 @@ import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { SkillsConfiguration } from '@skilltree/skills-client-react';
+import { SkillsConfiguration, Logger } from '@skilltree/skills-client-react';
 
 axios.get("/api/config")
   .then((result) => {
@@ -28,6 +28,9 @@ axios.get("/api/config")
   })
   .then(() => {
     SkillsConfiguration.afterConfigure().then(() => {
+      if (window.Cypress) {
+        window.skillsLogger = Logger;
+      }
       ReactDOM.render(<App />, document.getElementById('root'));
     })
   });

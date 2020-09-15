@@ -91,5 +91,4 @@ jobs:
       with:
         name: result artifacts
         path: |
-          ./skills-client-integration/skills-int-e2e-test/target/skills-client/skills-client-integration/skills-int-e2e-test/target/logs/*.out
-          ./skills-client-integration/skills-int-e2e-test/target/*.log
+          ./skills-client-integration/skills-int-e2e-test/target/logs/*.log

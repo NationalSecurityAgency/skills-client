@@ -22,9 +22,6 @@ import axios from 'axios';
 import { SkillsDirective, SkillsConfiguration, Logger } from '@skilltree/skills-client-vue';
 import VueHighlightJS from 'vue-highlightjs'
 
-// if (window.Cypress) {
-  window.skillsLogger = Logger;
-// }
 Vue.config.productionTip = false
 
 Vue.component('multiselect', Multiselect);
@@ -38,9 +35,11 @@ axios.get("/api/config")
     SkillsConfiguration.configure(result.data);
   })
   .then(() => {
+    if (window.Cypress) {
+      window.skillsLogger = Logger;
+    }
     new Vue({
       render: h => h(App),
       router,
     }).$mount('#app');
-    window.skillsLogger = Logger;
   });
