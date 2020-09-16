@@ -34,28 +34,28 @@ const callErrorHandlers = (event) => {
 
 const connectWebsocket = (serviceUrl) => {
   const wsUrl = `${serviceUrl}/skills-websocket`;
-  log.info(`SkillsReporter::connecting websocket using SockJS to [${wsUrl}]`);
+  log.info(`SkillsClient::SkillsReporter::connecting websocket using SockJS to [${wsUrl}]`);
   const socket = new SockJS(wsUrl);
   const stompClient = Stomp.over(socket);
   stompClient.debug = () => {};
   let headers = {};
   if (!SkillsConfiguration.isPKIMode()) {
-    log.debug('SkillsReporter::adding Authorization header to web socket connection');
+    log.debug('SkillsClient::SkillsReporter::adding Authorization header to web socket connection');
     headers = { Authorization: `Bearer ${SkillsConfiguration.getAuthToken()}` };
   }
   if (!stompClient.connected) {
-    log.info('SkillsReporter::connecting stompClient over ws');
+    log.info('SkillsClient::SkillsReporter::connecting stompClient over ws');
     stompClient.connect(headers, () => {
-      log.info('SkillsReporter::stompClient connected');
+      log.info('SkillsClient::SkillsReporter::stompClient connected');
       const topic = `/user/queue/${SkillsConfiguration.getProjectId()}-skill-updates`;
-      log.info(`SkillsReporter::stompClient subscribing to topic [${topic}]`);
+      log.info(`SkillsClient::SkillsReporter::stompClient subscribing to topic [${topic}]`);
       stompClient.subscribe(topic, (update) => {
-        log.info(`SkillsReporter::ws message [${update.body}] received over topic [${topic}]. calling success handlers...`);
+        log.info(`SkillsClient::SkillsReporter::ws message [${update.body}] received over topic [${topic}]. calling success handlers...`);
         callSuccessHandlers(JSON.parse(update.body));
-        log.info('SkillsReporter::Done calling success handlers...');
+        log.info('SkillsClient::SkillsReporter::Done calling success handlers...');
       });
       window.postMessage({ skillsWebsocketConnected: true }, window.location.origin);
-      log.info('SkillsReporter::window.postMessage skillsWebsocketConnected');
+      log.info('SkillsClient::SkillsReporter::window.postMessage skillsWebsocketConnected');
     });
   }
 };
@@ -85,7 +85,7 @@ const getAuthenticationToken = function getAuthenticationToken() {
 };
 
 const authenticateAndRetry = function authenticateAndRetry(userSkillId, attemptCount, resolve, reject) {
-  log.info(`SkillsReporter::authenticateAndRetry [${userSkillId}] attemptCount [${attemptCount}]`);
+  log.info(`SkillsClient::SkillsReporter::authenticateAndRetry [${userSkillId}] attemptCount [${attemptCount}]`);
   getAuthenticationToken()
     .then((token) => {
       SkillsConfiguration.setAuthToken(token);
@@ -118,14 +118,14 @@ const SkillsReporter = {
       this.websocketConnected = true;
     }
     successHandlerCache.add(handler);
-    log.info(`SkillsReporter::added success handler [${handler ? handler.name : null}]`);
+    log.info(`SkillsClient::SkillsReporter::added success handler [${handler ? handler.name : null}]`);
   },
   addErrorHandler(handler) {
     errorHandlerCache.add(handler);
-    log.info(`SkillsReporter::added error handler [${handler ? handler.name : null}]`);
+    log.info(`SkillsClient::SkillsReporter::added error handler [${handler ? handler.name : null}]`);
   },
   reportSkill(userSkillId, count = undefined) {
-    log.info(`SkillsReporter::reporting skill [${userSkillId}] count [${count}]`);
+    log.info(`SkillsClient::SkillsReporter::reporting skill [${userSkillId}] count [${count}]`);
     SkillsConfiguration.validate();
     if (count >= 25) {
       const errorMessage = 'Unable to authenticate after 25 attempts';
@@ -167,10 +167,10 @@ const SkillsReporter = {
           const body = JSON.stringify({ notifyIfSkillNotApplied: this.notifyIfSkillNotApplied });
           xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
           xhr.send(body);
-          log.info('SkillsReporter::reporting skill request sent with notifyIfSkillNotApplied=true');
+          log.info('SkillsClient::SkillsReporter::reporting skill request sent with notifyIfSkillNotApplied=true');
         } else {
           xhr.send();
-          log.info('SkillsReporter::reporting skill request sent with notifyIfSkillNotApplied=false');
+          log.info('SkillsClient::SkillsReporter::reporting skill request sent with notifyIfSkillNotApplied=false');
         }
       }
     });

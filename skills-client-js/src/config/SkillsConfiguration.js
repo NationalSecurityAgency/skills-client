@@ -45,11 +45,11 @@ const initializeAfterConfigurePromise = () => {
 };
 
 const setInitialized = (conf) => {
-  log.debug('SkillsConfiguration::calling initializedResolvers');
+  log.debug('SkillsClient::SkillsConfiguration::calling initializedResolvers');
   initializedResolvers.resolve();
   skillsService.reportSkillsClientVersion(conf);
   initialized = true;
-  log.debug('SkillsConfiguration::initialized');
+  log.debug('SkillsClient::SkillsConfiguration::initialized');
 };
 
 const setConfigureWasCalled = () => {
@@ -103,7 +103,7 @@ const exportObject = {
       setInitialized(this);
     }
     setConfigureWasCalled();
-    log.info('SkillConfiguration::configured');
+    log.info('SkillsClient::SkillConfiguration::configured');
   },
 
   afterConfigure() {

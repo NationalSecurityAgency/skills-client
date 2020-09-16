@@ -23,9 +23,7 @@ describe('SkillsConfiguration', () => {
     SkillsConfiguration.logout();
     const url = /.*\/api\/projects\/.*\/skillsClientVersion/;
     mock.post(url, (req, res) => res.status(200).body('{"success":true,"explanation":null}'));
-    mock.get(/.*\/public\/status/, (req, res) => {
-      return res.status(200).body('{"loggingEnabled":false}');
-    });
+    mock.get(/.*\/public\/status/, (req, res) => res.status(200).body('"clientLib":{ "loggingEnabled":false} }'));
   });
 
   // put the real XHR object back and clear the mocks after each test

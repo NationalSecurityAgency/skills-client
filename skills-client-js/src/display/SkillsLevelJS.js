@@ -25,18 +25,18 @@ export default class SkillsLevelJS {
   constructor(projectId) {
     if (!SkillsConfiguration.wasConfigureCalled()) {
       const errorMessage = 'SkillsConfiguration.configure must be called before invoking SkillsLevelJS constructor.';
-      log.error(`SkillsLevelJS::${errorMessage}`);
+      log.error(`SkillsClient::SkillsLevelJS::${errorMessage}`);
       throw new Error(errorMessage);
     }
     this._projectId = projectId;
   }
 
   attachTo(selectorOrElement) {
-    log.info(`SkillsLevelJS::attaching to [${selectorOrElement}]`);
+    log.info(`SkillsClient::SkillsLevelJS::attaching to [${selectorOrElement}]`);
     let skillLevelElement = selectorOrElement;
     if (typeof selectorOrElement === 'string') {
       skillLevelElement = document.querySelector(selectorOrElement);
-      log.debug(`SkillsLevelJS::document.querySelector returned [${skillLevelElement}]`);
+      log.debug(`SkillsClient::SkillsLevelJS::document.querySelector returned [${skillLevelElement}]`);
     }
     if (!skillLevelElement) {
       throw new Error(`Can't find element with selector='${selectorOrElement}'`);
@@ -49,7 +49,7 @@ export default class SkillsLevelJS {
       .then(() => {
         if (!this._projectId) {
           this._projectId = SkillsConfiguration.getProjectId();
-          log.debug(`SkillsLevelJS::getting projectId from SkillsConfiguration: [${this._projectId}]`);
+          log.debug(`SkillsClient::SkillsLevelJS::getting projectId from SkillsConfiguration: [${this._projectId}]`);
         }
         const authToken = SkillsConfiguration.getAuthToken();
         axios.defaults.headers.common.Authorization = `Bearer ${authToken}`;
@@ -57,7 +57,7 @@ export default class SkillsLevelJS {
           .then((result) => {
             this.setSkillLevel(result.data);
             SkillsReporter.addSuccessHandler(this.update.bind(this));
-            log.info(`SkillsLevelJS::recieved initial skill level [${result.data}]`);
+            log.info(`SkillsClient::SkillsLevelJS::recieved initial skill level [${result.data}]`);
           });
       });
   }
@@ -69,7 +69,7 @@ export default class SkillsLevelJS {
       return maxLevel < levelUpdate ? levelUpdate : maxLevel;
     }, this._skillLevel);
     this.setSkillLevel(this._skillLevel);
-    log.info(`SkillsLevelJS::updated skill level [${this._skillLevel}]`);
+    log.info(`SkillsClient::SkillsLevelJS::updated skill level [${this._skillLevel}]`);
   }
 
   setSkillLevel(skillLevel) {

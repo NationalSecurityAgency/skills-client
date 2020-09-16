@@ -37,14 +37,15 @@ export default {
   },
 
   configureLogging(conf, response) {
-    if (response.loggingEnabled) {
+    const loggingEnabled = response.clientLib ? response.clientLib.loggingEnabled === 'true' : false;
+    if (loggingEnabled) {
       const consoleHandler = log.createDefaultHandler();
       log.setHandler((messages, context) => {
         consoleHandler(messages, context);
         this.sendLogMessage(conf, messages, context);
       });
       log.setLevel(log[response.loggingLevel]);
-      log.info(`SkillConfiguration::Logger enabled, log level set to [${response.loggingLevel}]`);
+      log.info(`SkillsClient::SkillService::Logger enabled, log level set to [${response.loggingLevel}]`);
     }
   },
 
