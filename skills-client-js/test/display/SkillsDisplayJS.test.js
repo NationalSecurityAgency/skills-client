@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import mock from 'xhr-mock';
 import Postmate from 'postmate';
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
 
-import SkillsDisplayJS from '../../src/display/SkillsDisplayJS.js';
-import ErrorPageUtils from '../../src/display/ErrorPageUtils.js';
+import SkillsDisplayJS from '../../src/display/SkillsDisplayJS';
+import ErrorPageUtils from '../../src/display/ErrorPageUtils';
 
 jest.mock('../../src/display/ErrorPageUtils.js');
 jest.mock('postmate');
@@ -31,10 +32,15 @@ describe('SkillsDisplayJS', () => {
     Postmate.mockClear();
     ErrorPageUtils.removeAllChildren.mockClear();
     ErrorPageUtils.buildErrorPage.mockClear();
-    mockHttp.onGet(/\/public\/status/).reply(200);
+    // mockHttp.onGet(/\/public\/status/).reply(200);
+    mock.setup();
+    mock.get(/.*\/public\/status/, (req, res) => res.status(200).body('{"status":"OK","clientLib":{"loggingEnabled":"false","loggingLevel":"DEBUG"}}'));
   });
 
-  afterEach(() => mockHttp.reset());
+  afterEach(() => {
+    mock.teardown();
+    mockHttp.reset();
+  });
 
   it('is found', () => {
     expect(SkillsDisplayJS).toBeDefined();
@@ -83,20 +89,22 @@ describe('SkillsDisplayJS', () => {
     });
 
     it('checks the service status', (done) => {
-      mockHttp.reset();
+      // mockHttp.reset();
+      mock.reset();
       const mockServiceUrl = 'http://serviceUrlToNowhere';
       const client = new SkillsDisplayJS({
         options: {
           serviceUrl: mockServiceUrl,
-        }
+        },
       });
 
       Postmate.mockImplementation(() => {
         return {
           then: jest.fn(),
-        }
+        };
       });
-      mockHttp.onGet(`${mockServiceUrl}/public/status`).networkError();
+      // mock.get(`${mockServiceUrl}/public/status`, () => Promise.reject(new Error()));
+      mock.get(`${mockServiceUrl}/public/status`, { status: 503 });
 
       const mockIframeContainer = {
         setAttribute: jest.fn(),

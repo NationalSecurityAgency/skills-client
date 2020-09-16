@@ -15,15 +15,18 @@
  */
 import Postmate from 'postmate';
 import axios from 'axios';
+import log from 'js-logger';
 
 import SkillsConfiguration from '../config/SkillsConfiguration';
 import ErrorPageUtils from './ErrorPageUtils';
+import skillsService from '../SkillsService';
 
 let uniqueId = 0;
 
 export default class SkillsDisplayJS {
   /* eslint-disable object-curly-newline */
   constructor({ options, theme, version, userId } = {}) {
+    log.debug(`SkillsClient::SkillsDisplayJS::Constructing with options [${options}], theme [${theme}], version [${version}], userId [${userId}]`);
     this._validateOptions(options);
     this._options = { ...{ }, ...options };
     this._theme = theme;
@@ -37,12 +40,14 @@ export default class SkillsDisplayJS {
   }
 
   attachTo(selectorOrElement) {
+    log.info(`SkillsClient::SkillsDisplayJS::attaching to [${selectorOrElement ? selectorOrElement.toString() : selectorOrElement}]`);
     let iframeContainer = selectorOrElement;
     if (typeof selectorOrElement === 'string') {
       iframeContainer = document.querySelector(selectorOrElement);
+      log.debug(`SkillsClient::SkillsDisplayJS::document.querySelector returned [${iframeContainer ? iframeContainer.toString() : iframeContainer}]`);
     }
     if (!iframeContainer) {
-      throw new Error(`Can't find element with selector='${selectorOrElement}'`);
+      throw new Error(`Can't find element with selector='${selectorOrElement ? selectorOrElement.toString() : selectorOrElement}'`);
     }
 
     uniqueId += 1;
@@ -72,11 +77,13 @@ export default class SkillsDisplayJS {
     handshake.then((child) => {
       this._childFrame = child;
       child.on('height-changed', (data) => {
+        log.debug(`SkillsClient::SkillsDisplayJS::height-changed: data [${data}]`);
         const adjustedHeight = Math.max(data, minHeight);
         iframeContainer.height = adjustedHeight;
         iframeContainer.style.height = `${adjustedHeight}px`;
       });
       child.on('route-changed', () => {
+        log.debug('SkillsClient::SkillsDisplayJS::route-changed');
         if (!this.options.disableAutoScroll) {
           let scrollToElement = iframeContainer;
 
@@ -98,6 +105,7 @@ export default class SkillsDisplayJS {
         }
       });
       child.on('needs-authentication', () => {
+        log.debug('SkillsClient::SkillsDisplayJS::needs-authentication');
         const isPkiMode = this.configuration.authenticator === 'pki';
         if (!this.authenticationPromise && !isPkiMode) {
           this.authenticationPromise = axios.get(this.configuration.authenticator)
@@ -113,26 +121,32 @@ export default class SkillsDisplayJS {
       });
     });
 
+    log.debug('SkillsClient::SkillsDisplayJS::calling _checkAndHandleServiceStatus');
     this._checkAndHandleServiceStatus(iframeContainer);
   }
 
   _checkAndHandleServiceStatus(iframeContainer) {
-    axios.get(`${this.configuration.serviceUrl}/public/status`)
-      .catch(() => {
-        let errorMessage = 'Please ensure the skilltree server is running';
-        if (this.configuration.serviceUrl.startsWith('https')) {
-          errorMessage += ' and that your browser trusts the server\'s certificate';
-        }
-        errorMessage += `. skilltree service URL: ${this.configuration.serviceUrl}`;
-        /* eslint-disable no-console */
-        console.error(errorMessage);
-        ErrorPageUtils.removeAllChildren(iframeContainer);
-        iframeContainer.appendChild(ErrorPageUtils.buildErrorPage());
-        iframeContainer.setAttribute('style', 'border: 5px; height: 20rem; width: 100%');
-      });
+    if (!SkillsConfiguration.getServiceStatus()) {
+      log.info('SkillsClient::SkillsDisplayJS::SkillsConfiguration.configure() was not called, checking status endpoint.');
+      skillsService.getServiceStatus(`${this.configuration.serviceUrl}/public/status`)
+        .catch((error) => {
+          let errorMessage = 'Please ensure the skilltree server is running';
+          if (this.configuration.serviceUrl && this.configuration.serviceUrl.startsWith('https')) {
+            errorMessage += ' and that your browser trusts the server\'s certificate';
+          }
+          errorMessage += `. skilltree service URL: ${this.configuration.serviceUrl}`;
+          /* eslint-disable no-console */
+          console.error(errorMessage);
+          log.error(`SkillsClient::SkillsDisplayJS::${errorMessage}`, error);
+          ErrorPageUtils.removeAllChildren(iframeContainer);
+          iframeContainer.appendChild(ErrorPageUtils.buildErrorPage());
+          iframeContainer.setAttribute('style', 'border: 5px; height: 20rem; width: 100%');
+        });
+    }
   }
 
   set version(version) {
+    log.info(`SkillsClient::SkillsDisplayJS::setting version [${version}]`);
     this._version = version;
     this._childFrame.call('updateVersion', version);
   }
@@ -179,6 +193,7 @@ export default class SkillsDisplayJS {
   }
 
   destroy() {
+    log.info(`SkillsClient::SkillsDisplayJS::destroy called. _childFrame [${this._childFrame}]`);
     if (this._childFrame) {
       this._childFrame.destroy();
     }

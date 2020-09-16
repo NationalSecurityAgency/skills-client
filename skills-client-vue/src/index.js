@@ -21,6 +21,7 @@ import {
   FAILURE_EVENT,
   SkillsDisplayJS,
   SkillsLevelJS,
+  Logger,
 } from '@skilltree/skills-client-js';
 import SkillsDirective from './directive/SkillsReporterDirective';
 import SkillsDisplay from './component/SkillsDisplay.vue';
@@ -48,4 +49,5 @@ export {
   FAILURE_EVENT,
   SkillsDisplayJS,
   SkillsLevelJS,
+  Logger,
 };

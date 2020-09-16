@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import log from 'js-logger';
+import skillsService from '../SkillsService';
+
 if (!window.process) {
   // workaround for sockjs-client relying on 'process' variable being defined.
   // similar issue with 'global' variable discussed here:
@@ -23,26 +26,6 @@ if (!window.process) {
 }
 
 const jsSkillsClientVersion = '__skillsClientVersion__';
-const reportSkillsClientVersion = (conf) => new Promise((resolve, reject) => {
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', `${conf.getServiceUrl()}/api/projects/${conf.getProjectId()}/skillsClientVersion`);
-  xhr.withCredentials = true;
-  if (!conf.isPKIMode()) {
-    xhr.setRequestHeader('Authorization', `Bearer ${conf.getAuthToken()}`);
-  }
-  xhr.onreadystatechange = () => {
-    if (xhr.readyState === 4) {
-      if (xhr.status !== 200) {
-        reject(new Error(`Unable to report skillsClientVersion.  Received status [${xhr.status}]`));
-      } else {
-        resolve(JSON.parse(xhr.response));
-      }
-    }
-  };
-
-  xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-  xhr.send(JSON.stringify({ skillsClientVersion: conf.skillsClientVersion }));
-});
 
 let waitForInitializePromise = null;
 let initializedResolvers = null;
@@ -62,9 +45,11 @@ const initializeAfterConfigurePromise = () => {
 };
 
 const setInitialized = (conf) => {
+  log.debug('SkillsClient::SkillsConfiguration::calling initializedResolvers');
   initializedResolvers.resolve();
-  reportSkillsClientVersion(conf);
+  skillsService.reportSkillsClientVersion(conf);
   initialized = true;
+  log.debug('SkillsClient::SkillsConfiguration::initialized');
 };
 
 const setConfigureWasCalled = () => {
@@ -72,39 +57,6 @@ const setConfigureWasCalled = () => {
 };
 
 initializeAfterConfigurePromise();
-
-const getAuthenticationToken = function getAuthenticationToken(authenticator) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', authenticator);
-
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4) {
-        if (xhr.status !== 200) {
-          reject(new Error(`SkillTree: Unable to authenticate using [${authenticator}] endpoint. Response Code=[${xhr.status}].\n
-  Ideas to diagnose:\n
-      (1) verify that the authenticator property is correct.\n
-      (2) verify that the server providing the authenticator endpoint is responding (ex. daemon is running, network path is clear).\n
-      (3) check logs on the server providing authenticator endpoint.\n
-Full Response=[${xhr.response}]`));
-        } else {
-          const response = JSON.parse(xhr.response);
-          if (!response.access_token) {
-            reject(new Error(`SkillTree: Response from [${authenticator}] endpoint did have NOT have 'access_token' attribute. \n
-  Ideas to diagnose:\n
-      (1) verify that the authenticator property is correct.\n
-      (2) check implementation of the authenticator endpoint; it must return payload that has 'access_token' attribute.\n
-Full Response=[${xhr.response}]`));
-          } else {
-            resolve(response.access_token);
-          }
-        }
-      }
-    };
-
-    xhr.send();
-  });
-};
 
 const exportObject = {
   configure({
@@ -132,8 +84,17 @@ const exportObject = {
     this.serviceUrl = serviceUrl;
     this.authenticator = authenticator;
     this.authToken = authToken;
+
+    skillsService.getServiceStatus(`${this.getServiceUrl()}/public/status`).then((response) => {
+      this.status = response.status;
+      skillsService.configureLogging(this, response);
+    }).catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error('Error configuring logging', error);
+    });
+
     if (!this.isPKIMode() && !this.getAuthToken()) {
-      getAuthenticationToken(this.getAuthenticator())
+      skillsService.getAuthenticationToken(this.getAuthenticator())
         .then((token) => {
           this.setAuthToken(token);
           setInitialized(this);
@@ -142,6 +103,7 @@ const exportObject = {
       setInitialized(this);
     }
     setConfigureWasCalled();
+    log.info('SkillsClient::SkillConfiguration::configured');
   },
 
   afterConfigure() {
@@ -183,6 +145,10 @@ SkillsConfiguration is a singleton and you only have to do this once. Please see
 
   getAuthToken() {
     return this.authToken;
+  },
+
+  getServiceStatus() {
+    return this.status;
   },
 
   setAuthToken(authToken) {

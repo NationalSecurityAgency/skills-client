@@ -13,10 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import SkillsConfiguration from '../../src/config/SkillsConfiguration.js';
-import {SkillsReporter} from "../../src";
+import mock from 'xhr-mock';
+import SkillsConfiguration from '../../src/config/SkillsConfiguration';
 
 describe('SkillsConfiguration', () => {
+  // replace the real XHR object with the mock XHR object before each test
+  beforeEach(() => {
+    mock.setup();
+    SkillsConfiguration.logout();
+    const url = /.*\/api\/projects\/.*\/skillsClientVersion/;
+    mock.post(url, (req, res) => res.status(200).body('{"success":true,"explanation":null}'));
+    mock.get(/.*\/public\/status/, (req, res) => res.status(200).body('{"status":"OK","clientLib":{"loggingEnabled":"false","loggingLevel":"DEBUG"}}'));
+  });
+
+  // put the real XHR object back and clear the mocks after each test
+  afterEach(() => {
+    SkillsConfiguration.logout();
+    mock.teardown();
+  });
+
   describe('initialization', () => {
     it('exists', () => {
       expect(SkillsConfiguration).not.toBeNull();
@@ -43,7 +58,7 @@ describe('SkillsConfiguration', () => {
     describe('initializing', () => {
       describe('isPKIMode', () => {
         it('isPKIMode is false if authenticator is NOT \'pki\'', () => {
-          const mockAuthenticator = Math.random();
+          const mockAuthenticator = Math.random().toString();
 
           SkillsConfiguration.configure({
             authenticator: mockAuthenticator, projectId: 'proj', serviceUrl: 'http://somewhere',
@@ -158,9 +173,9 @@ describe('SkillsConfiguration', () => {
       });
 
       it('does not throw an error if everything is set', () => {
-        const mockProjectId = Math.random();
-        const mockServiceUrl = Math.random();
-        const mockAuthenticator = Math.random();
+        const mockProjectId = Math.random().toString();
+        const mockServiceUrl = Math.random().toString();
+        const mockAuthenticator = Math.random().toString();
 
         const configObject = {
           projectId: mockProjectId,

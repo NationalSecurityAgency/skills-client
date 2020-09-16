@@ -46,6 +46,7 @@
     },
     "dependencies": {
         "axios": "0.19.0",
+        "js-logger": "1.6.0",
         "postmate": "1.5.1",
         "sockjs-client": "1.4.0",
         "webstomp-client": "1.2.6"

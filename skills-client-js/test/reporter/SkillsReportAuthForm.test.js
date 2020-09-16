@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require("@babel/polyfill");
-import mock, {sequence} from 'xhr-mock';
+import mock, { sequence } from 'xhr-mock';
 import SkillsConfiguration from '../../src/config/SkillsConfiguration';
-import { SkillsReporter } from '../../src/reporter/SkillsReporter.js';
+import { SkillsReporter } from '../../src/reporter/SkillsReporter';
+
+require('@babel/polyfill');
 
 describe('authFormTests()', () => {
   const mockServiceUrl = 'http://some.com';
@@ -28,9 +29,8 @@ describe('authFormTests()', () => {
     mock.setup();
     SkillsConfiguration.logout();
     const url = /.*\/api\/projects\/proj1\/skillsClientVersion/;
-    mock.post(url, (req, res) => {
-      return res.status(200).body('{"success":true,"explanation":null}');
-    });
+    mock.post(url, (req, res) => res.status(200).body('{"success":true,"explanation":null}'));
+    mock.get(/.*\/public\/status/, (req, res) => res.status(200).body('{"status":"OK","clientLib":{"loggingEnabled":"false","loggingLevel":"DEBUG"}}'));
   });
 
   // put the real XHR object back and clear the mocks after each test
@@ -43,9 +43,7 @@ describe('authFormTests()', () => {
     expect.assertions(2);
     const mockUserSkillId = 'skill1';
 
-    mock.get(authEndpoint, (req, res) => {
-      return res.status(200).body('{"access_token": "token"}');
-    });
+    mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
       projectId: mockProjectId,
@@ -59,7 +57,7 @@ describe('authFormTests()', () => {
     });
 
     const res = await SkillsReporter.reportSkill('skill1');
-    expect(res).toEqual({ data: {id: 'abc-123'} });
+    expect(res).toEqual({ data: { id: 'abc-123' } });
   });
 
   it('re-try auth if 401k status', async () => {
@@ -77,22 +75,19 @@ describe('authFormTests()', () => {
     const mockUserSkillId = 'skill1';
     const url = `${mockServiceUrl}/api/projects/${mockProjectId}/skills/${mockUserSkillId}`;
     mock.post(url, sequence([
-        { status: 401, body: '{"data":{"error":"true"}}' },
-        { status: 401, body: '{"data":{"error":"true"}}' },
-        { status: 200, body: '{"data":{"id":"abc-123"}}' },
-      ]
-    ));
+      { status: 401, body: '{"data":{"error":"true"}}' },
+      { status: 401, body: '{"data":{"error":"true"}}' },
+      { status: 200, body: '{"data":{"id":"abc-123"}}' },
+    ]));
 
     const res = await SkillsReporter.reportSkill('skill1');
-    expect(res).toEqual({ data: {id: 'abc-123'} });
+    expect(res).toEqual({ data: { id: 'abc-123' } });
     expect(count).toBeGreaterThanOrEqual(2);
   });
 
   it('unable to auth because of non 200 status code', async () => {
     expect.assertions(1);
-    mock.get(authEndpoint, (req, res) => {
-      return res.status(401).body('{"access_token": "token"}');
-    });
+    mock.get(authEndpoint, (req, res) => res.status(401).body('{"access_token": "token"}'));
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
       projectId: mockProjectId,
@@ -101,22 +96,18 @@ describe('authFormTests()', () => {
 
     const mockUserSkillId = 'skill1';
     const url = `${mockServiceUrl}/api/projects/${mockProjectId}/skills/${mockUserSkillId}`;
-    mock.post(url, (req, res) => {
-      return res.status(200).body('{"data":{"id":"abc-123"}}');
-    });
+    mock.post(url, (req, res) => res.status(200).body('{"data":{"id":"abc-123"}}'));
     try {
       await SkillsReporter.reportSkill('skill1');
     } catch (e) {
-      expect(e.message,).toMatch('Unable to authenticate');
+      expect(e.message).toMatch('Unable to authenticate');
     }
   });
 
   it('unable to auth because access_token is missing', async () => {
     expect.assertions(1);
 
-    mock.get(authEndpoint, (req, res) => {
-      return res.status(200).body('{"not_access_token": "token"}');
-    });
+    mock.get(authEndpoint, (req, res) => res.status(200).body('{"not_access_token": "token"}'));
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
       projectId: mockProjectId,
@@ -125,14 +116,12 @@ describe('authFormTests()', () => {
 
     const mockUserSkillId = 'skill1';
     const url = `${mockServiceUrl}/api/projects/${mockProjectId}/skills/${mockUserSkillId}`;
-    mock.post(url, (req, res) => {
-      return res.status(200).body('{"data":{"id":"abc-123"}}');
-    });
+    mock.post(url, (req, res) => res.status(200).body('{"data":{"id":"abc-123"}}'));
 
     try {
       await SkillsReporter.reportSkill('skill1');
     } catch (e) {
-      expect(e.message,).toMatch('Unable to authenticate');
+      expect(e.message).toMatch('Unable to authenticate');
     }
   });
 
@@ -156,14 +145,13 @@ describe('authFormTests()', () => {
     const url = `${mockServiceUrl}/api/projects/${mockProjectId}/skills/${mockUserSkillId}`;
 
     mock.post(url, sequence([
-        { status: 401, body: '{"data":{"error":"true"}}' },
-      ]
-    ));
+      { status: 401, body: '{"data":{"error":"true"}}' },
+    ]));
 
     try {
       await SkillsReporter.reportSkill('skill1');
     } catch (e) {
-      expect(e.message,).toMatch('SkillTree: SkillsConfiguration was not configured and serviceUrl, projectId and authenticationUrl are missing.');
+      expect(e.message).toMatch('SkillTree: SkillsConfiguration was not configured and serviceUrl, projectId and authenticationUrl are missing.');
     }
   });
 

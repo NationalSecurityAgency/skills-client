@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import MockAdapter from 'axios-mock-adapter';
+import mock from 'xhr-mock';
 import axios from 'axios';
 import 'regenerator-runtime/runtime';
 
@@ -37,13 +38,17 @@ describe('SkillsLevelJS', () => {
     ErrorPageUtils.removeAllChildren.mockClear();
     ErrorPageUtils.buildErrorPage.mockClear();
 
+    mockHttp.onGet(new RegExp(`api/projects/${mockProjectId}/level.*`)).reply(200, mockSkillLevel);
+    mock.setup();
+    mock.get(/.*\/public\/status/, (req, res) => res.status(200).body('{"status":"OK","clientLib":{"loggingEnabled":"false","loggingLevel":"DEBUG"}}'));
+    mock.post(/.*\/api\/projects\/.*\/skillsClientVersion/, (req, res) => res.status(200).body('{"success":true,"explanation":null}'));
+
     SkillsConfiguration.configure({
       projectId: mockProjectId,
       serviceUrl: mockServiceUrl,
       authenticator: mockAuthenticator,
       authToken: mockAuthToken,
     });
-    mockHttp.onGet(new RegExp(`api/projects/${mockProjectId}/level.*`)).reply(200, mockSkillLevel);
   });
 
   it('is found', () => {

@@ -15,7 +15,6 @@
  */
 import Utils from "./Utils";
 
-const iFrameTimeout = 3000;
 const homePage = '/angular/reportSkills'
 
 context('Angular Tests', () => {
@@ -233,19 +232,15 @@ context('Angular Tests', () => {
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
         cy.visit('/angular/showSkills')
         cy.wait('@getToken')
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0')
 
-        cy.iframe((body) => {
-            cy.wait('@getToken')
-
-            cy.wrap(body).contains('My Level')
-            cy.wrap(body).contains('50 Points earned Today')
-            cy.wrap(body).contains('Subject 0')
-
-            // verify that there is no background set
-            // cypress always validates against rgb
-            cy.wrap(body).find('.skills-page-title-text-color')
-                .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
-        });
+        // verify that there is no background set
+        // cypress always validates against rgb
+        cy.wrapIframe().find('.skills-page-title-text-color')
+            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
     })
 
     it('skill display - summary only', () => {
@@ -254,19 +249,16 @@ context('Angular Tests', () => {
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
         cy.visit('/angular/showSkills?isSummaryOnly=true')
         cy.wait('@getToken')
-        cy.iframe((body) => {
-            cy.wait('@getToken')
-            cy.wrap(body).contains('My Level')
-            cy.wrap(body).contains('50 Points earned Today')
-            cy.wrap(body).contains('Subject 0').should('not.exist')
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0').should('not.exist')
 
-            // verify that there is no background set
-            // cypress always validates against rgb
-            cy.wrap(body).find('.skills-page-title-text-color')
-                .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
-        })
+        // verify that there is no background set
+        // cypress always validates against rgb
+        cy.wrapIframe().find('.skills-page-title-text-color')
+            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
     })
-
 
     it('skill display - theme', () => {
         cy.createDefaultTinyProject()
@@ -274,19 +266,16 @@ context('Angular Tests', () => {
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
         cy.visit('/angular/showSkills?themeName=Dark Blue')
         cy.wait('@getToken')
-        cy.iframe((body) => {
-            cy.wait('@getToken')
-            cy.wrap(body).contains('My Level')
-            cy.wrap(body).contains('50 Points earned Today')
-            cy.wrap(body).contains('Subject 0')
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0')
 
-            // verify dark blue background of hex #152E4d
-            // cypress always validates against rgb
-            cy.wrap(body).find('.skills-page-title-text-color')
-                .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
-        })
+        // verify dark blue background of hex #152E4d
+        // cypress always validates against rgb
+        cy.wrapIframe().find('.skills-page-title-text-color')
+            .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
     })
-
 
     it('skill display - summary only - theme', () => {
         cy.createDefaultTinyProject()
@@ -294,17 +283,14 @@ context('Angular Tests', () => {
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
         cy.visit('/angular/showSkills?themeName=Dark Blue&isSummaryOnly=true')
         cy.wait('@getToken')
-        cy.iframe((body) => {
-            cy.wait('@getToken')
-            cy.wrap(body).contains('My Level')
-            cy.wrap(body).contains('50 Points earned Today')
-            cy.wrap(body).contains('Subject 0').should('not.exist')
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0').should('not.exist')
 
-            // verify dark blue background of hex #152E4d
-            // cypress always validates against rgb
-            cy.wrap(body).find('.skills-page-title-text-color')
-                .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
-        })
+        // verify dark blue background of hex #152E4d
+        // cypress always validates against rgb
+        cy.wrapIframe().find('.skills-page-title-text-color')
+            .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
     })
 
     it('client display should display an error if skills service is down', () => {
@@ -327,27 +313,18 @@ context('Angular Tests', () => {
         cy.backendAddSkill('skillv2', 2)
         cy.visit('/angular/showSkills')
         cy.wait('@getToken')
-        cy.wait(iFrameTimeout);
-        cy.iframe((body) => {
-            cy.wait('@getToken')
-            cy.wrap(body).contains('Earn up to 200 points')
-        })
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('Earn up to 200 points')
 
         cy.visit('/angular/reportSkills')
         cy.visit('/angular/showSkills?skillsVersion=1')
         cy.wait('@getToken')
-        cy.wait(iFrameTimeout);
-        cy.iframe((body) => {
-            cy.wrap(body).contains('Earn up to 150 points')
-        })
+        cy.wrapIframe().contains('Earn up to 150 points')
 
         cy.visit('/angular/reportSkills')
         cy.visit('/angular/showSkills?skillsVersion=0')
         cy.wait('@getToken')
-        cy.wait(iFrameTimeout);
-        cy.iframe((body) => {
-            cy.wrap(body).contains('Earn up to 100 points')
-        })
+        cy.wrapIframe().contains('Earn up to 100 points')
     });
 
     it('skillsClientVersion is reported correctly', () => {

@@ -26,7 +26,7 @@ limitations under the License.
   <script type="text/javascript" src="./assets/js/js-beautify/js/lib/beautify.js"></script>
 
   <script type="module">
-    import { SkillsReporter, SkillsConfiguration, SkillsLevelJS } from './assets/js/@skilltree/skills-client-js/dist/skills-client-js.esm.min.js'
+    import { SkillsReporter, SkillsConfiguration, SkillsLevelJS, Logger } from './assets/js/@skilltree/skills-client-js/dist/skills-client-js.esm.min.js'
 
     axios.get("/api/config")
       .then((result) => {
@@ -53,6 +53,9 @@ limitations under the License.
 
     SkillsConfiguration.afterConfigure()
       .then(() => {
+        if (window.Cypress) {
+          window.skillsLogger = Logger;
+        }
         const skillLevel = new SkillsLevelJS();
         skillLevel.attachTo('#skillLevel')
       });

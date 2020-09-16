@@ -22,9 +22,9 @@
     "integration:start:release": "java -Dspring.config.location=classpath:/application.properties,file:serverConfigs/integration_application.properties -jar ./target/servicesJars/skills-int-service-*.jar",
     "integration:waitToStart": "npx wait-on -t 40000 http://localhost:8090",
     "backend:start": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ../../../skills-service/service/target/skills-service-*.jar",
-    "backend:start:background": "mkdir -p ./target/logs && npm run backend:start > ./target/logs/skills-service.out &",
+    "backend:start:background": "mkdir -p ./target/logs && npm run backend:start | awk '/ClientLoggingController/{ print > \"./target/logs/skills-client.out\" }!/ClientLoggingController/{ print > \"./target/logs/skills-service.out\" }' &",
     "backend:start:ci": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ../../skills-service/skills-service-*.jar",
-    "backend:start:ci:background": "mkdir -p ./target/logs && npm run backend:start:ci > ./target/logs/skills-service.out &",
+    "backend:start:ci:background": "mkdir -p ./target/logs && npm run backend:start:ci | awk '/ClientLoggingController/{ print > \"./target/logs/skills-client.out\" }!/ClientLoggingController/{ print > \"./target/logs/skills-service.out\" }' &",
     "backend:start:release": "java -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ./target/servicesJars/skills-service-*.jar",
     "backend:waitToStart": "npx wait-port -v -t 60000 localhost:8080",
     "backend:resetDb": "java -cp ./db/h2-1.4.200.jar org.h2.tools.RunScript -url jdbc:h2:tcp://localhost:9090/mem:skills -user sa -script ./db/reset.sql",
@@ -38,7 +38,7 @@
     "dev:removeNpmLinks": "mvn --batch-mode clean package && java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.RemoveNpmLinks org.springframework.boot.loader.PropertiesLauncher"
   },
   "devDependencies": {
-    "cypress": "4.1.0",
+    "cypress": "^5.1.0",
     "license-check-and-add": "3.0.4",
     "license-checker": "25.0.1",
     "semver": "7.1.2",

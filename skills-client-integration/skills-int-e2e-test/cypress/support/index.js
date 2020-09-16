@@ -46,3 +46,7 @@ beforeEach(() => {
         cy.backendLogin(vars.defaultUser, vars.defaultPass);
     });
 })
+
+afterEach(() => {
+  cy.skillsLog(`Completed test [${Cypress.mocha.getRunner().test.title}]`)
+})

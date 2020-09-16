@@ -15,7 +15,6 @@
  */
 import Utils from "./Utils";
 
-const iFrameTimeout = 3000;
 const homePage = '/native/index.html'
 
 context("Native JS Tests", () => {
@@ -108,18 +107,15 @@ context("Native JS Tests", () => {
             timestamp: Date.now()
         });
         cy.visit("/native/clientDisplay.html");
-        cy.wait(iFrameTimeout);
+        
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0')
 
-        cy.iframe(body => {
-            cy.wrap(body).contains("My Level");
-            cy.wrap(body).contains("50 Points earned Today");
-            cy.wrap(body).contains("Subject 0");
-
-            cy.wrap(body)
-                .find(".skills-page-title-text-color")
-                .should("have.css", "background-color")
-                .and("equal", "rgb(255, 255, 255)");
-        });
+        // verify that there is no background set
+        // cypress always validates against rgb
+        cy.wrapIframe().find('.skills-page-title-text-color')
+            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
     });
 
     it("skill display - default options", () => {
@@ -132,18 +128,16 @@ context("Native JS Tests", () => {
             timestamp: Date.now()
         });
         cy.visit("/native/clientDisplayDefaultOptions.html");
-        cy.wait(iFrameTimeout);
 
-        cy.iframe(body => {
-            cy.wrap(body).contains("My Level");
-            cy.wrap(body).contains("50 Points earned Today");
-            cy.wrap(body).contains("Subject 0");
+        
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0')
 
-            cy.wrap(body)
-                .find(".skills-page-title-text-color")
-                .should("have.css", "background-color")
-                .and("equal", "rgb(255, 255, 255)");
-        });
+        // verify that there is no background set
+        // cypress always validates against rgb
+        cy.wrapIframe().find('.skills-page-title-text-color')
+            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
     });
 
     it("skill display - summary only", () => {
@@ -156,21 +150,16 @@ context("Native JS Tests", () => {
             timestamp: Date.now()
         });
         cy.visit("/native/clientDisplay.html?isSummaryOnly=true");
-        cy.wait(iFrameTimeout);
-        cy.iframe(body => {
-            cy.wrap(body).contains("My Level");
-            cy.wrap(body).contains("50 Points earned Today");
-            cy.wrap(body)
-                .contains("Subject 0")
-                .should("not.exist");
 
-            // verify that there is no background set
-            // cypress always validates against rgb
-            cy.wrap(body)
-                .find(".skills-page-title-text-color")
-                .should("have.css", "background-color")
-                .and("equal", "rgb(255, 255, 255)");
-        });
+        
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0').should('not.exist')
+
+        // verify that there is no background set
+        // cypress always validates against rgb
+        cy.wrapIframe().find('.skills-page-title-text-color')
+            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
     });
 
     it("skill display - theme", () => {
@@ -184,19 +173,15 @@ context("Native JS Tests", () => {
         });
         cy.visit("/native/clientDisplay.html?themeName=Dark Blue");
         cy.wait("@getToken");
-        cy.wait(iFrameTimeout);
-        cy.iframe(body => {
-            cy.wrap(body).contains("My Level");
-            cy.wrap(body).contains("50 Points earned Today");
-            cy.wrap(body).contains("Subject 0");
+        
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0')
 
-            // verify dark blue background of hex #152E4d
-            // cypress always validates against rgb
-            cy.wrap(body)
-                .find(".skills-page-title-text-color")
-                .should("have.css", "background-color")
-                .and("equal", "rgb(21, 46, 77)");
-        });
+        // verify dark blue background of hex #152E4d
+        // cypress always validates against rgb
+        cy.wrapIframe().find('.skills-page-title-text-color')
+            .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
     });
 
     it("skill display - summary only - theme", () => {
@@ -211,22 +196,15 @@ context("Native JS Tests", () => {
         cy.visit(
             "/native/clientDisplay.html?themeName=Dark Blue&isSummaryOnly=true"
         );
-        cy.wait(iFrameTimeout);
-        cy.iframe(body => {
-            // cy.wait('@getToken')
-            cy.wrap(body).contains("My Level");
-            cy.wrap(body).contains("50 Points earned Today");
-            cy.wrap(body)
-                .contains("Subject 0")
-                .should("not.exist");
+        
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0').should('not.exist')
 
-            // verify dark blue background of hex #152E4d
-            // cypress always validates against rgb
-            cy.wrap(body)
-                .find(".skills-page-title-text-color")
-                .should("have.css", "background-color")
-                .and("equal", "rgb(21, 46, 77)");
-        });
+        // verify dark blue background of hex #152E4d
+        // cypress always validates against rgb
+        cy.wrapIframe().find('.skills-page-title-text-color')
+            .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
     });
 
     it("client display should display an error if skills service is down", () => {
@@ -257,24 +235,18 @@ context("Native JS Tests", () => {
         cy.backendAddSkill("skillv2", 2);
         cy.visit("/native/clientDisplay.html");
         cy.wait("@getToken");
-        cy.wait(iFrameTimeout);
-        cy.iframe(body => {
-            cy.wrap(body).contains(noVersionPoints);
-        });
+        cy.wait('@getToken')
+        cy.wrapIframe().contains(noVersionPoints);
 
         cy.visit("/native/index.html");
         cy.visit("/native/clientDisplay.html?skillsVersion=1");
-        cy.wait(iFrameTimeout);
-        cy.iframe(body => {
-            cy.wrap(body).contains(v1Points);
-        });
+        cy.wait('@getToken')
+        cy.wrapIframe().contains(v1Points);
 
         cy.visit("/native/index.html");
         cy.visit("/native/clientDisplay.html?skillsVersion=0");
-        cy.wait(iFrameTimeout);
-        cy.iframe(body => {
-            cy.wrap(body).contains(v0Points);
-        });
+        cy.wait('@getToken')
+        cy.wrapIframe().contains(v0Points);
     });
 
     it('skillsClientVersion is reported correctly', () => {

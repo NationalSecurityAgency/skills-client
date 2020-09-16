@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <appender name="fileAppenderAll" class="ch.qos.logback.core.FileAppender">
-        <file>target/e2eLog-all.log</file>
+        <file>target/logs/e2eLog-all.log</file>
         <encoder>
             <pattern>%d [%thread] %level %mdc %logger{50} - %msg%n</pattern>
         </encoder>
     </appender>
     <appender name="fileAppenderCommands" class="ch.qos.logback.core.FileAppender">
-        <file>target/e2eLog-commands.log</file>
+        <file>target/logs/e2eLog-commands.log</file>
         <encoder>
             <pattern>%d [%thread] %level %mdc %logger{50} - %msg%n</pattern>
         </encoder>

@@ -15,12 +15,15 @@
  */
 import Utils from "./Utils";
 
-const iFrameTimeout = 3000;
 const homePage = '/vuejs#/'
 
 context('Vue Tests', () => {
 
     it('level component should be reactive', () => {
+        // cy.window().then(win => {
+        //     const skillsLogger = win.skillsLogger;
+        //     skillsLogger.info('enter: level component should be reactive');
+        // })
         cy.createDefaultProject()
         const sendEventViaDropdownId = '#PureJSReportAnySkill';
         Cypress.Commands.add("clickSubmit", () => {
@@ -229,19 +232,15 @@ context('Vue Tests', () => {
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills')
         cy.wait('@getToken')
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0')
 
-        cy.iframe((body) => {
-            cy.wait('@getToken')
-
-            cy.wrap(body).contains('My Level')
-            cy.wrap(body).contains('50 Points earned Today')
-            cy.wrap(body).contains('Subject 0')
-
-            // verify that there is no background set
-            // cypress always validates against rgb
-            cy.wrap(body).find('.skills-page-title-text-color')
-                .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
-        });
+        // verify that there is no background set
+        // cypress always validates against rgb
+        cy.wrapIframe().find('.skills-page-title-text-color')
+            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
     })
 
     it('skill display - summary only', () => {
@@ -250,19 +249,16 @@ context('Vue Tests', () => {
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills?isSummaryOnly=true')
         cy.wait('@getToken')
-        cy.iframe((body) => {
-            cy.wait('@getToken')
-            cy.wrap(body).contains('My Level')
-            cy.wrap(body).contains('50 Points earned Today')
-            cy.wrap(body).contains('Subject 0').should('not.exist')
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0').should('not.exist')
 
-            // verify that there is no background set
-            // cypress always validates against rgb
-            cy.wrap(body).find('.skills-page-title-text-color')
-                .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
-        })
+        // verify that there is no background set
+        // cypress always validates against rgb
+        cy.wrapIframe().find('.skills-page-title-text-color')
+            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
     })
-
 
     it('skill display - theme', () => {
         cy.createDefaultTinyProject()
@@ -270,19 +266,16 @@ context('Vue Tests', () => {
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills?themeName=Dark Blue')
         cy.wait('@getToken')
-        cy.iframe((body) => {
-            cy.wait('@getToken')
-            cy.wrap(body).contains('My Level')
-            cy.wrap(body).contains('50 Points earned Today')
-            cy.wrap(body).contains('Subject 0')
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0')
 
-            // verify dark blue background of hex #152E4d
-            // cypress always validates against rgb
-            cy.wrap(body).find('.skills-page-title-text-color')
-                .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
-        })
+        // verify dark blue background of hex #152E4d
+        // cypress always validates against rgb
+        cy.wrapIframe().find('.skills-page-title-text-color')
+            .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
     })
-
 
     it('skill display - summary only - theme', () => {
         cy.createDefaultTinyProject()
@@ -290,17 +283,15 @@ context('Vue Tests', () => {
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills?themeName=Dark Blue&isSummaryOnly=true')
         cy.wait('@getToken')
-        cy.iframe((body) => {
-            cy.wait('@getToken')
-            cy.wrap(body).contains('My Level')
-            cy.wrap(body).contains('50 Points earned Today')
-            cy.wrap(body).contains('Subject 0').should('not.exist')
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0').should('not.exist')
 
-            // verify dark blue background of hex #152E4d
-            // cypress always validates against rgb
-            cy.wrap(body).find('.skills-page-title-text-color')
-                .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
-        })
+        // verify dark blue background of hex #152E4d
+        // cypress always validates against rgb
+        cy.wrapIframe().find('.skills-page-title-text-color')
+            .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
     })
 
     it('client display should display an error if skills service is down', () => {
@@ -323,27 +314,18 @@ context('Vue Tests', () => {
         cy.backendAddSkill('skillv2', 2)
         cy.visit('/vuejs#/showSkills')
         cy.wait('@getToken')
-        cy.wait(iFrameTimeout);
-        cy.iframe((body) => {
-            cy.wait('@getToken')
-            cy.wrap(body).contains('Earn up to 200 points')
-        })
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('Earn up to 200 points')
 
         cy.visit('/vuejs#/')
         cy.visit('/vuejs#/showSkills?skillsVersion=1')
         cy.wait('@getToken')
-        cy.wait(iFrameTimeout);
-        cy.iframe((body) => {
-            cy.wrap(body).contains('Earn up to 150 points')
-        })
+        cy.wrapIframe().contains('Earn up to 150 points')
 
         cy.visit('/vuejs#/')
         cy.visit('/vuejs#/showSkills?skillsVersion=0')
         cy.wait('@getToken')
-        cy.wait(iFrameTimeout);
-        cy.iframe((body) => {
-            cy.wrap(body).contains('Earn up to 100 points')
-        })
+        cy.wrapIframe().contains('Earn up to 100 points')
     });
 
     it('skillsClientVersion is reported correctly', () => {
@@ -372,15 +354,13 @@ context('Vue Tests', () => {
             cy.visit('/vuejs#/showSkills?refreshPage=false')
             cy.wait('@getToken')
 
-            cy.iframe((body) => {
-                cy.wrap(body).find('[data-cy=back]').should('not.exist');
-                cy.wrap(body).contains('User Skills');
+            cy.wrapIframe().find('[data-cy=back]').should('not.exist');
+            cy.wrapIframe().contains('User Skills');
 
-                // navigate to Rank Overview that contains the back button
-                cy.wrap(body).find('[data-cy=myRank]').click();
-                cy.wrap(body).contains('Rank Overview');
-                cy.wrap(body).find('[data-cy=back]').should('exist');
-            });
+            // navigate to Rank Overview that contains the back button
+            cy.wrapIframe().find('[data-cy=myRank]').click();
+            cy.wrapIframe().contains('Rank Overview');
+            cy.wrapIframe().find('[data-cy=back]').should('exist');
 
             // now visit the "Report Skills" (external) page
             cy.get('[data-cy=reportSkillsLink]').click()
@@ -388,15 +368,6 @@ context('Vue Tests', () => {
 
             // switch back to the the client display
             cy.get('[data-cy=userDisplayLink]').click()
-            // cy.iframe((body) => {
-            //   // verify we are still on the Rank Overview page
-            //   cy.wrap(body).contains('Rank Overview');
-            //
-            //   // click the back button and verify that we are still in the
-            //   // client display (main page), and not on the "Report Skills" page
-            //   cy.wrap(body).find('[data-cy=back]').click()
-            //   cy.wrap(body).contains('User Skills');
-            // });
         });
     }
 
@@ -410,18 +381,16 @@ context('Vue Tests', () => {
             cy.visit('/vuejs#/showSkills?refreshPage=false')
             cy.wait('@getToken')
 
-            cy.iframe((body) => {
-                cy.wrap(body).find('[data-cy=back]').should('not.exist');
-                cy.wrap(body).contains('User Skills');
+            cy.wrapIframe().find('[data-cy=back]').should('not.exist');
+            cy.wrapIframe().contains('User Skills');
 
-                // to subject page
-                cy.cdClickSubj(body, 0, 'Subject 0');
+            // to subject page
+            cy.cdClickSubj(0, 'Subject 0');
 
-                // navigate to Rank Overview that contains the back button
-                cy.wrap(body).find('[data-cy=myRank]').click();
-                cy.wrap(body).contains('Rank Overview');
-                cy.wrap(body).find('[data-cy=back]').should('exist');
-            });
+            // navigate to Rank Overview that contains the back button
+            cy.wrapIframe().find('[data-cy=myRank]').click();
+            cy.wrapIframe().contains('Rank Overview');
+            cy.wrapIframe().find('[data-cy=back]').should('exist');
 
             // now visit the "Report Skills" (external) page
             cy.get('[data-cy=reportSkillsLink]').click()
@@ -429,17 +398,15 @@ context('Vue Tests', () => {
 
             // switch back to the the client display
             cy.get('[data-cy=userDisplayLink]').click()
-            cy.iframe((body) => {
-                // verify we are still on the Rank Overview page
-                cy.wrap(body).contains('Rank Overview');
+            // verify we are still on the Rank Overview page
+            cy.wrapIframe().contains('Rank Overview');
 
-                // click the back button and verify that we are still in the
-                // client display (Subject page)
-                cy.cdBack(body, 'Subject 0');
+            // click the back button and verify that we are still in the
+            // client display (Subject page)
+            cy.cdBack('Subject 0');
 
-                // then back one more time and we should be back on the client display home page
-                cy.cdBack(body, 'User Skills');
-            });
+            // then back one more time and we should be back on the client display home page
+            cy.cdBack('User Skills');
         });
     }
 })

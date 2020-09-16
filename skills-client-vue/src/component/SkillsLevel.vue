@@ -21,7 +21,7 @@ limitations under the License.
 </template>
 
 <script>
-  import { SkillsConfiguration, SkillsLevelJS } from '@skilltree/skills-client-js';
+  import { SkillsConfiguration, SkillsLevelJS, Logger } from '@skilltree/skills-client-js';
 
   export default {
     props: {
@@ -39,8 +39,11 @@ limitations under the License.
     mounted() {
       SkillsConfiguration.afterConfigure()
         .then(() => {
+          Logger.info('SkillsLevel::afterConfigure');
           const skillLevelJS = new SkillsLevelJS(this.getProjectId());
+          Logger.info(`SkillsLevel::created SkillsLevelJS...calling attachTo for ref [${this.$refs.skillLevelRef}]`);
           skillLevelJS.attachTo(this.$refs.skillLevelRef);
+          Logger.info('SkillsLevel::attached to SkillsLevelJS');
           this.skillLevel = skillLevelJS.skillLevel;
         });
     },
