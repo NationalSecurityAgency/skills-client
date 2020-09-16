@@ -40,7 +40,7 @@ describe('SkillsLevelJS', () => {
 
     mockHttp.onGet(new RegExp(`api/projects/${mockProjectId}/level.*`)).reply(200, mockSkillLevel);
     mock.setup();
-    mock.get(/.*\/public\/status/, (req, res) => res.status(200).body('"clientLib":{ "loggingEnabled":false} }'));
+    mock.get(/.*\/public\/status/, (req, res) => res.status(200).body('{"status":"OK","clientLib":{"loggingEnabled":"false","loggingLevel":"DEBUG"}}'));
     mock.post(/.*\/api\/projects\/.*\/skillsClientVersion/, (req, res) => res.status(200).body('{"success":true,"explanation":null}'));
 
     SkillsConfiguration.configure({

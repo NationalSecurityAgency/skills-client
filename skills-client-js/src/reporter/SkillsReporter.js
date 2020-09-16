@@ -118,11 +118,11 @@ const SkillsReporter = {
       this.websocketConnected = true;
     }
     successHandlerCache.add(handler);
-    log.info(`SkillsClient::SkillsReporter::added success handler [${handler ? handler.name : null}]`);
+    log.info(`SkillsClient::SkillsReporter::added success handler [${handler ? handler.toString() : handler}]`);
   },
   addErrorHandler(handler) {
     errorHandlerCache.add(handler);
-    log.info(`SkillsClient::SkillsReporter::added error handler [${handler ? handler.name : null}]`);
+    log.info(`SkillsClient::SkillsReporter::added error handler [${handler ? handler.toString() : handler}]`);
   },
   reportSkill(userSkillId, count = undefined) {
     log.info(`SkillsClient::SkillsReporter::reporting skill [${userSkillId}] count [${count}]`);

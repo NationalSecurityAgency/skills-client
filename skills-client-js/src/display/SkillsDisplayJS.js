@@ -40,14 +40,14 @@ export default class SkillsDisplayJS {
   }
 
   attachTo(selectorOrElement) {
-    log.info(`SkillsClient::SkillsDisplayJS::attaching to [${selectorOrElement}]`);
+    log.info(`SkillsClient::SkillsDisplayJS::attaching to [${selectorOrElement ? selectorOrElement.toString() : selectorOrElement}]`);
     let iframeContainer = selectorOrElement;
     if (typeof selectorOrElement === 'string') {
       iframeContainer = document.querySelector(selectorOrElement);
-      log.debug(`SkillsClient::SkillsDisplayJS::document.querySelector returned [${iframeContainer}]`);
+      log.debug(`SkillsClient::SkillsDisplayJS::document.querySelector returned [${iframeContainer ? iframeContainer.toString() : iframeContainer}]`);
     }
     if (!iframeContainer) {
-      throw new Error(`Can't find element with selector='${selectorOrElement}'`);
+      throw new Error(`Can't find element with selector='${selectorOrElement ? selectorOrElement.toString() : selectorOrElement}'`);
     }
 
     uniqueId += 1;

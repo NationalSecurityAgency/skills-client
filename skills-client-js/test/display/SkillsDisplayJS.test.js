@@ -34,7 +34,7 @@ describe('SkillsDisplayJS', () => {
     ErrorPageUtils.buildErrorPage.mockClear();
     // mockHttp.onGet(/\/public\/status/).reply(200);
     mock.setup();
-    mock.get(/.*\/public\/status/, (req, res) => res.status(200).body('"clientLib":{ "loggingEnabled":false} }'));
+    mock.get(/.*\/public\/status/, (req, res) => res.status(200).body('{"status":"OK","clientLib":{"loggingEnabled":"false","loggingLevel":"DEBUG"}}'));
   });
 
   afterEach(() => {
