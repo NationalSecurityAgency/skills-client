@@ -44,7 +44,7 @@ class ScriptParamsHelper {
         return notDryRun
     }
 
-    boolean getPatchBranch() {
+    String getPatchBranch() {
         String patchBranchParam = args.find({ it.startsWith("-patchBranch=") })
         assert patchBranchParam, "Must provide -patchBranch param when using -releaseMode=Patch"
         String patchBranch = patchBranchParam.split("-patchBranch=")[1]
