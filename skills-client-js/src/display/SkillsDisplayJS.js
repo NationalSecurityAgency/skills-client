@@ -20,6 +20,7 @@ import SkillsConfiguration from '../config/SkillsConfiguration';
 import ErrorPageUtils from './ErrorPageUtils';
 
 let uniqueId = 0;
+let lastToken = '';
 
 export default class SkillsDisplayJS {
   /* eslint-disable object-curly-newline */
@@ -100,9 +101,13 @@ export default class SkillsDisplayJS {
       child.on('needs-authentication', () => {
         const isPkiMode = this.configuration.authenticator === 'pki';
         if (!this.authenticationPromise && !isPkiMode) {
+          if (lastToken !== axios.defaults.headers.common.Authorization) {
+            delete axios.defaults.headers.common.Authorization;
+          }
           this.authenticationPromise = axios.get(this.configuration.authenticator)
             .then((result) => {
               child.call('updateAuthenticationToken', result.data.access_token);
+              lastToken = result.data.access_token;
             })
             .finally(() => {
               this.authenticationPromise = null;
