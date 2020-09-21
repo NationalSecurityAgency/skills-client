@@ -33,10 +33,6 @@ Vue.use(VueHighlightJS)
 axios.get("/api/config")
   .then((result) => {
     SkillsConfiguration.configure(result.data);
-    SkillsConfiguration.afterConfigure(() => {
-      //replicate dashboard auth chain
-      axios.defaults.headers.common.Authorization = SkillsConfiguration.getAuthToken();
-    });
   })
   .then(() => {
     new Vue({

@@ -47,8 +47,7 @@ export default class SkillsLevelJS {
           this._projectId = SkillsConfiguration.getProjectId();
         }
         const authToken = SkillsConfiguration.getAuthToken();
-        axios.defaults.headers.common.Authorization = `Bearer ${authToken}`;
-        axios.get(`${SkillsConfiguration.getServiceUrl()}/api/projects/${this._projectId}/level`, { withCredentials: true })
+        axios.get(`${SkillsConfiguration.getServiceUrl()}/api/projects/${this._projectId}/level`, { withCredentials: true, headers: { Authorization: `Bearer ${authToken}` } })
           .then((result) => {
             this.setSkillLevel(result.data);
             SkillsReporter.addSuccessHandler(this.update.bind(this));
