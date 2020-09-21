@@ -17,6 +17,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import ReportSkills from './components/ReportSkills';
 import ShowSkills from './components/skillsDisplay/ShowSkills';
+import ProxyShowSkills from "@/components/skillsDisplay/ProxyShowSkills";
 
 Vue.use(Router);
 
@@ -33,6 +34,11 @@ const router = new Router({
             name: 'ShowSkills',
             component: ShowSkills,
         },
+        {
+            path: '/proxyShowSkills',
+            name: 'ProxyShowSkills',
+            component: ProxyShowSkills,
+        }
     ]
 });
 

@@ -23,7 +23,8 @@ limitations under the License.
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
                     <b-nav-item href="#" :to="{ name: 'ReportSkills', query: { refreshPage: this.refreshPage } }" :class="{ active: isPage('ReportSkills') }" data-cy="reportSkillsLink">Report Skill Events</b-nav-item>
-                    <b-nav-item href="#" :to="{ name: 'ShowSkills', query: { refreshPage: this.refreshPage } }" class="d-inline-block mr-3 border-right pr-2" :class="{ active: isPage('ShowSkills') }" data-cy="userDisplayLink">User Display</b-nav-item>
+                    <b-nav-item href="#" :to="{ name: 'ShowSkills', query: { refreshPage: this.refreshPage } }" :class="{ active: isPage('ShowSkills') }" data-cy="userDisplayLink">User Display</b-nav-item>
+                    <b-nav-item href="#" :to="{ name: 'ProxyShowSkills', query: { refreshPage: this.refreshPage } }" class="d-inline-block mr-3 border-right pr-2" :class="{ active: isPage('ProxyShowSkills') }" data-cy="proxyUserDisplayLink">Proxied User Display</b-nav-item>
                     <b-nav-form>
                         <b-form-checkbox v-model="refreshPage"
                                          class="nav-label"

@@ -29,6 +29,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import skills.example.SkillsExampleApplication.SkillsConfig;
@@ -52,15 +53,42 @@ public class Controller {
 
     @CrossOrigin()
     @GetMapping("/users/{user}/token")
-    public String getUserAuthToken1(@PathVariable String user) {
+    public String getUserAuthToken1(@PathVariable String user, @RequestHeader(value="Authorization",required=false) String existingToken) {
         String clientId =skillsConfig.getProjectId();
         String serviceTokenUrl = skillsConfig.getServiceUrl() + "/oauth/token";
-        String clientSecret = getSecret();
+        String clientSecret = getSecret(skillsConfig.getProjectId());
+
+        RestTemplate oAuthRestTemplate = new RestTemplate();
+        oAuthRestTemplate.setInterceptors(Arrays.asList(new BasicAuthenticationInterceptor(clientId, clientSecret)));
+        HttpHeaders headers = new HttpHeaders();
+        if (!StringUtils.isEmpty(existingToken)) {
+            headers.set("Authorization", existingToken);
+        }
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("grant_type", "client_credentials");
+        body.add("proxy_user", user);
+
+        ResponseEntity<String> responseEntity = oAuthRestTemplate.postForEntity(serviceTokenUrl, new HttpEntity<>(body, headers), String.class);
+
+        return responseEntity.getBody();
+    }
+
+    @CrossOrigin()
+    @GetMapping("/users/{projectId}/{user}/token")
+    public String getUserAuthTokenWithProject(@PathVariable String projectId, @PathVariable String user, @RequestHeader(value="Authorization",required=false) String existingToken) {
+        String clientId = projectId;
+        String serviceTokenUrl = skillsConfig.getServiceUrl() + "/oauth/token";
+        String clientSecret = getSecret(clientId);
 
         RestTemplate oAuthRestTemplate = new RestTemplate();
         oAuthRestTemplate.setInterceptors(Arrays.asList(new BasicAuthenticationInterceptor(clientId, clientSecret)));
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        if (!StringUtils.isEmpty(existingToken)) {
+            headers.set("Authorization", existingToken);
+        }
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "client_credentials");
@@ -92,11 +120,13 @@ public class Controller {
         return skillsConfig;
     }
 
-    private String getSecret() {
-        String secretUrl = skillsConfig.getServiceUrl() + "/admin/projects/" + skillsConfig.getProjectId() + "/clientSecret";
+    private String getSecret(String projectId) {
+        String secretUrl = skillsConfig.getServiceUrl() + "/admin/projects/" + projectId + "/clientSecret";
         authIfNecessary();
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(secretUrl, String.class);
-        return responseEntity.getBody();
+        String secret = responseEntity.getBody();
+        System.out.println("got secret ["+secret+"] for clientId ["+projectId+"]");
+        return secret;
     }
 
     private void authIfNecessary() {

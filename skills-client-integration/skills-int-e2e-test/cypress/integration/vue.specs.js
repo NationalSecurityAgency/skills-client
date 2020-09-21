@@ -243,6 +243,36 @@ context('Vue Tests', () => {
             .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
     })
 
+    it('Proxy Skills Display', () => {
+        cy.createDefaultTinyProject()
+        cy.createDefaultTinyProject('proj2')
+
+        cy.server().route('/api/users/user1/token').as('getToken')
+        cy.server().route('/api/users/proj2/user2/token').as('getToken2')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.visit('/vuejs#/showSkills')
+        cy.wait('@getToken')
+        cy.iframe((body) => {
+            cy.wait('@getToken')
+
+            cy.wrap(body).contains('My Level')
+            cy.wrap(body).contains('50 Points earned Today')
+            cy.wrap(body).contains('Subject 0')
+
+            // verify that there is no background set
+            // cypress always validates against rgb
+            cy.wrap(body).find('.skills-page-title-text-color')
+              .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
+        });
+
+        cy.visit('/vuejs#/proxyShowSkills')
+        cy.wait('@getToken2')
+        cy.iframe((body) => {
+            cy.wrap(body).contains('My Level')
+            cy.wrap(body).contains('0 Points earned Today')
+        })
+    })
+
     it('skill display - summary only', () => {
         cy.createDefaultTinyProject()
         cy.server().route('/api/users/user1/token').as('getToken')
@@ -344,6 +374,45 @@ context('Vue Tests', () => {
         });
     })
 
+    /*it('Proxy User Display', () => {
+        cy.createDefaultProject()
+        cy.createDefaultTinyProject('proj2')
+        //need a view that is the default user and a view to show another user
+        const sendEventViaDropdownId = '#PureJSReportAnySkill';
+        Cypress.Commands.add("clickSubmit", () => {
+            cy.get(`${sendEventViaDropdownId} .btn`).click()
+        })
+        Cypress.Commands.add("selectSkill", (skill) => {
+            cy.get(`${sendEventViaDropdownId} .multiselect`).type(`${skill}{enter}`)
+        })
+
+        cy.visitHomePage(homePage);
+
+        cy.contains('Level 0')
+
+        cy.selectSkill('IronMan')
+        cy.clickSubmit()
+        cy.contains('Level 1')
+
+        cy.server().route('/api/users/user1/token').as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.get('[data-cy=userDisplayLink]').click();
+        //cy.contains('User Display').click();
+        /!*cy.wait('@getToken')
+        console.log('got token')
+        cy.iframe((body) => {
+            cy.wait('@getToken')
+            console.log('got token again')
+
+            cy.wrap(body).contains('My Level')
+
+            // verify that there is no background set
+            // cypress always validates against rgb
+            cy.wrap(body).find('.skills-page-title-text-color')
+              .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
+        });*!/
+    })*/
+
     if (Utils.skillsServiceVersionLaterThan('1.2.0')) {
         it('back button when when returning from an external page', () => {
             cy.createDefaultTinyProject()
@@ -409,4 +478,6 @@ context('Vue Tests', () => {
             cy.cdBack('User Skills');
         });
     }
+
+
 })
