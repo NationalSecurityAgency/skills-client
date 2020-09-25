@@ -73,8 +73,26 @@ jobs:
         mvn --batch-mode clean install
         cd ../
 
-    - name: run cypress tests
-      run: ./.github/workflows/scripts/runCypressTests.sh
+    - name: start services for cypress tests
+      run: |
+        cd skills-client-integration/skills-int-e2e-test
+        npm install
+        npm run cyServices:start:skills-service:ci
+        npm run cyServices:start:integration-apps
+        cd ../../
+
+    - name: Run Cypress tests
+      uses: cypress-io/github-action@v2
+      with:
+        working-directory: skills-client-integration/skills-int-e2e-test
+        record: true
+        parallel: false
+        group: 'skills-client tests'
+      env:
+        # pass the Dashboard record key as an environment variable
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        # pass GitHub token to allow accurately detecting a build vs a re-run build
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: upload result artifacts
       if: ${{ always() }}
