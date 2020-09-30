@@ -73,11 +73,12 @@ class ProcessRunner {
             }
 
             String errMsg = serr ? new String(serr.toByteArray()) : ""
+            String outMsg = sout ? new String(sout.toByteArray()) : ""
             if (waitForOutput && p.exitValue() != 0) {
-                throw new IllegalStateException("[$name] - [${cmd}] failed with error code [${p.exitValue()}]:\n${errMsg}")
+                throw new IllegalStateException("[$name] - [${cmd}] failed with error code [${p.exitValue()}]:\nserr: ${errMsg}\nsout: ${outMsg}")
             }
             if (failWithErrMsg && errMsg) {
-                throw new IllegalStateException("[$name] - [${cmd}] failed:\n$errMsg")
+                throw new IllegalStateException("[$name] - [${cmd}] failed:\nserr: ${errMsg}\nsout: ${outMsg}")
             }
             return new ProcessRes(serr: errMsg, sout: sout ? new String(sout.toByteArray()) : "")
         }
