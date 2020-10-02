@@ -90,11 +90,11 @@ const exportObject = {
       skillsService.configureLogging(this, response);
     }).catch((error) => {
       // eslint-disable-next-line no-console
-      console.error('Error configuring logging', error);
+      console.error('Error getting service status', error);
     });
 
     if (!this.isPKIMode() && !this.getAuthToken()) {
-      skillsService.getAuthenticationToken(this.getAuthenticator())
+      skillsService.getAuthenticationToken(this.getAuthenticator(), this)
         .then((token) => {
           this.setAuthToken(token);
           setInitialized(this);
@@ -121,6 +121,10 @@ SkillsConfiguration is a singleton and you only have to do this once. Please see
 
   isPKIMode() {
     return this.getAuthenticator() === 'pki' || this.getAuthToken() === 'pki';
+  },
+
+  isOAuthMode() {
+    return typeof this.authenticator === 'string' && (this.authenticator === 'oauth' || this.authenticator.startsWith(`${this.serviceUrl}/oauth2/authorization`));
   },
 
   isInitialized() {

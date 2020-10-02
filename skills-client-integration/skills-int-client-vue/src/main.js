@@ -35,11 +35,13 @@ axios.get("/api/config")
     SkillsConfiguration.configure(result.data);
   })
   .then(() => {
-    if (window.Cypress) {
-      window.skillsLogger = Logger;
-    }
-    new Vue({
-      render: h => h(App),
-      router,
-    }).$mount('#app');
+    SkillsConfiguration.afterConfigure().then(() => {
+      if (window.Cypress) {
+        window.skillsLogger = Logger;
+      }
+      new Vue({
+        render: h => h(App),
+        router,
+      }).$mount('#app');
+    })
   });

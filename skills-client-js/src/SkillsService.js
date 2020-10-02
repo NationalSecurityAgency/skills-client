@@ -95,20 +95,33 @@ export default {
     });
   },
 
-  getAuthenticationToken(authenticator) {
+  getAuthenticationToken(authenticator, conf) {
     return new Promise((resolve, reject) => {
+      const isOAuthMode = conf.isOAuthMode();
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', authenticator);
+      if (!isOAuthMode) {
+        xhr.open('GET', authenticator);
+      } else {
+        xhr.open('GET', `${conf.getServiceUrl()}/api/projects/${conf.getProjectId()}/token`);
+        xhr.withCredentials = true;
+      }
 
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
           if (xhr.status !== 200) {
-            reject(new Error(`SkillTree: Unable to authenticate using [${authenticator}] endpoint. Response Code=[${xhr.status}].\n
+            if (isOAuthMode && xhr.status === 401) {
+              // if we get 401 and we are using OAuth, then redirect to the OAuth Provider
+              const oauthAuthenticator = `${authenticator}?skillsRedirectUri=${window.location}`;
+              log.info(`SkillsClient::SkillService::unable to get oAuth token, navigating to [${oauthAuthenticator}]`);
+              window.location = oauthAuthenticator;
+            } else {
+              reject(new Error(`SkillTree: Unable to authenticate using [${authenticator}] endpoint. Response Code=[${xhr.status}].\n
     Ideas to diagnose:\n
         (1) verify that the authenticator property is correct.\n
         (2) verify that the server providing the authenticator endpoint is responding (ex. daemon is running, network path is clear).\n
         (3) check logs on the server providing authenticator endpoint.\n
   Full Response=[${xhr.response}]`));
+            }
           } else {
             const response = JSON.parse(xhr.response);
             if (!response.access_token) {
