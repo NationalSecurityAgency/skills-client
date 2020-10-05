@@ -94,7 +94,7 @@ const exportObject = {
     });
 
     if (!this.isPKIMode() && !this.getAuthToken()) {
-      skillsService.getAuthenticationToken(this.getAuthenticator(), this)
+      skillsService.getAuthenticationToken(this.getAuthenticator(), this.getServiceUrl(), this.getProjectId())
         .then((token) => {
           this.setAuthToken(token);
           setInitialized(this);
@@ -124,7 +124,7 @@ SkillsConfiguration is a singleton and you only have to do this once. Please see
   },
 
   isOAuthMode() {
-    return typeof this.authenticator === 'string' && (this.authenticator === 'oauth' || this.authenticator.startsWith(`${this.serviceUrl}/oauth2/authorization`));
+    return skillsService.isOAuthMode(this.authenticator, this.serviceUrl);
   },
 
   isInitialized() {

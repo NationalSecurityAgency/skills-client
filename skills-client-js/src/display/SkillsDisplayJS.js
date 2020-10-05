@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import Postmate from 'postmate';
-import axios from 'axios';
 import log from 'js-logger';
 
 import SkillsConfiguration from '../config/SkillsConfiguration';
@@ -108,9 +107,9 @@ export default class SkillsDisplayJS {
         log.debug('SkillsClient::SkillsDisplayJS::needs-authentication');
         const isPkiMode = this.configuration.authenticator === 'pki';
         if (!this.authenticationPromise && !isPkiMode) {
-          this.authenticationPromise = axios.get(this.configuration.authenticator)
+          this.authenticationPromise = skillsService.getAuthenticationToken(this.configuration.authenticator, this.configuration.serviceUrl, this.configuration.projectId)
             .then((result) => {
-              child.call('updateAuthenticationToken', result.data.access_token);
+              child.call('updateAuthenticationToken', result);
             })
             .finally(() => {
               this.authenticationPromise = null;
@@ -126,22 +125,25 @@ export default class SkillsDisplayJS {
   }
 
   _checkAndHandleServiceStatus(iframeContainer) {
-    if (!SkillsConfiguration.getServiceStatus()) {
+    this.status = SkillsConfiguration.getServiceStatus();
+    if (!this.status) {
       log.info('SkillsClient::SkillsDisplayJS::SkillsConfiguration.configure() was not called, checking status endpoint.');
-      skillsService.getServiceStatus(`${this.configuration.serviceUrl}/public/status`)
-        .catch((error) => {
-          let errorMessage = 'Please ensure the skilltree server is running';
-          if (this.configuration.serviceUrl && this.configuration.serviceUrl.startsWith('https')) {
-            errorMessage += ' and that your browser trusts the server\'s certificate';
-          }
-          errorMessage += `. skilltree service URL: ${this.configuration.serviceUrl}`;
-          /* eslint-disable no-console */
-          console.error(errorMessage);
-          log.error(`SkillsClient::SkillsDisplayJS::${errorMessage}`, error);
-          ErrorPageUtils.removeAllChildren(iframeContainer);
-          iframeContainer.appendChild(ErrorPageUtils.buildErrorPage());
-          iframeContainer.setAttribute('style', 'border: 5px; height: 20rem; width: 100%');
-        });
+      skillsService.getServiceStatus(`${this.configuration.serviceUrl}/public/status`).then((response) => {
+        this.status = response.status;
+        skillsService.configureLogging(this, response);
+      }).catch((error) => {
+        let errorMessage = 'Please ensure the skilltree server is running';
+        if (this.configuration.serviceUrl && this.configuration.serviceUrl.startsWith('https')) {
+          errorMessage += ' and that your browser trusts the server\'s certificate';
+        }
+        errorMessage += `. skilltree service URL: ${this.configuration.serviceUrl}`;
+        /* eslint-disable no-console */
+        console.error(errorMessage);
+        log.error(`SkillsClient::SkillsDisplayJS::${errorMessage}`, error);
+        ErrorPageUtils.removeAllChildren(iframeContainer);
+        iframeContainer.appendChild(ErrorPageUtils.buildErrorPage());
+        iframeContainer.setAttribute('style', 'border: 5px; height: 20rem; width: 100%');
+      });
     }
   }
 

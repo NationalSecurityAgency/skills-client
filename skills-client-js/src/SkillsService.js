@@ -50,7 +50,7 @@ export default {
         loggingLevel = log.INFO;
         log.warn(`SkillsClient::SkillService::Unknown log level [${response.clientLib.loggingLevel}], defaulting to INFO`);
       }
-      log.info(`SkillsClient::SkillService::Logger enabled, log level set to [${loggingLevel}]`);
+      log.info(`SkillsClient::SkillService::Logger enabled, log level set to [${loggingLevel.name}]`);
     }
   },
 
@@ -95,14 +95,18 @@ export default {
     });
   },
 
-  getAuthenticationToken(authenticator, conf) {
+  isOAuthMode(authenticator, serviceUrl) {
+    return typeof authenticator === 'string' && (authenticator === 'oauth' || authenticator.startsWith(`${serviceUrl}/oauth2/authorization`));
+  },
+
+  getAuthenticationToken(authenticator, serviceUrl, projectId) {
     return new Promise((resolve, reject) => {
-      const isOAuthMode = conf.isOAuthMode();
+      const isOAuthMode = this.isOAuthMode(authenticator, serviceUrl);
       const xhr = new XMLHttpRequest();
       if (!isOAuthMode) {
         xhr.open('GET', authenticator);
       } else {
-        xhr.open('GET', `${conf.getServiceUrl()}/api/projects/${conf.getProjectId()}/token`);
+        xhr.open('GET', `${serviceUrl}/api/projects/${projectId}/token`);
         xhr.withCredentials = true;
       }
 
