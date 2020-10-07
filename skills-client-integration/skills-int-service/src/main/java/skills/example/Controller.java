@@ -42,7 +42,7 @@ public class Controller {
     RestTemplate restTemplate;
 
     public Controller(RestTemplateBuilder restTemplateBuilder) {
-        // RestTemplateBuilder will utilze the SecurityRestTemplateCustomizer, which
+        // RestTemplateBuilder will utilize the SecurityRestTemplateCustomizer, which
         // will configure HttpComponentsClientHttpRequestFactory as SpringTemplate does
         // not by default keeps track of session
         restTemplate = restTemplateBuilder.build();
