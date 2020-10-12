@@ -47,7 +47,7 @@ jobs:
         echo Event Name: $GITHUB_EVENT_NAME
 
     - name: Test Conditional
-      if: contains(env.GITHUB_EVENT_NAME, 'push')
+      if: contains(github.event_name, 'push')
       run:  |
         echo Event Name: $GITHUB_EVENT_NAME
 
