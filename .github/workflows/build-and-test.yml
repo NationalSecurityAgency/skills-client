@@ -4,7 +4,7 @@ name: Continuous Integration
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '0 7 * * *'
   push:
     paths-ignore:
       - 'README.md'
@@ -56,7 +56,12 @@ jobs:
     - name: Test Conditional Scheduled
       if: contains(github.event_name, 'schedule')
       run:  |
-        echo Event Name: $GITHUB_EVENT_NAME
+        echo Event Name Scheduled: $GITHUB_EVENT_NAME
+
+    - name: Test Conditional Scheduled FALSE
+      if: contains(github.event_name, 'schedule') == false
+      run:  |
+        echo Event Name: Scheduled FALSE $GITHUB_EVENT_NAME
 
     - name: Dump GitHub context
       env:
@@ -64,15 +69,15 @@ jobs:
       run: echo "$GITHUB_CONTEXT"
 
     - name: run hyrda oauth service
-      if: contains(github.event_name, 'schedule')
+#      if: contains(github.event_name, 'schedule')
       run: ./.github/workflows/scripts/runHydra.sh
 
     - name: Check running containers
-      if: contains(github.event_name, 'schedule')
+#      if: contains(github.event_name, 'schedule')
       run: docker ps -a
 
     - name: Check logs
-      if: contains(github.event_name, 'schedule')
+#      if: contains(github.event_name, 'schedule')
       run: docker logs hydra
 
     - name: Cache local Maven repository
@@ -125,7 +130,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Run Cypress tests using OAuth
-      if: contains(github.event_name, 'schedule')
+#      if: contains(github.event_name, 'schedule')
       uses: cypress-io/github-action@v2
       with:
         working-directory: skills-client-integration/skills-int-e2e-test
