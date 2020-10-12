@@ -3,6 +3,8 @@
 name: Continuous Integration
 
 on:
+  schedule:
+    - cron: '*/5 * * * *'
   push:
     paths-ignore:
       - 'README.md'
@@ -13,9 +15,6 @@ on:
       - 'README.md'
       - .github/workflows/skills-service-backward-compat.yml
       - .github/workflows/client-libs-backward-compat.yml
-
-  schedule:
-    - cron: '*/5 * * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
