@@ -5,7 +5,7 @@ TRACING=${TRACING:-false}
 PROMETHEUS=${PROMETHEUS:-false}
 echo "PWD: "
 echo $(pwd)
-cd ./.github/workflows/scripts/hydra
+cd ./skills-client-integration/skills-int-e2e-test/hydra
 DC="docker-compose -f quickstart.yml"
 if [[ $DB == "mysql" ]]; then
     DC+=" -f quickstart-mysql.yml"
