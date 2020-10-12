@@ -3,7 +3,7 @@
 DB=${DB:-postgres}
 TRACING=${TRACING:-false}
 PROMETHEUS=${PROMETHEUS:-false}
-cd hyrda
+cd hydra
 DC="docker-compose -f quickstart.yml"
 if [[ $DB == "mysql" ]]; then
     DC+=" -f quickstart-mysql.yml"
