@@ -46,7 +46,7 @@ jobs:
         npm -version
 
     - name: Test Conditional
-      if: contains("$GITHUB_EVENT_NAME", 'push')
+      if: contains(env.GITHUB_EVENT_NAME, 'push')
       run:  |
         echo Event Name: $GITHUB_EVENT_NAME
 
