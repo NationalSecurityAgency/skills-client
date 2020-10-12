@@ -44,7 +44,7 @@ jobs:
         mvn --version
         java -version
         npm -version
-        echo 'Event Name: $GITHUB_EVENT_NAME'
+        echo Event Name: $GITHUB_EVENT_NAME
 
     - name: Cache local Maven repository
       uses: actions/cache@v2
