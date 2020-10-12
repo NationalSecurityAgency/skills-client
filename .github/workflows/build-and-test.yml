@@ -4,7 +4,7 @@ name: Continuous Integration
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/15 * * * *'
   push:
     paths-ignore:
       - 'README.md'
@@ -64,12 +64,15 @@ jobs:
       run: echo "$GITHUB_CONTEXT"
 
     - name: run hyrda oauth service
+      if: contains(github.event_name, 'schedule')
       run: ./.github/workflows/scripts/runHydra.sh
 
     - name: Check running containers
+      if: contains(github.event_name, 'schedule')
       run: docker ps -a
 
     - name: Check logs
+      if: contains(github.event_name, 'schedule')
       run: docker logs hydra
 
     - name: Cache local Maven repository
@@ -115,6 +118,21 @@ jobs:
         record: true
         parallel: false
         group: 'skills-client tests'
+      env:
+        # pass the Dashboard record key as an environment variable
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        # pass GitHub token to allow accurately detecting a build vs a re-run build
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run Cypress tests using OAuth
+      if: contains(github.event_name, 'schedule')
+      uses: cypress-io/github-action@v2
+      with:
+        working-directory: skills-client-integration/skills-int-e2e-test
+        record: true
+        parallel: false
+        group: 'skills-client oauth tests'
+        env: 'authMode=oauth'
       env:
         # pass the Dashboard record key as an environment variable
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
