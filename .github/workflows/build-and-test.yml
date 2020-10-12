@@ -70,7 +70,7 @@ jobs:
       run: docker ps -a
 
     - name: Check logs
-      run: docker logs backend
+      run: docker logs hydra
 
     - name: Cache local Maven repository
       uses: actions/cache@v2
