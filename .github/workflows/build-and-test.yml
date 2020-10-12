@@ -44,11 +44,17 @@ jobs:
         mvn --version
         java -version
         npm -version
+        echo Event Name: $GITHUB_EVENT_NAME
 
     - name: Test Conditional
       if: contains(env.GITHUB_EVENT_NAME, 'push')
       run:  |
         echo Event Name: $GITHUB_EVENT_NAME
+
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
 
     - name: Cache local Maven repository
       uses: actions/cache@v2
