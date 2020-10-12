@@ -14,6 +14,9 @@ on:
       - .github/workflows/skills-service-backward-compat.yml
       - .github/workflows/client-libs-backward-compat.yml
 
+  schedule:
+    - cron: '53 14 * * *'
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
