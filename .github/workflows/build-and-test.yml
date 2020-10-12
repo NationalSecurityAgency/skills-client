@@ -54,6 +54,11 @@ jobs:
       run:  |
         echo Event Name: $GITHUB_EVENT_NAME
 
+    - name: Test Conditional Scheduled
+      if: contains(github.event_name, 'schedule')
+      run:  |
+        echo Event Name: $GITHUB_EVENT_NAME
+
     - name: Dump GitHub context
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
