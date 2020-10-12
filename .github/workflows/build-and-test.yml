@@ -44,6 +44,10 @@ jobs:
         mvn --version
         java -version
         npm -version
+
+    - name: Test Conditional
+      if: contains($GITHUB_EVENT_NAME, 'push')
+      run:  |
         echo Event Name: $GITHUB_EVENT_NAME
 
     - name: Cache local Maven repository
