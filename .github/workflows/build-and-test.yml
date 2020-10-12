@@ -63,6 +63,15 @@ jobs:
         GITHUB_CONTEXT: ${{ toJson(github) }}
       run: echo "$GITHUB_CONTEXT"
 
+    - name: run hyrda oauth service
+      run: ./.github/workflows/scripts/runHydra.sh
+
+    - name: Check running containers
+      run: docker ps -a
+
+    - name: Check logs
+      run: docker logs backend
+
     - name: Cache local Maven repository
       uses: actions/cache@v2
       with:
