@@ -23,3 +23,13 @@ DC+=" up --build -d"
 
 $DC
 
+docker-compose -f quickstart.yml exec hydra \
+	hydra clients create \
+    --endpoint http://localhost:4445/ \
+    --id skilltree-test \
+    --secret client-secret \
+    --grant-types authorization_code,refresh_token \
+    --response-types code \
+    --scope openid \
+    --callbacks http://localhost:8080/login/oauth2/code/hydra
+
