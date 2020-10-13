@@ -1,4 +1,7 @@
 #!/bin/bash
+# exit if a command returns non-zero exit code
+set -e
+set -o pipefail
 
 DB=${DB:-postgres}
 TRACING=${TRACING:-false}
@@ -22,6 +25,11 @@ fi
 DC+=" up --build -d"
 
 $DC
+
+echo 'Waiting for hydra service...'
+timeout 22 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' 127.0.0.1 4445
+
+echo 'Creating skilltree-test client...'
 export COMPOSE_INTERACTIVE_NO_CLI=1
 docker-compose -f quickstart.yml exec -T hydra \
 	hydra clients create \
@@ -32,4 +40,4 @@ docker-compose -f quickstart.yml exec -T hydra \
     --response-types code \
     --scope openid \
     --callbacks http://localhost:8080/login/oauth2/code/hydra
-
+echo 'Done.'
