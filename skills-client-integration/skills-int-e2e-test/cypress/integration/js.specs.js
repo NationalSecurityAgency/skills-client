@@ -38,8 +38,9 @@ context("Native JS Tests", () => {
         cy.createDefaultProject();
 
         cy.visitHomePage(homePage);
-        cy.reportSkillForUser("IronMan", "user1");
+        cy.reportSkillForUser("IronMan", Cypress.env('proxyUser'));
 
+        cy.get('pre[data-cy=globalEventResult]').should('be.visible')
         cy.get('pre[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
         cy.get('pre[data-cy=globalEventResult]').contains('"pointsEarned": 50')
         cy.get('pre[data-cy=globalEventResult]').contains('"skillApplied": true')
@@ -51,22 +52,22 @@ context("Native JS Tests", () => {
         cy.createDefaultTinyProject('proj2')
 
         cy.visitHomePage(homePage);
-        cy.reportSkillForUser('IronMan', 'user1', 'proj2')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'), 'proj2')
 
         cy.get('pre[data-cy=globalEventResult]').should('be.empty');
     })
     it('global event is not reported when skill is not applied (skill reported directly to backend endpoint)', () => {
         cy.createDefaultProject()
-        cy.reportSkillForUser('IronMan', 'user1')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
 
         cy.visitHomePage(homePage);
-        cy.reportSkillForUser('IronMan', 'user1')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
 
         cy.get('[data-cy=globalEventResult]').should('be.empty');
     })
     it('global event is not reported when skill is not applied', () => {
         cy.createDefaultProject()
-        cy.reportSkillForUser('IronMan', 'user1')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
 
         cy.visitHomePage(homePage);
         const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
@@ -80,7 +81,7 @@ context("Native JS Tests", () => {
 
     it('global event is reported even when skill is not applied when notifyIfSkillNotApplied=true ', () => {
         cy.createDefaultProject()
-        cy.reportSkillForUser('IronMan', 'user1')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
 
         const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
         Cypress.Commands.add("clickSubmit", () => {
@@ -100,10 +101,10 @@ context("Native JS Tests", () => {
     it("skill display", () => {
         cy.createDefaultTinyProject();
         cy.server()
-            .route("/api/users/user1/token")
+            .route(Cypress.env('tokenUrl'))
             .as("getToken");
         cy.backendPost("/api/projects/proj1/skills/Thor", {
-            userId: "user1",
+            userId: Cypress.env('proxyUser'),
             timestamp: Date.now()
         });
         cy.visit("/native/clientDisplay.html");
@@ -121,10 +122,10 @@ context("Native JS Tests", () => {
     it("skill display - default options", () => {
         cy.createDefaultTinyProject();
         cy.server()
-            .route("/api/users/user1/token")
+            .route(Cypress.env('tokenUrl'))
             .as("getToken");
         cy.backendPost("/api/projects/proj1/skills/Thor", {
-            userId: "user1",
+            userId: Cypress.env('proxyUser'),
             timestamp: Date.now()
         });
         cy.visit("/native/clientDisplayDefaultOptions.html");
@@ -143,10 +144,10 @@ context("Native JS Tests", () => {
     it("skill display - summary only", () => {
         cy.createDefaultTinyProject();
         cy.server()
-            .route("/api/users/user1/token")
+            .route(Cypress.env('tokenUrl'))
             .as("getToken");
         cy.backendPost("/api/projects/proj1/skills/Thor", {
-            userId: "user1",
+            userId: Cypress.env('proxyUser'),
             timestamp: Date.now()
         });
         cy.visit("/native/clientDisplay.html?isSummaryOnly=true");
@@ -165,10 +166,10 @@ context("Native JS Tests", () => {
     it("skill display - theme", () => {
         cy.createDefaultTinyProject();
         cy.server()
-            .route("/api/users/user1/token")
+            .route(Cypress.env('tokenUrl'))
             .as("getToken");
         cy.backendPost("/api/projects/proj1/skills/Thor", {
-            userId: "user1",
+            userId: Cypress.env('proxyUser'),
             timestamp: Date.now()
         });
         cy.visit("/native/clientDisplay.html?themeName=Dark Blue");
@@ -187,10 +188,10 @@ context("Native JS Tests", () => {
     it("skill display - summary only - theme", () => {
         cy.createDefaultTinyProject();
         cy.server()
-            .route("/api/users/user1/token")
+            .route(Cypress.env('tokenUrl'))
             .as("getToken");
         cy.backendPost("/api/projects/proj1/skills/Thor", {
-            userId: "user1",
+            userId: Cypress.env('proxyUser'),
             timestamp: Date.now()
         });
         cy.visit(
@@ -229,7 +230,7 @@ context("Native JS Tests", () => {
         const v0Points = 'Earn up to 100 points';
         cy.createDefaultTinyProject();
         cy.server()
-            .route("/api/users/user1/token")
+            .route(Cypress.env('tokenUrl'))
             .as("getToken");
         cy.backendAddSkill("skillv1", 1);
         cy.backendAddSkill("skillv2", 2);
@@ -238,12 +239,12 @@ context("Native JS Tests", () => {
         cy.wait('@getToken')
         cy.wrapIframe().contains(noVersionPoints);
 
-        cy.visit("/native/index.html");
+        // cy.visit("/native/index.html");
         cy.visit("/native/clientDisplay.html?skillsVersion=1");
         cy.wait('@getToken')
         cy.wrapIframe().contains(v1Points);
 
-        cy.visit("/native/index.html");
+        // cy.visit("/native/index.html");
         cy.visit("/native/clientDisplay.html?skillsVersion=0");
         cy.wait('@getToken')
         cy.wrapIframe().contains(v0Points);
@@ -282,13 +283,13 @@ context("Native JS Tests", () => {
     it('level component should load initial level', () => {
         cy.createDefaultProject()
 
-        // this will increment levels for the default user = skills@skills.org but Level and display components display data for 'user1'
+        // this will increment levels for skills@skills.org but Level and display components display data for the proxyUser
         // validate that level is still 0
-        cy.reportSkill('subj1_skill0')
+        cy.reportSkillForUser('subj1_skill0', 'skills@skill.org')
         cy.visitHomePage(homePage);
         cy.contains('Level 0')
 
-        cy.reportSkillForUser('subj1_skill0', 'user1')
+        cy.reportSkillForUser('subj1_skill0', Cypress.env('proxyUser'))
         cy.visitHomePage(homePage);
         cy.contains('Level 1')
     })

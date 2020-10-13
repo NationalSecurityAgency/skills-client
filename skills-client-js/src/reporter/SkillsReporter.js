@@ -17,6 +17,7 @@ import SockJS from 'sockjs-client';
 import Stomp from 'webstomp-client';
 import log from 'js-logger';
 import SkillsConfiguration from '../config/SkillsConfiguration';
+import skillsService from '../SkillsService';
 
 const SUCCESS_EVENT = 'skills-report-success';
 const FAILURE_EVENT = 'skills-report-error';
@@ -60,33 +61,9 @@ const connectWebsocket = (serviceUrl) => {
   }
 };
 
-const getAuthenticationToken = function getAuthenticationToken() {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', SkillsConfiguration.getAuthenticator());
-
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4) {
-        if (xhr.status !== 200) {
-          reject(new Error('Unable to authenticate'));
-        } else {
-          const response = JSON.parse(xhr.response);
-          if (!response.access_token) {
-            reject(new Error('Unable to authenticate'));
-          } else {
-            resolve(response.access_token);
-          }
-        }
-      }
-    };
-
-    xhr.send();
-  });
-};
-
 const authenticateAndRetry = function authenticateAndRetry(userSkillId, attemptCount, resolve, reject) {
   log.info(`SkillsClient::SkillsReporter::authenticateAndRetry [${userSkillId}] attemptCount [${attemptCount}]`);
-  getAuthenticationToken()
+  skillsService.getAuthenticationToken(SkillsConfiguration.getAuthenticator(), SkillsConfiguration.getServiceUrl(), SkillsConfiguration.getProjectId())
     .then((token) => {
       SkillsConfiguration.setAuthToken(token);
       this.reportSkill(userSkillId, attemptCount + 1)

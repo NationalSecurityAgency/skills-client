@@ -63,14 +63,14 @@ context('Angular Tests', () => {
         cy.createDefaultProject()
         // cy.reportSkill('subj1_skill0')
 
-        // this will increment levels for the default user = skills@skills.org but Level and display components display data for 'user1'
+        // this will increment levels for skills@skills.org but Level and display components display data for the proxyUser
         // validate that level is still 0
         cy.reportSkill('IronMan')
         cy.visitHomePage(homePage);
         cy.contains('Level 0')
 
 
-        cy.reportSkillForUser('IronMan', 'user1')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
         cy.visitHomePage(homePage);
         cy.contains('Level 1')
     })
@@ -81,22 +81,22 @@ context('Angular Tests', () => {
 
         cy.contains('Level 0')
 
-        cy.reportSkillForUser('IronMan', 'user1')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
         cy.contains('Level 1')
 
-        cy.reportSkillForUser('Thor', 'user1')
+        cy.reportSkillForUser('Thor', Cypress.env('proxyUser'))
         cy.contains('Level 2')
 
-        cy.reportSkillForUser('subj1_skill0', 'user1')
+        cy.reportSkillForUser('subj1_skill0', Cypress.env('proxyUser'))
         cy.contains('Level 3')
 
-        cy.reportSkillForUser('subj1_skill1', 'user1')
+        cy.reportSkillForUser('subj1_skill1', Cypress.env('proxyUser'))
         cy.contains('Level 3')
 
-        cy.reportSkillForUser('subj2_skill0', 'user1')
+        cy.reportSkillForUser('subj2_skill0', Cypress.env('proxyUser'))
         cy.contains('Level 4')
 
-        cy.reportSkillForUser('subj2_skill1', 'user1')
+        cy.reportSkillForUser('subj2_skill1', Cypress.env('proxyUser'))
         cy.contains('Level 5')
     })
 
@@ -106,7 +106,7 @@ context('Angular Tests', () => {
 
         cy.contains('Level 0')
 
-        cy.reportSkillForUser('IronMan', 'user1')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
 
         cy.contains('Level 1')
         cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
@@ -122,7 +122,7 @@ context('Angular Tests', () => {
 
         cy.contains('Level 0')
 
-        cy.reportSkillForUser('IronMan', 'user1', 'proj2')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'), 'proj2')
 
         cy.contains('Level 0')
         cy.get('[data-cy=globalEventResult]').should('be.empty');
@@ -130,13 +130,13 @@ context('Angular Tests', () => {
 
     it('global event is not reported when skill is not applied', () => {
         cy.createDefaultProject()
-        cy.reportSkillForUser('IronMan', 'user1')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
 
         cy.visitHomePage(homePage);
 
         cy.contains('Level 1')
 
-        cy.reportSkillForUser('IronMan', 'user1')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
         cy.contains('Level 1')
 
         cy.get('[data-cy=globalEventResult]').should('be.empty');
@@ -228,8 +228,8 @@ context('Angular Tests', () => {
 
     it('skill display', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('/api/users/user1/token').as('getToken')
-        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/angular/showSkills')
         cy.wait('@getToken')
         cy.wait('@getToken')
@@ -245,8 +245,8 @@ context('Angular Tests', () => {
 
     it('skill display - summary only', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('/api/users/user1/token').as('getToken')
-        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/angular/showSkills?isSummaryOnly=true')
         cy.wait('@getToken')
         cy.wait('@getToken')
@@ -262,8 +262,8 @@ context('Angular Tests', () => {
 
     it('skill display - theme', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('/api/users/user1/token').as('getToken')
-        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/angular/showSkills?themeName=Dark Blue')
         cy.wait('@getToken')
         cy.wait('@getToken')
@@ -279,8 +279,8 @@ context('Angular Tests', () => {
 
     it('skill display - summary only - theme', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('/api/users/user1/token').as('getToken')
-        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/angular/showSkills?themeName=Dark Blue&isSummaryOnly=true')
         cy.wait('@getToken')
         cy.wrapIframe().contains('My Level')
@@ -308,7 +308,7 @@ context('Angular Tests', () => {
 
     it('only display skills up-to the provided version', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('/api/users/user1/token').as('getToken')
+        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
         cy.backendAddSkill('skillv1', 1)
         cy.backendAddSkill('skillv2', 2)
         cy.visit('/angular/showSkills')
