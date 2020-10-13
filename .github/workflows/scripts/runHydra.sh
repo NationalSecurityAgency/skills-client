@@ -22,7 +22,7 @@ fi
 DC+=" up --build -d"
 
 $DC
-
+export COMPOSE_INTERACTIVE_NO_CLI=1
 docker-compose -f quickstart.yml exec -T hydra \
 	hydra clients create \
     --endpoint http://localhost:4445/ \
