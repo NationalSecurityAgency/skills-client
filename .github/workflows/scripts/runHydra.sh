@@ -23,7 +23,7 @@ DC+=" up --build -d"
 
 $DC
 
-docker-compose -f quickstart.yml exec hydra \
+docker-compose -f quickstart.yml exec -T hydra \
 	hydra clients create \
     --endpoint http://localhost:4445/ \
     --id skilltree-test \
