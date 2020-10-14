@@ -49,7 +49,7 @@ context('React Tests', () => {
 
         // this will increment levels for the default user = skills@skills.org but Level and display components display data for Cypress.env('proxyUser')
         // validate that level is still 0
-        cy.reportSkill('IronMan')
+        cy.reportSkillForUser('IronMan', 'skills@skill.org')
         cy.visitHomePage(homePage);
         cy.contains('Level 0')
 

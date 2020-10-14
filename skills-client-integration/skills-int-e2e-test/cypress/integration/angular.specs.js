@@ -65,7 +65,7 @@ context('Angular Tests', () => {
 
         // this will increment levels for skills@skills.org but Level and display components display data for the proxyUser
         // validate that level is still 0
-        cy.reportSkill('IronMan')
+        cy.reportSkillForUser('IronMan', 'skills@skill.org')
         cy.visitHomePage(homePage);
         cy.contains('Level 0')
 
@@ -294,6 +294,7 @@ context('Angular Tests', () => {
     })
 
     it('client display should display an error if skills service is down', () => {
+        cy.createDefaultTinyProject()
         cy.server().route({
             method: 'GET',
             url: '/public/status',

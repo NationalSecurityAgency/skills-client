@@ -112,7 +112,15 @@ Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 2,
   cy.backendPost(`/app/projects/${projId}`, {
     projectId: projId,
     name: `Very Cool Project with id ${projId}`
-  })
+  }).then((resp => {
+    if (Cypress.env('oauthMode')) {
+      // if we're in oauthMode, then the foo-hyrda user will own the project. so we need to give the
+      // defaultUser admin rights since the user will access the project from the skills-int-service app
+      cy.fixture('vars.json').then((vars) => {
+        cy.backendPost(`/admin/projects/${projId}/users/${vars.defaultUser}/roles/ROLE_PROJECT_ADMIN`)
+      })
+    }
+  }))
 
   for (let i = 0; i < numSubj; i++) {
     const subjId = `subj${i}`

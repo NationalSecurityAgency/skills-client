@@ -68,7 +68,7 @@ context('Vue Tests', () => {
 
         // this will increment levels for skills@skills.org but Level and display components display data for the proxyUser
         // validate that level is still 0
-        cy.reportSkill('IronMan')
+        cy.reportSkillForUser('IronMan', 'skills@skill.org')
         cy.visitHomePage(homePage);
         cy.contains('Level 0')
 
@@ -243,7 +243,8 @@ context('Vue Tests', () => {
             .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
     })
 
-    it('Proxy Skills Display', () => {
+    if (!Cypress.env('oauthMode')) {
+      it('Proxy Skills Display', () => {
         cy.createDefaultTinyProject()
         cy.createDefaultTinyProject('proj2')
 
@@ -271,7 +272,8 @@ context('Vue Tests', () => {
             cy.wrap(body).contains('My Level')
             cy.wrap(body).contains('0 Points earned Today')
         })
-    })
+      })
+    }
 
     it('skill display - summary only', () => {
         cy.createDefaultTinyProject()
