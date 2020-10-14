@@ -27,7 +27,7 @@ describe('SkillsDisplay', () => {
 
   it('exists and is a vue component', () => {
     const component = shallowMount(SkillsDisplay);
-    expect(component.isVueInstance()).toBeTruthy();
+    expect((component).vm).toBeTruthy()
   });
 
   describe('destructing', () => {
@@ -39,7 +39,7 @@ describe('SkillsDisplay', () => {
     });
   });
 
-  it('when version is updated, clientDisplay is updated with the new version', () => {
+  it('when version is updated, clientDisplay is updated with the new version', async () => {
     const component = shallowMount(SkillsDisplay, {
       propsData: {
         version: 1,
@@ -48,7 +48,7 @@ describe('SkillsDisplay', () => {
 
     expect(component.props().version).toBe(1);
 
-    component.setProps({ version: 5 });
+    await component.setProps({ version: 5 });
 
     const mockSkillsDisplayInstance = SkillsDisplayJS.mock.instances[0];
 
