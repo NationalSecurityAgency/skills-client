@@ -327,6 +327,7 @@ context('Vue Tests', () => {
     })
 
     it('client display should display an error if skills service is down', () => {
+      cy.createDefaultTinyProject()
         cy.server().route({
             method: 'GET',
             url: '/public/status',
