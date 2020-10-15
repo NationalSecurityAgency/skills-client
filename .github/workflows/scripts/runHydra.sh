@@ -26,23 +26,15 @@ DC+=" up --build -d"
 
 $DC
 
-echo 'Waiting for hydra service...'
-timeout 22 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' 127.0.0.1 4445
-#timeout 22 bash -c 'until nc -z $0 $1; do sleep 1; done' 127.0.0.1 4445
+declare -r HOST="127.0.0.1:4445/clients"
 
-mkdir -p ../target/logs
-docker container logs -f hydra > ../target/logs/hydra.out &
-docker container logs -f hydra_consent > ../target/logs/hydra_consent.out &
-docker container logs -f hydra_postgres > ../target/logs/hydra_postgres.out &
-echo 'Creating skilltree-test client...'
-export COMPOSE_INTERACTIVE_NO_CLI=1
-docker-compose -f quickstart.yml exec -T hydra \
-	hydra clients create \
-    --endpoint http://localhost:4445/ \
-    --id skilltree-test \
-    --secret client-secret \
-    --grant-types authorization_code,refresh_token \
-    --response-types code \
-    --scope openid \
-    --callbacks http://localhost:8080/login/oauth2/code/hydra
-echo 'Done.'
+wait-for-url() {
+  echo "Waiting for hydra service $1 ..."
+  timeout -s TERM 45 bash -c \
+  'while [[ "$(curl -X GET -s -o /dev/null -L -w ''%{http_code}'' ${0})" != "200" ]];\
+  do echo "Waiting for ${0}" && sleep 2;\
+  done' ${1}
+  echo "OK!"
+  curl -I $1
+}
+wait-for-url http://${HOST}

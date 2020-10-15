@@ -47,18 +47,6 @@ jobs:
         java -version
         npm -version
 
-    - name: run hyrda oauth service
-#      if: contains(github.event_name, 'schedule')
-      run: ./.github/workflows/scripts/runHydra.sh
-
-    - name: Check running containers
-#      if: contains(github.event_name, 'schedule')
-      run: docker ps -a
-
-    - name: Check logs
-#      if: contains(github.event_name, 'schedule')
-      run: docker logs hydra
-
     - name: Cache local Maven repository
       uses: actions/cache@v2
       with:
@@ -86,6 +74,36 @@ jobs:
         cd ./skills-client-integration
         mvn --batch-mode clean install
         cd ../
+
+    - name: run hyrda oauth service
+      #      if: contains(github.event_name, 'schedule')
+      run: ./.github/workflows/scripts/runHydra.sh
+
+    - name: Check running containers
+      #      if: contains(github.event_name, 'schedule')
+      run: docker ps -a
+
+    - name: Caputre Hydra Oauth Service logs
+      #      if: contains(github.event_name, 'schedule')
+      run: |
+        mkdir -p ./skills-client-integration/skills-int-e2e-test/target/logs
+        docker logs hydra > ../target/logs/hydra.out &
+        docker container logs -f hydra_consent > ../target/logs/hydra_consent.out &
+        docker container logs -f hydra_postgres > ../target/logs/hydra_postgres.out &
+
+    - name: Register hydra client
+      #      if: contains(github.event_name, 'schedule')
+      run: |
+        cd skills-client-integration/skills-int-e2e-test/hydra
+        docker-compose -f quickstart.yml exec -T hydra \
+        	hydra clients create \
+            --endpoint http://localhost:4445/ \
+            --id skilltree-test \
+            --secret client-secret \
+            --grant-types authorization_code,refresh_token \
+            --response-types code \
+            --scope openid \
+            --callbacks http://localhost:8080/login/oauth2/code/hydra
 
     - name: start services for cypress tests
       run: |
