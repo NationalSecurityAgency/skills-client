@@ -134,6 +134,8 @@
                                 <includedLicense>Eclipse Public License - Version 1.0</includedLicense>
                                 <includedLicense>The 3-Clause BSD License</includedLicense>
                                 <includedLicense>Common Development and Distribution License 1.1 (CDDL-1.1) + The GNU General Public License (GPL) Version 2 with the Classpath Exception</includedLicense>
+                                <includedLicense>Eclipse Public License - Version 2.0</includedLicense>
+                                <includedLicense>The GNU General Public License (GPL) Version 2 with the Classpath Exception</includedLicense>
                             </includedLicenses>
                             <licenseMerges>
                                 <licenseMerge>The Apache Software License, Version 2.0|Apache License, Version 2.0</licenseMerge>
@@ -143,6 +145,8 @@
                                 <licenseMerge>The 3-Clause BSD License|New BSD License</licenseMerge>
                                 <licenseMerge>Eclipse Public License - Version 1.0|Eclipse Public License - v 1.0</licenseMerge>
                                 <licenseMerge>MIT License|The MIT License</licenseMerge>
+                                <licenseMerge>Eclipse Public License - Version 2.0|EPL 2.0</licenseMerge>
+                                <licenseMerge>The GNU General Public License (GPL) Version 2 with the Classpath Exception|GPL2 w/ CPE</licenseMerge>
                             </licenseMerges>
                         </configuration>
                     </execution>
