@@ -268,6 +268,7 @@ Cypress.Commands.add('loginBySingleSignOn', (projId = 'proj1') => {
                 submit: 'Allow access',
                 remember: '1',
               },
+              failOnStatusCode: false,
             };
 
             cy.request(options).then((resp3) => {
