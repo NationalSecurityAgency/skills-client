@@ -18,10 +18,17 @@ echo "------- START: Build skills-service jar -------"
 set -e
 #set -o pipefail
 
-git branch
-git branch | grep \* | awk '{print $2}'
-myGitBranch=`git branch | grep \* | awk '{print $2}'`
+BRANCH_NAME=$(git branch | grep \*)
+myGitBranch=${BRANCH_NAME:2}
 echo "My Git Branch: [${myGitBranch}]"
+
+if [[ "$myGitBranch" == *"HEAD detached at pull"* ]]; then
+  echo 'We are on a pull-request branch'
+  pullNumber=$(echo "$myGitBranch" | gawk -F'/' '{print $2}' | cat)
+  echo "Looking for branch associated with PR#${pullNumber}"
+  myGitBranch=$(curl -s https://api.github.com/repos/NationalSecurityAgency/skills-client/pulls/"${pullNumber}" | jq -r '.head.ref')
+  echo "Found new Git Branch: [${myGitBranch}]"
+fi
 
 echo "Checkout skill-service code and build it."
 git clone https://github.com/NationalSecurityAgency/skills-service.git

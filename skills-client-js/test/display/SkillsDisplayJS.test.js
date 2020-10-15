@@ -355,10 +355,12 @@ describe('SkillsDisplayJS', () => {
 
           client.attachTo(mockIframeContainer);
 
-          const mockAccessToken = Math.random();
+          const mockAccessToken = `${Math.random()}`;
           mockHttp.onGet(mockAuthenticator).reply(200, {
             access_token: mockAccessToken
           });
+
+          mock.get('http://urltonowhere.com/', (req, res) => res.status(200).body(`{"access_token":"${mockAccessToken}"}`));
 
           setTimeout(() => {
             expect(client.authenticationPromise).not.toBeDefined();

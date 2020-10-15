@@ -66,14 +66,14 @@ context('Vue Tests', () => {
         cy.createDefaultProject()
         // cy.reportSkill('subj1_skill0')
 
-        // this will increment levels for the default user = skills@skills.org but Level and display components display data for 'user1'
+        // this will increment levels for skills@skills.org but Level and display components display data for the proxyUser
         // validate that level is still 0
-        cy.reportSkill('IronMan')
+        cy.reportSkillForUser('IronMan', 'skills@skill.org')
         cy.visitHomePage(homePage);
         cy.contains('Level 0')
 
 
-        cy.reportSkillForUser('IronMan', 'user1')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
         cy.visitHomePage(homePage);
         cy.contains('Level 1')
     })
@@ -84,22 +84,22 @@ context('Vue Tests', () => {
 
         cy.contains('Level 0')
 
-        cy.reportSkillForUser('IronMan', 'user1')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
         cy.contains('Level 1')
 
-        cy.reportSkillForUser('Thor', 'user1')
+        cy.reportSkillForUser('Thor', Cypress.env('proxyUser'))
         cy.contains('Level 2')
 
-        cy.reportSkillForUser('subj1_skill0', 'user1')
+        cy.reportSkillForUser('subj1_skill0', Cypress.env('proxyUser'))
         cy.contains('Level 3')
 
-        cy.reportSkillForUser('subj1_skill1', 'user1')
+        cy.reportSkillForUser('subj1_skill1', Cypress.env('proxyUser'))
         cy.contains('Level 3')
 
-        cy.reportSkillForUser('subj2_skill0', 'user1')
+        cy.reportSkillForUser('subj2_skill0', Cypress.env('proxyUser'))
         cy.contains('Level 4')
 
-        cy.reportSkillForUser('subj2_skill1', 'user1')
+        cy.reportSkillForUser('subj2_skill1', Cypress.env('proxyUser'))
         cy.contains('Level 5')
     })
 
@@ -109,7 +109,7 @@ context('Vue Tests', () => {
 
         cy.contains('Level 0')
 
-        cy.reportSkillForUser('IronMan', 'user1')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
 
         cy.contains('Level 1')
         cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
@@ -124,20 +124,20 @@ context('Vue Tests', () => {
 
         cy.contains('Level 0')
 
-        cy.reportSkillForUser('IronMan', 'user1', 'proj2')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'), 'proj2')
 
         cy.contains('Level 0')
         cy.get('[data-cy=globalEventResult]').should('be.empty');
     })
     it('global event is not reported when skill is not applied', () => {
         cy.createDefaultProject()
-        cy.reportSkillForUser('IronMan', 'user1')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
 
         cy.visitHomePage(homePage);
 
         cy.contains('Level 1')
 
-        cy.reportSkillForUser('IronMan', 'user1')
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
         cy.contains('Level 1')
 
         cy.get('[data-cy=globalEventResult]').should('be.empty');
@@ -228,8 +228,8 @@ context('Vue Tests', () => {
 
     it('skill display', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('/api/users/user1/token').as('getToken')
-        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills')
         cy.wait('@getToken')
         cy.wait('@getToken')
@@ -244,39 +244,41 @@ context('Vue Tests', () => {
     })
 
     it('Proxy Skills Display', () => {
-        cy.createDefaultTinyProject()
-        cy.createDefaultTinyProject('proj2')
+        if (!Cypress.env('oauthMode')) {
+            cy.createDefaultTinyProject()
+            cy.createDefaultTinyProject('proj2')
 
-        cy.server().route('/api/users/user1/token').as('getToken')
-        cy.server().route('/api/users/proj2/user2/token').as('getToken2')
-        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
-        cy.visit('/vuejs#/showSkills')
-        cy.wait('@getToken')
-        cy.iframe((body) => {
+            cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+            cy.server().route('/api/users/proj2/user2/token').as('getToken2')
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+            cy.visit('/vuejs#/showSkills')
             cy.wait('@getToken')
+            cy.iframe((body) => {
+                cy.wait('@getToken')
 
-            cy.wrap(body).contains('My Level')
-            cy.wrap(body).contains('50 Points earned Today')
-            cy.wrap(body).contains('Subject 0')
+                cy.wrap(body).contains('My Level')
+                cy.wrap(body).contains('50 Points earned Today')
+                cy.wrap(body).contains('Subject 0')
 
-            // verify that there is no background set
-            // cypress always validates against rgb
-            cy.wrap(body).find('.skills-page-title-text-color')
-              .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
-        });
+                // verify that there is no background set
+                // cypress always validates against rgb
+                cy.wrap(body).find('.skills-page-title-text-color')
+                  .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
+            });
 
-        cy.visit('/vuejs#/proxyShowSkills')
-        cy.wait('@getToken2')
-        cy.iframe((body) => {
-            cy.wrap(body).contains('My Level')
-            cy.wrap(body).contains('0 Points earned Today')
-        })
+            cy.visit('/vuejs#/proxyShowSkills')
+            cy.wait('@getToken2')
+            cy.iframe((body) => {
+                cy.wrap(body).contains('My Level')
+                cy.wrap(body).contains('0 Points earned Today')
+            })
+        }
     })
 
     it('skill display - summary only', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('/api/users/user1/token').as('getToken')
-        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills?isSummaryOnly=true')
         cy.wait('@getToken')
         cy.wait('@getToken')
@@ -292,8 +294,8 @@ context('Vue Tests', () => {
 
     it('skill display - theme', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('/api/users/user1/token').as('getToken')
-        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills?themeName=Dark Blue')
         cy.wait('@getToken')
         cy.wait('@getToken')
@@ -309,8 +311,8 @@ context('Vue Tests', () => {
 
     it('skill display - summary only - theme', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('/api/users/user1/token').as('getToken')
-        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills?themeName=Dark Blue&isSummaryOnly=true')
         cy.wait('@getToken')
         cy.wait('@getToken')
@@ -325,6 +327,7 @@ context('Vue Tests', () => {
     })
 
     it('client display should display an error if skills service is down', () => {
+      cy.createDefaultTinyProject()
         cy.server().route({
             method: 'GET',
             url: '/public/status',
@@ -339,7 +342,7 @@ context('Vue Tests', () => {
 
     it('only display skills up-to the provided version', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('/api/users/user1/token').as('getToken')
+        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
         cy.backendAddSkill('skillv1', 1)
         cy.backendAddSkill('skillv2', 2)
         cy.visit('/vuejs#/showSkills')
@@ -394,8 +397,8 @@ context('Vue Tests', () => {
         cy.clickSubmit()
         cy.contains('Level 1')
 
-        cy.server().route('/api/users/user1/token').as('getToken')
-        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.get('[data-cy=userDisplayLink]').click();
         //cy.contains('User Display').click();
         /!*cy.wait('@getToken')
@@ -416,8 +419,8 @@ context('Vue Tests', () => {
     if (Utils.skillsServiceVersionLaterThan('1.2.0')) {
         it('back button when when returning from an external page', () => {
             cy.createDefaultTinyProject()
-            cy.server().route('/api/users/user1/token').as('getToken')
-            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+            cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
             cy.visit('/vuejs#/showSkills?refreshPage=false')
@@ -443,8 +446,8 @@ context('Vue Tests', () => {
     if (Utils.skillsServiceVersionLaterThan('1.2.0')) {
         it('back button when when returning from an external page - multiple layers deep', () => {
             cy.createDefaultTinyProject()
-            cy.server().route('/api/users/user1/token').as('getToken')
-            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: 'user1', timestamp: Date.now()})
+            cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
             cy.visit('/vuejs#/showSkills?refreshPage=false')

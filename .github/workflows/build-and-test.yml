@@ -3,6 +3,8 @@
 name: Continuous Integration
 
 on:
+  schedule:
+    - cron: '0 7 * * *'
   push:
     paths-ignore:
       - 'README.md'
@@ -73,21 +75,80 @@ jobs:
         mvn --batch-mode clean install
         cd ../
 
+    - name: run hyrda oauth service
+      #      if: contains(github.event_name, 'schedule')
+      run: ./.github/workflows/scripts/runHydra.sh
+
+    - name: Check running containers
+      #      if: contains(github.event_name, 'schedule')
+      run: docker ps -a
+
+    - name: Caputre Hydra Oauth Service logs
+      #      if: contains(github.event_name, 'schedule')
+      run: |
+        mkdir -p ./skills-client-integration/skills-int-e2e-test/target/logs
+        docker logs hydra > ./skills-client-integration/skills-int-e2e-test/target/logs/hydra.out &
+        docker container logs -f hydra_consent > ./skills-client-integration/skills-int-e2e-test/target/logs/hydra_consent.out &
+        docker container logs -f hydra_postgres > ./skills-client-integration/skills-int-e2e-test/target/logs/hydra_postgres.out &
+
+    - name: Register hydra client
+      #      if: contains(github.event_name, 'schedule')
+      run: |
+        cd skills-client-integration/skills-int-e2e-test/hydra
+        docker-compose -f quickstart.yml exec -T hydra \
+        	hydra clients create \
+            --endpoint http://localhost:4445/ \
+            --id skilltree-test \
+            --secret client-secret \
+            --grant-types authorization_code,refresh_token \
+            --response-types code \
+            --scope openid \
+            --callbacks http://localhost:8080/login/oauth2/code/hydra
+
     - name: start services for cypress tests
       run: |
         cd skills-client-integration/skills-int-e2e-test
         npm install
         npm run cyServices:start:skills-service:ci
-        npm run cyServices:start:integration-apps
         cd ../../
 
-    - name: Run Cypress tests
+#    - name: start integration services for cypress tests
+#      if: contains(github.event_name, 'schedule') == false
+#      run: |
+#        cd skills-client-integration/skills-int-e2e-test
+#        npm run cyServices:start:integration-apps
+#        cd ../../
+
+    - name: start integration services for OAuth cypress tests
+#      if: contains(github.event_name, 'schedule')
+      run: |
+        cd skills-client-integration/skills-int-e2e-test
+        npm run cyServices:start:integration-apps:oauth
+        cd ../../
+
+#    - name: Run Cypress tests
+#      if: contains(github.event_name, 'schedule' == false)
+#      uses: cypress-io/github-action@v2
+#      with:
+#        working-directory: skills-client-integration/skills-int-e2e-test
+#        record: true
+#        parallel: false
+#        group: 'skills-client tests'
+#      env:
+#        # pass the Dashboard record key as an environment variable
+#        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+#        # pass GitHub token to allow accurately detecting a build vs a re-run build
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run Cypress tests using OAuth
+#      if: contains(github.event_name, 'schedule')
       uses: cypress-io/github-action@v2
       with:
         working-directory: skills-client-integration/skills-int-e2e-test
         record: true
         parallel: false
-        group: 'skills-client tests'
+        group: 'skills-client oauth tests'
+        env: 'authMode=oauth'
       env:
         # pass the Dashboard record key as an environment variable
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}

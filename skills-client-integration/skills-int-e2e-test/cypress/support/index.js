@@ -36,15 +36,27 @@ import './commands'
 
 
 beforeEach(() => {
-    // first call to npm fails, looks like this may be the bug: https://github.com/cypress-io/cypress/issues/6081
-    cy.exec('npm version', {failOnNonZeroExit: false})
-    cy.exec('npm run backend:resetDb')
+  // first call to npm fails, looks like this may be the bug: https://github.com/cypress-io/cypress/issues/6081
+  cy.exec('npm version', { failOnNonZeroExit: false })
+  cy.exec('npm run backend:resetDb')
 
-    cy.fixture('vars.json').then((vars) => {
-        cy.backendRegister(vars.rootUser, vars.defaultPass, true);
-        cy.backendRegister(vars.defaultUser, vars.defaultPass);
+  cy.fixture('vars.json').then((vars) => {
+    cy.request('api/config').then(resp => {
+      cy.backendRegister(vars.rootUser, vars.defaultPass, true);
+      cy.backendRegister(vars.defaultUser, vars.defaultPass);  // used by the skills-int-service app
+      const oauthMode = resp.body.authenticator === 'http://localhost:8080/oauth2/authorization/hydra'
+      Cypress.env('oauthMode', oauthMode)
+      if (!oauthMode) {
         cy.backendLogin(vars.defaultUser, vars.defaultPass);
+        Cypress.env('proxyUser', 'user1')
+        Cypress.env('tokenUrl', '/api/users/user1/token')
+      } else {
+        cy.loginBySingleSignOn()
+        Cypress.env('proxyUser', 'foo-hydra')
+        Cypress.env('tokenUrl', 'http://localhost:8080/api/projects/proj1/token')
+      }
     });
+  })
 })
 
 afterEach(() => {

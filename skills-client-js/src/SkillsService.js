@@ -50,7 +50,7 @@ export default {
         loggingLevel = log.INFO;
         log.warn(`SkillsClient::SkillService::Unknown log level [${response.clientLib.loggingLevel}], defaulting to INFO`);
       }
-      log.info(`SkillsClient::SkillService::Logger enabled, log level set to [${loggingLevel}]`);
+      log.info(`SkillsClient::SkillService::Logger enabled, log level set to [${loggingLevel.name}]`);
     }
   },
 
@@ -95,20 +95,37 @@ export default {
     });
   },
 
-  getAuthenticationToken(authenticator) {
+  isOAuthMode(authenticator, serviceUrl) {
+    return typeof authenticator === 'string' && (authenticator === 'oauth' || authenticator.startsWith(`${serviceUrl}/oauth2/authorization`));
+  },
+
+  getAuthenticationToken(authenticator, serviceUrl, projectId) {
     return new Promise((resolve, reject) => {
+      const isOAuthMode = this.isOAuthMode(authenticator, serviceUrl);
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', authenticator);
+      if (!isOAuthMode) {
+        xhr.open('GET', authenticator);
+      } else {
+        xhr.open('GET', `${serviceUrl}/api/projects/${projectId}/token`);
+        xhr.withCredentials = true;
+      }
 
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
           if (xhr.status !== 200) {
-            reject(new Error(`SkillTree: Unable to authenticate using [${authenticator}] endpoint. Response Code=[${xhr.status}].\n
+            if (isOAuthMode && xhr.status === 401) {
+              // if we get 401 and we are using OAuth, then redirect to the OAuth Provider
+              const oauthAuthenticator = `${authenticator}?skillsRedirectUri=${window.location}`;
+              log.info(`SkillsClient::SkillService::unable to get oAuth token, navigating to [${oauthAuthenticator}]`);
+              window.location = oauthAuthenticator;
+            } else {
+              reject(new Error(`SkillTree: Unable to authenticate using [${authenticator}] endpoint. Response Code=[${xhr.status}].\n
     Ideas to diagnose:\n
         (1) verify that the authenticator property is correct.\n
         (2) verify that the server providing the authenticator endpoint is responding (ex. daemon is running, network path is clear).\n
         (3) check logs on the server providing authenticator endpoint.\n
   Full Response=[${xhr.response}]`));
+            }
           } else {
             const response = JSON.parse(xhr.response);
             if (!response.access_token) {

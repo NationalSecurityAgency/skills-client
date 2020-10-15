@@ -17,15 +17,9 @@ package skills.example;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
-import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -48,6 +42,9 @@ public class Controller {
     RestTemplate restTemplate;
 
     public Controller(RestTemplateBuilder restTemplateBuilder) {
+        // RestTemplateBuilder will utilize the SecurityRestTemplateCustomizer, which
+        // will configure HttpComponentsClientHttpRequestFactory as SpringTemplate does
+        // not by default keeps track of session
         restTemplate = restTemplateBuilder.build();
     }
 
@@ -131,8 +128,6 @@ public class Controller {
 
     private void authIfNecessary() {
         if (!skillsConfig.getAuthMode().equalsIgnoreCase("pki")) {
-            // must configure HttpComponentsClientHttpRequestFactory as SpringTemplate does
-            // not by default keeps track of session
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             MultiValueMap<String, String> params = new LinkedMultiValueMap<>();

@@ -35,8 +35,10 @@ public class SecurityRestTemplateCustomizer implements RestTemplateCustomizer {
 
     @Override
     public void customize(RestTemplate restTemplate) {
+        // must configure HttpComponentsClientHttpRequestFactory as SpringTemplate does
+        // not by default keeps track of session.  This method is called by the
+        // RestTemplateBuilder used in the skills.example.Controller constructor
         HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-        boolean pkiAuthMode = skillsConfig.getAuthMode().equalsIgnoreCase("pki");
         HttpClient client = getHttpClient();
         clientHttpRequestFactory.setHttpClient(client);
         restTemplate.setRequestFactory(clientHttpRequestFactory);

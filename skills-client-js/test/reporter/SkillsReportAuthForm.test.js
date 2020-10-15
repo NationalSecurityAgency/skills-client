@@ -121,7 +121,7 @@ describe('authFormTests()', () => {
     try {
       await SkillsReporter.reportSkill('skill1');
     } catch (e) {
-      expect(e.message).toMatch('Unable to authenticate');
+      expect(e.message).toMatch('Full Response=[{\"not_access_token\": \"token\"}]');
     }
   });
 
