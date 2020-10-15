@@ -87,9 +87,9 @@ jobs:
       #      if: contains(github.event_name, 'schedule')
       run: |
         mkdir -p ./skills-client-integration/skills-int-e2e-test/target/logs
-        docker logs hydra > ../target/logs/hydra.out &
-        docker container logs -f hydra_consent > ../target/logs/hydra_consent.out &
-        docker container logs -f hydra_postgres > ../target/logs/hydra_postgres.out &
+        docker logs hydra > ./skills-client-integration/skills-int-e2e-test/target/logs/hydra.out &
+        docker container logs -f hydra_consent > ./skills-client-integration/skills-int-e2e-test/target/logs/hydra_consent.out &
+        docker container logs -f hydra_postgres > ./skills-client-integration/skills-int-e2e-test/target/logs/hydra_postgres.out &
 
     - name: Register hydra client
       #      if: contains(github.event_name, 'schedule')
