@@ -26,15 +26,14 @@ DC+=" up --build -d"
 
 $DC
 
-declare -r HOST="127.0.0.1:4445/clients"
+declare -r HOST="localhost:4445/clients"
 
 wait-for-url() {
   echo "Waiting for hydra service $1 ..."
   timeout -s TERM 45 bash -c \
-  'while [[ "$(curl -X GET -s -o /dev/null -L -w ''%{http_code}'' ${0})" != "200" ]];\
+  'while [[ "$(curl -X GET -s -o /dev/null -w ''%{http_code}'' ${0})" != "200" ]];\
   do echo "Waiting for ${0}" && sleep 2;\
   done' ${1}
   echo "OK!"
-  curl -I $1
 }
 wait-for-url http://${HOST}
