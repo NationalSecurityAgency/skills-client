@@ -30,7 +30,7 @@ echo 'Waiting for hydra service...'
 timeout 22 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' 127.0.0.1 4445
 #timeout 22 bash -c 'until nc -z $0 $1; do sleep 1; done' 127.0.0.1 4445
 
-mkdir ../target/logs
+mkdir -p ../target/logs
 docker container logs -f hydra > ../target/logs/hydra.out &
 docker container logs -f hydra_consent > ../target/logs/hydra_consent.out &
 docker container logs -f hydra_postgres > ../target/logs/hydra_postgres.out &
