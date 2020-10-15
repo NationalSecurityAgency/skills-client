@@ -27,8 +27,8 @@ DC+=" up --build -d"
 $DC
 
 echo 'Waiting for hydra service...'
-timeout 22 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' 127.0.0.1 4445
-
+#timeout 22 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' 127.0.0.1 4445
+timeout 22 bash -c 'until nc -z $0 $1; do sleep 1; done' 127.0.0.1 4445
 echo 'Creating skilltree-test client...'
 export COMPOSE_INTERACTIVE_NO_CLI=1
 docker-compose -f quickstart.yml exec -T hydra \
