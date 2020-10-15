@@ -23,14 +23,14 @@ import { shallowMount } from '@vue/test-utils';
 
 describe('SkillsLevel', () => {
   describe('rendering', () => {
-    it('only renders once skillsLevel is initialized', () => {
+    it('only renders once skillsLevel is initialized', async () => {
       SkillsConfiguration.afterConfigure.mockImplementation(() => new Promise(() => { }))
       const wrapper = shallowMount(SkillsLevel);
       const selector = '.skills-level-text-display';
 
       expect(wrapper.find(selector).isVisible()).toBe(false);
 
-      wrapper.setData({ skillLevel: 1 });
+      await wrapper.setData({ skillLevel: 1 });
 
       expect(wrapper.find(selector).isVisible()).toBe(true);
     });
