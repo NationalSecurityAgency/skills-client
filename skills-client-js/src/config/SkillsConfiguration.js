@@ -53,6 +53,7 @@ const setInitialized = (conf) => {
 };
 
 const setConfigureWasCalled = () => {
+  log.info('SkillsClient::SkillConfiguration::configured');
   configureCalled = true;
 };
 
@@ -88,22 +89,27 @@ const exportObject = {
     skillsService.getServiceStatus(`${this.getServiceUrl()}/public/status`).then((response) => {
       this.status = response.status;
       skillsService.configureLogging(this, response);
+      if (response.oAuthProviders && response.oAuthProviders.includes(authenticator)) {
+        this.authenticator = `${this.getServiceUrl()}/oauth2/authorization/${authenticator}`;
+      }
+
+      if (!this.isPKIMode() && !this.getAuthToken()) {
+        skillsService.getAuthenticationToken(this.getAuthenticator(), this.getServiceUrl(), this.getProjectId())
+          .then((token) => {
+            this.setAuthToken(token);
+            setInitialized(this);
+            setConfigureWasCalled();
+          });
+      } else {
+        setInitialized(this);
+        setConfigureWasCalled();
+      }
     }).catch((error) => {
       // eslint-disable-next-line no-console
       console.error('Error getting service status', error);
-    });
-
-    if (!this.isPKIMode() && !this.getAuthToken()) {
-      skillsService.getAuthenticationToken(this.getAuthenticator(), this.getServiceUrl(), this.getProjectId())
-        .then((token) => {
-          this.setAuthToken(token);
-          setInitialized(this);
-        });
-    } else {
       setInitialized(this);
-    }
-    setConfigureWasCalled();
-    log.info('SkillsClient::SkillConfiguration::configured');
+      setConfigureWasCalled();
+    });
   },
 
   afterConfigure() {
