@@ -253,25 +253,20 @@ context('Vue Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
             cy.visit('/vuejs#/showSkills')
             cy.wait('@getToken')
-            cy.iframe((body) => {
-                cy.wait('@getToken')
-
-                cy.wrap(body).contains('My Level')
-                cy.wrap(body).contains('50 Points earned Today')
-                cy.wrap(body).contains('Subject 0')
-
-                // verify that there is no background set
-                // cypress always validates against rgb
-                cy.wrap(body).find('.skills-page-title-text-color')
-                  .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
-            });
+            cy.wait('@getToken')
+            cy.wrapIframe().contains('My Level')
+            cy.wrapIframe().contains('50 Points earned Today')
+            cy.wrapIframe().contains('Subject 0')
+    
+            // verify that there is no background set
+            // cypress always validates against rgb
+            cy.wrapIframe().find('.skills-page-title-text-color')
+                .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
 
             cy.visit('/vuejs#/proxyShowSkills')
             cy.wait('@getToken2')
-            cy.iframe((body) => {
-                cy.wrap(body).contains('My Level')
-                cy.wrap(body).contains('0 Points earned Today')
-            })
+            cy.wrapIframe().contains('My Level')
+            cy.wrapIframe().contains('0 Points earned Today')
         }
     })
 
