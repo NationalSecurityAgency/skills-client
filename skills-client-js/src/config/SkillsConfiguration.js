@@ -89,8 +89,10 @@ const exportObject = {
     skillsService.getServiceStatus(`${this.getServiceUrl()}/public/status`).then((response) => {
       this.status = response.status;
       skillsService.configureLogging(this, response);
+      log.info(`Returned status [${JSON.stringify(response)}]`);
       if (response.oAuthProviders && response.oAuthProviders.includes(authenticator)) {
         this.authenticator = `${this.getServiceUrl()}/oauth2/authorization/${authenticator}`;
+        log.info(`Auto configured authenticator [${this.authenticator}] for provider [${authenticator}]`);
       }
 
       if (!this.isPKIMode() && !this.getAuthToken()) {
