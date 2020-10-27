@@ -247,10 +247,8 @@ Cypress.Commands.add('loginBySingleSignOn', (projId = 'proj1') => {
         cy.request(options).then((resp2) => {
           expect(resp2.status).to.eq(200)
 
-          cy.skillsLog('Granting consent with OAuth provider...');
-          // if (resp2.redirects.filter(r => r.includes('/consent?consent_challenge')).length > 0) {
           if (resp2.redirects[resp2.redirects.length-1].includes('/consent?consent_challenge')) {
-
+            cy.skillsLog('Granting consent with OAuth provider...');
             const $html = Cypress.$(resp2.body)
             const authenticityToken = $html.find('input[name=_csrf]').val()
             const challenge = $html.find('input[name=challenge]').val()
