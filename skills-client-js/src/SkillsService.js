@@ -17,10 +17,10 @@ import log from 'js-logger';
 
 export default {
 
-  sendLogMessage(conf, messages, context) {
+  sendLogMessage(serviceUrl, messages, context) {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', `${conf.getServiceUrl()}/public/log`);
+      xhr.open('POST', `${serviceUrl}/public/log`);
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
           if (xhr.status !== 200) {
@@ -36,13 +36,13 @@ export default {
     });
   },
 
-  configureLogging(conf, response) {
+  configureLogging(serviceUrl, response) {
     const loggingEnabled = response.clientLib ? response.clientLib.loggingEnabled === 'true' : false;
     if (loggingEnabled) {
       const consoleHandler = log.createDefaultHandler();
       log.setHandler((messages, context) => {
         consoleHandler(messages, context);
-        this.sendLogMessage(conf, messages, context);
+        this.sendLogMessage(serviceUrl, messages, context);
       });
       let loggingLevel = log[response.clientLib.loggingLevel];
       log.setLevel(loggingLevel);
