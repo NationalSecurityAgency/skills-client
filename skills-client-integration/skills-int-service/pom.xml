@@ -25,7 +25,7 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.8</version>
+			<version>4.5.13</version>
 		</dependency>
 
 	</dependencies>
@@ -38,7 +38,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 						<id>copy Vue.js frontend content</id>
@@ -60,29 +60,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.1.0</version>
-				<executions>
-					<execution>
-						<id>copy Vue.js Extended frontend content</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/src/main/resources/public/vuejs-extended</outputDirectory>
-							<overwrite>true</overwrite>
-							<resources>
-								<resource>
-									<directory>${project.parent.basedir}/skills-int-client-vue-extended/dist</directory>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 						<id>copy Angular frontend content</id>
@@ -125,7 +103,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.2.0</version>
 				<executions>
 					<execution>
 						<id>copy Native JS frontend content</id>
@@ -177,6 +155,8 @@
 								<includedLicense>Eclipse Public License - Version 1.0</includedLicense>
 								<includedLicense>The 3-Clause BSD License</includedLicense>
 								<includedLicense>Common Development and Distribution License 1.1 (CDDL-1.1) + The GNU General Public License (GPL) Version 2 with the Classpath Exception</includedLicense>
+								<includedLicense>Eclipse Public License - Version 2.0</includedLicense>
+								<includedLicense>The GNU General Public License (GPL) Version 2 with the Classpath Exception</includedLicense>
 							</includedLicenses>
 							<licenseMerges>
 								<licenseMerge>The Apache Software License, Version 2.0|Apache License, Version 2.0</licenseMerge>
@@ -189,6 +169,8 @@
 								<licenseMerge>Eclipse Public License - Version 1.0|Eclipse Public License 1.0</licenseMerge>
 								<licenseMerge>The 3-Clause BSD License|New BSD License</licenseMerge>
 								<licenseMerge>Eclipse Public License - Version 1.0|Eclipse Public License - v 1.0</licenseMerge>
+								<licenseMerge>Eclipse Public License - Version 2.0|EPL 2.0</licenseMerge>
+								<licenseMerge>The GNU General Public License (GPL) Version 2 with the Classpath Exception|GPL2 w/ CPE</licenseMerge>
 							</licenseMerges>
 						</configuration>
 					</execution>
