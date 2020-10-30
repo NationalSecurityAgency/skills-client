@@ -35,7 +35,7 @@ context('Vue Tests', () => {
 
         cy.visitHomePage(homePage);
 
-        cy.contains('Level 0')
+        cy.contains('Level 10')
 
         cy.selectSkill('IronMan')
         cy.clickSubmit()
