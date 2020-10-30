@@ -2,16 +2,16 @@
 
 name:  Client Libs Backward Compatibility
 
-on:
-  push:
-    paths-ignore:
-      - 'README.md'
-  pull_request:
-    paths-ignore:
-      - 'README.md'
 #on:
-#  schedule:
-#    - cron: '0 5 * * *'
+#  push:
+#    paths-ignore:
+#      - 'README.md'
+#  pull_request:
+#    paths-ignore:
+#      - 'README.md'
+on:
+  schedule:
+    - cron: '0 5 * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -94,3 +94,5 @@ jobs:
           ./skills-client-integration/skills-int-e2e-test/target/logs/*
           ./skills-client-integration/skills-int-e2e-test/target/skills-client/skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
           ./skills-client-integration/skills-int-e2e-test/target/skills-client/skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
+          ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
+          ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
