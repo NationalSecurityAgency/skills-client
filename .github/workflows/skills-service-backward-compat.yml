@@ -78,5 +78,7 @@ jobs:
         name: result artifacts
         path: |
           ./skills-client-integration/skills-int-e2e-test/target/logs/*
+          ./skills-client-integration/skills-int-e2e-test/target/skills-client/skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
+          ./skills-client-integration/skills-int-e2e-test/target/skills-client/skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
           ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
           ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
