@@ -1,8 +1,10 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Continuous Integration
+name: Continuous Integration with OAuth
 
 on:
+#  schedule:
+#    - cron: '0 7 * * *'
   push:
     paths-ignore:
       - 'README.md'
@@ -73,21 +75,48 @@ jobs:
         mvn --batch-mode clean install
         cd ../
 
-    - name: start services for cypress tests
+    - name: run hyrda oauth service
+      run: ./.github/workflows/scripts/runHydra.sh
+
+    - name: Check running containers
+      run: docker ps -a
+
+    - name: Caputre Hydra Oauth Service logs
+      run: |
+        mkdir -p ./skills-client-integration/skills-int-e2e-test/target/logs
+        docker logs hydra > ./skills-client-integration/skills-int-e2e-test/target/logs/hydra.out &
+        docker container logs -f hydra_consent > ./skills-client-integration/skills-int-e2e-test/target/logs/hydra_consent.out &
+        docker container logs -f hydra_postgres > ./skills-client-integration/skills-int-e2e-test/target/logs/hydra_postgres.out &
+
+    - name: Register hydra client
+      run: |
+        cd skills-client-integration/skills-int-e2e-test/hydra
+        docker-compose -f quickstart.yml exec -T hydra \
+        	hydra clients create \
+            --endpoint http://localhost:4445/ \
+            --id skilltree-test \
+            --secret client-secret \
+            --grant-types authorization_code,refresh_token \
+            --response-types code \
+            --scope openid \
+            --callbacks http://localhost:8080/login/oauth2/code/hydra
+
+    - name: start services for OAuth cypress tests
       run: |
         cd skills-client-integration/skills-int-e2e-test
         npm install
-        npm run cyServices:start:skills-service:ci
-        npm run cyServices:start:integration-apps
+        npm run cyServices:start:skills-service:ci:oauth
+        npm run cyServices:start:integration-apps:oauth
         cd ../../
 
-    - name: Run Cypress tests
+    - name: Run Cypress tests using OAuth
       uses: cypress-io/github-action@v2
       with:
         working-directory: skills-client-integration/skills-int-e2e-test
         record: true
         parallel: false
-        group: 'skills-client tests'
+        group: 'skills-client oauth tests'
+        env: 'authMode=oauth'
       env:
         # pass the Dashboard record key as an environment variable
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
