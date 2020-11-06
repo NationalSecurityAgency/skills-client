@@ -26,6 +26,8 @@
         "licenseHeaderCheck": "license-check-and-add check -f '../license-add/license-add-config.json'",
         "licenseHeaderAdd": "license-check-and-add add -f ../license-add/license-add-config.json",
         "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck ",
+        "clean": "rm -rf node_modules",
+        "reinstall": "npm run clean && npm install",
         "build": "npm run licenseCheck && react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
