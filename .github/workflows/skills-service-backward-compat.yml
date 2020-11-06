@@ -2,16 +2,16 @@
 
 name:  Skills-service Backward Compatibility
 
-#on:
-#  push:
-#    paths-ignore:
-#      - 'README.md'
-#  pull_request:
-#    paths-ignore:
-#      - 'README.md'
 on:
-  schedule:
-    - cron: '0 6 * * *'
+  push:
+    paths-ignore:
+      - 'README.md'
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+#on:
+#  schedule:
+#    - cron: '0 6 * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -68,7 +68,8 @@ jobs:
         cd skills-client-integration/skills-int-e2e-test
         mvn --batch-mode clean package
         export NO_COLOR=1
-        java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.TestDashboardBackwardCompat org.springframework.boot.loader.PropertiesLauncher
+        export CYPRESS_RECORD_KEY=${{ secrets.CYPRESS_RECORD_KEY }}
+        java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.TestDashboardBackwardCompat org.springframework.boot.loader.PropertiesLauncher -record
         cd ../../
 
     - name: upload result artifacts

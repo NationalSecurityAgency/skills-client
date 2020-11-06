@@ -72,6 +72,10 @@
             <artifactId>groovycsv</artifactId>
             <version>1.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-cli-picocli</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
