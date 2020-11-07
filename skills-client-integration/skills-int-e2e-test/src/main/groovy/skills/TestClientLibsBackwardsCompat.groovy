@@ -15,6 +15,7 @@ limitations under the License.
 */
 package skills
 
+import groovy.cli.picocli.CliBuilder
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
@@ -23,12 +24,17 @@ import org.apache.commons.io.FileUtils
 class TestClientLibsBackwardsCompat {
 
     static void main(String[] args) {
-        new TestClientLibsBackwardsCompat().init().test()
+        def cli = new CliBuilder()
+        cli.record(type: boolean, 'record tests in cypress dashboard')
+        def options = cli.parse(args)
+        def shouldRecord = options.record
+        new TestClientLibsBackwardsCompat(recordInDashboard: options.record).init().test()
     }
 
     private TitlePrinter titlePrinter = new TitlePrinter()
     private File e2eDir
     private String serviceName = "skills-service"
+    boolean recordInDashboard = false
 
     TestClientLibsBackwardsCompat init() {
         JsonSlurper jsonSlurper = new JsonSlurper()
@@ -46,7 +52,7 @@ class TestClientLibsBackwardsCompat {
 
     void test() {
         List<String> versions = getBackendVersionsToTest()
-        CypressTestsHelper cypressTestsHelper = new CypressTestsHelper(e2eDir: e2eDir)
+        CypressTestsHelper cypressTestsHelper = new CypressTestsHelper(e2eDir: e2eDir, recordInDashboard: recordInDashboard)
         versions.each { File versionFile ->
             titlePrinter.printTitle("Testing against skills-service version [${versionFile.name}]")
             prepSkillsServiceJar(versionFile)

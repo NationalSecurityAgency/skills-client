@@ -27,7 +27,7 @@ jobs:
 
     - uses: actions/setup-node@v2-beta
       with:
-        node-version: '12'
+        node-version: '14'
 
     - name: Set up Maven
       uses: stCarolas/setup-maven@v3
@@ -82,7 +82,8 @@ jobs:
         cd skills-client-integration/skills-int-e2e-test
         mvn --batch-mode clean package
         export NO_COLOR=1
-        java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.TestClientLibsBackwardsCompat org.springframework.boot.loader.PropertiesLauncher
+        export CYPRESS_RECORD_KEY=${{ secrets.CYPRESS_RECORD_KEY }}
+        java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.TestClientLibsBackwardsCompat org.springframework.boot.loader.PropertiesLauncher -record
         cd ../../
 
     - name: upload result artifacts

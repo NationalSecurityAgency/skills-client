@@ -21,6 +21,7 @@ import groovy.util.logging.Slf4j
 class CypressTestsHelper {
 
     private TitlePrinter titlePrinter = new TitlePrinter()
+    boolean recordInDashboard = false
     File e2eDir
 
     void runCypressTests(String msg, List<String> cypressEnv = []) {
@@ -42,6 +43,9 @@ class CypressTestsHelper {
             new ProcessRunner(loc: e2eDir, waitForOutput: false).run("npm run cyServices:start:integration-apps")
 
             String env = cypressEnv ? " --env ${cypressEnv.join(",")}" : ""
+            if (recordInDashboard) {
+                env += ' --record'
+            }
             titlePrinter.printSubTitle("Starting Cypress to tests: [${msg}], env=[$env]")
             new ProcessRunner(loc: e2eDir).run("npx cypress run${env}")
         } finally {

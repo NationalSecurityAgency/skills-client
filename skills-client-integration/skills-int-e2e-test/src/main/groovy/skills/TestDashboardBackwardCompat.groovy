@@ -15,6 +15,7 @@ limitations under the License.
 */
 package skills
 
+import groovy.cli.picocli.CliBuilder
 import groovy.json.JsonOutput
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
@@ -26,12 +27,17 @@ import org.springframework.core.io.support.ResourcePatternResolver
 class TestDashboardBackwardCompat {
 
     static void main(String[] args) {
-        new TestDashboardBackwardCompat().testNew()
+        def cli = new CliBuilder()
+        cli.record(type: boolean, 'record tests in cypress dashboard')
+        def options = cli.parse(args)
+        def shouldRecord = options.record
+        new TestDashboardBackwardCompat(recordInDashboard: options.record).testNew()
     }
 
     File workDir = new File("./target/skills-client")
     TitlePrinter titlePrinter = new TitlePrinter()
     List<String> versionsToExclude = ["2.0.0"]
+    boolean recordInDashboard = false
 
     void checkoutWorkingCopy() {
         if (workDir.exists()) {
@@ -114,7 +120,7 @@ class TestDashboardBackwardCompat {
 
             titlePrinter.printSubTitle("[${version}]: Running cypress test with")
             String output = "Testing version [$version]"
-            new CypressTestsHelper(e2eDir: e2eLoc).runCypressTests(output)
+            new CypressTestsHelper(e2eDir: e2eLoc, recordInDashboard: recordInDashboard).runCypressTests(output)
         }
     }
 
