@@ -26,7 +26,7 @@
         "licenseHeaderCheck": "license-check-and-add check -f '../license-add/license-add-config.json'",
         "licenseHeaderAdd": "license-check-and-add add -f ../license-add/license-add-config.json",
         "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck ",
-        "clean": "rm -rf node_modules",
+        "clean": "find  node_modules/ -maxdepth 1 ! -name \"@skilltree\" ! -name node_modules -exec rm -rf {} \\;",
         "reinstall": "npm run clean && npm install",
         "build": "npm run licenseCheck && react-scripts build",
         "test": "react-scripts test",

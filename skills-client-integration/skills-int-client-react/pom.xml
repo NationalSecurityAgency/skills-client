@@ -42,7 +42,7 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>install</arguments>
+                            <arguments>run reinstall</arguments>
                         </configuration>
                     </execution>
                     <execution>
