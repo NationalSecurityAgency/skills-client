@@ -88,6 +88,7 @@ jobs:
         record: true
         parallel: false
         group: 'skills-client tests'
+        tag: "${{ github.action }}"
       env:
         # pass the Dashboard record key as an environment variable
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}

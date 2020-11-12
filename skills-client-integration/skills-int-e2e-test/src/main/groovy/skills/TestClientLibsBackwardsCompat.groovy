@@ -28,13 +28,18 @@ class TestClientLibsBackwardsCompat {
         cli.record(type: boolean, 'record tests in cypress dashboard')
         def options = cli.parse(args)
         def shouldRecord = options.record
-        new TestClientLibsBackwardsCompat(recordInDashboard: options.record).init().test()
+        String tag
+        if (options.tag && options.tag instanceof String) {
+            tag = options.tag
+        }
+        new TestClientLibsBackwardsCompat(recordInDashboard: shouldRecord, tag: tag).init().test()
     }
 
     private TitlePrinter titlePrinter = new TitlePrinter()
     private File e2eDir
     private String serviceName = "skills-service"
     boolean recordInDashboard = false
+    String tag
 
     TestClientLibsBackwardsCompat init() {
         JsonSlurper jsonSlurper = new JsonSlurper()
@@ -52,7 +57,7 @@ class TestClientLibsBackwardsCompat {
 
     void test() {
         List<String> versions = getBackendVersionsToTest()
-        CypressTestsHelper cypressTestsHelper = new CypressTestsHelper(e2eDir: e2eDir, recordInDashboard: recordInDashboard)
+        CypressTestsHelper cypressTestsHelper = new CypressTestsHelper(e2eDir: e2eDir, recordInDashboard: recordInDashboard, tag: "'${tag}'")
         versions.each { File versionFile ->
             titlePrinter.printTitle("Testing against skills-service version [${versionFile.name}]")
             prepSkillsServiceJar(versionFile)

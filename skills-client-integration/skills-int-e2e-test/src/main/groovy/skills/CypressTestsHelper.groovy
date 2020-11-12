@@ -22,6 +22,7 @@ class CypressTestsHelper {
 
     private TitlePrinter titlePrinter = new TitlePrinter()
     boolean recordInDashboard = false
+    String tag
     File e2eDir
 
     void runCypressTests(String msg, List<String> cypressEnv = []) {
@@ -45,6 +46,9 @@ class CypressTestsHelper {
             String env = cypressEnv ? " --env ${cypressEnv.join(",")}" : ""
             if (recordInDashboard) {
                 env += ' --record'
+                if (tag) {
+                    env += " --tag \"${tag}\""
+                }
             }
             titlePrinter.printSubTitle("Starting Cypress to tests: [${msg}], env=[$env]")
             new ProcessRunner(loc: e2eDir).run("npx cypress run${env}")
