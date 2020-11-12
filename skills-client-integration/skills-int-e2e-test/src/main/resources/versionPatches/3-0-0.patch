@@ -1,0 +1,16 @@
+diff --git a/skills-client-integration/skills-int-e2e-test/cypress.json b/skills-client-integration/skills-int-e2e-test/cypress.json
+index 52f9451..a87626c 100644
+--- a/skills-client-integration/skills-int-e2e-test/cypress.json
++++ b/skills-client-integration/skills-int-e2e-test/cypress.json
+@@ -1,5 +1,10 @@
+ {
+   "baseUrl": "http://localhost:8090",
+   "chromeWebSecurity": false,
+-  "defaultCommandTimeout": 10000
++  "defaultCommandTimeout": 10000,
++  "projectId": "3yas4t",
++  "retries": {
++    "runMode": 2,
++    "openMode": 0
++  }
+ }
