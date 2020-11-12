@@ -1,52 +1,19 @@
-diff --git a/skills-client-integration/skills-int-client-js/package.json b/skills-client-integration/skills-int-client-js/package.json
-index a844bc6..8bc7b38 100644
---- a/skills-client-integration/skills-int-client-js/package.json
-+++ b/skills-client-integration/skills-int-client-js/package.json
-@@ -28,4 +28,4 @@
-         "license-checker": "^25.0.1",
-         "live-server": "1.2.1"
-     }
--}
-+}
-\ No newline at end of file
-diff --git a/skills-client-integration/skills-int-client-react/package.json b/skills-client-integration/skills-int-client-react/package.json
-index cdf8d19..73abfc4 100644
---- a/skills-client-integration/skills-int-client-react/package.json
-+++ b/skills-client-integration/skills-int-client-react/package.json
-@@ -48,4 +48,4 @@
-         "license-checker": "^25.0.1",
-         "react-scripts": "3.2.0"
-     }
--}
-+}
-\ No newline at end of file
-diff --git a/skills-client-integration/skills-int-client-vue/package.json b/skills-client-integration/skills-int-client-vue/package.json
-index 046ba82..0ea733a 100644
---- a/skills-client-integration/skills-int-client-vue/package.json
-+++ b/skills-client-integration/skills-int-client-vue/package.json
-@@ -49,14 +49,18 @@
-             "plugin:vue/essential",
-             "eslint:recommended"
-         ],
--        "rules": {},
-+        "rules": {
-+            
-+        },
-         "parserOptions": {
-             "parser": "babel-eslint"
-         }
-     },
-     "postcss": {
-         "plugins": {
--            "autoprefixer": {}
-+            "autoprefixer": {
-+                
-+            }
-         }
-     }
--}
-+}
-\ No newline at end of file
+diff --git a/skills-client-integration/skills-int-e2e-test/cypress.json b/skills-client-integration/skills-int-e2e-test/cypress.json
+index 52f9451..a87626c 100644
+--- a/skills-client-integration/skills-int-e2e-test/cypress.json
++++ b/skills-client-integration/skills-int-e2e-test/cypress.json
+@@ -1,5 +1,10 @@
+ {
+   "baseUrl": "http://localhost:8090",
+   "chromeWebSecurity": false,
+-  "defaultCommandTimeout": 10000
++  "defaultCommandTimeout": 10000,
++  "projectId": "3yas4t",
++  "retries": {
++    "runMode": 2,
++    "openMode": 0
++  }
+ }
 diff --git a/skills-client-integration/skills-int-e2e-test/package.json b/skills-client-integration/skills-int-e2e-test/package.json
 index 2dfe4e3..04a2791 100644
 --- a/skills-client-integration/skills-int-e2e-test/package.json
