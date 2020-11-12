@@ -126,7 +126,7 @@ class TestDashboardBackwardCompat {
 
             titlePrinter.printSubTitle("[${version}]: Running cypress test with")
             String output = "Testing version [$version]"
-            String currentTag = [tag, "version ${version}"].findAll { it }.join(',')
+            String currentTag = [tag, "version ${version}"].findAll { it }.collect { "'${it}'" }.join(',')
             new CypressTestsHelper(e2eDir: e2eLoc, recordInDashboard: recordInDashboard, tag: currentTag).runCypressTests(output)
         }
     }

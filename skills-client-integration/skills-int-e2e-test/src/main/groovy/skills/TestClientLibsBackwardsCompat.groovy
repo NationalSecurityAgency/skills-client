@@ -57,7 +57,7 @@ class TestClientLibsBackwardsCompat {
 
     void test() {
         List<String> versions = getBackendVersionsToTest()
-        CypressTestsHelper cypressTestsHelper = new CypressTestsHelper(e2eDir: e2eDir, recordInDashboard: recordInDashboard)
+        CypressTestsHelper cypressTestsHelper = new CypressTestsHelper(e2eDir: e2eDir, recordInDashboard: recordInDashboard, tag: "'${tag}'")
         versions.each { File versionFile ->
             titlePrinter.printTitle("Testing against skills-service version [${versionFile.name}]")
             prepSkillsServiceJar(versionFile)

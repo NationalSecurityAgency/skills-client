@@ -69,8 +69,6 @@ jobs:
         mvn --batch-mode clean package
         export NO_COLOR=1
         export CYPRESS_RECORD_KEY=${{ secrets.CYPRESS_RECORD_KEY }}
-        export CYPRESS_PROJECT_ID=${{ secrets.CYPRESS_PROJECT_ID }}
-        export CYPRESS_RETRIES=2 npm run cypress
         java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.TestDashboardBackwardCompat org.springframework.boot.loader.PropertiesLauncher -record -tag "${{ github.action }}"
         cd ../../
 
