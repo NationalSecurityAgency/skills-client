@@ -29,15 +29,21 @@ class TestDashboardBackwardCompat {
     static void main(String[] args) {
         def cli = new CliBuilder()
         cli.record(type: boolean, 'record tests in cypress dashboard')
+        cli.tag(type: String, 'tag to give cypress test')
         def options = cli.parse(args)
         def shouldRecord = options.record
-        new TestDashboardBackwardCompat(recordInDashboard: options.record).testNew()
+        String tag
+        if (options.tag && options.tag instanceof String) {
+            tag = options.tag
+        }
+        new TestDashboardBackwardCompat(recordInDashboard: shouldRecord, tag: tag).testNew()
     }
 
     File workDir = new File("./target/skills-client")
     TitlePrinter titlePrinter = new TitlePrinter()
     List<String> versionsToExclude = ["2.0.0"]
     boolean recordInDashboard = false
+    String tag
 
     void checkoutWorkingCopy() {
         if (workDir.exists()) {
@@ -120,7 +126,8 @@ class TestDashboardBackwardCompat {
 
             titlePrinter.printSubTitle("[${version}]: Running cypress test with")
             String output = "Testing version [$version]"
-            new CypressTestsHelper(e2eDir: e2eLoc, recordInDashboard: recordInDashboard).runCypressTests(output)
+            String currentTag = [tag, "version ${version}"].findAll { it }.join(',')
+            new CypressTestsHelper(e2eDir: e2eLoc, recordInDashboard: recordInDashboard, tag: currentTag).runCypressTests(output)
         }
     }
 
