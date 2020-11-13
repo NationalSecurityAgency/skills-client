@@ -16,6 +16,8 @@ limitations under the License.
 package skills
 
 import groovy.util.logging.Slf4j
+import org.apache.commons.text.StringTokenizer
+import org.apache.commons.text.matcher.StringMatcherFactory
 import org.zeroturnaround.exec.stream.TeeOutputStream
 import org.zeroturnaround.exec.stream.slf4j.Slf4jStream
 
@@ -37,6 +39,12 @@ class ProcessRunner {
     File loc = new File("./")
 
     ProcessRes run(String cmd) {
+        StringTokenizer st = new StringTokenizer(cmd)
+        st.setQuoteMatcher(StringMatcherFactory.INSTANCE.quoteMatcher())
+        this.run(st.tokenList)
+    }
+
+    ProcessRes run(List<String> cmd) {
         assert cmd
         assert loc
 

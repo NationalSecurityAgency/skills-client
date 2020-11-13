@@ -76,6 +76,12 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-cli-picocli</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.9</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
