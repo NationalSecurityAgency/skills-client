@@ -116,7 +116,7 @@ jobs:
         record: true
         parallel: false
         group: 'skills-client oauth tests'
-        tag: "${{ github.action }}"
+        tag: "${{ github.job }}"
         env: 'authMode=oauth'
       env:
         # pass the Dashboard record key as an environment variable
