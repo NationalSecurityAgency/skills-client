@@ -79,10 +79,10 @@ describe('SkillsConfiguration', () => {
       });
 
       it('properly initializes variables', () => {
-        const mockServiceUrl = Math.random();
-        const mockProjectId = Math.random();
-        const mockAuthenticator = Math.random();
-        const mockAuthToken = Math.random();
+        const mockServiceUrl = Math.random().toString();;
+        const mockProjectId = Math.random().toString();;
+        const mockAuthenticator = Math.random().toString();;
+        const mockAuthToken = Math.random().toString();;
 
         SkillsConfiguration.configure({
           projectId: mockProjectId,
@@ -110,6 +110,16 @@ describe('SkillsConfiguration', () => {
         });
 
         SkillsConfiguration.configure({ authenticator: 'pki', projectId: 'proj', serviceUrl: 'http://somewhere' });
+      });
+
+      it('trailing slash and spaces are removed from the serviceUrl', () => {
+        SkillsConfiguration.configure({
+          projectId: 'proj',
+          serviceUrl: ' http://some/ ',
+          authenticator: 'http://auth',
+        });
+
+        expect(SkillsConfiguration.getServiceUrl()).toBe('http://some');
       });
     });
 
@@ -203,7 +213,7 @@ describe('SkillsConfiguration', () => {
       });
 
       it('clears the authToken', () => {
-        const mockAuthToken = Math.random();
+        const mockAuthToken = Math.random().toString();;
         SkillsConfiguration.configure({
           authToken: mockAuthToken,
           projectId: 'proj',
