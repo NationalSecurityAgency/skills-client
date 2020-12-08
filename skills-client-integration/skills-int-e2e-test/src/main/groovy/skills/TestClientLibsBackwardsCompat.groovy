@@ -26,6 +26,7 @@ class TestClientLibsBackwardsCompat {
     static void main(String[] args) {
         def cli = new CliBuilder()
         cli.record(type: boolean, 'record tests in cypress dashboard')
+        cli.tag(type: String, 'tag to give cypress test')
         def options = cli.parse(args)
         def shouldRecord = options.record
         String tag
