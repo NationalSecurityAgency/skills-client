@@ -82,7 +82,7 @@ const exportObject = {
       throw new Error(`SkillTree: SkillsConfiguration.configure received invalid parameter for authenticator=[${authenticator}]`);
     }
     this.projectId = projectId;
-    this.serviceUrl = serviceUrl.trim().replace(/\/$/, "");
+    this.serviceUrl = `${serviceUrl}`.trim().replace(/\/$/, "");
     this.authenticator = authenticator;
     this.authToken = authToken;
 
