@@ -10,12 +10,13 @@
 #                                                                         #
 ###########################################################################
 
-version: '3'
+version: '2.2'
 
 services:
 
   hydra-migrate:
     image: oryd/hydra:v1.8.5
+    mem_limit: 512m
     container_name: hydra_migrate
     environment:
       - DSN=postgres://hydra:secret@postgresd:5432/hydra?sslmode=disable&max_conns=20&max_idle_conns=4
@@ -31,6 +32,7 @@ services:
 
   postgresd:
     image: postgres:9.6
+    mem_limit: 512m
     container_name: hydra_postgres
     ports:
       - "5432:5432"
