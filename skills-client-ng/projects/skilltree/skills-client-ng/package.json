@@ -1,6 +1,6 @@
 {
     "name": "@skilltree/skills-client-ng",
-    "version": "3.0.1",
+    "version": "3.1.0",
     "license": "Apache-2.0",
     "description": "SkillTree Client Lib - Angular",
     "author": "SkillTree Team",
@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "tslib": "2.0.0",
-        "@skilltree/skills-client-js": "3.0.1"
+        "@skilltree/skills-client-js": "3.1.0"
     },
     "keywords": [
         "SkillTree",
