@@ -159,7 +159,7 @@ context('Angular Tests', () => {
     it('skilltree directive on click', () => {
         cy.createDefaultProject(1, 2, 50, 2)
 
-        cy.server().route('POST', '/api/projects/proj1/skills/IronMan').as('postSkill')
+        cy.intercept('POST', '/api/projects/proj1/skills/IronMan').as('postSkill')
 
         cy.visitHomePage(homePage);
 
@@ -180,7 +180,7 @@ context('Angular Tests', () => {
 
     it('skilltree directive on input', () => {
         cy.createDefaultProject(1, 2, 50, 2)
-        cy.server().route('POST', '/api/projects/proj1/skills/Thor').as('postSkill')
+        cy.intercept('POST', '/api/projects/proj1/skills/Thor').as('postSkill')
 
         cy.visitHomePage(homePage);
 
@@ -200,7 +200,7 @@ context('Angular Tests', () => {
 
     it('skilltree directive on click with error', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
+        cy.intercept('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
 
         cy.visitHomePage(homePage);
 
@@ -214,7 +214,7 @@ context('Angular Tests', () => {
 
     it('skilltree directive on input with error', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
+        cy.intercept('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
 
         cy.visitHomePage(homePage);
 
@@ -228,7 +228,7 @@ context('Angular Tests', () => {
 
     it('skill display', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/angular/showSkills')
         cy.wait('@getToken')
@@ -245,7 +245,7 @@ context('Angular Tests', () => {
 
     it('skill display - summary only', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/angular/showSkills?isSummaryOnly=true')
         cy.wait('@getToken')
@@ -262,7 +262,7 @@ context('Angular Tests', () => {
 
     it('skill display - theme', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/angular/showSkills?themeName=Dark Blue')
         cy.wait('@getToken')
@@ -279,7 +279,7 @@ context('Angular Tests', () => {
 
     it('skill display - summary only - theme', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/angular/showSkills?themeName=Dark Blue&isSummaryOnly=true')
         cy.wait('@getToken')
@@ -295,7 +295,7 @@ context('Angular Tests', () => {
 
     it('client display should display an error if skills service is down', () => {
         cy.createDefaultTinyProject()
-        cy.server().route({
+        cy.intercept({
             method: 'GET',
             url: '/public/status',
             status: 503, // server is down
@@ -309,7 +309,7 @@ context('Angular Tests', () => {
 
     it('only display skills up-to the provided version', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendAddSkill('skillv1', 1)
         cy.backendAddSkill('skillv2', 2)
         cy.visit('/angular/showSkills')
@@ -332,7 +332,7 @@ context('Angular Tests', () => {
         cy.createDefaultProject()
         cy.visit(homePage)
 
-        cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
+        cy.intercept('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
 
         cy.wait('@reportClientVersion')
         cy.get('@reportClientVersion').then((xhr) => {

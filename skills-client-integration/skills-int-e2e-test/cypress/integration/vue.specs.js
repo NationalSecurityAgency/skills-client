@@ -159,7 +159,7 @@ context('Vue Tests', () => {
     it('v-skill directive on click', () => {
         cy.createDefaultProject(1, 2, 50, 2)
 
-        cy.server().route('POST', '/api/projects/proj1/skills/IronMan').as('postSkill')
+        cy.intercept('POST', '/api/projects/proj1/skills/IronMan').as('postSkill')
 
         cy.visit('/vuejs#/')
 
@@ -180,7 +180,7 @@ context('Vue Tests', () => {
 
     it('v-skill directive on input', () => {
         cy.createDefaultProject(1, 2, 50, 2)
-        cy.server().route('POST', '/api/projects/proj1/skills/Thor').as('postSkill')
+        cy.intercept('POST', '/api/projects/proj1/skills/Thor').as('postSkill')
 
         cy.visitHomePage(homePage);
 
@@ -200,7 +200,7 @@ context('Vue Tests', () => {
 
     it('v-skill directive on click with error', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
+        cy.intercept('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
 
         cy.visitHomePage(homePage);
 
@@ -214,7 +214,7 @@ context('Vue Tests', () => {
 
     it('v-skill directive on input with error', () => {
         cy.createDefaultTinyProject()
-        cy.server().route('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
+        cy.intercept('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
 
         cy.visitHomePage(homePage);
 
@@ -228,7 +228,7 @@ context('Vue Tests', () => {
 
     it('skill display', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills')
         cy.wait('@getToken')
@@ -248,8 +248,8 @@ context('Vue Tests', () => {
             cy.createDefaultTinyProject()
             cy.createDefaultTinyProject('proj2')
 
-            cy.server().route(Cypress.env('tokenUrl')).as('getToken')
-            cy.server().route('/api/users/proj2/user2/token').as('getToken2')
+            cy.intercept(Cypress.env('tokenUrl')).as('getToken')
+            cy.intercept('/api/users/proj2/user2/token').as('getToken2')
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
             cy.visit('/vuejs#/showSkills')
             cy.wait('@getToken')
@@ -272,7 +272,7 @@ context('Vue Tests', () => {
 
     it('skill display - summary only', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills?isSummaryOnly=true')
         cy.wait('@getToken')
@@ -289,7 +289,7 @@ context('Vue Tests', () => {
 
     it('skill display - theme', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills?themeName=Dark Blue')
         cy.wait('@getToken')
@@ -306,7 +306,7 @@ context('Vue Tests', () => {
 
     it('skill display - summary only - theme', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/vuejs#/showSkills?themeName=Dark Blue&isSummaryOnly=true')
         cy.wait('@getToken')
@@ -323,7 +323,7 @@ context('Vue Tests', () => {
 
     it('client display should display an error if skills service is down', () => {
       cy.createDefaultTinyProject()
-        cy.server().route({
+        cy.intercept({
             method: 'GET',
             url: '/public/status',
             status: 503, // server is down
@@ -337,7 +337,7 @@ context('Vue Tests', () => {
 
     it('only display skills up-to the provided version', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendAddSkill('skillv1', 1)
         cy.backendAddSkill('skillv2', 2)
         cy.visit('/vuejs#/showSkills')
@@ -360,7 +360,7 @@ context('Vue Tests', () => {
         cy.createDefaultProject()
         cy.visit('/vuejs#/')
 
-        cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
+        cy.intercept('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
 
         cy.wait('@reportClientVersion')
         cy.get('@reportClientVersion').then((xhr) => {
@@ -392,7 +392,7 @@ context('Vue Tests', () => {
         cy.clickSubmit()
         cy.contains('Level 1')
 
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.get('[data-cy=userDisplayLink]').click();
         //cy.contains('User Display').click();
@@ -414,7 +414,7 @@ context('Vue Tests', () => {
     if (Utils.skillsServiceVersionLaterThan('1.2.0')) {
         it('back button when when returning from an external page', () => {
             cy.createDefaultTinyProject()
-            cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+            cy.intercept(Cypress.env('tokenUrl')).as('getToken')
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
@@ -441,7 +441,7 @@ context('Vue Tests', () => {
     if (Utils.skillsServiceVersionLaterThan('1.2.0')) {
         it('back button when when returning from an external page - multiple layers deep', () => {
             cy.createDefaultTinyProject()
-            cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+            cy.intercept(Cypress.env('tokenUrl')).as('getToken')
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
