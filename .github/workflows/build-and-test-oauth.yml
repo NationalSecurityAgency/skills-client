@@ -2,20 +2,20 @@
 
 name: Continuous Integration with OAuth
 
-on:
-  schedule:
-    - cron: '0 7 * * *'
 #on:
-#  push:
-#    paths-ignore:
-#      - 'README.md'
-#      - .github/workflows/skills-service-backward-compat.yml
-#      - .github/workflows/client-libs-backward-compat.yml
-#  pull_request:
-#    paths-ignore:
-#      - 'README.md'
-#      - .github/workflows/skills-service-backward-compat.yml
-#      - .github/workflows/client-libs-backward-compat.yml
+#  schedule:
+#    - cron: '0 7 * * *'
+on:
+  push:
+    paths-ignore:
+      - 'README.md'
+      - .github/workflows/skills-service-backward-compat.yml
+      - .github/workflows/client-libs-backward-compat.yml
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+      - .github/workflows/skills-service-backward-compat.yml
+      - .github/workflows/client-libs-backward-compat.yml
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
