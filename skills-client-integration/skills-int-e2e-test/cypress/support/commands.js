@@ -182,7 +182,7 @@ Cypress.Commands.add("cdClickSubj", (subjIndex, expectedTitle) => {
 
 Cypress.Commands.add("cdBack", (expectedTitle = 'User Skills') => {
   cy.wrapIframe().find('[data-cy=back]').click()
-  cy.wrapIframe().find('h2').contains(expectedTitle);
+  cy.wrapIframe().find('[data-cy=title]').contains(expectedTitle);
 
   // back button should not exist on the home page, whose title is the default value
   if (expectedTitle === 'User Skills') {
