@@ -1,6 +1,6 @@
 {
     "name": "@skilltree/skills-client-js",
-    "version": "3.1.0",
+    "version": "3.1.1",
     "license": "Apache-2.0",
     "description": "SkillTree Client Lib - Native JS Lib",
     "main": "dist/skills-client-js.umd.min.js",
