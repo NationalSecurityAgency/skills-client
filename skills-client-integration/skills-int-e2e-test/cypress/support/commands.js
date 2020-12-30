@@ -39,6 +39,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+import Utils from "../integration/Utils";
+
 const backend = 'http://localhost:8080';
 const baseUrl = Cypress.config().baseUrl;
 Cypress.Commands.add("backendRegister", (user, pass, grantRoot) => {
@@ -182,12 +184,26 @@ Cypress.Commands.add("cdClickSubj", (subjIndex, expectedTitle) => {
 
 Cypress.Commands.add("cdBack", (expectedTitle = 'User Skills') => {
   cy.wrapIframe().find('[data-cy=back]').click()
-  cy.wrapIframe().find('[data-cy=title]').contains(expectedTitle);
+  if (Utils.skillsServiceVersionLaterThan('1.3.0')) {
+    cy.wrapIframe().find('[data-cy=title]').contains(expectedTitle);
+  } else {
+    cy.wrapIframe().find('h2').contains(expectedTitle);
+  }
 
   // back button should not exist on the home page, whose title is the default value
   if (expectedTitle === 'User Skills') {
     cy.wrapIframe().find('[data-cy=back]').should('not.exist');
   }
+});
+
+Cypress.Commands.add("clientDisplay", (firstVisit=false, project='proj1') => {
+  cy.intercept(`/api/projects/${project}/rank`).as(`getRank${project}`)
+  cy.intercept(`/api/projects/${project}/pointHistory`).as(`getPointsHistory${project}`)
+  if (firstVisit) {
+    cy.wait(`@getRank${project}`)
+    cy.wait(`@getPointsHistory${project}`)
+  }
+  return cy.wrapIframe();
 });
 
 Cypress.Commands.add('wrapIframe', () => {
