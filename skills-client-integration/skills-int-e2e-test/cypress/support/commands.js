@@ -39,8 +39,6 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-import Utils from "../integration/Utils";
-
 const backend = 'http://localhost:8080';
 const baseUrl = Cypress.config().baseUrl;
 Cypress.Commands.add("backendRegister", (user, pass, grantRoot) => {
@@ -184,11 +182,7 @@ Cypress.Commands.add("cdClickSubj", (subjIndex, expectedTitle) => {
 
 Cypress.Commands.add("cdBack", (expectedTitle = 'User Skills') => {
   cy.wrapIframe().find('[data-cy=back]').click()
-  if (Utils.skillsServiceVersionLaterThan('1.3.0')) {
-    cy.wrapIframe().find('[data-cy=title]').contains(expectedTitle);
-  } else {
-    cy.wrapIframe().find('h2').contains(expectedTitle);
-  }
+  cy.wrapIframe().contains(expectedTitle);
 
   // back button should not exist on the home page, whose title is the default value
   if (expectedTitle === 'User Skills') {
