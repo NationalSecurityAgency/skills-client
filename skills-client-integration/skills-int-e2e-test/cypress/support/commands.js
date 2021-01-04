@@ -182,12 +182,22 @@ Cypress.Commands.add("cdClickSubj", (subjIndex, expectedTitle) => {
 
 Cypress.Commands.add("cdBack", (expectedTitle = 'User Skills') => {
   cy.wrapIframe().find('[data-cy=back]').click()
-  cy.wrapIframe().find('[data-cy=title]').contains(expectedTitle);
+  cy.wrapIframe().contains(expectedTitle);
 
   // back button should not exist on the home page, whose title is the default value
   if (expectedTitle === 'User Skills') {
     cy.wrapIframe().find('[data-cy=back]').should('not.exist');
   }
+});
+
+Cypress.Commands.add("clientDisplay", (firstVisit=false, project='proj1') => {
+  cy.intercept(`/api/projects/${project}/rank`).as(`getRank${project}`)
+  cy.intercept(`/api/projects/${project}/pointHistory`).as(`getPointsHistory${project}`)
+  if (firstVisit) {
+    cy.wait(`@getRank${project}`)
+    cy.wait(`@getPointsHistory${project}`)
+  }
+  return cy.wrapIframe();
 });
 
 Cypress.Commands.add('wrapIframe', () => {

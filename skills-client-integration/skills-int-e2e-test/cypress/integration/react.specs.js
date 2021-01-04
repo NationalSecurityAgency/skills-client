@@ -138,7 +138,7 @@ context('React Tests', () => {
 
     it('skill display', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/react/index.html#/showSkills')
         cy.wait('@getToken')
@@ -155,7 +155,7 @@ context('React Tests', () => {
 
     it('skill display - summary only', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/react/index.html#/showSkills?isSummaryOnly=true')
         cy.wait('@getToken')
@@ -172,7 +172,7 @@ context('React Tests', () => {
 
     it('skill display - theme', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/react/index.html#/showSkills?themeName=Dark Blue')
         cy.wait('@getToken')
@@ -189,7 +189,7 @@ context('React Tests', () => {
 
     it('skill display - summary only - theme', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
         cy.visit('/react/index.html#/showSkills?themeName=Dark Blue&isSummaryOnly=true')
         cy.wait('@getToken')
@@ -205,13 +205,11 @@ context('React Tests', () => {
     })
 
     it('client display should display an error if skills service is down', () => {
-
-      cy.createDefaultTinyProject()
-        cy.server().route({
-            method: 'GET',
-            url: '/public/status',
-            status: 503, // server is down
-            response: {}
+        cy.createDefaultTinyProject()
+        cy.intercept('/public/status',
+        {
+            statusCode: 503, // server is down
+            body: {}
         }).as('getStatus')
         cy.visit('/react/index.html#/showSkills')
         cy.wait('@getStatus')
@@ -221,7 +219,7 @@ context('React Tests', () => {
 
     it('only display skills up-to the provided version', () => {
         cy.createDefaultTinyProject()
-        cy.server().route(Cypress.env('tokenUrl')).as('getToken')
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendAddSkill('skillv1', 1)
         cy.backendAddSkill('skillv2', 2)
         cy.visit('/react/index.html#/showSkills')
@@ -243,17 +241,15 @@ context('React Tests', () => {
 
     it('skillsClientVersion is reported correctly', () => {
         cy.createDefaultProject()
+        cy.intercept('POST', '/api/projects/proj1/skillsClientVersion', (req) => {
+            expect(req.body).to.have.property('skillsClientVersion').and.to.contain('@skilltree/skills-client-react-')
+            req.reply((res) => {
+                expect(res.statusCode).to.eq(200)
+                expect(res.body).to.have.property('success').to.eq(true)
+            })
+        }).as('reportClientVersion')
+
         cy.visit('/react/index.html#/')
-
-        cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
-
         cy.wait('@reportClientVersion')
-        cy.get('@reportClientVersion').then((xhr) => {
-            expect(xhr.status).to.eq(200)
-            expect(xhr.responseBody).to.have.property('success').to.eq(true)
-        });
-        cy.get('@reportClientVersion').should((xhr) => {
-            expect(xhr.request.body, 'request body').to.have.property('skillsClientVersion').and.to.contain('@skilltree/skills-client-react-')
-        });
     })
 })

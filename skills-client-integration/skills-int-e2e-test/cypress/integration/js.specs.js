@@ -100,8 +100,7 @@ context("Native JS Tests", () => {
 
     it("skill display", () => {
         cy.createDefaultTinyProject();
-        cy.server()
-            .route(Cypress.env('tokenUrl'))
+        cy.intercept(Cypress.env('tokenUrl'))
             .as("getToken");
         cy.backendPost("/api/projects/proj1/skills/Thor", {
             userId: Cypress.env('proxyUser'),
@@ -121,8 +120,7 @@ context("Native JS Tests", () => {
 
     it("skill display - default options", () => {
         cy.createDefaultTinyProject();
-        cy.server()
-            .route(Cypress.env('tokenUrl'))
+        cy.intercept(Cypress.env('tokenUrl'))
             .as("getToken");
         cy.backendPost("/api/projects/proj1/skills/Thor", {
             userId: Cypress.env('proxyUser'),
@@ -143,8 +141,7 @@ context("Native JS Tests", () => {
 
     it("skill display - summary only", () => {
         cy.createDefaultTinyProject();
-        cy.server()
-            .route(Cypress.env('tokenUrl'))
+        cy.intercept(Cypress.env('tokenUrl'))
             .as("getToken");
         cy.backendPost("/api/projects/proj1/skills/Thor", {
             userId: Cypress.env('proxyUser'),
@@ -165,8 +162,7 @@ context("Native JS Tests", () => {
 
     it("skill display - theme", () => {
         cy.createDefaultTinyProject();
-        cy.server()
-            .route(Cypress.env('tokenUrl'))
+        cy.intercept(Cypress.env('tokenUrl'))
             .as("getToken");
         cy.backendPost("/api/projects/proj1/skills/Thor", {
             userId: Cypress.env('proxyUser'),
@@ -187,8 +183,7 @@ context("Native JS Tests", () => {
 
     it("skill display - summary only - theme", () => {
         cy.createDefaultTinyProject();
-        cy.server()
-            .route(Cypress.env('tokenUrl'))
+        cy.intercept(Cypress.env('tokenUrl'))
             .as("getToken");
         cy.backendPost("/api/projects/proj1/skills/Thor", {
             userId: Cypress.env('proxyUser'),
@@ -208,18 +203,15 @@ context("Native JS Tests", () => {
             .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
     });
 
-    it("client display should display an error if skills service is down", () => {
-        cy.createDefaultTinyProject();
-        cy.server()
-            .route({
-                method: "GET",
-                url: "/public/status",
-                status: 503, // server is down
-                response: {}
-            })
-            .as("getStatus");
-        cy.visit("/native/clientDisplay.html");
-        cy.wait("@getStatus");
+    it('client display should display an error if skills service is down', () => {
+        cy.createDefaultTinyProject()
+        cy.intercept('/public/status',
+        {
+            statusCode: 503, // server is down
+            body: {}
+        }).as('getStatus')
+        cy.visit('/native/clientDisplay.html');
+        cy.wait('@getStatus')
 
         cy.contains("Could NOT reach Skilltree Service");
     });
@@ -229,8 +221,7 @@ context("Native JS Tests", () => {
         const v1Points = 'Earn up to 150 points';
         const v0Points = 'Earn up to 100 points';
         cy.createDefaultTinyProject();
-        cy.server()
-            .route(Cypress.env('tokenUrl'))
+        cy.intercept(Cypress.env('tokenUrl'))
             .as("getToken");
         cy.backendAddSkill("skillv1", 1);
         cy.backendAddSkill("skillv2", 2);
@@ -252,18 +243,16 @@ context("Native JS Tests", () => {
 
     it('skillsClientVersion is reported correctly', () => {
         cy.createDefaultProject()
-
-        cy.server().route('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
+        cy.intercept('POST', '/api/projects/proj1/skillsClientVersion', (req) => {
+            expect(req.body).to.have.property('skillsClientVersion').and.to.contain('@skilltree/skills-client-js-')
+            req.reply((res) => {
+                expect(res.statusCode).to.eq(200)
+                expect(res.body).to.have.property('success').to.eq(true)
+            })
+        }).as('reportClientVersion')
 
         cy.visit('/native/index.html')
         cy.wait('@reportClientVersion')
-        cy.get('@reportClientVersion').then((xhr) => {
-            expect(xhr.status).to.eq(200)
-            expect(xhr.responseBody).to.have.property('success').to.eq(true)
-        });
-        cy.get('@reportClientVersion').should((xhr) => {
-            expect(xhr.request.body, 'request body').to.have.property('skillsClientVersion').and.to.contain('@skilltree/skills-client-js-')
-        });
     })
 
     it('level component should be reactive', () => {
