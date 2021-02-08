@@ -27,3 +27,16 @@ index 6a65d80..689aa4f 100644
 
      // back button should not exist on the home page, whose title is the default value
      if (expectedTitle === 'User Skills'){
+diff --git a/skills-client-integration/skills-int-e2e-test/package.json b/skills-client-integration/skills-int-e2e-test/package.json
+index 8664332..7209ea6 100644
+--- a/skills-client-integration/skills-int-e2e-test/package.json
++++ b/skills-client-integration/skills-int-e2e-test/package.json
+@@ -38,7 +38,7 @@
+     "dev:removeNpmLinks": "mvn --batch-mode clean package && java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.RemoveNpmLinks org.springframework.boot.loader.PropertiesLauncher"
+   },
+   "devDependencies": {
+-    "cypress": "4.1.0",
++    "cypress": "6.2.0",
+     "license-check-and-add": "3.0.4",
+     "license-checker": "25.0.1",
+     "semver": "7.1.2",
