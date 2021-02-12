@@ -309,3 +309,16 @@ index 55c9c7c..d399b1b 100644
      private void doTest() {
  
          titlePrinter.printTitle("Release Dashboard")
+diff --git a/skills-client-integration/pom.xml b/skills-client-integration/pom.xml
+index 745a168..90d231c 100755
+--- a/skills-client-integration/pom.xml
++++ b/skills-client-integration/pom.xml
+@@ -33,7 +33,7 @@
+     <properties>
+         <!--suppress UnresolvedMavenProperty -->
+         <nexusServer>${nexus.url}</nexusServer>
+-        <node.version>v11.6.0</node.version>
++        <node.version>v14.15.0</node.version>
+     </properties>
+
+     <distributionManagement>
