@@ -65,6 +65,7 @@ const exportObject = {
     projectId,
     authenticator,
     authToken,
+    oauthRedirect = false,
   }) {
     if (!this.skillsClientVersion) {
       // this will be replaced at build time with the current skills-client-js
@@ -96,7 +97,7 @@ const exportObject = {
       }
 
       if (!this.isPKIMode() && !this.getAuthToken()) {
-        skillsService.getAuthenticationToken(this.getAuthenticator(), this.getServiceUrl(), this.getProjectId())
+        skillsService.getAuthenticationToken(this.getAuthenticator(), this.getServiceUrl(), this.getProjectId(), oauthRedirect)
           .then((token) => {
             this.setAuthToken(token);
             setInitialized(this);
