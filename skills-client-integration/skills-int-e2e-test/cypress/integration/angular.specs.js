@@ -204,7 +204,7 @@ context('Angular Tests', () => {
 
         cy.get('#SkillsDirectiveErrorwithButton button').click()
         cy.wait('@postSkill').then((intercept) => {
-            expect(intercept.response.statusCode).to.eq(400)
+            expect(intercept.response.statusCode).to.eq(404)
             expect(intercept.response.body).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
         });
     })
@@ -217,7 +217,7 @@ context('Angular Tests', () => {
 
         cy.get('#SkillsDirectiveErrorwithInput input').type('h')
         cy.wait('@postSkill').then((intercept) => {
-            expect(intercept.response.statusCode).to.eq(400)
+            expect(intercept.response.statusCode).to.eq(404)
             expect(intercept.response.body).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
         });
     })
