@@ -96,10 +96,10 @@ export default {
   },
 
   isOAuthMode(authenticator, serviceUrl) {
-    return typeof authenticator === 'string' && (authenticator === 'oauth' || authenticator.startsWith(`${serviceUrl}/oauth2/authorization`));
+    return typeof authenticator === 'string' && authenticator.startsWith(`${serviceUrl}/oauth2/authorization`);
   },
 
-  getAuthenticationToken(authenticator, serviceUrl, projectId) {
+  getAuthenticationToken(authenticator, serviceUrl, projectId, oauthRedirect = false) {
     return new Promise((resolve, reject) => {
       const isOAuthMode = this.isOAuthMode(authenticator, serviceUrl);
       const xhr = new XMLHttpRequest();
@@ -113,11 +113,12 @@ export default {
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
           if (xhr.status !== 200) {
-            if (isOAuthMode && xhr.status === 401) {
+            if (isOAuthMode && oauthRedirect && xhr.status === 401) {
               // if we get 401 and we are using OAuth, then redirect to the OAuth Provider
               const oauthAuthenticator = `${authenticator}?skillsRedirectUri=${window.location}`;
               log.info(`SkillsClient::SkillService::unable to get oAuth token, navigating to [${oauthAuthenticator}]`);
-              window.location = oauthAuthenticator;
+              window.location.assign(oauthAuthenticator);
+              resolve();
             } else {
               reject(new Error(`SkillTree: Unable to authenticate using [${authenticator}] endpoint. Response Code=[${xhr.status}].\n
     Ideas to diagnose:\n
