@@ -62,3 +62,25 @@ index b010108..893cdda 100644
              expect(xhr.responseBody).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
          });
      })
+diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/angular.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/angular.specs.js
+index cbe8938..4b4fe91 100644
+--- a/skills-client-integration/skills-int-e2e-test/cypress/integration/angular.specs.js
++++ b/skills-client-integration/skills-int-e2e-test/cypress/integration/angular.specs.js
+@@ -208,7 +208,7 @@ context('Angular Tests', () => {
+         cy.get('#SkillsDirectiveErrorwithButton button').click()
+         cy.wait('@postSkill');
+         cy.get('@postSkill').then((xhr) => {
+-            expect(xhr.status).to.eq(400)
++            expect(xhr.status).to.eq(404)
+             expect(xhr.responseBody).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
+         });
+     })
+@@ -222,7 +222,7 @@ context('Angular Tests', () => {
+         cy.get('#SkillsDirectiveErrorwithInput input').type('h')
+         cy.wait('@postSkill');
+         cy.get('@postSkill').then((xhr) => {
+-            expect(xhr.status).to.eq(400)
++            expect(xhr.status).to.eq(404)
+             expect(xhr.responseBody).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
+         });
+     })
