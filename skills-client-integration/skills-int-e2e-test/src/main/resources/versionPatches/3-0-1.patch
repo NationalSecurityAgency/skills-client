@@ -27,3 +27,25 @@ index e899916..4761ae5 100644
 
      // back button should not exist on the home page, whose title is the default value
      if (expectedTitle === 'User Skills'){
+diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
+index 2544edf..0e17dbe 100644
+--- a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
++++ b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
+@@ -207,7 +207,7 @@ context('Vue Tests', () => {
+         cy.get('#SkillsDirectiveErrorwithButton button').click()
+         cy.wait('@postSkill');
+         cy.get('@postSkill').then((xhr) => {
+-            expect(xhr.status).to.eq(400)
++            expect(xhr.status).to.eq(404)
+             expect(xhr.responseBody).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
+         });
+     })
+@@ -221,7 +221,7 @@ context('Vue Tests', () => {
+         cy.get('#SkillsDirectiveErrorwithInput input').type('h')
+         cy.wait('@postSkill');
+         cy.get('@postSkill').then((xhr) => {
+-            expect(xhr.status).to.eq(400)
++            expect(xhr.status).to.eq(404)
+             expect(xhr.responseBody).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
+         });
+     })
