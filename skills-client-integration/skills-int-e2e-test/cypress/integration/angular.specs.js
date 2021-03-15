@@ -19,6 +19,11 @@ const homePage = '/angular/reportSkills'
 
 context('Angular Tests', () => {
 
+    let missingSkillErrorCode = 400;
+    if (Utils.skillsServiceVersionLaterThan('1.4.0')) {
+        missingSkillErrorCode = 404;
+    }
+
     it('level component should be reactive', () => {
         cy.createDefaultProject()
         const sendEventViaDropdownId = '#PureJSReportAnySkill';
@@ -204,7 +209,7 @@ context('Angular Tests', () => {
 
         cy.get('#SkillsDirectiveErrorwithButton button').click()
         cy.wait('@postSkill').then((intercept) => {
-            expect(intercept.response.statusCode).to.eq(404)
+            expect(intercept.response.statusCode).to.eq(missingSkillErrorCode)
             expect(intercept.response.body).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
         });
     })
@@ -217,7 +222,7 @@ context('Angular Tests', () => {
 
         cy.get('#SkillsDirectiveErrorwithInput input').type('h')
         cy.wait('@postSkill').then((intercept) => {
-            expect(intercept.response.statusCode).to.eq(404)
+            expect(intercept.response.statusCode).to.eq(missingSkillErrorCode)
             expect(intercept.response.body).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
         });
     })
