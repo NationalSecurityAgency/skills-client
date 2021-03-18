@@ -19,10 +19,9 @@ const homePage = '/vuejs#/'
 
 context('Vue Tests', () => {
 
-    let missingSkillErrorCode = 400;
-    if (Utils.skillsServiceVersionLaterThan('1.4.0')) {
-        missingSkillErrorCode = 404;
-    }
+    const laterThan_1_4_0 = Utils.skillsServiceVersionLaterThan('1.4.0');
+    const missingSkillErrorCode = laterThan_1_4_0 ? 404 : 400;
+    const noThemeBackground = laterThan_1_4_0 ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)';
 
     it('level component should be reactive', () => {
         // cy.window().then(win => {
@@ -240,7 +239,7 @@ context('Vue Tests', () => {
         // verify that there is no background set
         // cypress always validates against rgb
         cy.clientDisplay().find('.skills-page-title-text-color')
-            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
+            .should('have.css', 'background-color').and('equal', noThemeBackground);
     })
 
     it('Proxy Skills Display', () => {
@@ -263,7 +262,7 @@ context('Vue Tests', () => {
             // verify that there is no background set
             // cypress always validates against rgb
             cy.clientDisplay().find('.skills-page-title-text-color')
-                .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
+                .should('have.css', 'background-color').and('equal', noThemeBackground);
 
             cy.visit('/vuejs#/proxyShowSkills')
             cy.wait('@getToken2')
@@ -286,7 +285,7 @@ context('Vue Tests', () => {
         // verify that there is no background set
         // cypress always validates against rgb
         cy.clientDisplay().find('.skills-page-title-text-color')
-            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
+            .should('have.css', 'background-color').and('equal', noThemeBackground);
     })
 
     it('skill display - theme', () => {
