@@ -18,6 +18,10 @@ import Utils from "./Utils";
 const homePage = '/native/index.html'
 
 context("Native JS Tests", () => {
+
+    const laterThan_1_4_0 = Utils.skillsServiceVersionLaterThan('1.4.0');
+    const noThemeBackground = laterThan_1_4_0 ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)';
+
     it("global event show correct results", () => {
         cy.createDefaultProject();
 
@@ -115,7 +119,7 @@ context("Native JS Tests", () => {
         // verify that there is no background set
         // cypress always validates against rgb
         cy.wrapIframe().find('.skills-page-title-text-color')
-            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
+            .should('have.css', 'background-color').and('equal', noThemeBackground);
     });
 
     it("skill display - default options", () => {
@@ -136,7 +140,7 @@ context("Native JS Tests", () => {
         // verify that there is no background set
         // cypress always validates against rgb
         cy.wrapIframe().find('.skills-page-title-text-color')
-            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
+            .should('have.css', 'background-color').and('equal', noThemeBackground);
     });
 
     it("skill display - summary only", () => {
@@ -157,7 +161,7 @@ context("Native JS Tests", () => {
         // verify that there is no background set
         // cypress always validates against rgb
         cy.wrapIframe().find('.skills-page-title-text-color')
-            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
+            .should('have.css', 'background-color').and('equal', noThemeBackground);
     });
 
     it("skill display - theme", () => {

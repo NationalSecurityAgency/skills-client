@@ -18,6 +18,10 @@ import Utils from "./Utils";
 const homePage = '/react/index.html#/'
 
 context('React Tests', () => {
+
+    const laterThan_1_4_0 = Utils.skillsServiceVersionLaterThan('1.4.0');
+    const noThemeBackground = laterThan_1_4_0 ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)';
+
     it('level component should be reactive (skills reported directly to backend endpoint)', () => {
         cy.createDefaultProject()
         cy.visitHomePage(homePage);
@@ -150,7 +154,7 @@ context('React Tests', () => {
         // verify that there is no background set
         // cypress always validates against rgb
         cy.wrapIframe().find('.skills-page-title-text-color')
-            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
+            .should('have.css', 'background-color').and('equal', noThemeBackground);
     })
 
     it('skill display - summary only', () => {
@@ -167,7 +171,7 @@ context('React Tests', () => {
         // verify that there is no background set
         // cypress always validates against rgb
         cy.wrapIframe().find('.skills-page-title-text-color')
-            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
+            .should('have.css', 'background-color').and('equal', noThemeBackground);
     })
 
     it('skill display - theme', () => {
