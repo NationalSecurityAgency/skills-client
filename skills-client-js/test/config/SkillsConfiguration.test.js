@@ -17,19 +17,26 @@ import mock from 'xhr-mock';
 import SkillsConfiguration from '../../src/config/SkillsConfiguration';
 
 describe('SkillsConfiguration', () => {
+  const flushPromises = () => new Promise(setImmediate);
+  let statusReqCount = 0;
+
   // replace the real XHR object with the mock XHR object before each test
   beforeEach(() => {
     mock.setup();
     SkillsConfiguration.logout();
     const url = /.*\/api\/projects\/.*\/skillsClientVersion/;
     mock.post(url, (req, res) => res.status(200).body('{"success":true,"explanation":null}'));
-    mock.get(/.*\/public\/status/, (req, res) => res.status(200).body('{"status":"OK","clientLib":{"loggingEnabled":"false","loggingLevel":"DEBUG"}}'));
+    mock.get(/.*\/public\/status/, (req, res) => {
+      statusReqCount++
+      return res.status(200).body('{"status":"OK","clientLib":{"loggingEnabled":"false","loggingLevel":"DEBUG"}}')
+    });
   });
 
   // put the real XHR object back and clear the mocks after each test
   afterEach(() => {
     SkillsConfiguration.logout();
     mock.teardown();
+    statusReqCount = 0;
   });
 
   describe('initialization', () => {
@@ -41,6 +48,73 @@ describe('SkillsConfiguration', () => {
       expect(() => {
         SkillsConfiguration.validate();
       }).toThrow();
+    });
+
+    it('isInitialized is false when error occurs in configure', () => {
+      expect(() => {
+        SkillsConfiguration.configure({
+          serviceUrl: 'http://somewhere',
+          authenticator: 'pki',
+        });
+
+        // when an error occurs during initialization isInitialized should be false, but wasConfigureCalled should be true
+        expect(SkillsConfiguration.isInitialized()).toBe(false)
+        expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
+        expect(statusReqCount).toBe(1)
+      }).toThrow('SkillTree: SkillsConfiguration.configure received invalid parameter for projectId=[undefined]');
+    });
+
+    it('calling configure more than once after failure will attempt to configure again', async() => {
+      expect.assertions(6);
+
+      mock.reset();
+      mock.get(/.*\/public\/status/, (req, res) => {
+        statusReqCount++;
+        return Promise.reject(new Error())
+      });
+
+      const config = {
+        projectId: Math.random().toString(),
+        serviceUrl: Math.random().toString(),
+        authenticator: Math.random().toString(),
+        authToken: Math.random().toString(),
+      }
+
+      SkillsConfiguration.configure(config);
+      await flushPromises()
+      expect(SkillsConfiguration.isInitialized()).toBe(false)
+      expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
+      expect(statusReqCount).toBe(1)
+
+      SkillsConfiguration.configure(config);
+      await flushPromises()
+      expect(SkillsConfiguration.isInitialized()).toBe(false)
+      expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
+      expect(statusReqCount).toBe(2)
+    });
+
+    it('calling configure more than once without failure will NOT attempt to configure again', async () => {
+      expect.assertions(6);
+
+      const config = {
+        projectId: Math.random().toString(),
+        serviceUrl: Math.random().toString(),
+        authenticator: Math.random().toString(),
+        authToken: Math.random().toString(),
+      }
+
+      SkillsConfiguration.configure(config);
+      await flushPromises()
+      expect(SkillsConfiguration.isInitialized()).toBe(true)
+      expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
+      expect(statusReqCount).toBe(1)
+
+      SkillsConfiguration.configure(config);
+      await flushPromises()
+      expect(SkillsConfiguration.isInitialized()).toBe(true)
+      expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
+      expect(statusReqCount).toBe(1)
+
     });
 
     it('setAuthToken updates the authToken', () => {
@@ -78,7 +152,9 @@ describe('SkillsConfiguration', () => {
         });
       });
 
-      it('properly initializes variables', () => {
+      it('properly initializes variables', async () => {
+        expect.assertions(6);
+
         const mockServiceUrl = Math.random().toString();;
         const mockProjectId = Math.random().toString();;
         const mockAuthenticator = Math.random().toString();;
@@ -90,11 +166,14 @@ describe('SkillsConfiguration', () => {
           authenticator: mockAuthenticator,
           authToken: mockAuthToken,
         });
+        await flushPromises()
 
         expect(SkillsConfiguration.getProjectId()).toBe(mockProjectId);
         expect(SkillsConfiguration.getServiceUrl()).toBe(mockServiceUrl);
         expect(SkillsConfiguration.getAuthenticator()).toBe(mockAuthenticator);
         expect(SkillsConfiguration.getAuthToken()).toBe(mockAuthToken);
+        expect(SkillsConfiguration.isInitialized()).toBe(true)
+        expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
       });
 
       it('notifies afterConfigure Promisees' ,(done) => {
@@ -130,6 +209,10 @@ describe('SkillsConfiguration', () => {
             serviceUrl: 'http://somewhere',
             authenticator: 'pki',
           });
+
+          // when an error occurs during initialization isInitialized should be false, but wasConfigureCalled should be true
+          expect(SkillsConfiguration.isInitialized()).toBe(false)
+          expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
         }).toThrow('SkillTree: SkillsConfiguration.configure received invalid parameter for projectId=[undefined]');
       });
 
