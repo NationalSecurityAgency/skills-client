@@ -68,7 +68,7 @@ const exportObject = {
     oauthRedirect = false,
   }) {
     if (this.isInitialized()) {
-      log.warn('SkillsConfiguration already initialized.')
+      log.warn('SkillsConfiguration already initialized.');
       return;
     }
     if (!this.skillsClientVersion) {

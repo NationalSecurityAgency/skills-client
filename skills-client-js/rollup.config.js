@@ -17,6 +17,7 @@ module.exports = {
   plugins: [
     eslint(),
     babel({
+      runtimeHelpers: true,
       exclude: 'node_modules/**',
     }),
     resolve({
