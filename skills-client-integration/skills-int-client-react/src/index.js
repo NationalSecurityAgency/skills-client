@@ -22,16 +22,25 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { SkillsConfiguration, Logger } from '@skilltree/skills-client-react';
 
+let rendered = false;
+const initializeSkillsDisplay = () => {
+  if (!rendered) {
+    rendered = true;
+    ReactDOM.render(<App />, document.getElementById('root'));
+  }
+}
+
 axios.get("/api/config")
   .then((result) => {
     SkillsConfiguration.configure(result.data);
-    ReactDOM.render(<App />, document.getElementById('root'));
+    setTimeout(initializeSkillsDisplay, 1500);
   })
   .then(() => {
     SkillsConfiguration.afterConfigure().then(() => {
       if (window.Cypress) {
         window.skillsLogger = Logger;
       }
+      initializeSkillsDisplay()
     })
   });
 
