@@ -100,9 +100,7 @@ describe('userSkillsService', () => {
 
         beforeEach(() => {
           MockXMLHttpRequest.status = 200;
-          mockResponse = JSON.stringify({
-            hello: 'world',
-          });
+          mockResponse = JSON.stringify({"success":true,"projectId":"movies","skillId":"IronMan","name":"Iron Man","pointsEarned":8,"skillApplied":true,"explanation":"Skill event was applied","completed":[]});
           MockXMLHttpRequest.response = mockResponse;
           promise = SkillsReporter.reportSkill(mockUserSkillId);
         });
@@ -141,9 +139,7 @@ describe('userSkillsService', () => {
         beforeEach(() => {
           MockXMLHttpRequest.status = 404;
           promise = SkillsReporter.reportSkill(mockUserSkillId);
-          mockError = JSON.stringify({
-            you: 'errored',
-          });
+          mockError = JSON.stringify({"explanation":"Failed to report skill event because skill definition does not exist.","errorCode":"SkillNotFound","success":false,"projectId":"movies","skillId":"DoesNotExist","userId":"user1"});
           MockXMLHttpRequest.response = mockError;
         });
 
@@ -159,6 +155,7 @@ describe('userSkillsService', () => {
         it('calls error handlers', (done) => {
           const handler1 = jest.fn();
           const handler2 = jest.fn();
+          const consoleSpy = jest.spyOn(console, 'error');
 
           SkillsReporter.addErrorHandler(handler1);
           SkillsReporter.addErrorHandler(handler2);
@@ -168,6 +165,7 @@ describe('userSkillsService', () => {
           promise.finally(() => {
             expect(handler1).toHaveBeenCalledWith(JSON.parse(mockError));
             expect(handler2).toHaveBeenCalledWith(JSON.parse(mockError));
+            expect(consoleSpy).toHaveBeenCalledWith('Error reporting skill:', JSON.parse(mockError));
             done();
           });
         });
