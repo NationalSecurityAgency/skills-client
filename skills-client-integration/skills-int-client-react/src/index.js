@@ -25,13 +25,13 @@ import { SkillsConfiguration, Logger } from '@skilltree/skills-client-react';
 axios.get("/api/config")
   .then((result) => {
     SkillsConfiguration.configure(result.data);
+    ReactDOM.render(<App />, document.getElementById('root'));
   })
   .then(() => {
     SkillsConfiguration.afterConfigure().then(() => {
       if (window.Cypress) {
         window.skillsLogger = Logger;
       }
-      ReactDOM.render(<App />, document.getElementById('root'));
     })
   });
 

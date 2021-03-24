@@ -33,15 +33,15 @@ Vue.use(VueHighlightJS)
 axios.get("/api/config")
   .then((result) => {
     SkillsConfiguration.configure(result.data);
+    new Vue({
+      render: h => h(App),
+      router,
+    }).$mount('#app');
   })
   .then(() => {
     SkillsConfiguration.afterConfigure().then(() => {
       if (window.Cypress) {
         window.skillsLogger = Logger;
       }
-      new Vue({
-        render: h => h(App),
-        router,
-      }).$mount('#app');
     })
   });

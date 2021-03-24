@@ -70,7 +70,7 @@ describe('SkillsConfiguration', () => {
       mock.reset();
       mock.get(/.*\/public\/status/, (req, res) => {
         statusReqCount++;
-        return Promise.reject(new Error())
+        return res.status(503)
       });
 
       const config = {
