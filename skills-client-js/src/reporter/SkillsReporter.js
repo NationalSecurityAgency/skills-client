@@ -30,6 +30,8 @@ const callSuccessHandlers = (event) => {
 };
 
 const callErrorHandlers = (event) => {
+  // eslint-disable-next-line no-console
+  console.error('Error reporting skill:', event);
   errorHandlerCache.forEach((it) => it(event));
 };
 
