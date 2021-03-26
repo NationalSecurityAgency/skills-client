@@ -115,6 +115,7 @@ const exportObject = {
       // eslint-disable-next-line no-console
       console.error('Error getting service status', error);
       setConfigureWasCalled();
+      initializedResolvers.resolve();
     });
   },
 

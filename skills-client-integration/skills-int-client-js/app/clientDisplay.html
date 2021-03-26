@@ -101,37 +101,34 @@ limitations under the License.
     axios.get("/api/config")
       .then((result) => {
         SkillsClient.SkillsConfiguration.configure(result.data);
-        const initializeSkillsDisplay = () => {
-          const theme = getTheme();
-
-          document.body.style.backgroundColor = theme.theme.backgroundColor;
-          const defaultThemeElement = document.querySelector('#default-theme-dropdown-item');
-          const darkBlueThemeElement = document.querySelector('#darkblue-theme-dropdown-item');
-          if (theme.name === themes.darkBlue.name) {
-            darkBlueThemeElement.classList.add('active');
-          } else {
-            defaultThemeElement.classList.add('active');
-          }
-
-          const clientDisplay = new SkillsClient.SkillsDisplayJS({
-            options,
-            version: getVersion(),
-            theme: theme.theme,
-          });
-          clientDisplay.attachTo(document.querySelector('#skills-client-display'));
-        };
-        if (document.readyState === "complete"
-                || document.readyState === "loaded"
-                || document.readyState === "interactive") {
-          initializeSkillsDisplay();
-        } else {
-          document.addEventListener("DOMContentLoaded", initializeSkillsDisplay);
-        }
       });
 
     SkillsClient.SkillsConfiguration.afterConfigure().then(() => {
-      if (window.Cypress) {
-        window.skillsLogger = SkillsClient.Logger;
+      const initializeSkillsDisplay = () => {
+        const theme = getTheme();
+
+        document.body.style.backgroundColor = theme.theme.backgroundColor;
+        const defaultThemeElement = document.querySelector('#default-theme-dropdown-item');
+        const darkBlueThemeElement = document.querySelector('#darkblue-theme-dropdown-item');
+        if (theme.name === themes.darkBlue.name) {
+          darkBlueThemeElement.classList.add('active');
+        } else {
+          defaultThemeElement.classList.add('active');
+        }
+
+        const clientDisplay = new SkillsClient.SkillsDisplayJS({
+          options,
+          version: getVersion(),
+          theme: theme.theme,
+        });
+        clientDisplay.attachTo(document.querySelector('#skills-client-display'));
+      };
+      if (document.readyState === "complete"
+        || document.readyState === "loaded"
+        || document.readyState === "interactive") {
+        initializeSkillsDisplay();
+      } else {
+        document.addEventListener("DOMContentLoaded", initializeSkillsDisplay);
       }
     });
   </script>
