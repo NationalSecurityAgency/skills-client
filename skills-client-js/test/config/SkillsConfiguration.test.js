@@ -18,6 +18,8 @@ import SkillsConfiguration from '../../src/config/SkillsConfiguration';
 
 describe('SkillsConfiguration', () => {
   const flushPromises = () => new Promise(setImmediate);
+  const mockStatusResponse = '{"status":"OK","clientLib":{"loggingEnabled":"false","loggingLevel":"DEBUG"}}';
+  const mockVersionResponse = '{"success":true,"explanation":null}';
   let statusReqCount = 0;
 
   // replace the real XHR object with the mock XHR object before each test
@@ -25,10 +27,10 @@ describe('SkillsConfiguration', () => {
     mock.setup();
     SkillsConfiguration.logout();
     const url = /.*\/api\/projects\/.*\/skillsClientVersion/;
-    mock.post(url, (req, res) => res.status(200).body('{"success":true,"explanation":null}'));
+    mock.post(url, (req, res) => res.status(200).body(mockVersionResponse));
     mock.get(/.*\/public\/status/, (req, res) => {
       statusReqCount++
-      return res.status(200).body('{"status":"OK","clientLib":{"loggingEnabled":"false","loggingLevel":"DEBUG"}}')
+      return res.status(200).body(mockStatusResponse)
     });
   });
 
