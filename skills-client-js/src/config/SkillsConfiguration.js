@@ -67,6 +67,10 @@ const exportObject = {
     authToken,
     oauthRedirect = false,
   }) {
+    if (this.isInitialized()) {
+      log.warn('SkillsConfiguration already initialized.');
+      return;
+    }
     if (!this.skillsClientVersion) {
       // this will be replaced at build time with the current skills-client-js
       // version. extensions of the plain JS client (vue, react, etc), should
@@ -110,8 +114,8 @@ const exportObject = {
     }).catch((error) => {
       // eslint-disable-next-line no-console
       console.error('Error getting service status', error);
-      setInitialized(this);
       setConfigureWasCalled();
+      initializedResolvers.resolve();
     });
   },
 
@@ -171,6 +175,8 @@ SkillsConfiguration is a singleton and you only have to do this once. Please see
   logout() {
     initializedResolvers = null;
     waitForInitializePromise = null;
+    configureCalled = false;
+    initialized = false;
     initializeAfterConfigurePromise();
     this.setAuthToken(null);
   },

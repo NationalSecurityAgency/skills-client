@@ -33,9 +33,12 @@ Vue.use(VueHighlightJS)
 axios.get("/api/config")
   .then((result) => {
     SkillsConfiguration.configure(result.data);
+    SkillsConfiguration.configure(result.data);
+    SkillsConfiguration.configure(result.data);
   })
   .then(() => {
     SkillsConfiguration.afterConfigure().then(() => {
+      console.log('afterConfigure() - this should only be called once!');
       if (window.Cypress) {
         window.skillsLogger = Logger;
       }
