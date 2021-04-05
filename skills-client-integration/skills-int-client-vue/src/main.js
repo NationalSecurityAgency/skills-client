@@ -21,6 +21,7 @@ import router from './router';
 import axios from 'axios';
 import { SkillsDirective, SkillsConfiguration, Logger } from '@skilltree/skills-client-vue';
 import VueHighlightJS from 'vue-highlightjs'
+import store from './store';
 
 Vue.config.productionTip = false
 
@@ -35,6 +36,10 @@ axios.get("/api/config")
     SkillsConfiguration.configure(result.data);
     SkillsConfiguration.configure(result.data);
     SkillsConfiguration.configure(result.data);
+    store.commit('projectId', result.data.projectId);
+    store.commit('authenticator', result.data.authenticator);
+    store.commit('proxiedUserId', result.data.proxiedUserId);
+    store.commit('proxiedProjectId', result.data.proxiedProjectId);
   })
   .then(() => {
     SkillsConfiguration.afterConfigure().then(() => {
@@ -45,6 +50,7 @@ axios.get("/api/config")
       new Vue({
         render: h => h(App),
         router,
+        store,
       }).$mount('#app');
     })
   });

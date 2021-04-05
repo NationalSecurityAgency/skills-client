@@ -52,6 +52,8 @@ public class SkillsExampleApplication implements WebMvcConfigurer {
 		String password;
 		@JsonIgnore
 		String authMode = "token";
+		String proxiedProjectId;
+		String proxiedUserId;
 
 		public String getServiceUrl() { return serviceUrl; }
 		public String getProjectId() { return projectId; }
@@ -59,6 +61,8 @@ public class SkillsExampleApplication implements WebMvcConfigurer {
 		public String getUsername() { return username; }
 		public String getPassword() { return password; }
 		public String getAuthMode() { return authMode; }
+		public String getProxiedProjectId() { return proxiedProjectId; }
+		public String getProxiedUserId() { return proxiedUserId; }
 
 		public void setServiceUrl(String serviceUrl) { this.serviceUrl = serviceUrl; }
 		public void setProjectId(String projectId) { this.projectId = projectId; }
@@ -66,5 +70,7 @@ public class SkillsExampleApplication implements WebMvcConfigurer {
 		public void setUsername(String username) { this.username = username; }
 		public void setPassword(String password) { this.password = password; }
 		public void setAuthMode(String authMode) { this.authMode = authMode; }
+		public void setProxiedProjectId(String proxiedProjectId) { this.proxiedProjectId = proxiedProjectId; }
+		public void setProxiedUserId(String proxiedUserId) { this.proxiedUserId = proxiedUserId; }
 	}
 }
