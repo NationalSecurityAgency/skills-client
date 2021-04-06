@@ -107,8 +107,11 @@ limitations under the License.
     },
     data() {
       const existingAuthenticator = SkillsConfiguration.getAuthenticator();
-      const authenticator = existingAuthenticator.replace(/\/users\/user1/, '/users/proj2/user2')
-      const projectId = "proj2"
+      const projectId = this.$store.state.proxiedProjectId;
+      const proxiedUser = this.$store.state.proxiedUserId;
+      const replaceRegex = /users\/[^/]+\/token/;
+
+      const authenticator = existingAuthenticator.replace(replaceRegex, `users/${projectId}/${proxiedUser}/token`);
       return {
         token: '',
         version: this.$route.query.skillsVersion ? JSON.parse(this.$route.query.skillsVersion) : 1000,
