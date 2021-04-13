@@ -1,6 +1,6 @@
 {
     "name": "@skilltree/skills-client-react",
-    "version": "3.1.1",
+    "version": "3.2.0",
     "license": "Apache-2.0",
     "description": "SkillTree Client Lib - React",
     "main": "dist/skills-client-react.umd.min.js",
@@ -57,7 +57,7 @@
         "eslint-plugin-react": "7.21.4"
     },
     "dependencies": {
-        "@skilltree/skills-client-js": "3.1.1",
+        "@skilltree/skills-client-js": "3.2.0",
         "axios": "0.21.1",
         "axios-auth-refresh": "3.0.0"
     },
