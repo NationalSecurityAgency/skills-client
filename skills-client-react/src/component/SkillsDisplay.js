@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SkillsDisplayJS } from '@skilltree/skills-client-js';
 import PropTypes from 'prop-types';
 import './SkillsDisplay.css';
@@ -26,7 +26,7 @@ const destroy = (cd) => {
 };
 // eslint-disable-next-line object-curly-newline
 const SkillDisplay = ({ theme = null, version = null, userId = null, options = {} }) => {
-  React.useEffect(() => {
+  useEffect(() => {
     clientDisplay = new SkillsDisplayJS({
       options,
       theme,

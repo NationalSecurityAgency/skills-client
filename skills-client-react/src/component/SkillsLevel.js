@@ -16,12 +16,12 @@
 
 import { SkillsLevelJS } from '@skilltree/skills-client-js';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 // eslint-disable-next-line object-curly-newline
 const SkillsLevel = ({ projectId }) => {
-  React.useEffect(() => {
+  useEffect(() => {
     const skillLevel = new SkillsLevelJS(projectId);
     skillLevel.attachTo('.skills-level-text-display');
   }, [projectId]);
