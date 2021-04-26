@@ -63,6 +63,34 @@ const connectWebsocket = (serviceUrl) => {
   }
 };
 
+const retryQueueKey = 'skillTreeRetryQueue';
+const defaultMaxRetryQueueSize = 100;
+const defaultRetryInterval = 60000;
+const retryErrors = function retryErrors() {
+  const retryQueue = JSON.parse(localStorage.getItem(retryQueueKey));
+  localStorage.removeItem(retryQueueKey);
+  if (retryQueue !== null) {
+    retryQueue.forEach((item) => {
+      log.info(`SkillsClient::SkillsReporter::retryErrors retrying skillId [${item.skillId}], timestamp [${item.timestamp}]`);
+      this.reportSkill(item.skillId, 0, item.timestamp);
+    });
+  }
+};
+
+const addToRetryQueue = (skillId, timestamp, xhr, maxQueueSize) => {
+  log.info(`SkillsClient::SkillsReporter::addToRetryQueue [${skillId}], status [${xhr.status}]`);
+  let retryQueue = JSON.parse(localStorage.getItem(retryQueueKey));
+  if (retryQueue == null) {
+    retryQueue = [];
+  }
+  if (retryQueue.length < maxQueueSize) {
+    retryQueue.push({ skillId, timestamp });
+    localStorage.setItem(retryQueueKey, JSON.stringify(retryQueue));
+  } else {
+    log.warn(`Max retry queue size has been reached (${maxQueueSize}), Unable to retry skillId [${skillId}]`);
+  }
+};
+
 const authenticateAndRetry = function authenticateAndRetry(userSkillId, attemptCount, resolve, reject) {
   log.info(`SkillsClient::SkillsReporter::authenticateAndRetry [${userSkillId}] attemptCount [${attemptCount}]`);
   skillsService.getAuthenticationToken(SkillsConfiguration.getAuthenticator(), SkillsConfiguration.getServiceUrl(), SkillsConfiguration.getProjectId())
@@ -83,9 +111,11 @@ const authenticateAndRetry = function authenticateAndRetry(userSkillId, attemptC
 
 const SkillsReporter = {
   configure({
-    notifyIfSkillNotApplied,
+    notifyIfSkillNotApplied, retryInterval = defaultRetryInterval, maxRetryQueueSize = defaultMaxRetryQueueSize,
   }) {
     this.notifyIfSkillNotApplied = notifyIfSkillNotApplied;
+    this.retryInterval = retryInterval;
+    this.maxRetryQueueSize = maxRetryQueueSize;
   },
 
   addSuccessHandler(handler) {
@@ -103,9 +133,14 @@ const SkillsReporter = {
     errorHandlerCache.add(handler);
     log.info(`SkillsClient::SkillsReporter::added error handler [${handler ? handler.toString() : handler}]`);
   },
-  reportSkill(userSkillId, count = undefined) {
+  reportSkill(userSkillId, count = undefined, timestamp = Date.now()) {
     log.info(`SkillsClient::SkillsReporter::reporting skill [${userSkillId}] count [${count}]`);
     SkillsConfiguration.validate();
+    if (!this.retryEnabled) {
+      log.info('SkillsClient::SkillsReporter::Enabling retries...');
+      setInterval(() => { retryErrors.call(this); }, this.retryInterval || defaultRetryInterval);
+      this.retryEnabled = true;
+    }
     if (count >= 25) {
       const errorMessage = 'Unable to authenticate after 25 attempts';
       log.error(`SkillsReporter::${errorMessage}`);
@@ -133,6 +168,7 @@ const SkillsReporter = {
           // some browsers don't understand XMLHttpRequest.Done, which should be 4
           if (xhr.readyState === 4) {
             if (xhr.status !== 200 && xhr.status !== 0 && xhr.status !== 401) {
+              addToRetryQueue(userSkillId, timestamp, xhr, this.maxRetryQueueSize || defaultMaxRetryQueueSize);
               reject(JSON.parse(xhr.response));
             } else if ((xhr.status === 401 || xhr.status === 0) && !SkillsConfiguration.isPKIMode()) {
               authenticateAndRetry.call(this, userSkillId, countInternal, resolve, reject);
@@ -142,15 +178,10 @@ const SkillsReporter = {
           }
         };
 
-        if (this.notifyIfSkillNotApplied) {
-          const body = JSON.stringify({ notifyIfSkillNotApplied: this.notifyIfSkillNotApplied });
-          xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-          xhr.send(body);
-          log.info('SkillsClient::SkillsReporter::reporting skill request sent with notifyIfSkillNotApplied=true');
-        } else {
-          xhr.send();
-          log.info('SkillsClient::SkillsReporter::reporting skill request sent with notifyIfSkillNotApplied=false');
-        }
+        const body = JSON.stringify({ timestamp, notifyIfSkillNotApplied: this.notifyIfSkillNotApplied });
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xhr.send(body);
+        log.info(`SkillsClient::SkillsReporter::reporting skill request sent: ${body}`);
       }
     });
 
