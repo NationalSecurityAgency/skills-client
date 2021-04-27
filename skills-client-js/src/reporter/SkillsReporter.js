@@ -72,18 +72,19 @@ const retryErrors = function retryErrors() {
   if (retryQueue !== null) {
     retryQueue.forEach((item) => {
       log.info(`SkillsClient::SkillsReporter::retryErrors retrying skillId [${item.skillId}], timestamp [${item.timestamp}]`);
-      this.reportSkill(item.skillId, 0, item.timestamp);
+      this.reportSkill(item.skillId, 0, item.timestamp, true);
     });
   }
 };
 
-const addToRetryQueue = (skillId, timestamp, xhr, maxQueueSize) => {
+const addToRetryQueue = (skillId, timeReported, xhr, maxQueueSize) => {
   log.info(`SkillsClient::SkillsReporter::addToRetryQueue [${skillId}], status [${xhr.status}]`);
   let retryQueue = JSON.parse(localStorage.getItem(retryQueueKey));
   if (retryQueue == null) {
     retryQueue = [];
   }
   if (retryQueue.length < maxQueueSize) {
+    const timestamp = (timeReported == null) ? Date.now() : timeReported;
     retryQueue.push({ skillId, timestamp });
     localStorage.setItem(retryQueueKey, JSON.stringify(retryQueue));
   } else {
@@ -133,7 +134,7 @@ const SkillsReporter = {
     errorHandlerCache.add(handler);
     log.info(`SkillsClient::SkillsReporter::added error handler [${handler ? handler.toString() : handler}]`);
   },
-  reportSkill(userSkillId, count = undefined, timestamp = Date.now()) {
+  reportSkill(userSkillId, count = undefined, timestamp = null, isRetry = false) {
     log.info(`SkillsClient::SkillsReporter::reporting skill [${userSkillId}] count [${count}]`);
     SkillsConfiguration.validate();
     if (!this.retryEnabled) {
@@ -182,7 +183,7 @@ const SkillsReporter = {
           }
         };
 
-        const body = JSON.stringify({ timestamp, notifyIfSkillNotApplied: this.notifyIfSkillNotApplied });
+        const body = JSON.stringify({ timestamp, notifyIfSkillNotApplied: this.notifyIfSkillNotApplied, isRetry });
         xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
         xhr.send(body);
         log.info(`SkillsClient::SkillsReporter::reporting skill request sent: ${body}`);
