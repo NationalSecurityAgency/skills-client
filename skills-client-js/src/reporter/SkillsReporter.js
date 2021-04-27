@@ -167,10 +167,14 @@ const SkillsReporter = {
         xhr.onreadystatechange = () => {
           // some browsers don't understand XMLHttpRequest.Done, which should be 4
           if (xhr.readyState === 4) {
-            if (xhr.status !== 200 && xhr.status !== 0 && xhr.status !== 401) {
+            if (xhr.status !== 200 && xhr.status !== 401) {
               addToRetryQueue(userSkillId, timestamp, xhr, this.maxRetryQueueSize || defaultMaxRetryQueueSize);
-              reject(JSON.parse(xhr.response));
-            } else if ((xhr.status === 401 || xhr.status === 0) && !SkillsConfiguration.isPKIMode()) {
+              if (xhr.response) {
+                reject(JSON.parse(xhr.response));
+              } else {
+                reject(new Error(`Error occurred reporting skill [${userSkillId}], status returned [${xhr.status}]`));
+              }
+            } else if ((xhr.status === 401) && !SkillsConfiguration.isPKIMode()) {
               authenticateAndRetry.call(this, userSkillId, countInternal, resolve, reject);
             } else {
               resolve(JSON.parse(xhr.response));
