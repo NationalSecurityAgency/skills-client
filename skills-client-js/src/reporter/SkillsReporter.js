@@ -64,7 +64,7 @@ const connectWebsocket = (serviceUrl) => {
 };
 
 const retryQueueKey = 'skillTreeRetryQueue';
-const defaultMaxRetryQueueSize = 100;
+const defaultMaxRetryQueueSize = 1000;
 const defaultRetryInterval = 60000;
 const retryErrors = function retryErrors() {
   const retryQueue = JSON.parse(localStorage.getItem(retryQueueKey));
