@@ -32,10 +32,12 @@ limitations under the License.
   <script type="text/javascript">
     const params = new URLSearchParams(window.location.search);
     const isSummaryOnly = params.get('isSummaryOnly') ? JSON.parse(params.get('isSummaryOnly')) : false;
+    const internalBackButton = params.get('internalBackButton') ? JSON.parse(params.get('internalBackButton')) : false;
 
     const options = {
       autoScrollStrategy: 'top-of-page',
       isSummaryOnly,
+      internalBackButton,
     };
     const themes = {
       default: {
@@ -84,6 +86,12 @@ limitations under the License.
       params.set('isSummaryOnly', !options.isSummaryOnly);
       window.location.search = params;
     };
+
+    const setInternalBackButton = () => {
+      const params = new URLSearchParams(window.location.search);
+      params.set('internalBackButton', !options.internalBackButton);
+      window.location.search = params;
+    }
 
     const getTheme = () => {
       const params = new URLSearchParams(window.location.search);
@@ -143,10 +151,10 @@ limitations under the License.
 
         <ul class="navbar-nav flex-row mr-auto">
           <li class="nav-item pr-3">
-            <a class="nav-link" href="index.html">Report Skill Events</a>
+            <a class="nav-link" href="index.html" data-cy="reportSkillsLink">Report Skill Events</a>
           </li>
           <li class="nav-item active pr-3">
-            <a class="nav-link" href="javascript:void(0)">User Display</a>
+            <a class="nav-link" href="javascript:void(0)" data-cy="userDisplayLink">User Display</a>
           </li>
         </ul>
       </nav>
@@ -168,6 +176,10 @@ limitations under the License.
           <div class="d-inline custom-control custom-checkbox mx-2">
             <input type="checkbox" class="custom-control-input" id="displayTypeControl" onclick="setDisplayType()" checked>
             <label class="custom-control-label" for="displayTypeControl">Summary Only</label>
+          </div>
+          <div class="d-inline custom-control custom-checkbox mx-2">
+            <input type="checkbox" class="custom-control-input" id="internalBackButtonControl" onclick="setInternalBackButton()" checked>
+            <label class="custom-control-label" for="internalBackButtonControl">Internal Back Button</label>
           </div>
 
         </div>
@@ -192,4 +204,5 @@ limitations under the License.
 
 <script type="text/javascript">
   document.getElementById("displayTypeControl").checked = isSummaryOnly;
+  document.getElementById("internalBackButtonControl").checked = internalBackButton;
 </script>

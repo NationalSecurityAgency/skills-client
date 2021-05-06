@@ -287,4 +287,89 @@ context("Native JS Tests", () => {
         cy.contains('Level 1')
     })
 
+    if (Utils.skillsServiceVersionLaterThan('1.5.0')) {
+        it('internal back button when when returning from an external page', () => {
+            cy.createDefaultTinyProject()
+            cy.intercept(Cypress.env('tokenUrl')).as('getToken')
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+
+            // visit client display
+            cy.visit('/native/clientDisplay.html?internalBackButton=true');
+            // cy.wait('@getToken')
+
+            cy.clientDisplay(true).find('[data-cy=back]').should('not.exist');
+            cy.clientDisplay().contains('User Skills');
+
+            // navigate to Rank Overview that contains the back button
+            cy.clientDisplay().find('[data-cy=myRank]').click();
+            cy.clientDisplay().contains('Rank Overview');
+            cy.clientDisplay().find('[data-cy=back]').should('exist');
+
+            // now visit the "Report Skills" (external) page
+            cy.get('[data-cy=reportSkillsLink]').click()
+            cy.contains('Report Skills Examples');
+
+            // switch back to the the client display
+            cy.get('[data-cy=userDisplayLink]').click()
+        });
+    }
+
+    if (Utils.skillsServiceVersionLaterThan('1.5.0')) {
+        it('internal back button when when returning from an external page - multiple layers deep', () => {
+            cy.createDefaultTinyProject()
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+
+            // visit client display
+            cy.visit('/native/clientDisplay.html?internalBackButton=true');
+
+            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
+            cy.clientDisplay().contains('User Skills');
+
+            // to subject page
+            cy.cdClickSubj(0, 'Subject 0');
+
+            // navigate to Rank Overview that contains the back button
+            cy.clientDisplay().find('[data-cy=myRank]').click();
+            cy.clientDisplay().contains('Rank Overview');
+            cy.clientDisplay().find('[data-cy=back]').should('exist');
+
+            // click the back button and verify that we are still in the
+            // client display (Subject page)
+            cy.cdBack('Subject 0');
+
+            // then back one more time and we should be back on the client display home page
+            cy.cdBack('User Skills');
+        });
+    }
+
+    if (Utils.skillsServiceVersionLaterThan('1.5.0')) {
+        it('browser back button works correctly when internal back button is not present', () => {
+            cy.createDefaultTinyProject()
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+
+            // visit client display
+            cy.visit("/native/clientDisplay.html?internalBackButton=false");
+
+            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
+            cy.clientDisplay().contains('User Skills');
+
+            // to subject page
+            cy.cdClickSubj(0, 'Subject 0');
+
+            // navigate to Rank Overview and that it does NOT contains the internal back button
+            cy.clientDisplay().find('[data-cy=myRank]').click();
+            cy.clientDisplay().contains('Rank Overview');
+            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
+
+            // click the browser back button and verify that we are still in the
+            // client display (Subject page)
+            cy.go('back')  // browser back button
+            cy.clientDisplay().contains('Subject 0');
+
+            // then back one more time and we should be back on the client display home page
+            cy.go('back')  // browser back button
+            cy.clientDisplay().contains('User Skills');
+        });
+    }
+
 });

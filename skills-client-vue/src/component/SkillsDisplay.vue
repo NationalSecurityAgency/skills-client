@@ -38,6 +38,7 @@ limitations under the License.
             'autoScrollStrategy',
             'isSummaryOnly',
             'scrollTopOffset',
+            'internalBackButton',
           ];
           const options = { ...defaults, ...value };
           const passedOptions = Object.keys(options);

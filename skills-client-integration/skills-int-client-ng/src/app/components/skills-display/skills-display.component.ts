@@ -40,6 +40,7 @@ export class SkillsDisplayComponent implements OnInit {
       this.displayOptions = {
         autoScrollStrategy: 'top-of-page',
         isSummaryOnly: params['isSummaryOnly'] ? JSON.parse(params['isSummaryOnly']) : false,
+        internalBackButton: params['internalBackButton'] ? JSON.parse(params['internalBackButton']) : false,
       };
       this.selectedTheme = params['themeName'] ? this.findTheme(params['themeName']) : this.themes[0];
     });
@@ -66,6 +67,11 @@ export class SkillsDisplayComponent implements OnInit {
     this.refreshPage();
   }
 
+  setInternalBackButtonUrlParam() {
+    this.displayOptions.internalBackButton = !this.displayOptions.internalBackButton;
+    this.router.navigate(['angular/showSkills'], { queryParams: { internalBackButton: this.displayOptions.internalBackButton }, queryParamsHandling: 'merge' });
+    this.refreshPage();
+  }
   scrollTo(elementId: string) {
     this.showSampleCode = true;
     setTimeout(() => {
@@ -77,7 +83,7 @@ export class SkillsDisplayComponent implements OnInit {
     let sampleCode = `
 <template>
    <skills-level /> <!-- You can display the user's current Level using the SkillsLevel component -->
-   <skills-display :theme="selectedTheme" ${this.displayOptions.isSummaryOnly ? ':options="displayOptions"' : ''}/>
+   <skills-display :theme="selectedTheme" ${(this.displayOptions.isSummaryOnly || this.displayOptions.internalBackButton) ? ':options="displayOptions"' : ''}/>
 </template>
 
 <script>

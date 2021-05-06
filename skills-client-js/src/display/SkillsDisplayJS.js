@@ -65,6 +65,7 @@ export default class SkillsDisplayJS {
         theme: this.theme,
         minHeight: `${minHeight}px`,
         isSummaryOnly: this.options.isSummaryOnly,
+        internalBackButton: this.options.internalBackButton,
       },
     });
     const iframe = document.querySelector(`.${className}`);
@@ -81,8 +82,8 @@ export default class SkillsDisplayJS {
         iframeContainer.height = adjustedHeight;
         iframeContainer.style.height = `${adjustedHeight}px`;
       });
-      child.on('route-changed', () => {
-        log.debug('SkillsClient::SkillsDisplayJS::route-changed');
+      child.on('route-changed', (newPath) => {
+        log.debug(`SkillsClient::SkillsDisplayJS::route-changed - newPath [${newPath}]`);
         if (!this.options.disableAutoScroll) {
           let scrollToElement = iframeContainer;
 
@@ -185,6 +186,7 @@ export default class SkillsDisplayJS {
       'autoScrollStrategy',
       'isSummaryOnly',
       'scrollTopOffset',
+      'internalBackButton',
     ];
     const toTest = { ...this._options, ...options };
     const passedOptions = Object.keys(toTest);
