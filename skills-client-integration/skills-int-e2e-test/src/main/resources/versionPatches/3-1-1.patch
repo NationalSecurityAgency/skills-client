@@ -92,7 +92,7 @@ index 38151c4..5a95fbe 100644
 
      it('skill display - theme', () => {
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
-index d861deb..4037779 100644
+index d861deb..49ef480 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 +++ b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 @@ -207,7 +207,7 @@ context('Vue Tests', () => {
@@ -149,6 +149,24 @@ index d861deb..4037779 100644
          });*!/
      })*/
 
+@@ -418,7 +418,7 @@ context('Vue Tests', () => {
+             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+ 
+             // visit client display
+-            cy.visit('/vuejs#/showSkills?refreshPage=false')
++            cy.visit('/vuejs#/showSkills?refreshPage=false&internalBackButton=true')
+             cy.wait('@getToken')
+ 
+             cy.wrapIframe().find('[data-cy=back]').should('not.exist');
+@@ -445,7 +445,7 @@ context('Vue Tests', () => {
+             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+ 
+             // visit client display
+-            cy.visit('/vuejs#/showSkills?refreshPage=false')
++            cy.visit('/vuejs#/showSkills?refreshPage=false&internalBackButton=true')
+             cy.wait('@getToken')
+ 
+             cy.wrapIframe().find('[data-cy=back]').should('not.exist');
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/support/commands.js b/skills-client-integration/skills-int-e2e-test/cypress/support/commands.js
 index d32ca41..d66fb30 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/support/commands.js
