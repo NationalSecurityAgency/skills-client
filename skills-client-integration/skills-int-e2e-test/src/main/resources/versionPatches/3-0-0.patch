@@ -1,3 +1,30 @@
+diff --git a/skills-client-integration/skills-int-client-vue/package.json b/skills-client-integration/skills-int-client-vue/package.json
+index f69bb27..e4a303d 100644
+--- a/skills-client-integration/skills-int-client-vue/package.json
++++ b/skills-client-integration/skills-int-client-vue/package.json
+@@ -50,18 +50,14 @@
+             "plugin:vue/essential",
+             "eslint:recommended"
+         ],
+-        "rules": {
+-            
+-        },
++        "rules": {},
+         "parserOptions": {
+             "parser": "babel-eslint"
+         }
+     },
+     "postcss": {
+         "plugins": {
+-            "autoprefixer": {
+-                
+-            }
++            "autoprefixer": {}
+         }
+     }
+-}
+\ No newline at end of file
++}
 diff --git a/skills-client-integration/skills-int-client-vue/src/components/skillsDisplay/ShowSkills.vue b/skills-client-integration/skills-int-client-vue/src/components/skillsDisplay/ShowSkills.vue
 index fc8cce4..070cf4f 100644
 --- a/skills-client-integration/skills-int-client-vue/src/components/skillsDisplay/ShowSkills.vue
@@ -246,3 +273,23 @@ index 8664332..7209ea6 100644
      "license-check-and-add": "3.0.4",
      "license-checker": "25.0.1",
      "semver": "7.1.2",
+diff --git a/skills-client-js/src/display/SkillsDisplayJS.js b/skills-client-js/src/display/SkillsDisplayJS.js
+index 59997f4..1fc7857 100644
+--- a/skills-client-js/src/display/SkillsDisplayJS.js
++++ b/skills-client-js/src/display/SkillsDisplayJS.js
+@@ -61,6 +61,7 @@ export default class SkillsDisplayJS {
+         theme: this.theme,
+         minHeight: `${minHeight}px`,
+         isSummaryOnly: this.options.isSummaryOnly,
++        internalBackButton: this.options.internalBackButton,
+       },
+     });
+     const iframe = document.querySelector(`.${className}`);
+@@ -162,6 +163,7 @@ export default class SkillsDisplayJS {
+       'autoScrollStrategy',
+       'isSummaryOnly',
+       'scrollTopOffset',
++      'internalBackButton',
+     ];
+     const toTest = { ...this._options, ...options };
+     const passedOptions = Object.keys(toTest);

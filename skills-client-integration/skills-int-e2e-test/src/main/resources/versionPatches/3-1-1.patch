@@ -235,3 +235,23 @@ index d32ca41..d66fb30 100644
  
    // back button should not exist on the home page, whose title is the default value
    if (expectedTitle === 'User Skills') {
+diff --git a/skills-client-js/src/display/SkillsDisplayJS.js b/skills-client-js/src/display/SkillsDisplayJS.js
+index f1df8ac..eb8db51 100644
+--- a/skills-client-js/src/display/SkillsDisplayJS.js
++++ b/skills-client-js/src/display/SkillsDisplayJS.js
+@@ -65,6 +65,7 @@ export default class SkillsDisplayJS {
+         theme: this.theme,
+         minHeight: `${minHeight}px`,
+         isSummaryOnly: this.options.isSummaryOnly,
++        internalBackButton: this.options.internalBackButton,
+       },
+     });
+     const iframe = document.querySelector(`.${className}`);
+@@ -185,6 +186,7 @@ export default class SkillsDisplayJS {
+       'autoScrollStrategy',
+       'isSummaryOnly',
+       'scrollTopOffset',
++      'internalBackButton',
+     ];
+     const toTest = { ...this._options, ...options };
+     const passedOptions = Object.keys(toTest);
