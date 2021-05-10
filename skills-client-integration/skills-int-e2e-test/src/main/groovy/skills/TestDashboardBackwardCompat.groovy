@@ -85,7 +85,7 @@ class TestDashboardBackwardCompat {
         Resource found = resources.find { it.filename.endsWith(patchFile) }
         if (found) {
             FileUtils.copyToFile(found.inputStream, new File(workDir, patchFile))
-            new ProcessRunner(loc: workDir).run("git apply ${patchFile}")
+            new ProcessRunner(loc: workDir).run("git apply --verbose ${patchFile}")
         } else{
             log.info("Patch file [${patchFile} not found, contining with applying any patches.")
         }
