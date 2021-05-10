@@ -99,7 +99,7 @@ export default class SkillsDisplayJS {
           // sent as a link the proper route will be set in the child iframe
           const queryParams = new URLSearchParams(window.location.search);
           queryParams.set(skillsClientDisplayPath, newPath);
-          window.history.replaceState(null, null, `?${queryParams.toString()}${window.location.hash}`);
+          window.history.replaceState(null, null, `${window.location.pathname}?${queryParams.toString()}${window.location.hash}`);
         }
 
         if (!this.options.disableAutoScroll) {

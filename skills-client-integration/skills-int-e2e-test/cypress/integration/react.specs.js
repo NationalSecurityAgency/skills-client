@@ -315,4 +315,18 @@ context('React Tests', () => {
         });
     }
 
+    if (Utils.skillsServiceVersionLaterThan('1.5.0')) {
+        it('deep link and reload', () => {
+            cy.createDefaultTinyProject()
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+
+            // navigate to Rank Overview via direct link
+            cy.visit('/react/index.html?skillsClientDisplayPath=%2Frank#/showSkills');
+            cy.clientDisplay().contains('Rank Overview');
+
+            // reload and confirm we are still on Rank Overview page
+            cy.reload();
+            cy.clientDisplay().contains('Rank Overview');
+        });
+    }
 })
