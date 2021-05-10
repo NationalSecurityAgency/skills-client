@@ -22,6 +22,8 @@ import skillsService from '../SkillsService';
 
 let uniqueId = 0;
 
+const skillsClientDisplayPath = 'skillsClientDisplayPath';
+
 export default class SkillsDisplayJS {
   /* eslint-disable object-curly-newline */
   constructor({ options, theme, version, userId } = {}) {
@@ -74,6 +76,13 @@ export default class SkillsDisplayJS {
     iframeContainer.height = 0;
     iframeContainer.style.height = '0px';
 
+    const updateChildRoute = () => {
+      const previousLocation = this._getClientDisplayPath();
+      if (!(previousLocation == null)) {
+        this._childFrame.call('navigate', previousLocation);
+      }
+    };
+
     handshake.then((child) => {
       this._childFrame = child;
       child.on('height-changed', (data) => {
@@ -84,6 +93,15 @@ export default class SkillsDisplayJS {
       });
       child.on('route-changed', (newPath) => {
         log.debug(`SkillsClient::SkillsDisplayJS::route-changed - newPath [${newPath}]`);
+
+        if (!(newPath == null) && !newPath.endsWith('index.html')) {
+          // put the new path in the URL so that when the page is reloaded or
+          // sent as a link the proper route will be set in the child iframe
+          const queryParams = new URLSearchParams(window.location.search);
+          queryParams.set(skillsClientDisplayPath, newPath);
+          window.history.replaceState(null, null, `?${queryParams.toString()}${window.location.hash}`);
+        }
+
         if (!this.options.disableAutoScroll) {
           let scrollToElement = iframeContainer;
 
@@ -111,12 +129,14 @@ export default class SkillsDisplayJS {
           this.authenticationPromise = skillsService.getAuthenticationToken(this.configuration.authenticator, this.configuration.serviceUrl, this.configuration.projectId)
             .then((result) => {
               child.call('updateAuthenticationToken', result);
+              updateChildRoute();
             })
             .finally(() => {
               this.authenticationPromise = null;
             });
         } else if (isPkiMode) {
           child.call('updateAuthenticationToken', 'pki');
+          updateChildRoute();
         }
       });
     });
@@ -194,6 +214,12 @@ export default class SkillsDisplayJS {
     if (invalidOption) {
       throw new Error(`Invalid option passed to SkillsDisplayJS ["${invalidOption}"]`);
     }
+  }
+
+  _getClientDisplayPath() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const clientDisplayPath = urlParams.get(skillsClientDisplayPath);
+    return clientDisplayPath;
   }
 
   destroy() {
