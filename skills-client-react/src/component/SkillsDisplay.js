@@ -54,6 +54,7 @@ SkillDisplay.propTypes = {
     disableAutoScroll: PropTypes.bool,
     autoScrollStrategy: PropTypes.string,
     isSummaryOnly: PropTypes.bool,
+    internalBackButton: PropTypes.bool,
     scrollTopOffset: PropTypes.number,
   }),
 };

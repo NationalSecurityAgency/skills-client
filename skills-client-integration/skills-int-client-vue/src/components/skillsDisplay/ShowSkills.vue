@@ -34,6 +34,11 @@ limitations under the License.
                 switch>
             Summary Only
         </b-form-checkbox>
+      <b-form-checkbox class="d-inline-block ml-3 border-right pr-2"
+                       v-model="displayOptions.internalBackButton"
+                       switch>
+        Internal Back Button
+      </b-form-checkbox>
 
       <b-link
         class="ml-2"
@@ -112,6 +117,7 @@ limitations under the License.
         displayOptions: {
           autoScrollStrategy: 'top-of-page',
           isSummaryOnly: this.$route.query.isSummaryOnly ? JSON.parse(this.$route.query.isSummaryOnly) : false,
+          internalBackButton: this.$route.query.internalBackButton ? JSON.parse(this.$route.query.internalBackButton) : false,
         },
         showSampleCode: false,
         themes: this.getThemes(),
@@ -138,6 +144,9 @@ limitations under the License.
       'displayOptions.isSummaryOnly'() {
         this.setIsSummaryOnlyUrlParam();
       },
+      'displayOptions.internalBackButton'() {
+        this.setInternalBackButtonUrlParam();
+      },
     },
     methods: {
       getThemes() {
@@ -159,7 +168,19 @@ limitations under the License.
         this.$router.push({
           query: {
             themeName: this.selectedTheme.name,
-            isSummaryOnly: this.displayOptions.isSummaryOnly
+            isSummaryOnly: this.displayOptions.isSummaryOnly,
+            internalBackButton: this.displayOptions.internalBackButton,
+          }
+        });
+        this.refreshPage();
+      },
+
+      setInternalBackButtonUrlParam() {
+        this.$router.push({
+          query: {
+            themeName: this.selectedTheme.name,
+            isSummaryOnly: this.displayOptions.isSummaryOnly,
+            internalBackButton: this.displayOptions.internalBackButton,
           }
         });
         this.refreshPage();

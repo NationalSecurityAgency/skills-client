@@ -256,4 +256,77 @@ context('React Tests', () => {
         cy.visit('/react/index.html#/')
         cy.wait('@reportClientVersion')
     })
+
+    if (Utils.skillsServiceVersionLaterThan('1.5.0')) {
+        it('internal back button when when returning from an external page - multiple layers deep', () => {
+            cy.createDefaultTinyProject()
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+
+            // visit client display
+            cy.visit('/react/index.html#/showSkills?internalBackButton=true');
+
+            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
+            cy.clientDisplay().contains('User Skills');
+
+            // to subject page
+            cy.cdClickSubj(0, 'Subject 0');
+
+            // navigate to Rank Overview that contains the back button
+            cy.clientDisplay().find('[data-cy=myRank]').click();
+            cy.clientDisplay().contains('Rank Overview');
+            cy.clientDisplay().find('[data-cy=back]').should('exist');
+
+            // click the back button and verify that we are still in the
+            // client display (Subject page)
+            cy.cdBack('Subject 0');
+
+            // then back one more time and we should be back on the client display home page
+            cy.cdBack('User Skills');
+        });
+    }
+
+    if (Utils.skillsServiceVersionLaterThan('1.5.0')) {
+        it('browser back button works correctly when internal back button is not present', () => {
+            cy.createDefaultTinyProject()
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+
+            // visit client display
+            cy.visit('/react/index.html#/showSkills?internalBackButton=false');
+
+            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
+            cy.clientDisplay().contains('User Skills');
+
+            // to subject page
+            cy.cdClickSubj(0, 'Subject 0');
+
+            // navigate to Rank Overview and that it does NOT contains the internal back button
+            cy.clientDisplay().find('[data-cy=myRank]').click();
+            cy.clientDisplay().contains('Rank Overview');
+            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
+
+            // click the browser back button and verify that we are still in the
+            // client display (Subject page)
+            cy.go('back')  // browser back button
+            cy.clientDisplay().contains('Subject 0');
+
+            // then back one more time and we should be back on the client display home page
+            cy.go('back')  // browser back button
+            cy.clientDisplay().contains('User Skills');
+        });
+    }
+
+    if (Utils.skillsServiceVersionLaterThan('1.5.0')) {
+        it('deep link and reload', () => {
+            cy.createDefaultTinyProject()
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+
+            // navigate to Rank Overview via direct link
+            cy.visit('/react/index.html?skillsClientDisplayPath=%2Frank#/showSkills');
+            cy.clientDisplay().contains('Rank Overview');
+
+            // reload and confirm we are still on Rank Overview page
+            cy.reload();
+            cy.clientDisplay().contains('Rank Overview');
+        });
+    }
 })

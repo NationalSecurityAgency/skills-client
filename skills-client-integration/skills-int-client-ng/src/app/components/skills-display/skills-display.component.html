@@ -30,9 +30,15 @@ limitations under the License.
       <label class="custom-control-label" for="customSwitch1">Summary Only</label>
     </div>
 
+    <div class="custom-control custom-switch d-inline-block ml-3 border-right pr-2">
+      <input type="checkbox" class="custom-control-input" id="customSwitch2" (click)="setInternalBackButtonUrlParam()"
+             [checked]="displayOptions.internalBackButton">
+      <label class="custom-control-label" for="customSwitch2">Internal Back Button</label>
+    </div>
+
     <a href="javascript:void(0)" class="ml-2" (click)="scrollTo('sample-code')">Show Source</a>
   </div>
-  
+
   <div class="border rounded">
     <skills-display *ngIf="selectedTheme" [options]="displayOptions" [version]="version" [theme]="selectedTheme.theme">
     </skills-display>

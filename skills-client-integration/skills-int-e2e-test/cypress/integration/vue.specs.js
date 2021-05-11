@@ -20,8 +20,10 @@ const homePage = '/vuejs#/'
 context('Vue Tests', () => {
 
     const laterThan_1_4_0 = Utils.skillsServiceVersionLaterThan('1.4.0');
+    const laterThan_1_5_0 = Utils.skillsServiceVersionLaterThan('1.5.0');
     const missingSkillErrorCode = laterThan_1_4_0 ? 404 : 400;
     const noThemeBackground = laterThan_1_4_0 ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)';
+    const clientDisplayWithInternalBackButtonParams = laterThan_1_5_0 ? '?refreshPage=false&internalBackButton=true' : '?refreshPage=false';
 
     it('level component should be reactive', () => {
         // cy.window().then(win => {
@@ -410,7 +412,7 @@ context('Vue Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
-            cy.visit('/vuejs#/showSkills?refreshPage=false')
+            cy.visit('/vuejs#/showSkills'+clientDisplayWithInternalBackButtonParams)
             // cy.wait('@getToken')
 
             cy.clientDisplay(true).find('[data-cy=back]').should('not.exist');
@@ -436,7 +438,7 @@ context('Vue Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
-            cy.visit('/vuejs#/showSkills?refreshPage=false')
+            cy.visit('/vuejs#/showSkills'+clientDisplayWithInternalBackButtonParams)
 
             cy.clientDisplay().find('[data-cy=back]').should('not.exist');
             cy.clientDisplay().contains('User Skills');
@@ -467,5 +469,49 @@ context('Vue Tests', () => {
         });
     }
 
+    if (Utils.skillsServiceVersionLaterThan('1.5.0')) {
+        it('browser back button works correctly when internal back button is not present', () => {
+            cy.createDefaultTinyProject()
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+
+            // visit client display
+            cy.visit('/vuejs#/showSkills?internalBackButton=false');
+
+            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
+            cy.clientDisplay().contains('User Skills');
+
+            // to subject page
+            cy.cdClickSubj(0, 'Subject 0');
+
+            // navigate to Rank Overview and that it does NOT contains the internal back button
+            cy.clientDisplay().find('[data-cy=myRank]').click();
+            cy.clientDisplay().contains('Rank Overview');
+            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
+
+            // click the browser back button and verify that we are still in the
+            // client display (Subject page)
+            cy.go('back')  // browser back button
+            cy.clientDisplay().contains('Subject 0');
+
+            // then back one more time and we should be back on the client display home page
+            cy.go('back')  // browser back button
+            cy.clientDisplay().contains('User Skills');
+        });
+    }
+
+    if (Utils.skillsServiceVersionLaterThan('1.5.0')) {
+        it('deep link and reload', () => {
+            cy.createDefaultTinyProject()
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+
+            // navigate to Rank Overview via direct link
+            cy.visit('/vuejs/?skillsClientDisplayPath=%2Frank#/showSkills?refreshPage=true');
+            cy.clientDisplay().contains('Rank Overview');
+
+            // reload and confirm we are still on Rank Overview page
+            cy.reload();
+            cy.clientDisplay().contains('Rank Overview');
+        });
+    }
 
 })

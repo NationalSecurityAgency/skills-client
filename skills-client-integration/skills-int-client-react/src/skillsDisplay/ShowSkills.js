@@ -63,6 +63,15 @@ const ShowSkill = () => {
         }
         return false;
     });
+
+    const [internalBackButton, setInternalBackButton] = React.useState(() => {
+        const urlInternalBackButton = getUrlParam('internalBackButton');
+        if ( urlInternalBackButton ) {
+            return JSON.parse(urlInternalBackButton)
+        }
+        return false;
+    });
+
     const [skillsVersion] = React.useState(() => {
         const skillsVersion = getUrlParam("skillsVersion");
         if(skillsVersion) {
@@ -71,9 +80,10 @@ const ShowSkill = () => {
         return '';
     });
 
-    const [options, setOptions] = React.useState({ isSummaryOnly: isSummaryOnly, autoScrollStrategy: 'top-offset', scrollTopOffset: 110 });
+    const [options, setOptions] = React.useState({ isSummaryOnly: isSummaryOnly, internalBackButton: internalBackButton, autoScrollStrategy: 'top-offset', scrollTopOffset: 110 });
 
     const previousIsSummaryOnly = usePrevious(isSummaryOnly);
+    const previousInternalBackButton = usePrevious(internalBackButton);
     const previousSelectedTheme = usePrevious(selectedTheme);
     const previousSkillsVersion = usePrevious(skillsVersion);
 
@@ -87,11 +97,11 @@ const ShowSkill = () => {
             history.push({pathname:history.location.pathname, search: params});
         };
 
-        if (isSummaryOnly !== previousIsSummaryOnly || selectedTheme !== previousSelectedTheme) {
-            saveUrlParam({'isSummaryOnly': isSummaryOnly, 'themeName': selectedTheme.name, 'skillsVersion': skillsVersion});
+        if (isSummaryOnly !== previousIsSummaryOnly || internalBackButton !== previousInternalBackButton || selectedTheme !== previousSelectedTheme) {
+            saveUrlParam({'isSummaryOnly': isSummaryOnly, 'internalBackButton': internalBackButton, 'themeName': selectedTheme.name, 'skillsVersion': skillsVersion});
         }
 
-    }, [isSummaryOnly, selectedTheme, skillsVersion, previousIsSummaryOnly, previousSelectedTheme, previousSkillsVersion, history]);
+    }, [isSummaryOnly, internalBackButton, selectedTheme, skillsVersion, previousIsSummaryOnly, previousInternalBackButton, previousSelectedTheme, previousSkillsVersion, history]);
 
     const sampleCodeRef = React.createRef();
     const executeScroll = () => scrollToRef(sampleCodeRef);
@@ -121,7 +131,11 @@ const ShowSkill = () => {
                 </DropdownButton>
                 <Button variant={isSummaryOnly ? 'primary' : 'outline-primary'}
                         onClick={() => { setIsSummaryOnly(!isSummaryOnly);
-                        setOptions({isSummaryOnly:!isSummaryOnly,autoScrollStrategy: 'top-offset', scrollTopOffset: 110}) }}>Summary Only</Button>
+                        setOptions({isSummaryOnly:!isSummaryOnly,internalBackButton:internalBackButton,autoScrollStrategy: 'top-offset', scrollTopOffset: 110}) }}>Summary Only</Button>
+
+                <Button variant={internalBackButton ? 'primary' : 'outline-primary'}
+                        onClick={() => { setInternalBackButton(!internalBackButton);
+                            setOptions({isSummaryOnly:isSummaryOnly,internalBackButton:!internalBackButton,autoScrollStrategy: 'top-offset', scrollTopOffset: 110}) }}>Internal Back Button</Button>
                 <Button variant="link" onClick={executeScroll}>Show Source</Button>
             </div>
 
