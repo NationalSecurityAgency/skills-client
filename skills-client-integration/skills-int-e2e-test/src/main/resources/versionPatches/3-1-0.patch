@@ -1,58 +1,3 @@
-diff --git a/skills-client-integration/skills-int-client-vue/src/components/skillsDisplay/ShowSkills.vue b/skills-client-integration/skills-int-client-vue/src/components/skillsDisplay/ShowSkills.vue
-index fc8cce4..070cf4f 100644
---- a/skills-client-integration/skills-int-client-vue/src/components/skillsDisplay/ShowSkills.vue
-+++ b/skills-client-integration/skills-int-client-vue/src/components/skillsDisplay/ShowSkills.vue
-@@ -34,6 +34,11 @@ limitations under the License.
-                 switch>
-             Summary Only
-         </b-form-checkbox>
-+      <b-form-checkbox class="d-inline-block ml-3 border-right pr-2"
-+                       v-model="displayOptions.internalBackButton"
-+                       switch>
-+        Internal Back Button
-+      </b-form-checkbox>
- 
-       <b-link
-         class="ml-2"
-@@ -112,6 +117,7 @@ limitations under the License.
-         displayOptions: {
-           autoScrollStrategy: 'top-of-page',
-           isSummaryOnly: this.$route.query.isSummaryOnly ? JSON.parse(this.$route.query.isSummaryOnly) : false,
-+          internalBackButton: this.$route.query.internalBackButton ? JSON.parse(this.$route.query.internalBackButton) : false,
-         },
-         showSampleCode: false,
-         themes: this.getThemes(),
-@@ -138,6 +144,9 @@ limitations under the License.
-       'displayOptions.isSummaryOnly'() {
-         this.setIsSummaryOnlyUrlParam();
-       },
-+      'displayOptions.internalBackButton'() {
-+        this.setInternalBackButtonUrlParam();
-+      },
-     },
-     methods: {
-       getThemes() {
-@@ -159,7 +168,19 @@ limitations under the License.
-         this.$router.push({
-           query: {
-             themeName: this.selectedTheme.name,
--            isSummaryOnly: this.displayOptions.isSummaryOnly
-+            isSummaryOnly: this.displayOptions.isSummaryOnly,
-+            internalBackButton: this.displayOptions.internalBackButton,
-+          }
-+        });
-+        this.refreshPage();
-+      },
-+
-+      setInternalBackButtonUrlParam() {
-+        this.$router.push({
-+          query: {
-+            themeName: this.selectedTheme.name,
-+            isSummaryOnly: this.displayOptions.isSummaryOnly,
-+            internalBackButton: this.displayOptions.internalBackButton,
-           }
-         });
-         this.refreshPage();
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/angular.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/angular.specs.js
 index 393ec38..ace542b 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/integration/angular.specs.js
@@ -82,7 +27,7 @@ index 393ec38..ace542b 100644
 -            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
 +            .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
      })
- 
+
      it('skill display - summary only', () => {
 @@ -257,7 +257,7 @@ context('Angular Tests', () => {
          // verify that there is no background set
@@ -91,7 +36,7 @@ index 393ec38..ace542b 100644
 -            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
 +            .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
      })
- 
+
      it('skill display - theme', () => {
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/js.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/js.specs.js
 index a82b1a6..e951f9c 100644
@@ -104,7 +49,7 @@ index a82b1a6..e951f9c 100644
 -            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
 +            .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
      });
- 
+
      it("skill display - default options", () => {
 @@ -138,7 +138,7 @@ context("Native JS Tests", () => {
          // verify that there is no background set
@@ -113,7 +58,7 @@ index a82b1a6..e951f9c 100644
 -            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
 +            .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
      });
- 
+
      it("skill display - summary only", () => {
 @@ -160,7 +160,7 @@ context("Native JS Tests", () => {
          // verify that there is no background set
@@ -122,7 +67,7 @@ index a82b1a6..e951f9c 100644
 -            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
 +            .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
      });
- 
+
      it("skill display - theme", () => {
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/react.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/react.specs.js
 index 38151c4..5a95fbe 100644
@@ -135,7 +80,7 @@ index 38151c4..5a95fbe 100644
 -            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
 +            .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
      })
- 
+
      it('skill display - summary only', () => {
 @@ -167,7 +167,7 @@ context('React Tests', () => {
          // verify that there is no background set
@@ -144,10 +89,10 @@ index 38151c4..5a95fbe 100644
 -            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
 +            .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
      })
- 
+
      it('skill display - theme', () => {
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
-index d861deb..49ef480 100644
+index d861deb..4037779 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 +++ b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 @@ -207,7 +207,7 @@ context('Vue Tests', () => {
@@ -175,7 +120,7 @@ index d861deb..49ef480 100644
 -            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
 +            .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
      })
- 
+
      it('Proxy Skills Display', () => {
 @@ -261,7 +261,7 @@ context('Vue Tests', () => {
              // verify that there is no background set
@@ -183,7 +128,7 @@ index d861deb..49ef480 100644
              cy.wrapIframe().find('.skills-page-title-text-color')
 -                .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
 +                .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
- 
+
              cy.visit('/vuejs#/proxyShowSkills')
              cy.wait('@getToken2')
 @@ -284,7 +284,7 @@ context('Vue Tests', () => {
@@ -193,7 +138,7 @@ index d861deb..49ef480 100644
 -            .should('have.css', 'background-color').and('equal', 'rgb(255, 255, 255)');
 +            .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
      })
- 
+
      it('skill display - theme', () => {
 @@ -407,7 +407,7 @@ context('Vue Tests', () => {
              // verify that there is no background set
@@ -203,55 +148,17 @@ index d861deb..49ef480 100644
 +              .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
          });*!/
      })*/
- 
-@@ -418,7 +418,7 @@ context('Vue Tests', () => {
-             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
- 
-             // visit client display
--            cy.visit('/vuejs#/showSkills?refreshPage=false')
-+            cy.visit('/vuejs#/showSkills?refreshPage=false&internalBackButton=true')
-             cy.wait('@getToken')
- 
-             cy.wrapIframe().find('[data-cy=back]').should('not.exist');
-@@ -445,7 +445,7 @@ context('Vue Tests', () => {
-             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
- 
-             // visit client display
--            cy.visit('/vuejs#/showSkills?refreshPage=false')
-+            cy.visit('/vuejs#/showSkills?refreshPage=false&internalBackButton=true')
-             cy.wait('@getToken')
- 
-             cy.wrapIframe().find('[data-cy=back]').should('not.exist');
+
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/support/commands.js b/skills-client-integration/skills-int-e2e-test/cypress/support/commands.js
 index 48da2de..d66fb30 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/support/commands.js
 +++ b/skills-client-integration/skills-int-e2e-test/cypress/support/commands.js
 @@ -182,7 +182,7 @@ Cypress.Commands.add("cdClickSubj", (subjIndex, expectedTitle) => {
- 
+
  Cypress.Commands.add("cdBack", (expectedTitle = 'User Skills') => {
    cy.wrapIframe().find('[data-cy=back]').click()
 -  cy.wrapIframe().find('h2').contains(expectedTitle);
 +  cy.wrapIframe().contains(expectedTitle);
- 
+
    // back button should not exist on the home page, whose title is the default value
    if (expectedTitle === 'User Skills') {
-diff --git a/skills-client-js/src/display/SkillsDisplayJS.js b/skills-client-js/src/display/SkillsDisplayJS.js
-index f1df8ac..eb8db51 100644
---- a/skills-client-js/src/display/SkillsDisplayJS.js
-+++ b/skills-client-js/src/display/SkillsDisplayJS.js
-@@ -65,6 +65,7 @@ export default class SkillsDisplayJS {
-         theme: this.theme,
-         minHeight: `${minHeight}px`,
-         isSummaryOnly: this.options.isSummaryOnly,
-+        internalBackButton: this.options.internalBackButton,
-       },
-     });
-     const iframe = document.querySelector(`.${className}`);
-@@ -185,6 +186,7 @@ export default class SkillsDisplayJS {
-       'autoScrollStrategy',
-       'isSummaryOnly',
-       'scrollTopOffset',
-+      'internalBackButton',
-     ];
-     const toTest = { ...this._options, ...options };
-     const passedOptions = Object.keys(toTest);
