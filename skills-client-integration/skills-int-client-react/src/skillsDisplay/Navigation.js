@@ -40,7 +40,7 @@ const Navigation = () => {
         <Navbar.Collapse id="nav-collapse" is-nav="true">
           <Nav>
             <NavLink activeClassName="router-link-active" className="nav-link" to="/">Report Skill Events</NavLink>
-            <NavLink activeClassName="router-link-active" className="nav-link" to="/showSkills">User Display</NavLink>
+            <NavLink activeClassName="router-link-active" className="nav-link" to="/showSkills?isSummaryOnly=false&internalBackButton=false&themeName=Bright%20(default)&skillsVersion=">User Display</NavLink>
           </Nav>
         </Navbar.Collapse>
           <Button variant="primary">

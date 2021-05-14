@@ -106,6 +106,9 @@ limitations under the License.
       return version;
     };
 
+    const handleRouteChanged = (newPath) => {
+      document.querySelector('#skillsDisplayPath').innerHTML = `Skills Display Path: [${newPath}]`;
+    };
     axios.get("/api/config")
       .then((result) => {
         SkillsClient.SkillsConfiguration.configure(result.data);
@@ -128,6 +131,7 @@ limitations under the License.
           options,
           version: getVersion(),
           theme: theme.theme,
+          handleRouteChanged: handleRouteChanged,
         });
         clientDisplay.attachTo(document.querySelector('#skills-client-display'));
       };
@@ -181,7 +185,9 @@ limitations under the License.
             <input type="checkbox" class="custom-control-input" id="internalBackButtonControl" onclick="setInternalBackButton()" checked>
             <label class="custom-control-label" for="internalBackButtonControl">Internal Back Button</label>
           </div>
-
+        </div>
+        <div>
+          <span id="skillsDisplayPath" data-cy="skillsDisplayPath"></span>
         </div>
         <div
           style="min-height: 860px">

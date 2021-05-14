@@ -38,9 +38,12 @@ limitations under the License.
 
     <a href="javascript:void(0)" class="ml-2" (click)="scrollTo('sample-code')">Show Source</a>
   </div>
+  <div>
+    <span id="skillsDisplayPath" data-cy="skillsDisplayPath">Skills Display Path: [{{ skillsDisplayRoutePath }}]</span>
+  </div>
 
   <div class="border rounded">
-    <skills-display *ngIf="selectedTheme" [options]="displayOptions" [version]="version" [theme]="selectedTheme.theme">
+    <skills-display *ngIf="selectedTheme" [options]="displayOptions" [version]="version" [theme]="selectedTheme.theme" [handleRouteChanged]="skillsDisplayRouteChanged">
     </skills-display>
   </div>
 

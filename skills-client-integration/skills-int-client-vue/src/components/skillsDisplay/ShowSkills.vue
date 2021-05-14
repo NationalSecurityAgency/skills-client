@@ -46,12 +46,17 @@ limitations under the License.
         v-scroll-to="'#sample-code'"
         @click="showSampleCode = true">Show Source</b-link>
     </div>
+    <div>
+      <span id="skillsDisplayPath" data-cy="skillsDisplayPath">Skills Display Path: [{{skillsDisplayPath}}]</span>
+    </div>
     <div class="border rounded">
       <skills-display
         v-if="selectedTheme"
         :options="displayOptions"
         :version="version"
-        :theme="selectedTheme.theme"/>
+        :theme="selectedTheme.theme"
+        @skills-display-route-changed="skillsDisplayRouteChanged"
+      />
     </div>
     <div
       v-if="selectedTheme && showSampleCode"
@@ -120,6 +125,7 @@ limitations under the License.
           internalBackButton: this.$route.query.internalBackButton ? JSON.parse(this.$route.query.internalBackButton) : false,
         },
         showSampleCode: false,
+        skillsDisplayPath: '',
         themes: this.getThemes(),
         selectedTheme: this.$route.query.themeName ? this.findTheme(this.$route.query.themeName) : this.getThemes()[0],
       };
@@ -190,6 +196,10 @@ limitations under the License.
         return this.getThemes().find((item) => item.name === name);
 
       },
+
+      skillsDisplayRouteChanged(newPath) {
+        this.skillsDisplayPath = newPath;
+      }
     },
   }
 </script>

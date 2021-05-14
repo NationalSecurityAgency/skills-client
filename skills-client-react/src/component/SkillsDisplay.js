@@ -24,14 +24,16 @@ const destroy = (cd) => {
     cd.destroy();
   }
 };
+
 // eslint-disable-next-line object-curly-newline
-const SkillDisplay = ({ theme = null, version = null, userId = null, options = {} }) => {
+const SkillDisplay = ({ theme = null, version = null, userId = null, handleRouteChanged = null, options = {} }) => {
   useEffect(() => {
     clientDisplay = new SkillsDisplayJS({
       options,
       theme,
       version,
       userId,
+      handleRouteChanged,
     });
 
     clientDisplay.attachTo(document.getElementById('clientSkillsDisplayContainer'));
@@ -39,7 +41,7 @@ const SkillDisplay = ({ theme = null, version = null, userId = null, options = {
     return () => {
       destroy(clientDisplay);
     };
-  }, [theme, version, userId, options]);
+  }, [theme, version, userId, handleRouteChanged, options]);
 
   return (<div id='clientSkillsDisplayContainer'/>);
 };
@@ -48,6 +50,7 @@ SkillDisplay.propTypes = {
   theme: PropTypes.object,
   version: PropTypes.string,
   userId: PropTypes.string,
+  handleRouteChanged: PropTypes.func,
   options: PropTypes.shape({
     serviceUrl: PropTypes.string,
     projectId: PropTypes.string,
@@ -55,6 +58,7 @@ SkillDisplay.propTypes = {
     autoScrollStrategy: PropTypes.string,
     isSummaryOnly: PropTypes.bool,
     internalBackButton: PropTypes.bool,
+    updateHistory: PropTypes.bool,
     scrollTopOffset: PropTypes.number,
   }),
 };

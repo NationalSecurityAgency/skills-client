@@ -32,6 +32,10 @@ const findTheme = (name) => {
 
 const scrollToRef = (ref) => window.scrollTo(0, ref.current.offsetTop);
 
+const handleRouteChanged = (newPath) => {
+    document.querySelector('#skillsDisplayPath').innerHTML = `Skills Display Path: [${newPath}]`;
+};
+
 function usePrevious(value){
     const ref = React.useRef();
     React.useEffect(() => {
@@ -94,7 +98,7 @@ const ShowSkill = () => {
                 params+=`${key}=${paramsObj[key]}&`;
             });
             params = params.replace(/&$/,'');
-            history.push({pathname:history.location.pathname, search: params});
+            history.replace({pathname:history.location.pathname, search: params});
         };
 
         if (isSummaryOnly !== previousIsSummaryOnly || internalBackButton !== previousInternalBackButton || selectedTheme !== previousSelectedTheme) {
@@ -138,9 +142,11 @@ const ShowSkill = () => {
                             setOptions({isSummaryOnly:isSummaryOnly,internalBackButton:!internalBackButton,autoScrollStrategy: 'top-offset', scrollTopOffset: 110}) }}>Internal Back Button</Button>
                 <Button variant="link" onClick={executeScroll}>Show Source</Button>
             </div>
-
+            <div>
+                <span id="skillsDisplayPath" data-cy="skillsDisplayPath"></span>
+            </div>
             <div className="border rounded">
-                <SkillsDisplay options={options} theme={selectedTheme.theme} version={skillsVersion}/>
+                <SkillsDisplay options={options} theme={selectedTheme.theme} version={skillsVersion} handleRouteChanged={handleRouteChanged}/>
             </div>
 
             <div ref={sampleCodeRef}>

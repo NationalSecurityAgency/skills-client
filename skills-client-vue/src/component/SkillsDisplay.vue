@@ -39,6 +39,7 @@ limitations under the License.
             'isSummaryOnly',
             'scrollTopOffset',
             'internalBackButton',
+            'updateHistory,'
           ];
           const options = { ...defaults, ...value };
           const passedOptions = Object.keys(options);
@@ -66,6 +67,11 @@ limitations under the License.
         this.clientDisplay.version = newValue;
       },
     },
+    methods: {
+      skillsDisplayRouteChanged(newPath) {
+        this.$emit('skills-display-route-changed', newPath);
+      },
+    },
     mounted() {
       Logger.info('SkillsDisplay::mounted');
       this.clientDisplay = new SkillsDisplayJS({
@@ -73,6 +79,7 @@ limitations under the License.
         version: this.version,
         theme: this.theme,
         userId: this.userId,
+        handleRouteChanged: (newPath) => { this.$emit('skills-display-route-changed', newPath); },
       });
       Logger.info(`SkillsDisplay::created SkillsDisplayJS...calling attachTo for ref [${this.$refs.clientDisplayContainer}]`);
       this.clientDisplay.attachTo(this.$refs.clientDisplayContainer);

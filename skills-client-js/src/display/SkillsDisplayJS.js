@@ -26,12 +26,13 @@ const skillsClientDisplayPath = 'skillsClientDisplayPath';
 
 export default class SkillsDisplayJS {
   /* eslint-disable object-curly-newline */
-  constructor({ options, theme, version, userId } = {}) {
+  constructor({ options, theme, version, handleRouteChanged, userId } = {}) {
     log.debug(`SkillsClient::SkillsDisplayJS::Constructing with options [${options}], theme [${theme}], version [${version}], userId [${userId}]`);
     this._validateOptions(options);
     this._options = { ...{ }, ...options };
     this._theme = theme;
     this._version = version;
+    this._handleRouteChanged = handleRouteChanged;
     this._userId = userId;
   }
 
@@ -77,7 +78,7 @@ export default class SkillsDisplayJS {
     iframeContainer.style.height = '0px';
 
     const updateChildRoute = () => {
-      const previousLocation = this._getClientDisplayPath();
+      const previousLocation = this.skillsDisplayPath;
       if (!(previousLocation == null)) {
         this._childFrame.call('navigate', previousLocation);
       }
@@ -94,12 +95,20 @@ export default class SkillsDisplayJS {
       child.on('route-changed', (newPath) => {
         log.debug(`SkillsClient::SkillsDisplayJS::route-changed - newPath [${newPath}]`);
 
-        if (!(newPath == null) && !newPath.endsWith('index.html')) {
-          // put the new path in the URL so that when the page is reloaded or
-          // sent as a link the proper route will be set in the child iframe
-          const queryParams = new URLSearchParams(window.location.search);
-          queryParams.set(skillsClientDisplayPath, newPath);
-          window.history.replaceState(null, null, `${window.location.pathname}?${queryParams.toString()}${window.location.hash}`);
+        if (!(newPath == null)) {
+          const routePath = newPath.endsWith('index.html') ? '/' : newPath;
+          if (this._shouldUpdateHistory(newPath)) {
+            // put the new path in the URL so that when the page is reloaded or
+            // sent as a link the proper route will be set in the child iframe
+            const queryParams = new URLSearchParams(window.location.search);
+            queryParams.set(skillsClientDisplayPath, routePath);
+            window.history.replaceState(null, null, `${window.location.pathname}?${queryParams.toString()}${window.location.hash}`);
+          }
+
+          // if the client has configured a handleRouteChanged call back, invoke it
+          if (this._handleRouteChanged) {
+            this._handleRouteChanged(routePath);
+          }
         }
 
         if (!this.options.disableAutoScroll) {
@@ -168,6 +177,14 @@ export default class SkillsDisplayJS {
     }
   }
 
+  _shouldUpdateHistory(newPath) {
+    // do not update the history on the initial load of the skills-display
+    const initialLoad = (!newPath.endsWith('index.html') || (this.skillsDisplayPath == null));
+    // also, allow the client app to disable this feature, but enable it by default
+    const updateHistoryOption = this.options.updateHistory == null || this.options.updateHistory === true;
+    return initialLoad && updateHistoryOption;
+  }
+
   set version(version) {
     log.info(`SkillsClient::SkillsDisplayJS::setting version [${version}]`);
     this._version = version;
@@ -197,6 +214,12 @@ export default class SkillsDisplayJS {
     return { serviceUrl, authenticator, projectId };
   }
 
+  get skillsDisplayPath() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const clientDisplayPath = urlParams.get(skillsClientDisplayPath);
+    return clientDisplayPath;
+  }
+
   _validateOptions(options) {
     const configOptions = [
       'authenticator',
@@ -207,6 +230,7 @@ export default class SkillsDisplayJS {
       'isSummaryOnly',
       'scrollTopOffset',
       'internalBackButton',
+      'updateHistory',
     ];
     const toTest = { ...this._options, ...options };
     const passedOptions = Object.keys(toTest);
@@ -216,16 +240,13 @@ export default class SkillsDisplayJS {
     }
   }
 
-  _getClientDisplayPath() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const clientDisplayPath = urlParams.get(skillsClientDisplayPath);
-    return clientDisplayPath;
-  }
-
   destroy() {
     log.info(`SkillsClient::SkillsDisplayJS::destroy called. _childFrame [${this._childFrame}]`);
     if (this._childFrame) {
       this._childFrame.destroy();
     }
+    const queryParams = new URLSearchParams(window.location.search);
+    queryParams.delete(skillsClientDisplayPath);
+    window.history.replaceState(null, null, `${window.location.pathname}?${queryParams.toString()}${window.location.hash}`);
   }
 }
