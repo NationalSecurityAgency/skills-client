@@ -31,6 +31,7 @@ export class SkillsDisplayComponent implements OnInit {
   selectedTheme: any;
   themes: Array<any> = themes;
   showSampleCode: boolean = false;
+  skillsDisplayRoutePath: string = '/';
 
   constructor(private route: ActivatedRoute, private router: Router, private viewportScroller: ViewportScroller) { }
 
@@ -48,6 +49,10 @@ export class SkillsDisplayComponent implements OnInit {
 
   findTheme(name: string) {
     return this.themes.find((item) => item.name === name);
+  }
+
+  skillsDisplayRouteChanged = (newPath: string) => {
+    this.skillsDisplayRoutePath = newPath;
   }
 
   refreshPage() {

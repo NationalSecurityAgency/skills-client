@@ -404,4 +404,25 @@ context('Angular Tests', () => {
         });
     }
 
+    if (Utils.skillsServiceVersionLaterThan('1.5.0')) {
+        it('route change is passed to the client app', () => {
+            cy.createDefaultTinyProject()
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+
+            // visit client display
+            cy.visit('/angular/showSkills?internalBackButton=false');
+            cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/]');
+
+            // to subject page
+            cy.cdClickSubj(0, 'Subject 0');
+            cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/subjects/subj0]');
+
+            // navigate to Rank Overview and that it does NOT contains the internal back button
+            cy.clientDisplay().find('[data-cy=myRank]').click();
+            cy.clientDisplay().contains('Rank Overview');
+
+            cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/subjects/subj0/rank]');
+        });
+    }
+
 })

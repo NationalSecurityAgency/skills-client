@@ -32,6 +32,7 @@ export class SkillsDisplayComponent implements OnInit, OnDestroy {
   @Input() version: number;
   @Input() theme: string;
   @Input() userId: string;
+  @Input() handleRouteChanged: Function;
   constructor() { }
 
   ngOnInit(): void {
@@ -40,6 +41,7 @@ export class SkillsDisplayComponent implements OnInit, OnDestroy {
       version: this.version,
       theme: this.theme,
       userId: this.userId,
+      handleRouteChanged: this.handleRouteChanged,
     });
     this.clientDisplay.attachTo(document.getElementById('clientDisplayContainer'));
   }
