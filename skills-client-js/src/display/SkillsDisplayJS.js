@@ -85,8 +85,6 @@ export default class SkillsDisplayJS {
       const previousLocation = this.skillsDisplayPath;
       if (!(previousLocation == null)) {
         this._childFrame.call('navigate', { path: previousLocation, replace, query: { skipParentHistory } });
-      } else {
-        this._childFrame.call('navigate', { path: '/', replace, query: { skipParentHistory: true } });
       }
     };
     history = createBrowserHistory();
