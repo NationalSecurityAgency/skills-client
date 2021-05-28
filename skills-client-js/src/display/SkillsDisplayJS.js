@@ -15,14 +15,18 @@
  */
 import Postmate from 'postmate';
 import log from 'js-logger';
+import { createBrowserHistory } from 'history';
 
 import SkillsConfiguration from '../config/SkillsConfiguration';
 import ErrorPageUtils from './ErrorPageUtils';
 import skillsService from '../SkillsService';
 
 let uniqueId = 0;
+let history = null; // createBrowserHistory();
+let unlisten = () => {};
 
 const skillsClientDisplayPath = 'skillsClientDisplayPath';
+const POP = 'POP';
 
 export default class SkillsDisplayJS {
   /* eslint-disable object-curly-newline */
@@ -77,12 +81,18 @@ export default class SkillsDisplayJS {
     iframeContainer.height = 0;
     iframeContainer.style.height = '0px';
 
-    const updateChildRoute = () => {
-      const previousLocation = this.skillsDisplayPath;
-      if (!(previousLocation == null)) {
-        this._childFrame.call('navigate', previousLocation);
+    const updateChildRoute = (previousLocation = this.skillsDisplayPath, skipParentHistory = true, replace = true) => {
+      if (this._childFrame && !(previousLocation == null)) {
+        this._childFrame.call('navigate', { path: previousLocation, replace, query: { skipParentHistory } });
       }
     };
+    history = createBrowserHistory();
+    // Listen for changes to the current location from the back/forward browser buttons.
+    unlisten = history.listen(({ action }) => {
+      if (action === POP) {
+        updateChildRoute(this.skillsDisplayPath || '/', true);
+      }
+    });
 
     handshake.then((child) => {
       this._childFrame = child;
@@ -92,17 +102,18 @@ export default class SkillsDisplayJS {
         iframeContainer.height = adjustedHeight;
         iframeContainer.style.height = `${adjustedHeight}px`;
       });
-      child.on('route-changed', (newPath) => {
+      child.on('route-changed', (params) => {
+        const newPath = params.path;
         log.debug(`SkillsClient::SkillsDisplayJS::route-changed - newPath [${newPath}]`);
-
         if (!(newPath == null)) {
           const routePath = newPath.endsWith('index.html') ? '/' : newPath;
-          if (this._shouldUpdateHistory(newPath)) {
+          if (this._shouldUpdateHistory(params)) {
             // put the new path in the URL so that when the page is reloaded or
             // sent as a link the proper route will be set in the child iframe
             const queryParams = new URLSearchParams(window.location.search);
             queryParams.set(skillsClientDisplayPath, routePath);
-            window.history.replaceState(null, null, `${window.location.pathname}?${queryParams.toString()}${window.location.hash}`);
+            const newUrl = `${window.location.pathname}?${queryParams.toString()}${window.location.hash}`;
+            history.push(newUrl, { skillsClientDisplayPath: newPath });
           }
 
           // if the client has configured a handleRouteChanged call back, invoke it
@@ -177,12 +188,12 @@ export default class SkillsDisplayJS {
     }
   }
 
-  _shouldUpdateHistory(newPath) {
-    // do not update the history on the initial load of the skills-display
-    const initialLoad = (!newPath.endsWith('index.html') || (this.skillsDisplayPath == null));
+  _shouldUpdateHistory(params) {
+    // if the query param `skipParentHistory` is true then do not update the history (set to true when the user is navigating with the back/forward browser buttons)
+    const updateHistoryParam = (params.query.skipParentHistory !== 'true' && params.query.skipParentHistory !== true);
     // also, allow the client app to disable this feature, but enable it by default
     const updateHistoryOption = this.options.updateHistory == null || this.options.updateHistory === true;
-    return initialLoad && updateHistoryOption;
+    return updateHistoryOption && updateHistoryParam;
   }
 
   set version(version) {
@@ -247,6 +258,6 @@ export default class SkillsDisplayJS {
     }
     const queryParams = new URLSearchParams(window.location.search);
     queryParams.delete(skillsClientDisplayPath);
-    window.history.replaceState(null, null, `${window.location.pathname}?${queryParams.toString()}${window.location.hash}`);
+    unlisten();
   }
 }

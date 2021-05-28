@@ -497,9 +497,7 @@ context('Vue Tests', () => {
             cy.go('back')  // browser back button
             cy.clientDisplay().contains('User Skills');
         });
-    }
 
-    if (Utils.skillsServiceVersionLaterThan('1.5.0')) {
         it('deep link and reload', () => {
             cy.createDefaultTinyProject()
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
@@ -512,9 +510,38 @@ context('Vue Tests', () => {
             cy.reload();
             cy.clientDisplay().contains('Rank Overview');
         });
-    }
 
-    if (Utils.skillsServiceVersionLaterThan('1.5.0')) {
+        it('back button after reload', () => {
+            cy.createDefaultTinyProject()
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+
+            // visit client display
+            cy.visit('/vuejs#/showSkills?internalBackButton=false');
+
+            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
+            cy.clientDisplay().contains('User Skills');
+
+            // to subject page
+            cy.cdClickSubj(0, 'Subject 0');
+
+            // navigate to Rank Overview and that it does NOT contains the internal back button
+            cy.clientDisplay().find('[data-cy=myRank]').click();
+            cy.clientDisplay().contains('Rank Overview');
+            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
+
+            cy.reload();
+            cy.clientDisplay().contains('Rank Overview');
+
+            // click the browser back button and verify that we are still in the
+            // client display (Subject page)
+            cy.go('back')  // browser back button
+            cy.clientDisplay().contains('Subject 0');
+
+            // then back one more time and we should be back on the client display home page
+            cy.go('back')  // browser back button
+            cy.clientDisplay().contains('User Skills');
+        });
+
         it('route change is passed to the client app', () => {
             cy.createDefaultTinyProject()
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})

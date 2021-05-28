@@ -202,7 +202,7 @@ describe('SkillsDisplayJS', () => {
         });
       });
 
-      describe('rout-changed event', () => {
+      describe('route-changed event', () => {
         it('does not attempt to scroll if disableAutoScroll option is set', (done) => {
           const client = new SkillsDisplayJS({
             options: {
@@ -223,7 +223,7 @@ describe('SkillsDisplayJS', () => {
           client.attachTo(mockIframeContainer);
 
           setTimeout(() => {
-            mockChildFrame.emit('route-changed');
+            mockChildFrame.emit('route-changed', { path: 'blah', query: {} });
             expect(mockIframeContainer.scrollIntoView).not.toHaveBeenCalled();
             done();
           });
@@ -245,7 +245,7 @@ describe('SkillsDisplayJS', () => {
           client.attachTo(mockIframeContainer);
 
           setTimeout(() => {
-            mockChildFrame.emit('route-changed');
+            mockChildFrame.emit('route-changed', { path: 'blah', query: {} });
             expect(mockIframeContainer.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
             done();
           });
@@ -268,7 +268,7 @@ describe('SkillsDisplayJS', () => {
           const top = mockIframeContainer.offsetTop - 10;
 
           setTimeout(() => {
-            mockChildFrame.emit('route-changed');
+            mockChildFrame.emit('route-changed', { path: 'blah', query: {} });
             expect(global.scroll).toHaveBeenCalledWith({ top, behavior: 'smooth' });
             done();
           });
@@ -298,7 +298,7 @@ describe('SkillsDisplayJS', () => {
           client.attachTo(mockIframeContainer);
 
           setTimeout(() => {
-            mockChildFrame.emit('route-changed');
+            mockChildFrame.emit('route-changed', { path: 'blah', query: {} });
             expect(mockBody.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' });
             done();
           });
