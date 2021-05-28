@@ -81,9 +81,8 @@ export default class SkillsDisplayJS {
     iframeContainer.height = 0;
     iframeContainer.style.height = '0px';
 
-    const updateChildRoute = (skipParentHistory = true, replace = true) => {
-      const previousLocation = this.skillsDisplayPath;
-      if (!(previousLocation == null)) {
+    const updateChildRoute = (previousLocation = this.skillsDisplayPath, skipParentHistory = true, replace = true) => {
+      if (this._childFrame && !(previousLocation == null)) {
         this._childFrame.call('navigate', { path: previousLocation, replace, query: { skipParentHistory } });
       }
     };
@@ -91,7 +90,7 @@ export default class SkillsDisplayJS {
     // Listen for changes to the current location from the back/forward browser buttons.
     unlisten = history.listen(({ action }) => {
       if (action === POP) {
-        updateChildRoute(true);
+        updateChildRoute(this.skillsDisplayPath || '/', true);
       }
     });
 
