@@ -103,7 +103,7 @@ export default class SkillsDisplayJS {
         iframeContainer.style.height = `${adjustedHeight}px`;
       });
       child.on('route-changed', (params) => {
-        const newPath = params.path;
+        const newPath = params?.path;
         log.debug(`SkillsClient::SkillsDisplayJS::route-changed - newPath [${newPath}]`);
         if (!(newPath == null)) {
           const routePath = newPath.endsWith('index.html') ? '/' : newPath;
