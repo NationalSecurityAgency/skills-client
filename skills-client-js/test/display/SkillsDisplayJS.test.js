@@ -303,6 +303,32 @@ describe('SkillsDisplayJS', () => {
             done();
           });
         });
+
+        it('handles null params', (done) => {
+          const client = new SkillsDisplayJS({
+            options: {
+              disableAutoScroll: true,
+            }
+          });
+
+          const mockIframeContainer = {
+            setAttribute: jest.fn(),
+            style: {},
+            scrollIntoView: jest.fn(),
+          };
+
+          global.document.querySelector = () => {
+            return mockIframeContainer;
+          };
+
+          client.attachTo(mockIframeContainer);
+
+          setTimeout(() => {
+            mockChildFrame.emit('route-changed');
+            expect(mockIframeContainer.scrollIntoView).not.toHaveBeenCalled();
+            done();
+          });
+        });
       });
 
       describe('needs-authentication event', () => {
