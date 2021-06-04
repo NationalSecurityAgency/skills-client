@@ -18,7 +18,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { HighlightModule } from 'ngx-highlightjs';
+import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { SkillsLevelModule, SkillsDisplayModule, SkilltreeModule } from '@skilltree/skills-client-ng'
 
 import { AppComponent } from './app.component';
@@ -58,7 +58,15 @@ import { PlaceholderDirective } from './directives/placeholder.directive';
       { path: '', component: ReportSkillsComponent },
     ])
   ],
-  providers: [ExampleService],
+  providers: [
+    ExampleService,
+    {
+      provide: HIGHLIGHT_OPTIONS,
+      useValue: {
+        fullLibraryLoader: () => import('highlight.js'),
+      }
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
