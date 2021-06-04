@@ -133,7 +133,7 @@ class SetupNpmLinks {
             File origLoc
             if (it.isAngularModule()) {
                 titlePrinter.printTitle("install and build angular module")
-                it.exec("npm install")
+                it.exec("npm install --force")
                 it.exec("npm run build")
                 origLoc = it.loc;
                 it.loc = it.getAngularModuleLinkDir(true)
