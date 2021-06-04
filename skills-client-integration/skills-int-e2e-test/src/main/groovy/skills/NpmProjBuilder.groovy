@@ -50,7 +50,7 @@ class NpmProjBuilder {
             new NpmProj(name: "skills-int-client-js", doOthersLinkToMe: false, initialVersion: '2.0.0'),
             new NpmProj(name: "skills-int-client-vue", doOthersLinkToMe: false, initialVersion: '2.0.0'),
             new NpmProj(name: "skills-int-client-react", doOthersLinkToMe: false, reactApp: true, initialVersion: '2.0.0'),
-            new NpmProj(name: "skills-int-client-ng", doOthersLinkToMe: false, initialVersion: '3.0.0'),
+            new NpmProj(name: "skills-int-client-ng", doOthersLinkToMe: false, angularApp: true, initialVersion: '3.0.0'),
     ]
 
     private void assertExist() {
