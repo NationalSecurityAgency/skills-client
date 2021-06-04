@@ -63,7 +63,7 @@ class SetupNpmLinks {
         projs.each { NpmProj npmProj ->
             if (!npmProj.isAngularModule()) {
                 // angular modules were installed within createLinks()
-                npmProj.exec("npm install")
+                npmProj.exec("npm install --force")
             }
         }
     }
