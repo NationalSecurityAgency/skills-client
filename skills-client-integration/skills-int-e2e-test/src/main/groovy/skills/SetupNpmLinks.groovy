@@ -106,7 +106,7 @@ class SetupNpmLinks {
             npmProj.skillsDependenciesFromPackageJson.each {
                 titlePrinter.printSubTitle("Linking module [${it}]")
                 if (npmProj.getAngularModule()) {
-                    it.exec("npm install --force")
+                    npmProj.exec("npm install --force")
                     npmProj.exec("npm link ${it}".toString())
                     File origLoc = npmProj.loc
                     npmProj.loc = npmProj.getAngularModuleLinkDir(true)
