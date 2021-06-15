@@ -55,7 +55,7 @@ limitations under the License.
         :options="displayOptions"
         :version="version"
         :theme="selectedTheme.theme"
-        @skills-display-route-changed="skillsDisplayRouteChanged"
+        @route-changed="skillsDisplayRouteChanged"
       />
     </div>
     <div
