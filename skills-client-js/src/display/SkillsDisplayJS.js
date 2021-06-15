@@ -72,7 +72,7 @@ export default class SkillsDisplayJS {
         theme: this.theme,
         minHeight: `${minHeight}px`,
         isSummaryOnly: this.options.isSummaryOnly,
-        internalBackButton: this.options.internalBackButton,
+        internalBackButton: this.options.internalBackButton == null ? false : this.options.internalBackButton,
       },
     });
     const iframe = document.querySelector(`.${className}`);
@@ -103,7 +103,7 @@ export default class SkillsDisplayJS {
         iframeContainer.style.height = `${adjustedHeight}px`;
       });
       child.on('route-changed', (params) => {
-        const newPath = params?.path;
+        const newPath = params ? params.path : null;
         log.debug(`SkillsClient::SkillsDisplayJS::route-changed - newPath [${newPath}]`);
         if (!(newPath == null)) {
           const routePath = newPath.endsWith('index.html') ? '/' : newPath;

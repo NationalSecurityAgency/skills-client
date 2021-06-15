@@ -463,6 +463,7 @@ describe('SkillsDisplayJS', () => {
             theme: mockTheme,
             minHeight: '960px',
             isSummaryOnly: false,
+            internalBackButton: false,
           },
         });
       });
@@ -499,6 +500,120 @@ describe('SkillsDisplayJS', () => {
             theme: mockTheme,
             minHeight: '600px',
             isSummaryOnly: true,
+            internalBackButton: false,
+          },
+        });
+      });
+      it('properly configures Postmate internalBackButton === false when set explicitly', () => {
+        const client = new SkillsDisplayJS({
+          options: {
+            isSummaryOnly: true,
+            authenticator: mockAuthenticator,
+            serviceUrl: mockServiceUrl,
+            projectId: mockProjectId,
+            internalBackButton: false,
+          },
+          theme: mockTheme,
+          version: mockVersion,
+        });
+        const mockIframeContainer = {
+          setAttribute: jest.fn(),
+          style: { },
+        };
+
+        global.document.querySelector = () => { return mockIframeContainer; };
+
+        client.attachTo(mockIframeContainer);
+
+        expect(Postmate).toHaveBeenCalledWith({
+          container: mockIframeContainer,
+          url: `${mockServiceUrl}/static/clientPortal/index.html`,
+          classListArray: [`client-display-iframe-${client.currentIframeId()}`],
+          model: {
+            serviceUrl: mockServiceUrl,
+            projectId: mockProjectId,
+            version: mockVersion,
+            userId: null,
+            theme: mockTheme,
+            minHeight: '600px',
+            isSummaryOnly: true,
+            internalBackButton: false,
+          },
+        });
+      });
+
+      it('properly configures Postmate internalBackButton === true when set explicitly', () => {
+        const client = new SkillsDisplayJS({
+          options: {
+            isSummaryOnly: true,
+            authenticator: mockAuthenticator,
+            serviceUrl: mockServiceUrl,
+            projectId: mockProjectId,
+            internalBackButton: true,
+          },
+          theme: mockTheme,
+          version: mockVersion,
+        });
+        const mockIframeContainer = {
+          setAttribute: jest.fn(),
+          style: { },
+        };
+
+        global.document.querySelector = () => { return mockIframeContainer; };
+
+        client.attachTo(mockIframeContainer);
+
+        expect(Postmate).toHaveBeenCalledWith({
+          container: mockIframeContainer,
+          url: `${mockServiceUrl}/static/clientPortal/index.html`,
+          classListArray: [`client-display-iframe-${client.currentIframeId()}`],
+          model: {
+            serviceUrl: mockServiceUrl,
+            projectId: mockProjectId,
+            version: mockVersion,
+            userId: null,
+            theme: mockTheme,
+            minHeight: '600px',
+            isSummaryOnly: true,
+            internalBackButton: true,
+          },
+        });
+      });
+
+
+      it('properly configures Postmate internalBackButton === false when NOT set explicitly', () => {
+        const client = new SkillsDisplayJS({
+          options: {
+            isSummaryOnly: true,
+            authenticator: mockAuthenticator,
+            serviceUrl: mockServiceUrl,
+            projectId: mockProjectId,
+          },
+          theme: mockTheme,
+          version: mockVersion,
+        });
+        const mockIframeContainer = {
+          setAttribute: jest.fn(),
+          style: { },
+        };
+
+        global.document.querySelector = () => { return mockIframeContainer; };
+
+        client.attachTo(mockIframeContainer);
+
+        expect(Postmate).toHaveBeenCalledWith({
+          container: mockIframeContainer,
+          url: `${mockServiceUrl}/static/clientPortal/index.html`,
+          classListArray: [`client-display-iframe-${client.currentIframeId()}`],
+          model: {
+            serviceUrl: mockServiceUrl,
+            projectId: mockProjectId,
+            version: mockVersion,
+            userId: null,
+            theme: mockTheme,
+            minHeight: '600px',
+            isSummaryOnly: true,
+            internalBackButton: false,
           },
         });
       });

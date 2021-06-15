@@ -39,7 +39,7 @@ limitations under the License.
             'isSummaryOnly',
             'scrollTopOffset',
             'internalBackButton',
-            'updateHistory,'
+            'updateHistory,',
           ];
           const options = { ...defaults, ...value };
           const passedOptions = Object.keys(options);
