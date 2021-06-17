@@ -19,7 +19,7 @@ import { SkillsReporter } from '../../src/reporter/SkillsReporter';
 
 require('@babel/polyfill');
 
-describe('retryTests()', () => {
+describe('authFormTests()', () => {
   const mockServiceUrl = 'http://some.com';
   const mockProjectId = 'proj1';
   const authEndpoint = `${mockServiceUrl}/auth/endpoint`;
@@ -54,7 +54,7 @@ describe('retryTests()', () => {
     const mockSuccess = '{"data":{"id":"abc-123"}}';
     const mockError = JSON.stringify({"explanation":"Some random error occurred.","errorCode":"RandomError","success":false,"projectId":"movies","skillId":"IronMan","userId":"user1"});
     let body = mockError;
-    let status = 403;
+    let status = 500;
 
     SkillsReporter.addErrorHandler(handler1);
 
