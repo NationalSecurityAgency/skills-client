@@ -49,7 +49,7 @@ describe('retryTests()', () => {
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
-      : mockProjectId,
+      projectId: mockProjectId,
       authenticator: authEndpoint,
     });
     const handler1 = jest.fn();
