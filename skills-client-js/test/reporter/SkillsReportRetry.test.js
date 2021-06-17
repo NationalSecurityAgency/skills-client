@@ -20,7 +20,7 @@ import { SkillsReporter } from '../../src/reporter/SkillsReporter';
 require('@babel/polyfill');
 
 describe('authFormTests()', () => {
-  const mockServiceUrl = 'http://some.com';
+  const mockServiceUrl = 'http://some2.com';
   const mockProjectId = 'proj1';
   const authEndpoint = `${mockServiceUrl}/auth/endpoint`;
 
@@ -133,7 +133,7 @@ describe('authFormTests()', () => {
     expect.assertions(4);
     const mockUserSkillId = 'skill1';
 
-    mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
+    mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token2"}'));
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
       projectId: mockProjectId,
@@ -146,7 +146,7 @@ describe('authFormTests()', () => {
     const url = `${mockServiceUrl}/api/projects/${mockProjectId}/skills/${mockUserSkillId}`;
     let count = 0;
     mock.post(url, (req, res) => {
-      expect(req.header('Authorization')).toEqual('Bearer token');
+      expect(req.header('Authorization')).toEqual('Bearer token2');
       count++;
       return res.status(200).body('{"data":{"id":"abc-123"}}');
     });
