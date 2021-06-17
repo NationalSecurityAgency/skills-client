@@ -79,6 +79,13 @@ const retryErrors = function retryErrors() {
 
 const addToRetryQueue = (skillId, timeReported, xhr, maxQueueSize) => {
   log.info(`SkillsClient::SkillsReporter::addToRetryQueue [${skillId}], status [${xhr.status}]`);
+  if (xhr.response) {
+    const xhrResponse = JSON.parse(xhr.response);
+    if (xhrResponse && xhrResponse.errorCode === 'SkillNotFound') {
+      log.info('not adding to retry queue because the skillId does not exist.');
+      return;
+    }
+  }
   let retryQueue = JSON.parse(localStorage.getItem(retryQueueKey));
   if (retryQueue == null) {
     retryQueue = [];
