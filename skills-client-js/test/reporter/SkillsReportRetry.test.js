@@ -153,7 +153,7 @@ describe('retryTests()', () => {
 
     const res = await SkillsReporter.reportSkill('skill1');
     // sleep for 2 seconds
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise(r => setTimeout(r, 3000));
     expect(res).toEqual({ data: { id: 'abc-123' } });
     expect(count).toEqual(1);
     expect(handler1).toHaveBeenCalledTimes(0)
