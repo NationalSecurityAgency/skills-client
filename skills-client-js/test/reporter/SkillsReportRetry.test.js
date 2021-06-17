@@ -19,10 +19,10 @@ import { SkillsReporter } from '../../src/reporter/SkillsReporter';
 
 require('@babel/polyfill');
 
-describe('authFormTests()', () => {
+describe('retryTests()', () => {
   const mockServiceUrl = 'http://some2.com';
   const mockProjectId = 'proj1';
-  const authEndpoint = `${mockServiceUrl}/auth/endpoint`;
+  const authEndpoint = 'http://some2.com/auth/endpoint';
 
   // replace the real XHR object with the mock XHR object before each test
   beforeEach(() => {
@@ -44,10 +44,12 @@ describe('authFormTests()', () => {
     expect.assertions(8);
     const mockUserSkillId = 'skill1';
 
+    console.log(`authEndpoint [${authEndpoint}], mockServiceUrl [${mockServiceUrl}], projectId [${projectId}]`);
+
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
-      projectId: mockProjectId,
+      : mockProjectId,
       authenticator: authEndpoint,
     });
     const handler1 = jest.fn();
