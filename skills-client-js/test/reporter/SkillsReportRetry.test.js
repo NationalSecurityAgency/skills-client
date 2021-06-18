@@ -86,11 +86,10 @@ describe('retryTests()', () => {
 
   it('reportSkill will not retry when errorCode === SkillNotFound', async () => {
     jest.setTimeout(10000);
-    // expect.assertions(3);
+    expect.assertions(3);
     const mockUserSkillId = 'skill1';
 
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
-    // mock.get('http://auth', (req, res) => res.status(200).body('{"access_token": "token"}'));
     console.log('calling configure...');
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
