@@ -88,6 +88,7 @@ describe('retryTests()', () => {
     const mockUserSkillId = 'skill1';
 
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
+    mock.get('http://auth', (req, res) => res.status(200).body('{"access_token": "token"}'));
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
       projectId: mockProjectId,
