@@ -47,7 +47,7 @@ describe('retryTests()', () => {
 
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
 
-    console.log(`calling configure with serviceUrl [${serviceUrl}], mockProjectId [${mockProjectId}], authEndpoint [${authEndpoint}]`);
+    console.log(`calling configure with mockServiceUrl [${mockServiceUrl}], mockProjectId [${mockProjectId}], authEndpoint [${authEndpoint}]`);
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
       projectId: mockProjectId,
