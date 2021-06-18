@@ -90,7 +90,7 @@ describe('retryTests()', () => {
     const mockUserSkillId = 'skill1';
 
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
-    mock.get('http://auth', (req, res) => res.status(200).body('{"access_token": "token"}'));
+    // mock.get('http://auth', (req, res) => res.status(200).body('{"access_token": "token"}'));
     console.log('calling configure...');
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
@@ -152,6 +152,8 @@ describe('retryTests()', () => {
     expect(count).toEqual(1);
     expect(handler1).toHaveBeenCalledWith(JSON.parse(mockError));
   });
+
+
 
   // it('reportSkill will retry for errors', async () => {
   //   expect.assertions(8);
