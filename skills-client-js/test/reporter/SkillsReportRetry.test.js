@@ -85,17 +85,20 @@ describe('retryTests()', () => {
   // });
 
   it('reportSkill will not retry when errorCode === SkillNotFound', async () => {
-    expect.assertions(3);
+    // expect.assertions(3);
     const mockUserSkillId = 'skill1';
 
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
     mock.get('http://auth', (req, res) => res.status(200).body('{"access_token": "token"}'));
+    console.log('calling configure...');
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
-    await flushPromises()
+    console.log('done. waiting to flush promises...');
+    await flushPromises();
+    console.log('done 2.');
     const handler1 = jest.fn();
     const mockSuccess = '{"data":{"id":"abc-123"}}';
     const mockError = JSON.stringify({"explanation":"Failed to report skill event because skill definition does not exist.","errorCode":"SkillNotFound","success":false,"projectId":"movies","skillId":"DoesNotExist","userId":"user1"});
@@ -111,6 +114,7 @@ describe('retryTests()', () => {
     mock.post(url, (req, res) => {
       expect(req.header('Authorization')).toEqual('Bearer token');
       count++;
+      console.log(`inside POST, count [${count}]`);
       if (count > 1) {
         const reqBody = JSON.parse(req.body());
         expect(reqBody.isRetry).toEqual(true); // verify that isRetry is set to true
@@ -126,15 +130,24 @@ describe('retryTests()', () => {
         body = mockSuccess;
         status = 200;
       }
+      console.log(`inside POST, returning status [${status}], body [${body}]`);
       return res.status(status).body(body);
     });
 
+    // sleep for 3 seconds
+    console.log('sleeping 1.');
+    await new Promise(r => setTimeout(r, 3000));
+    console.log('done sleeping 1.');
     try {
+      console.log('reporting skill1');
       await SkillsReporter.reportSkill('skill1');
+      console.log('done 3.');
     } catch (e) {
     }
     // sleep for 3 seconds
+    console.log('sleeping 2.');
     await new Promise(r => setTimeout(r, 3000));
+    console.log('done sleeping 2.');
     expect(count).toEqual(1);
     expect(handler1).toHaveBeenCalledWith(JSON.parse(mockError));
   });
