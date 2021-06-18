@@ -135,9 +135,9 @@ describe('retryTests()', () => {
     });
 
     // sleep for 3 seconds
-    // console.log('sleeping 1.');
-    // await new Promise(r => setTimeout(r, 3000));
-    // console.log('done sleeping 1.');
+    console.log('sleeping 1.');
+    await new Promise(r => setTimeout(r, 3000));
+    console.log('done sleeping 1.');
     try {
       console.log('reporting skill1');
       await SkillsReporter.reportSkill('skill1');
