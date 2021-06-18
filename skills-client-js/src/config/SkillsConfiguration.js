@@ -179,6 +179,12 @@ SkillsConfiguration is a singleton and you only have to do this once. Please see
     initialized = false;
     initializeAfterConfigurePromise();
     this.setAuthToken(null);
+    this.projectId = null;
+    this.serviceUrl = null;
+    this.authenticator = null;
+    this.authToken = null;
+    this.status = null;
+    this.skillsClientVersion = null;
   },
 };
 

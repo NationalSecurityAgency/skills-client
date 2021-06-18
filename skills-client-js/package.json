@@ -15,7 +15,7 @@
         "build:umd": "rollup --config --format umd --file dist/skills-client-js.umd.min.js --name SkillsClient",
         "build:esm": "rollup --config --format esm --file dist/skills-client-js.esm.min.js",
         "deploy-to-examples": "npm run build && cp ./dist/skills-display-js.umd.min.js ../skills-examples/skills-example-client-js/app/assets/js/@skilltree/skills-client-js/dist",
-        "test": "NODE_ENV=test jest --coverage",
+        "test": "NODE_ENV=test jest --coverage --runInBand",
         "test-watch": "npx jest --passWithNoTests --coverage --watch",
         "prepublishOnly": "npm run build",
         "lint": "eslint --ext .js src/**"
