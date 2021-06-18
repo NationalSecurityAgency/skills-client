@@ -20,6 +20,7 @@ import { SkillsReporter } from '../../src/reporter/SkillsReporter';
 require('@babel/polyfill');
 
 describe('retryTests()', () => {
+  const flushPromises = () => new Promise(setImmediate);
   const mockServiceUrl = 'http://some.com';
   const mockProjectId = 'proj1';
   const authEndpoint = `${mockServiceUrl}/auth/endpoint`;
@@ -94,6 +95,7 @@ describe('retryTests()', () => {
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
+    await flushPromises()
     const handler1 = jest.fn();
     const mockSuccess = '{"data":{"id":"abc-123"}}';
     const mockError = JSON.stringify({"explanation":"Failed to report skill event because skill definition does not exist.","errorCode":"SkillNotFound","success":false,"projectId":"movies","skillId":"DoesNotExist","userId":"user1"});
