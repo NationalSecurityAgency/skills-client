@@ -19,7 +19,7 @@ import { SkillsReporter } from '../../src/reporter/SkillsReporter';
 
 require('@babel/polyfill');
 
-describe('authFormTests()', () => {
+describe('retryTests()', () => {
   const mockServiceUrl = 'http://some.com';
   const mockProjectId = 'proj1';
   const authEndpoint = `${mockServiceUrl}/auth/endpoint`;
