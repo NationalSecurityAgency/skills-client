@@ -36,6 +36,7 @@ describe('authFormTests()', () => {
 
   // put the real XHR object back and clear the mocks after each test
   afterEach(() => {
+    window.localStorage.removeItem('skillTreeRetryQueue');
     SkillsConfiguration.logout();
     mock.teardown();
   });
@@ -149,4 +150,41 @@ describe('authFormTests()', () => {
     expect(retryQueue.find(item => item.skillId === 'skill2')).toBeTruthy();
     expect(retryQueue.find(item => item.skillId === 'skill3')).toBeFalsy();
   });
+
+  it('reportSkill will not retry when errorCode === SkillNotFound', async () => {
+    SkillsConfiguration.logout();
+    expect.assertions(3);
+    const mockUserSkillId = 'skill1';
+
+    mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
+    SkillsConfiguration.configure({
+      serviceUrl: mockServiceUrl,
+      projectId: mockProjectId,
+      authenticator: authEndpoint,
+    });
+    const handler1 = jest.fn();
+    const mockError = JSON.stringify({"explanation":"Failed to report skill event because skill definition does not exist.","errorCode":"SkillNotFound","success":false,"projectId":"movies","skillId":"DoesNotExist","userId":"user1"});
+    let body = mockError;
+    let status = 403;
+
+    SkillsReporter.addErrorHandler(handler1);
+
+    const url = `${mockServiceUrl}/api/projects/${mockProjectId}/skills/${mockUserSkillId}`;
+    let count = 0;
+    mock.post(url, (req, res) => {
+      expect(req.header('Authorization')).toEqual('Bearer token');
+      count++;
+      return res.status(status).body(body);
+    });
+
+    try {
+      await SkillsReporter.reportSkill('skill1');
+    } catch (e) {
+    }
+    // sleep for 3 seconds
+    await new Promise(r => setTimeout(r, 3000));
+    expect(count).toEqual(1);
+    expect(handler1).toHaveBeenCalledWith(JSON.parse(mockError));
+  });
+
 });
