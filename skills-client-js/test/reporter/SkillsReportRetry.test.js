@@ -45,6 +45,7 @@ describe('retryTests()', () => {
   });
 
   it('reportSkill will retry for errors', async () => {
+    console.log('begin reportSkill will retry for errors');
     expect.assertions(8);
     const mockUserSkillId = 'skill1';
 
@@ -54,6 +55,7 @@ describe('retryTests()', () => {
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
+    console.log(`configured - authenticator: [${SkillsConfiguration.getAuthenticator()}]`)
     const handler1 = jest.fn();
     const mockSuccess = '{"data":{"id":"abc-123"}}';
     const mockError = JSON.stringify({"explanation":"Some random error occurred.","errorCode":"RandomError","success":false,"projectId":"movies","skillId":"IronMan","userId":"user1"});
@@ -125,7 +127,6 @@ describe('retryTests()', () => {
     expect(count).toEqual(1);
     expect(handler1).toHaveBeenCalledTimes(0)
   });
-
 
   it('do not exceed the max retry queue size', async () => {
     const maxRetryQueueSize = 2;

@@ -67,6 +67,7 @@ const exportObject = {
     authToken,
     oauthRedirect = false,
   }) {
+    console.log(`inside configure, authenticator: [${authenticator}]`);
     if (this.isInitialized()) {
       log.warn('SkillsConfiguration already initialized.');
       return;
@@ -101,6 +102,7 @@ const exportObject = {
       }
 
       if (!this.isPKIMode() && !this.getAuthToken()) {
+        console.log(`getting auth token- authenticator [${this.getAuthenticator()}]`);
         skillsService.getAuthenticationToken(this.getAuthenticator(), this.getServiceUrl(), this.getProjectId(), oauthRedirect)
           .then((token) => {
             this.setAuthToken(token);
