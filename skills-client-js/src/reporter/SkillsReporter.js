@@ -71,6 +71,7 @@ const retryErrors = function retryErrors() {
   localStorage.removeItem(retryQueueKey);
   if (retryQueue !== null) {
     retryQueue.forEach((item) => {
+      console.log(`SkillsClient::SkillsReporter::retryErrors retrying skillId [${item.skillId}], timestamp [${item.timestamp}]`);
       log.info(`SkillsClient::SkillsReporter::retryErrors retrying skillId [${item.skillId}], timestamp [${item.timestamp}]`);
       this.reportSkill(item.skillId, 0, item.timestamp, true);
     });
