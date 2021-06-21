@@ -69,7 +69,7 @@ const defaultRetryInterval = 60000;
 const retryErrors = function retryErrors() {
   const retryQueue = JSON.parse(localStorage.getItem(retryQueueKey));
   localStorage.removeItem(retryQueueKey);
-  if (retryQueue !== null) {
+  if (retryQueue !== null && SkillsConfiguration.isInitialized()) {
     retryQueue.forEach((item) => {
       console.log(`SkillsClient::SkillsReporter::retryErrors retrying skillId [${item.skillId}], timestamp [${item.timestamp}]`);
       log.info(`SkillsClient::SkillsReporter::retryErrors retrying skillId [${item.skillId}], timestamp [${item.timestamp}]`);
