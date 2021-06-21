@@ -37,6 +37,7 @@ describe('retryTests()', () => {
 
   // put the real XHR object back and clear the mocks after each test
   afterEach(() => {
+    localStorage.removeItem('skillTreeRetryQueue');
     SkillsConfiguration.logout();
     mock.teardown();
   });
