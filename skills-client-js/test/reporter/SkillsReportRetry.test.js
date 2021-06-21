@@ -123,6 +123,7 @@ describe('retryTests()', () => {
   });
 
   it('reportSkill will not retry when errorCode === SkillNotFound', async () => {
+    SkillsConfiguration.logout();
     expect.assertions(3);
     const mockUserSkillId = 'skill1';
 
