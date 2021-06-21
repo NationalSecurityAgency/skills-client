@@ -26,7 +26,7 @@ describe('retryTests()', () => {
 
   // replace the real XHR object with the mock XHR object before each test
   beforeEach(() => {
-    const retryQueue = JSON.parse(localStorage.getItem(retryQueueKey));
+    const retryQueue = JSON.parse(localStorage.getItem('skillTreeRetryQueue'));
     console.log('retryQueue: ', retryQueue);
     localStorage.removeItem('skillTreeRetryQueue');
     mock.setup();
