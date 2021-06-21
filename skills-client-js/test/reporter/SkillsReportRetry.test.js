@@ -52,7 +52,7 @@ describe('authFormTests()', () => {
     });
     const handler1 = jest.fn();
     const mockSuccess = '{"data":{"id":"abc-123"}}';
-    const mockError = JSON.stringify({"explanation":"Failed to report skill event because skill definition does not exist.","errorCode":"SkillNotFound","success":false,"projectId":"movies","skillId":"DoesNotExist","userId":"user1"});
+    const mockError = JSON.stringify({"explanation":"Some random error occurred.","errorCode":"RandomError","success":false,"projectId":"movies","skillId":"IronMan","userId":"user1"});
     let body = mockError;
     let status = 403;
 
@@ -133,7 +133,7 @@ describe('authFormTests()', () => {
       authenticator: authEndpoint,
     });
 
-    const mockError = JSON.stringify({"explanation":"Failed to report skill event because skill definition does not exist.","errorCode":"SkillNotFound","success":false,"projectId":"movies","skillId":"DoesNotExist","userId":"user1"});
+    const mockError = JSON.stringify({"explanation":"Some random error occurred.","errorCode":"RandomError","success":false,"projectId":"movies","skillId":"IronMan","userId":"user1"});
     const url = /.*\/api\/projects\/proj1\/skills\/skill[1-3]/;
     mock.post(url, (req, res) => {
       expect(req.header('Authorization')).toEqual('Bearer token');
