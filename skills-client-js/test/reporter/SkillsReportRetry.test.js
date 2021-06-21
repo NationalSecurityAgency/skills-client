@@ -96,7 +96,11 @@ describe('retryTests()', () => {
     }
     // sleep for 3 seconds
     console.log('sleeping...');
-    await new Promise(r => setTimeout(r, 3000));
+    try {
+      await new Promise(r => setTimeout(r, 3000));
+    } catch (e) {
+      console.log('caught exception while sleeping', e);
+    }
     console.log('done.');
     expect(count).toEqual(3);
     expect(handler1).toHaveBeenCalledWith(JSON.parse(mockError));
