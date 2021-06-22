@@ -42,8 +42,9 @@ describe('retryTests()', () => {
   });
 
   it('reportSkill will retry for errors', async () => {
+    console.log('reportSkill will retry for errors');
     expect.assertions(8);
-    const mockUserSkillId = 'skill1';
+    const mockUserSkillId = 'skill1-random';
 
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
     SkillsConfiguration.configure({
@@ -55,7 +56,7 @@ describe('retryTests()', () => {
     const mockSuccess = '{"data":{"id":"abc-123"}}';
     const mockError = JSON.stringify({"explanation":"Some random error occurred.","errorCode":"RandomError","success":false,"projectId":"movies","skillId":"IronMan","userId":"user1"});
     let body = mockError;
-    let status = 403;
+    let status = 503;
 
     SkillsReporter.addErrorHandler(handler1);
 
@@ -84,7 +85,7 @@ describe('retryTests()', () => {
     });
 
     try {
-      await SkillsReporter.reportSkill('skill1');
+      await SkillsReporter.reportSkill(mockUserSkillId);
     } catch (e) {
     }
     // sleep for 3 seconds
@@ -94,8 +95,9 @@ describe('retryTests()', () => {
   });
 
   it('reportSkill will not retry on success', async () => {
+    console.log('reportSkill will not retry on success');
     expect.assertions(4);
-    const mockUserSkillId = 'skill1';
+    const mockUserSkillId = 'skill1-success';
 
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
     SkillsConfiguration.configure({
@@ -115,7 +117,7 @@ describe('retryTests()', () => {
       return res.status(200).body('{"data":{"id":"abc-123"}}');
     });
 
-    const res = await SkillsReporter.reportSkill('skill1');
+    const res = await SkillsReporter.reportSkill(mockUserSkillId);
     // sleep for 2 seconds
     await new Promise(r => setTimeout(r, 2000));
     expect(res).toEqual({ data: { id: 'abc-123' } });
@@ -124,6 +126,7 @@ describe('retryTests()', () => {
   });
 
   it('do not exceed the max retry queue size', async () => {
+    console.log('do not exceed the max retry queue size');
     const maxRetryQueueSize = 2;
     SkillsReporter.configure({ maxRetryQueueSize });
 
@@ -152,9 +155,10 @@ describe('retryTests()', () => {
   });
 
   it('reportSkill will not retry when errorCode === SkillNotFound', async () => {
+    console.log('reportSkill will not retry when errorCode === SkillNotFound');
     SkillsConfiguration.logout();
     expect.assertions(3);
-    const mockUserSkillId = 'skill1';
+    const mockUserSkillId = 'skill1-SkillNotFound';
 
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
     SkillsConfiguration.configure({
@@ -178,7 +182,7 @@ describe('retryTests()', () => {
     });
 
     try {
-      await SkillsReporter.reportSkill('skill1');
+      await SkillsReporter.reportSkill(mockUserSkillId);
     } catch (e) {
     }
     // sleep for 3 seconds
