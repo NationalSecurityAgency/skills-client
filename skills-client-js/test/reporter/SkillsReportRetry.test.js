@@ -93,9 +93,13 @@ describe('retryTests()', () => {
     });
 
     try {
+      console.log(`reporting skill [${mockUserSkillId}]`);
       await SkillsReporter.reportSkill(mockUserSkillId);
+      console.log('done.')
     } catch (e) {
+      console.log('caught exception reporting skill', e);
     }
+    console.log('sleeping for 3 seconds...');
     // sleep for 3 seconds
     await new Promise(r => setTimeout(r, 3000));
     expect(count).toEqual(3);

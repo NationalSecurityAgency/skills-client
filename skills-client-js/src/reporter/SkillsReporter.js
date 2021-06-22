@@ -225,8 +225,9 @@ const SkillsReporter = {
   cancel() {
     clearInterval(retryIntervalId);
     this.retryEnabled = false;
-  }
- };
+  },
+
+};
 
 export {
   SkillsReporter,

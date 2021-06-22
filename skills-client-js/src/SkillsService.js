@@ -111,7 +111,7 @@ export default {
       }
 
       xhr.onreadystatechange = () => {
-        console.log(`inside getAuthenticationToken::onreadystatechange.  xhr.status [${xhr.status }]`);
+        console.log(`inside getAuthenticationToken::onreadystatechange.  xhr.status [${xhr.status}]. xhr.readyState [${xhr.readyState}]`);
         if (xhr.readyState === 4) {
           if (xhr.status !== 200) {
             console.log('inside getAuthenticationToken::onreadystatechange. -- NON SUCCESS status', xhr);
