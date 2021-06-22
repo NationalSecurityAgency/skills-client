@@ -51,11 +51,13 @@ describe('retryTests()', () => {
     const mockUserSkillId = 'skill1-random';
 
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
+    console.log('calling SkillsConfiguration.configure');
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
+    console.log(`done. serviceUrl [${SkillsConfiguration.getServiceUrl()}], projectId [${SkillsConfiguration.getProjectId()}], authenticator [${SkillsConfiguration.getAuthenticator()}]`);
     const handler1 = jest.fn();
     const mockSuccess = '{"data":{"id":"abc-123"}}';
     const mockError = JSON.stringify({"explanation":"Some random error occurred.","errorCode":"RandomError","success":false,"projectId":"movies","skillId":"IronMan","userId":"user1"});
