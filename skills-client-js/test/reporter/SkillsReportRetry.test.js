@@ -23,6 +23,7 @@ describe('retryTests()', () => {
   const mockServiceUrl = 'http://some.com';
   const mockProjectId = 'proj1';
   const authEndpoint = `${mockServiceUrl}/auth/endpoint`;
+  const flushPromises = () => new Promise(setImmediate);
 
   // replace the real XHR object with the mock XHR object before each test
   beforeEach(() => {
@@ -57,6 +58,7 @@ describe('retryTests()', () => {
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
+    await flushPromises()
     console.log(`done. serviceUrl [${SkillsConfiguration.getServiceUrl()}], projectId [${SkillsConfiguration.getProjectId()}], authenticator [${SkillsConfiguration.getAuthenticator()}]`);
     const handler1 = jest.fn();
     const mockSuccess = '{"data":{"id":"abc-123"}}';
@@ -111,6 +113,7 @@ describe('retryTests()', () => {
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
+    await flushPromises()
     const handler1 = jest.fn();
 
     SkillsReporter.addErrorHandler(handler1);
@@ -142,6 +145,7 @@ describe('retryTests()', () => {
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
+    await flushPromises()
 
     const mockError = JSON.stringify({"explanation":"Some random error occurred.","errorCode":"RandomError","success":false,"projectId":"movies","skillId":"IronMan","userId":"user1"});
     const url = /.*\/api\/projects\/proj1\/skills\/skill[1-3]/;
@@ -172,6 +176,7 @@ describe('retryTests()', () => {
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
+    await flushPromises()
     const handler1 = jest.fn();
     const mockError = JSON.stringify({"explanation":"Failed to report skill event because skill definition does not exist.","errorCode":"SkillNotFound","success":false,"projectId":"movies","skillId":"DoesNotExist","userId":"user1"});
     let body = mockError;
