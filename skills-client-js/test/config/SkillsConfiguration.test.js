@@ -29,8 +29,8 @@ describe('SkillsConfiguration', () => {
     const url = /.*\/api\/projects\/.*\/skillsClientVersion/;
     mock.post(url, (req, res) => res.status(200).body(mockVersionResponse));
     mock.get(/.*\/public\/status/, (req, res) => {
-      statusReqCount++
-      return res.status(200).body(mockStatusResponse)
+      statusReqCount++;
+      return res.status(200).body(mockStatusResponse);
     });
   });
 
@@ -60,68 +60,71 @@ describe('SkillsConfiguration', () => {
         });
 
         // when an error occurs during initialization isInitialized should be false, but wasConfigureCalled should be true
-        expect(SkillsConfiguration.isInitialized()).toBe(false)
-        expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
-        expect(statusReqCount).toBe(1)
+        expect(SkillsConfiguration.isInitialized()).toBe(false);
+        expect(SkillsConfiguration.wasConfigureCalled()).toBe(true);
+        expect(statusReqCount).toBe(1);
       }).toThrow('SkillTree: SkillsConfiguration.configure received invalid parameter for projectId=[undefined]');
     });
 
-    it('calling configure more than once after failure will attempt to configure again', async() => {
+    it('calling configure more than once after failure will attempt to configure again', async () => {
       expect.assertions(6);
 
       mock.reset();
       mock.get(/.*\/public\/status/, (req, res) => {
         statusReqCount++;
-        return res.status(503)
+        return res.status(503);
       });
+      const mockAuthenticator = Math.random().toString();
+      mock.get(mockAuthenticator, (req, res) => res.status(200).body('{"access_token": "token"}'));
 
       const config = {
         projectId: Math.random().toString(),
         serviceUrl: Math.random().toString(),
-        authenticator: Math.random().toString(),
+        authenticator: mockAuthenticator,
         authToken: Math.random().toString(),
-      }
+      };
 
       SkillsConfiguration.configure(config);
-      await flushPromises()
-      expect(SkillsConfiguration.isInitialized()).toBe(false)
-      expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
-      expect(statusReqCount).toBe(1)
+      await flushPromises();
+      expect(SkillsConfiguration.isInitialized()).toBe(false);
+      expect(SkillsConfiguration.wasConfigureCalled()).toBe(true);
+      expect(statusReqCount).toBe(1);
 
       SkillsConfiguration.configure(config);
-      await flushPromises()
-      expect(SkillsConfiguration.isInitialized()).toBe(false)
-      expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
-      expect(statusReqCount).toBe(2)
+      await flushPromises();
+      expect(SkillsConfiguration.isInitialized()).toBe(false);
+      expect(SkillsConfiguration.wasConfigureCalled()).toBe(true);
+      expect(statusReqCount).toBe(2);
     });
 
     it('calling configure more than once without failure will NOT attempt to configure again', async () => {
       expect.assertions(6);
-
+      const mockAuthenticator = Math.random().toString();
+      mock.get(mockAuthenticator, (req, res) => res.status(200).body('{"access_token": "token"}'));
       const config = {
         projectId: Math.random().toString(),
         serviceUrl: Math.random().toString(),
-        authenticator: Math.random().toString(),
+        authenticator: mockAuthenticator,
         authToken: Math.random().toString(),
-      }
+      };
 
       SkillsConfiguration.configure(config);
-      await flushPromises()
-      expect(SkillsConfiguration.isInitialized()).toBe(true)
-      expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
-      expect(statusReqCount).toBe(1)
+      await flushPromises();
+      expect(SkillsConfiguration.isInitialized()).toBe(true);
+      expect(SkillsConfiguration.wasConfigureCalled()).toBe(true);
+      expect(statusReqCount).toBe(1);
 
       SkillsConfiguration.configure(config);
-      await flushPromises()
-      expect(SkillsConfiguration.isInitialized()).toBe(true)
-      expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
-      expect(statusReqCount).toBe(1)
-
+      await flushPromises();
+      expect(SkillsConfiguration.isInitialized()).toBe(true);
+      expect(SkillsConfiguration.wasConfigureCalled()).toBe(true);
+      expect(statusReqCount).toBe(1);
     });
 
-    it('setAuthToken updates the authToken', () => {
+    it('setAuthToken updates the authToken', async () => {
       const mockAuthToken = Math.random() + 1;
       SkillsConfiguration.configure({ authToken: mockAuthToken, projectId: 'projectId', serviceUrl: 'http://somewhere' });
+      await flushPromises();
 
       expect(SkillsConfiguration.getAuthToken()).toBe(mockAuthToken);
 
@@ -133,22 +136,24 @@ describe('SkillsConfiguration', () => {
 
     describe('initializing', () => {
       describe('isPKIMode', () => {
-        it('isPKIMode is false if authenticator is NOT \'pki\'', () => {
+        it('isPKIMode is false if authenticator is NOT \'pki\'', async () => {
           const mockAuthenticator = Math.random().toString();
-
+          mock.get(mockAuthenticator, (req, res) => res.status(200).body('{"access_token": "token"}'));
           SkillsConfiguration.configure({
             authenticator: mockAuthenticator, projectId: 'proj', serviceUrl: 'http://somewhere',
           });
+          await flushPromises();
 
           expect(SkillsConfiguration.isPKIMode()).toBeFalsy();
         });
 
-        it('isPKIMode is true if authenticator is \'pki\'', () => {
+        it('isPKIMode is true if authenticator is \'pki\'', async () => {
           const mockAuthenticator = 'pki';
 
           SkillsConfiguration.configure({
             authenticator: mockAuthenticator, projectId: 'proj', serviceUrl: 'http://somewhere',
           });
+          await flushPromises();
 
           expect(SkillsConfiguration.isPKIMode()).toBeTruthy();
         });
@@ -157,10 +162,10 @@ describe('SkillsConfiguration', () => {
       it('properly initializes variables', async () => {
         expect.assertions(6);
 
-        const mockServiceUrl = Math.random().toString();;
-        const mockProjectId = Math.random().toString();;
-        const mockAuthenticator = Math.random().toString();;
-        const mockAuthToken = Math.random().toString();;
+        const mockServiceUrl = Math.random().toString();
+        const mockProjectId = Math.random().toString();
+        const mockAuthenticator = Math.random().toString();
+        const mockAuthToken = Math.random().toString();
 
         SkillsConfiguration.configure({
           projectId: mockProjectId,
@@ -168,17 +173,17 @@ describe('SkillsConfiguration', () => {
           authenticator: mockAuthenticator,
           authToken: mockAuthToken,
         });
-        await flushPromises()
+        await flushPromises();
 
         expect(SkillsConfiguration.getProjectId()).toBe(mockProjectId);
         expect(SkillsConfiguration.getServiceUrl()).toBe(mockServiceUrl);
         expect(SkillsConfiguration.getAuthenticator()).toBe(mockAuthenticator);
         expect(SkillsConfiguration.getAuthToken()).toBe(mockAuthToken);
-        expect(SkillsConfiguration.isInitialized()).toBe(true)
-        expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
+        expect(SkillsConfiguration.isInitialized()).toBe(true);
+        expect(SkillsConfiguration.wasConfigureCalled()).toBe(true);
       });
 
-      it('notifies afterConfigure Promisees' ,(done) => {
+      it('notifies afterConfigure Promisees', (done) => {
         let resolveCount = 0;
         SkillsConfiguration.afterConfigure().then(() => {
           resolveCount++;
@@ -193,12 +198,15 @@ describe('SkillsConfiguration', () => {
         SkillsConfiguration.configure({ authenticator: 'pki', projectId: 'proj', serviceUrl: 'http://somewhere' });
       });
 
-      it('trailing slash and spaces are removed from the serviceUrl', () => {
+      it('trailing slash and spaces are removed from the serviceUrl', async () => {
+        const authEndpoint = 'http://auth/';
+        mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
         SkillsConfiguration.configure({
           projectId: 'proj',
           serviceUrl: ' http://some/ ',
-          authenticator: 'http://auth',
+          authenticator: authEndpoint,
         });
+        await flushPromises();
 
         expect(SkillsConfiguration.getServiceUrl()).toBe('http://some');
       });
@@ -213,8 +221,8 @@ describe('SkillsConfiguration', () => {
           });
 
           // when an error occurs during initialization isInitialized should be false, but wasConfigureCalled should be true
-          expect(SkillsConfiguration.isInitialized()).toBe(false)
-          expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
+          expect(SkillsConfiguration.isInitialized()).toBe(false);
+          expect(SkillsConfiguration.wasConfigureCalled()).toBe(true);
         }).toThrow('SkillTree: SkillsConfiguration.configure received invalid parameter for projectId=[undefined]');
       });
 
@@ -246,7 +254,6 @@ describe('SkillsConfiguration', () => {
           });
         }).toThrow('SkillTree: SkillsConfiguration.configure received invalid parameter for serviceUrl=[undefined]');
       });
-
 
       it('throws an error if authenticator is set to null', () => {
         expect(() => {
@@ -297,7 +304,7 @@ describe('SkillsConfiguration', () => {
         expect(oldPromise).not.toBe(newPromise);
       });
 
-      it('clears the authToken', () => {
+      it('clears the authToken', async () => {
         const mockAuthToken = Math.random().toString();;
         SkillsConfiguration.configure({
           authToken: mockAuthToken,
@@ -305,6 +312,7 @@ describe('SkillsConfiguration', () => {
           serviceUrl: 'http://some',
           authenticator: 'http://auth',
         });
+        await flushPromises();
 
         expect(SkillsConfiguration.getAuthToken()).toBe(mockAuthToken);
 

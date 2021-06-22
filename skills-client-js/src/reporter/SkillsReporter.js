@@ -25,6 +25,8 @@ const FAILURE_EVENT = 'skills-report-error';
 const successHandlerCache = new Set();
 const errorHandlerCache = new Set();
 
+let retryIntervalId = null;
+
 const callSuccessHandlers = (event) => {
   successHandlerCache.forEach((it) => it(event));
 };
@@ -79,6 +81,13 @@ const retryErrors = function retryErrors() {
 
 const addToRetryQueue = (skillId, timeReported, xhr, maxQueueSize) => {
   log.info(`SkillsClient::SkillsReporter::addToRetryQueue [${skillId}], status [${xhr.status}]`);
+  if (xhr.response) {
+    const xhrResponse = JSON.parse(xhr.response);
+    if (xhrResponse && xhrResponse.errorCode === 'SkillNotFound') {
+      log.info('not adding to retry queue because the skillId does not exist.');
+      return;
+    }
+  }
   let retryQueue = JSON.parse(localStorage.getItem(retryQueueKey));
   if (retryQueue == null) {
     retryQueue = [];
@@ -139,7 +148,7 @@ const SkillsReporter = {
     SkillsConfiguration.validate();
     if (!this.retryEnabled) {
       log.info('SkillsClient::SkillsReporter::Enabling retries...');
-      setInterval(() => { retryErrors.call(this); }, this.retryInterval || defaultRetryInterval);
+      retryIntervalId = setInterval(() => { retryErrors.call(this); }, this.retryInterval || defaultRetryInterval);
       this.retryEnabled = true;
     }
     if (count >= 25) {
@@ -200,6 +209,12 @@ const SkillsReporter = {
   getConf() {
     return SkillsConfiguration;
   },
+
+  cancelRetryChecker() {
+    clearInterval(retryIntervalId);
+    this.retryEnabled = false;
+  },
+
 };
 
 export {
