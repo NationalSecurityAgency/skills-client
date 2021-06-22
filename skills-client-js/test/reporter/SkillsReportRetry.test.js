@@ -38,6 +38,8 @@ describe('retryTests()', () => {
   // put the real XHR object back and clear the mocks after each test
   afterEach(() => {
     console.log(`> teardown - intervalId [${SkillsReporter.getRetryIntervalId()}]`);
+    SkillsReporter.cancel();
+    console.log(`> teardown - intervalId after cancel [${SkillsReporter.getRetryIntervalId()}]`);
     window.localStorage.removeItem('skillTreeRetryQueue');
     SkillsConfiguration.logout();
     mock.teardown();
