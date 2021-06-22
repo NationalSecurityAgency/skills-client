@@ -30,7 +30,7 @@ describe('retryTests()', () => {
     console.log(`> setup - intervalId [${SkillsReporter.getRetryIntervalId()}]`);
     mock.setup();
     SkillsConfiguration.logout();
-    SkillsReporter.configure( { retryInterval: 60 } );
+    SkillsReporter.configure({ retryInterval: 60 });
     const url = /.*\/api\/projects\/proj1\/skillsClientVersion/;
     mock.post(url, (req, res) => res.status(200).body('{"success":true,"explanation":null}'));
     mock.get(/.*\/public\/status/, (req, res) => res.status(200).body('{"status":"OK","clientLib":{"loggingEnabled":"false","loggingLevel":"DEBUG"}}'));
@@ -58,11 +58,13 @@ describe('retryTests()', () => {
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
-    await flushPromises()
+    await flushPromises();
     console.log(`done. serviceUrl [${SkillsConfiguration.getServiceUrl()}], projectId [${SkillsConfiguration.getProjectId()}], authenticator [${SkillsConfiguration.getAuthenticator()}]`);
     const handler1 = jest.fn();
     const mockSuccess = '{"data":{"id":"abc-123"}}';
-    const mockError = JSON.stringify({"explanation":"Some random error occurred.","errorCode":"RandomError","success":false,"projectId":"movies","skillId":"IronMan","userId":"user1"});
+    const mockError = JSON.stringify({
+      explanation: 'Some random error occurred.', errorCode: 'RandomError', success: false, projectId: 'movies', skillId: 'IronMan', userId: 'user1',
+    });
     let body = mockError;
     let status = 503;
 
@@ -80,7 +82,7 @@ describe('retryTests()', () => {
         if (timestamp == null) {
           timestamp = reqBody.timestamp;
         } else {
-          expect(timestamp).toEqual(reqBody.timestamp);  // verify the timestamp remains the same
+          expect(timestamp).toEqual(reqBody.timestamp); // verify the timestamp remains the same
         }
       }
 
@@ -95,13 +97,13 @@ describe('retryTests()', () => {
     try {
       console.log(`reporting skill [${mockUserSkillId}]`);
       await SkillsReporter.reportSkill(mockUserSkillId);
-      console.log('done.')
+      console.log('done.');
     } catch (e) {
       console.log('caught exception reporting skill', e);
     }
     console.log('sleeping for 3 seconds...');
     // sleep for 3 seconds
-    await new Promise(r => setTimeout(r, 3000));
+    await new Promise((r) => setTimeout(r, 3000));
     expect(count).toEqual(3);
     expect(handler1).toHaveBeenCalledWith(JSON.parse(mockError));
   });
@@ -118,7 +120,7 @@ describe('retryTests()', () => {
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
-    await flushPromises()
+    await flushPromises();
     console.log(`done. serviceUrl [${SkillsConfiguration.getServiceUrl()}], projectId [${SkillsConfiguration.getProjectId()}], authenticator [${SkillsConfiguration.getAuthenticator()}]`);
     const handler1 = jest.fn();
 
@@ -134,10 +136,10 @@ describe('retryTests()', () => {
 
     const res = await SkillsReporter.reportSkill(mockUserSkillId);
     // sleep for 2 seconds
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 2000));
     expect(res).toEqual({ data: { id: 'abc-123' } });
     expect(count).toEqual(1);
-    expect(handler1).toHaveBeenCalledTimes(0)
+    expect(handler1).toHaveBeenCalledTimes(0);
   });
 
   it('do not exceed the max retry queue size', async () => {
@@ -152,24 +154,26 @@ describe('retryTests()', () => {
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
-    await flushPromises()
+    await flushPromises();
     console.log(`done. serviceUrl [${SkillsConfiguration.getServiceUrl()}], projectId [${SkillsConfiguration.getProjectId()}], authenticator [${SkillsConfiguration.getAuthenticator()}]`);
 
-    const mockError = JSON.stringify({"explanation":"Some random error occurred.","errorCode":"RandomError","success":false,"projectId":"movies","skillId":"IronMan","userId":"user1"});
+    const mockError = JSON.stringify({
+      explanation: 'Some random error occurred.', errorCode: 'RandomError', success: false, projectId: 'movies', skillId: 'IronMan', userId: 'user1',
+    });
     const url = /.*\/api\/projects\/proj1\/skills\/skill[1-3]/;
     mock.post(url, (req, res) => {
       expect(req.header('Authorization')).toEqual('Bearer token');
       return res.status(503).body(mockError);
-    })
+    });
     try { await SkillsReporter.reportSkill('skill1'); } catch (e) { }
     try { await SkillsReporter.reportSkill('skill2'); } catch (e) { }
     try { await SkillsReporter.reportSkill('skill3'); } catch (e) { }
 
     const retryQueue = JSON.parse(window.localStorage.getItem('skillTreeRetryQueue'));
     expect(retryQueue.length).toEqual(maxRetryQueueSize);
-    expect(retryQueue.find(item => item.skillId === 'skill1')).toBeTruthy();
-    expect(retryQueue.find(item => item.skillId === 'skill2')).toBeTruthy();
-    expect(retryQueue.find(item => item.skillId === 'skill3')).toBeFalsy();
+    expect(retryQueue.find((item) => item.skillId === 'skill1')).toBeTruthy();
+    expect(retryQueue.find((item) => item.skillId === 'skill2')).toBeTruthy();
+    expect(retryQueue.find((item) => item.skillId === 'skill3')).toBeFalsy();
   });
 
   it('reportSkill will not retry when errorCode === SkillNotFound', async () => {
@@ -185,12 +189,14 @@ describe('retryTests()', () => {
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
-    await flushPromises()
+    await flushPromises();
     console.log(`done. serviceUrl [${SkillsConfiguration.getServiceUrl()}], projectId [${SkillsConfiguration.getProjectId()}], authenticator [${SkillsConfiguration.getAuthenticator()}]`);
     const handler1 = jest.fn();
-    const mockError = JSON.stringify({"explanation":"Failed to report skill event because skill definition does not exist.","errorCode":"SkillNotFound","success":false,"projectId":"movies","skillId":"DoesNotExist","userId":"user1"});
-    let body = mockError;
-    let status = 403;
+    const mockError = JSON.stringify({
+      explanation: 'Failed to report skill event because skill definition does not exist.', errorCode: 'SkillNotFound', success: false, projectId: 'movies', skillId: 'DoesNotExist', userId: 'user1',
+    });
+    const body = mockError;
+    const status = 403;
 
     SkillsReporter.addErrorHandler(handler1);
 
@@ -207,9 +213,8 @@ describe('retryTests()', () => {
     } catch (e) {
     }
     // sleep for 3 seconds
-    await new Promise(r => setTimeout(r, 3000));
+    await new Promise((r) => setTimeout(r, 3000));
     expect(count).toEqual(1);
     expect(handler1).toHaveBeenCalledWith(JSON.parse(mockError));
   });
-
 });
