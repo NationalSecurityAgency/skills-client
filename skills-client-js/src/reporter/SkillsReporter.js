@@ -25,6 +25,8 @@ const FAILURE_EVENT = 'skills-report-error';
 const successHandlerCache = new Set();
 const errorHandlerCache = new Set();
 
+let retryIntervalId = null;
+
 const callSuccessHandlers = (event) => {
   successHandlerCache.forEach((it) => it(event));
 };
@@ -67,7 +69,9 @@ const retryQueueKey = 'skillTreeRetryQueue';
 const defaultMaxRetryQueueSize = 1000;
 const defaultRetryInterval = 60000;
 const retryErrors = function retryErrors() {
+  console.log('inside retryErrors');
   const retryQueue = JSON.parse(localStorage.getItem(retryQueueKey));
+  console.log('retryQueue', retryQueue);
   localStorage.removeItem(retryQueueKey);
   if (retryQueue !== null) {
     retryQueue.forEach((item) => {
@@ -148,8 +152,10 @@ const SkillsReporter = {
     SkillsConfiguration.validate();
     if (!this.retryEnabled) {
       log.info('SkillsClient::SkillsReporter::Enabling retries...');
-      setInterval(() => { retryErrors.call(this); }, this.retryInterval || defaultRetryInterval);
+      console.log(`starting retryInterval, retryIntervalId[${retryIntervalId}]`);
+      retryIntervalId = setInterval(() => { retryErrors.call(this); }, this.retryInterval || defaultRetryInterval);
       this.retryEnabled = true;
+      console.log(`started retryInterval, retryIntervalId[${retryIntervalId}]`);
     }
     if (count >= 25) {
       const errorMessage = 'Unable to authenticate after 25 attempts';
@@ -210,6 +216,10 @@ const SkillsReporter = {
   getConf() {
     return SkillsConfiguration;
   },
+
+  getRetryIntervalId() {
+    return retryIntervalId;
+  }
 };
 
 export {
