@@ -27,7 +27,6 @@ describe('retryTests()', () => {
 
   // replace the real XHR object with the mock XHR object before each test
   beforeEach(() => {
-    console.log(`> setup - intervalId [${SkillsReporter.getRetryIntervalId()}]`);
     mock.setup();
     SkillsConfiguration.logout();
     SkillsReporter.configure({ retryInterval: 60 });
@@ -38,28 +37,23 @@ describe('retryTests()', () => {
 
   // put the real XHR object back and clear the mocks after each test
   afterEach(() => {
-    console.log(`> teardown - intervalId [${SkillsReporter.getRetryIntervalId()}]`);
-    SkillsReporter.cancel();
-    console.log(`> teardown - intervalId after cancel [${SkillsReporter.getRetryIntervalId()}]`);
+    SkillsReporter.cancelRetryChecker();
     window.localStorage.removeItem('skillTreeRetryQueue');
     SkillsConfiguration.logout();
     mock.teardown();
   });
 
   it('reportSkill will retry for errors', async () => {
-    console.log('reportSkill will retry for errors');
     expect.assertions(8);
     const mockUserSkillId = 'skill1-random';
 
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
-    console.log('calling SkillsConfiguration.configure');
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
     await flushPromises();
-    console.log(`done. serviceUrl [${SkillsConfiguration.getServiceUrl()}], projectId [${SkillsConfiguration.getProjectId()}], authenticator [${SkillsConfiguration.getAuthenticator()}]`);
     const handler1 = jest.fn();
     const mockSuccess = '{"data":{"id":"abc-123"}}';
     const mockError = JSON.stringify({
@@ -95,13 +89,9 @@ describe('retryTests()', () => {
     });
 
     try {
-      console.log(`reporting skill [${mockUserSkillId}]`);
       await SkillsReporter.reportSkill(mockUserSkillId);
-      console.log('done.');
     } catch (e) {
-      console.log('caught exception reporting skill', e);
     }
-    console.log('sleeping for 3 seconds...');
     // sleep for 3 seconds
     await new Promise((r) => setTimeout(r, 3000));
     expect(count).toEqual(3);
@@ -109,19 +99,16 @@ describe('retryTests()', () => {
   });
 
   it('reportSkill will not retry on success', async () => {
-    console.log('reportSkill will not retry on success');
     expect.assertions(4);
     const mockUserSkillId = 'skill1-success';
 
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
-    console.log('calling SkillsConfiguration.configure');
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
     await flushPromises();
-    console.log(`done. serviceUrl [${SkillsConfiguration.getServiceUrl()}], projectId [${SkillsConfiguration.getProjectId()}], authenticator [${SkillsConfiguration.getAuthenticator()}]`);
     const handler1 = jest.fn();
 
     SkillsReporter.addErrorHandler(handler1);
@@ -143,19 +130,16 @@ describe('retryTests()', () => {
   });
 
   it('do not exceed the max retry queue size', async () => {
-    console.log('do not exceed the max retry queue size');
     const maxRetryQueueSize = 2;
     SkillsReporter.configure({ maxRetryQueueSize });
 
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
-    console.log('calling SkillsConfiguration.configure');
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
     await flushPromises();
-    console.log(`done. serviceUrl [${SkillsConfiguration.getServiceUrl()}], projectId [${SkillsConfiguration.getProjectId()}], authenticator [${SkillsConfiguration.getAuthenticator()}]`);
 
     const mockError = JSON.stringify({
       explanation: 'Some random error occurred.', errorCode: 'RandomError', success: false, projectId: 'movies', skillId: 'IronMan', userId: 'user1',
@@ -177,26 +161,23 @@ describe('retryTests()', () => {
   });
 
   it('reportSkill will not retry when errorCode === SkillNotFound', async () => {
-    console.log('reportSkill will not retry when errorCode === SkillNotFound');
     SkillsConfiguration.logout();
     expect.assertions(3);
     const mockUserSkillId = 'skill1-SkillNotFound';
 
     mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
-    console.log('calling SkillsConfiguration.configure');
     SkillsConfiguration.configure({
       serviceUrl: mockServiceUrl,
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
     await flushPromises();
-    console.log(`done. serviceUrl [${SkillsConfiguration.getServiceUrl()}], projectId [${SkillsConfiguration.getProjectId()}], authenticator [${SkillsConfiguration.getAuthenticator()}]`);
     const handler1 = jest.fn();
     const mockError = JSON.stringify({
       explanation: 'Failed to report skill event because skill definition does not exist.', errorCode: 'SkillNotFound', success: false, projectId: 'movies', skillId: 'DoesNotExist', userId: 'user1',
     });
     const body = mockError;
-    const status = 403;
+    const status = 503;
 
     SkillsReporter.addErrorHandler(handler1);
 

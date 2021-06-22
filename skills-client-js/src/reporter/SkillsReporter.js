@@ -69,9 +69,7 @@ const retryQueueKey = 'skillTreeRetryQueue';
 const defaultMaxRetryQueueSize = 1000;
 const defaultRetryInterval = 60000;
 const retryErrors = function retryErrors() {
-  console.log('inside retryErrors');
   const retryQueue = JSON.parse(localStorage.getItem(retryQueueKey));
-  console.log('retryQueue', retryQueue);
   localStorage.removeItem(retryQueueKey);
   if (retryQueue !== null) {
     retryQueue.forEach((item) => {
@@ -82,7 +80,6 @@ const retryErrors = function retryErrors() {
 };
 
 const addToRetryQueue = (skillId, timeReported, xhr, maxQueueSize) => {
-  console.log(`inside addToRetryQueue. skillId [${skillId}], status[${xhr.status}]`);
   log.info(`SkillsClient::SkillsReporter::addToRetryQueue [${skillId}], status [${xhr.status}]`);
   if (xhr.response) {
     const xhrResponse = JSON.parse(xhr.response);
@@ -105,7 +102,6 @@ const addToRetryQueue = (skillId, timeReported, xhr, maxQueueSize) => {
 };
 
 const authenticateAndRetry = function authenticateAndRetry(userSkillId, attemptCount, resolve, reject) {
-  console.log('inside authenticateAndRetry');
   log.info(`SkillsClient::SkillsReporter::authenticateAndRetry [${userSkillId}] attemptCount [${attemptCount}]`);
   skillsService.getAuthenticationToken(SkillsConfiguration.getAuthenticator(), SkillsConfiguration.getServiceUrl(), SkillsConfiguration.getProjectId())
     .then((token) => {
@@ -148,15 +144,12 @@ const SkillsReporter = {
     log.info(`SkillsClient::SkillsReporter::added error handler [${handler ? handler.toString() : handler}]`);
   },
   reportSkill(userSkillId, count = undefined, timestamp = null, isRetry = false) {
-    console.log('inside reportSkill');
     log.info(`SkillsClient::SkillsReporter::reporting skill [${userSkillId}] count [${count}]`);
     SkillsConfiguration.validate();
     if (!this.retryEnabled) {
       log.info('SkillsClient::SkillsReporter::Enabling retries...');
-      console.log(`starting retryInterval, retryIntervalId[${retryIntervalId}]`);
       retryIntervalId = setInterval(() => { retryErrors.call(this); }, this.retryInterval || defaultRetryInterval);
       this.retryEnabled = true;
-      console.log(`started retryInterval, retryIntervalId[${retryIntervalId}]`);
     }
     if (count >= 25) {
       const errorMessage = 'Unable to authenticate after 25 attempts';
@@ -170,7 +163,6 @@ const SkillsReporter = {
     }
 
     const promise = new Promise((resolve, reject) => {
-      console.log('inside reportSkill promise');
       if (!SkillsConfiguration.getAuthToken() && !SkillsConfiguration.isPKIMode()) {
         authenticateAndRetry.call(this, userSkillId, countInternal, resolve, reject);
       } else {
@@ -218,11 +210,7 @@ const SkillsReporter = {
     return SkillsConfiguration;
   },
 
-  getRetryIntervalId() {
-    return retryIntervalId;
-  },
-
-  cancel() {
+  cancelRetryChecker() {
     clearInterval(retryIntervalId);
     this.retryEnabled = false;
   },
