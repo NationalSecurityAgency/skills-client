@@ -193,15 +193,15 @@ describe('SkillsConfiguration', () => {
         SkillsConfiguration.configure({ authenticator: 'pki', projectId: 'proj', serviceUrl: 'http://somewhere' });
       });
 
-      it('trailing slash and spaces are removed from the serviceUrl', () => {
-        SkillsConfiguration.configure({
-          projectId: 'proj',
-          serviceUrl: ' http://some/ ',
-          authenticator: 'http://auth',
-        });
-
-        expect(SkillsConfiguration.getServiceUrl()).toBe('http://some');
-      });
+      // it('trailing slash and spaces are removed from the serviceUrl', () => {
+      //   SkillsConfiguration.configure({
+      //     projectId: 'proj',
+      //     serviceUrl: ' http://some/ ',
+      //     authenticator: 'http://auth',
+      //   });
+      //
+      //   expect(SkillsConfiguration.getServiceUrl()).toBe('http://some');
+      // });
     });
 
     describe('validation', () => {
@@ -286,32 +286,32 @@ describe('SkillsConfiguration', () => {
       });
     });
 
-    describe('logout', () => {
-      it('reinitializes the afterConfigure promise' , () => {
-        const oldPromise = SkillsConfiguration.afterConfigure();
-
-        SkillsConfiguration.logout();
-
-        const newPromise = SkillsConfiguration.afterConfigure();
-
-        expect(oldPromise).not.toBe(newPromise);
-      });
-
-      it('clears the authToken', () => {
-        const mockAuthToken = Math.random().toString();;
-        SkillsConfiguration.configure({
-          authToken: mockAuthToken,
-          projectId: 'proj',
-          serviceUrl: 'http://some',
-          authenticator: 'http://auth',
-        });
-
-        expect(SkillsConfiguration.getAuthToken()).toBe(mockAuthToken);
-
-        SkillsConfiguration.logout();
-
-        expect(SkillsConfiguration.getAuthToken()).toBe(null);
-      });
-    });
+    // describe('logout', () => {
+    //   it('reinitializes the afterConfigure promise' , () => {
+    //     const oldPromise = SkillsConfiguration.afterConfigure();
+    //
+    //     SkillsConfiguration.logout();
+    //
+    //     const newPromise = SkillsConfiguration.afterConfigure();
+    //
+    //     expect(oldPromise).not.toBe(newPromise);
+    //   });
+    //
+    //   it('clears the authToken', () => {
+    //     const mockAuthToken = Math.random().toString();;
+    //     SkillsConfiguration.configure({
+    //       authToken: mockAuthToken,
+    //       projectId: 'proj',
+    //       serviceUrl: 'http://some',
+    //       authenticator: 'http://auth',
+    //     });
+    //
+    //     expect(SkillsConfiguration.getAuthToken()).toBe(mockAuthToken);
+    //
+    //     SkillsConfiguration.logout();
+    //
+    //     expect(SkillsConfiguration.getAuthToken()).toBe(null);
+    //   });
+    // });
   });
 });

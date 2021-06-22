@@ -100,6 +100,7 @@ const addToRetryQueue = (skillId, timeReported, xhr, maxQueueSize) => {
 };
 
 const authenticateAndRetry = function authenticateAndRetry(userSkillId, attemptCount, resolve, reject) {
+  console.log('inside authenticateAndRetry');
   log.info(`SkillsClient::SkillsReporter::authenticateAndRetry [${userSkillId}] attemptCount [${attemptCount}]`);
   skillsService.getAuthenticationToken(SkillsConfiguration.getAuthenticator(), SkillsConfiguration.getServiceUrl(), SkillsConfiguration.getProjectId())
     .then((token) => {
@@ -142,6 +143,7 @@ const SkillsReporter = {
     log.info(`SkillsClient::SkillsReporter::added error handler [${handler ? handler.toString() : handler}]`);
   },
   reportSkill(userSkillId, count = undefined, timestamp = null, isRetry = false) {
+    console.log('inside reportSkill');
     log.info(`SkillsClient::SkillsReporter::reporting skill [${userSkillId}] count [${count}]`);
     SkillsConfiguration.validate();
     if (!this.retryEnabled) {
@@ -161,6 +163,7 @@ const SkillsReporter = {
     }
 
     const promise = new Promise((resolve, reject) => {
+      console.log('inside reportSkill promise');
       if (!SkillsConfiguration.getAuthToken() && !SkillsConfiguration.isPKIMode()) {
         authenticateAndRetry.call(this, userSkillId, countInternal, resolve, reject);
       } else {
