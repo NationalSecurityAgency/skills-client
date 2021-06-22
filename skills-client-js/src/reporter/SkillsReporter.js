@@ -82,6 +82,7 @@ const retryErrors = function retryErrors() {
 };
 
 const addToRetryQueue = (skillId, timeReported, xhr, maxQueueSize) => {
+  console.log(`inside addToRetryQueue. skillId [${skillId}], status[${xhr.status}]`);
   log.info(`SkillsClient::SkillsReporter::addToRetryQueue [${skillId}], status [${xhr.status}]`);
   if (xhr.response) {
     const xhrResponse = JSON.parse(xhr.response);

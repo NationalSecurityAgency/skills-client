@@ -111,8 +111,10 @@ export default {
       }
 
       xhr.onreadystatechange = () => {
+        console.log(`inside getAuthenticationToken::onreadystatechange.  xhr.status [${xhr.status }]`);
         if (xhr.readyState === 4) {
           if (xhr.status !== 200) {
+            console.log('inside getAuthenticationToken::onreadystatechange. -- NON SUCCESS status', xhr);
             if (isOAuthMode && oauthRedirect && xhr.status === 401) {
               // if we get 401 and we are using OAuth, then redirect to the OAuth Provider
               const oauthAuthenticator = `${authenticator}?skillsRedirectUri=${window.location}`;
