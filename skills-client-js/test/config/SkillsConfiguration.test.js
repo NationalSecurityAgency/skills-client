@@ -46,54 +46,54 @@ describe('SkillsConfiguration', () => {
       expect(SkillsConfiguration).not.toBeNull();
     });
 
-    // it('throws an error SkillsConfiguration.configure() was never called', () => {
-    //   expect(() => {
-    //     SkillsConfiguration.validate();
-    //   }).toThrow();
-    // });
-    //
-    // it('isInitialized is false when error occurs in configure', () => {
-    //   expect(() => {
-    //     SkillsConfiguration.configure({
-    //       serviceUrl: 'http://somewhere',
-    //       authenticator: 'pki',
-    //     });
-    //
-    //     // when an error occurs during initialization isInitialized should be false, but wasConfigureCalled should be true
-    //     expect(SkillsConfiguration.isInitialized()).toBe(false)
-    //     expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
-    //     expect(statusReqCount).toBe(1)
-    //   }).toThrow('SkillTree: SkillsConfiguration.configure received invalid parameter for projectId=[undefined]');
-    // });
-    //
-    // it('calling configure more than once after failure will attempt to configure again', async() => {
-    //   expect.assertions(6);
-    //
-    //   mock.reset();
-    //   mock.get(/.*\/public\/status/, (req, res) => {
-    //     statusReqCount++;
-    //     return res.status(503)
-    //   });
-    //
-    //   const config = {
-    //     projectId: Math.random().toString(),
-    //     serviceUrl: Math.random().toString(),
-    //     authenticator: Math.random().toString(),
-    //     authToken: Math.random().toString(),
-    //   }
-    //
-    //   SkillsConfiguration.configure(config);
-    //   await flushPromises()
-    //   expect(SkillsConfiguration.isInitialized()).toBe(false)
-    //   expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
-    //   expect(statusReqCount).toBe(1)
-    //
-    //   SkillsConfiguration.configure(config);
-    //   await flushPromises()
-    //   expect(SkillsConfiguration.isInitialized()).toBe(false)
-    //   expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
-    //   expect(statusReqCount).toBe(2)
-    // });
+    it('throws an error SkillsConfiguration.configure() was never called', () => {
+      expect(() => {
+        SkillsConfiguration.validate();
+      }).toThrow();
+    });
+
+    it('isInitialized is false when error occurs in configure', () => {
+      expect(() => {
+        SkillsConfiguration.configure({
+          serviceUrl: 'http://somewhere',
+          authenticator: 'pki',
+        });
+
+        // when an error occurs during initialization isInitialized should be false, but wasConfigureCalled should be true
+        expect(SkillsConfiguration.isInitialized()).toBe(false)
+        expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
+        expect(statusReqCount).toBe(1)
+      }).toThrow('SkillTree: SkillsConfiguration.configure received invalid parameter for projectId=[undefined]');
+    });
+
+    it('calling configure more than once after failure will attempt to configure again', async() => {
+      expect.assertions(6);
+
+      mock.reset();
+      mock.get(/.*\/public\/status/, (req, res) => {
+        statusReqCount++;
+        return res.status(503)
+      });
+
+      const config = {
+        projectId: Math.random().toString(),
+        serviceUrl: Math.random().toString(),
+        authenticator: Math.random().toString(),
+        authToken: Math.random().toString(),
+      }
+
+      SkillsConfiguration.configure(config);
+      await flushPromises()
+      expect(SkillsConfiguration.isInitialized()).toBe(false)
+      expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
+      expect(statusReqCount).toBe(1)
+
+      SkillsConfiguration.configure(config);
+      await flushPromises()
+      expect(SkillsConfiguration.isInitialized()).toBe(false)
+      expect(SkillsConfiguration.wasConfigureCalled()).toBe(true)
+      expect(statusReqCount).toBe(2)
+    });
     //
     // it('calling configure more than once without failure will NOT attempt to configure again', async () => {
     //   expect.assertions(6);
