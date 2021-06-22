@@ -26,6 +26,7 @@ describe('retryTests()', () => {
 
   // replace the real XHR object with the mock XHR object before each test
   beforeEach(() => {
+    console.log('> setup');
     mock.setup();
     SkillsConfiguration.logout();
     SkillsReporter.configure( { retryInterval: 60 } );
@@ -36,6 +37,7 @@ describe('retryTests()', () => {
 
   // put the real XHR object back and clear the mocks after each test
   afterEach(() => {
+    console.log('> teardown');
     window.localStorage.removeItem('skillTreeRetryQueue');
     SkillsConfiguration.logout();
     mock.teardown();
