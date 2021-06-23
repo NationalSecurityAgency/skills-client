@@ -142,7 +142,7 @@ describe('retryTests()', () => {
     await flushPromises();
 
     const mockError = JSON.stringify({
-      explanation: 'Some random error occurred.', errorCode: 'RandomError', success: false, projectId: 'movies', skillId: 'IronMan', userId: 'user1',
+      explanation: 'Some random error occurred - maxRetryQueueSize.', errorCode: 'RandomError', success: false, projectId: 'movies', skillId: 'IronMan', userId: 'user1',
     });
     const url = /.*\/api\/projects\/proj1\/skills\/skill[1-3]/;
     mock.post(url, (req, res) => {
@@ -158,6 +158,55 @@ describe('retryTests()', () => {
     expect(retryQueue.find((item) => item.skillId === 'skill1')).toBeTruthy();
     expect(retryQueue.find((item) => item.skillId === 'skill2')).toBeTruthy();
     expect(retryQueue.find((item) => item.skillId === 'skill3')).toBeFalsy();
+  });
+
+  it('do not exceed the max retry attempts size', async () => {
+    const maxRetryAttempts = 2;
+    SkillsReporter.configure({ retryInterval: 60, maxRetryAttempts });
+
+    mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
+    SkillsConfiguration.configure({
+      serviceUrl: mockServiceUrl,
+      projectId: mockProjectId,
+      authenticator: authEndpoint,
+    });
+    await flushPromises();
+
+    const handler1 = jest.fn();
+    SkillsReporter.addErrorHandler(handler1);
+    const mockUserSkillId = 'skill1-random';
+    const mockError = JSON.stringify({
+      explanation: 'Some random error occurred - maxRetryAttempts.', errorCode: 'RandomError', success: false, projectId: 'movies', skillId: 'IronMan', userId: 'user1',
+    });
+    const url = `${mockServiceUrl}/api/projects/${mockProjectId}/skills/${mockUserSkillId}`;
+    let count = 0;
+    let timestamp = null;
+    mock.post(url, (req, res) => {
+      expect(req.header('Authorization')).toEqual('Bearer token');
+      count++;
+      if (count > 1) {
+        const reqBody = JSON.parse(req.body());
+        expect(reqBody.isRetry).toEqual(true); // verify that isRetry is set to true
+        if (timestamp == null) {
+          timestamp = reqBody.timestamp;
+        } else {
+          expect(timestamp).toEqual(reqBody.timestamp); // verify the timestamp remains the same
+        }
+      }
+      return res.status(503).body(mockError);
+    });
+
+    try {
+      await SkillsReporter.reportSkill(mockUserSkillId);
+    } catch (e) {
+    }
+    // sleep for 3 seconds
+    await new Promise((r) => setTimeout(r, 3000));
+    expect(count).toEqual(maxRetryAttempts + 1);  // initial attempt plus 2 retries
+    expect(handler1).toHaveBeenCalledWith(JSON.parse(mockError));
+
+    const retryQueue = JSON.parse(window.localStorage.getItem('skillTreeRetryQueue'));
+    expect(retryQueue).toBeNull();
   });
 
   it('reportSkill will not retry when errorCode === SkillNotFound', async () => {

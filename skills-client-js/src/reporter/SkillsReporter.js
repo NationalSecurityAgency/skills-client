@@ -68,19 +68,20 @@ const connectWebsocket = (serviceUrl) => {
 const retryQueueKey = 'skillTreeRetryQueue';
 const defaultMaxRetryQueueSize = 1000;
 const defaultRetryInterval = 60000;
+const defaultMaxRetryAttempts = 1440;
 const retryErrors = function retryErrors() {
   const retryQueue = JSON.parse(localStorage.getItem(retryQueueKey));
   localStorage.removeItem(retryQueueKey);
   if (retryQueue !== null) {
     retryQueue.forEach((item) => {
-      log.info(`SkillsClient::SkillsReporter::retryErrors retrying skillId [${item.skillId}], timestamp [${item.timestamp}]`);
-      this.reportSkill(item.skillId, 0, item.timestamp, true);
+      log.info(`SkillsClient::SkillsReporter::retryErrors retrying skillId [${item.skillId}], timestamp [${item.timestamp}], retryAttempt [${item.retryAttempt}]`);
+      this.reportSkill(item.skillId, 0, item.timestamp, true, item.retryAttempt);
     });
   }
 };
 
-const addToRetryQueue = (skillId, timeReported, xhr, maxQueueSize) => {
-  log.info(`SkillsClient::SkillsReporter::addToRetryQueue [${skillId}], status [${xhr.status}]`);
+const addToRetryQueue = (skillId, timeReported, retryAttempt, xhr, maxQueueSize) => {
+  log.info(`SkillsClient::SkillsReporter::addToRetryQueue [${skillId}], timeReported [${timeReported}], retryAttempt[${retryAttempt}], status [${xhr.status}]`);
   if (xhr.response) {
     const xhrResponse = JSON.parse(xhr.response);
     if (xhrResponse && xhrResponse.errorCode === 'SkillNotFound') {
@@ -94,7 +95,7 @@ const addToRetryQueue = (skillId, timeReported, xhr, maxQueueSize) => {
   }
   if (retryQueue.length < maxQueueSize) {
     const timestamp = (timeReported == null) ? Date.now() : timeReported;
-    retryQueue.push({ skillId, timestamp });
+    retryQueue.push({ skillId, timestamp, retryAttempt });
     localStorage.setItem(retryQueueKey, JSON.stringify(retryQueue));
   } else {
     log.warn(`Max retry queue size has been reached (${maxQueueSize}), Unable to retry skillId [${skillId}]`);
@@ -121,11 +122,12 @@ const authenticateAndRetry = function authenticateAndRetry(userSkillId, attemptC
 
 const SkillsReporter = {
   configure({
-    notifyIfSkillNotApplied, retryInterval = defaultRetryInterval, maxRetryQueueSize = defaultMaxRetryQueueSize,
+    notifyIfSkillNotApplied, retryInterval = defaultRetryInterval, maxRetryQueueSize = defaultMaxRetryQueueSize, maxRetryAttempts = defaultMaxRetryAttempts,
   }) {
     this.notifyIfSkillNotApplied = notifyIfSkillNotApplied;
     this.retryInterval = retryInterval;
     this.maxRetryQueueSize = maxRetryQueueSize;
+    this.maxRetryAttempts = maxRetryAttempts;
   },
 
   addSuccessHandler(handler) {
@@ -143,7 +145,7 @@ const SkillsReporter = {
     errorHandlerCache.add(handler);
     log.info(`SkillsClient::SkillsReporter::added error handler [${handler ? handler.toString() : handler}]`);
   },
-  reportSkill(userSkillId, count = undefined, timestamp = null, isRetry = false) {
+  reportSkill(userSkillId, count = undefined, timestamp = null, isRetry = false, retryAttempt = undefined) {
     log.info(`SkillsClient::SkillsReporter::reporting skill [${userSkillId}] count [${count}]`);
     SkillsConfiguration.validate();
     if (!this.retryEnabled) {
@@ -162,6 +164,11 @@ const SkillsReporter = {
       countInternal = count;
     }
 
+    let retryAttemptInternal = 1;
+    if (retryAttempt !== undefined) {
+      retryAttemptInternal = retryAttempt + 1;
+    }
+
     const promise = new Promise((resolve, reject) => {
       if (!SkillsConfiguration.getAuthToken() && !SkillsConfiguration.isPKIMode()) {
         authenticateAndRetry.call(this, userSkillId, countInternal, resolve, reject);
@@ -178,7 +185,11 @@ const SkillsReporter = {
           // some browsers don't understand XMLHttpRequest.Done, which should be 4
           if (xhr.readyState === 4) {
             if (xhr.status !== 200 && xhr.status !== 401) {
-              addToRetryQueue(userSkillId, timestamp, xhr, this.maxRetryQueueSize || defaultMaxRetryQueueSize);
+              if (retryAttemptInternal <= this.maxRetryAttempts) {
+                addToRetryQueue(userSkillId, timestamp, retryAttemptInternal, xhr, this.maxRetryQueueSize || defaultMaxRetryQueueSize);
+              } else {
+                log.warn(`Max retry attempts has been reached (${this.maxRetryAttempts}), Unable to retry skillId [${userSkillId}]`);
+              }
               if (xhr.response) {
                 reject(JSON.parse(xhr.response));
               } else {
