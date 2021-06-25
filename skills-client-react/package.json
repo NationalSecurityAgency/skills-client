@@ -1,6 +1,6 @@
 {
     "name": "@skilltree/skills-client-react",
-    "version": "3.2.0",
+    "version": "3.3.0",
     "license": "Apache-2.0",
     "description": "SkillTree Client Lib - React",
     "main": "dist/skills-client-react.umd.min.js",
@@ -56,7 +56,7 @@
         "rollup-plugin-terser": "7.0.2"
     },
     "dependencies": {
-        "@skilltree/skills-client-js": "3.2.0",
+        "@skilltree/skills-client-js": "3.3.0",
         "axios": "0.21.1",
         "axios-auth-refresh": "3.1.0"
     },
