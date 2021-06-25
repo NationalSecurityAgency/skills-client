@@ -185,8 +185,10 @@ const SkillsReporter = {
           // some browsers don't understand XMLHttpRequest.Done, which should be 4
           if (xhr.readyState === 4) {
             if (xhr.status !== 200 && xhr.status !== 401) {
-              if (retryAttemptInternal <= this.maxRetryAttempts) {
-                addToRetryQueue(userSkillId, timestamp, retryAttemptInternal, xhr, this.maxRetryQueueSize || defaultMaxRetryQueueSize);
+              const maxRetryAttempts = this.maxRetryAttempts || defaultMaxRetryAttempts;
+              const maxRetryQueueSize = this.maxRetryQueueSize || defaultMaxRetryQueueSize;
+              if (retryAttemptInternal <= maxRetryAttempts) {
+                addToRetryQueue(userSkillId, timestamp, retryAttemptInternal, xhr, maxRetryQueueSize);
               } else {
                 log.warn(`Max retry attempts has been reached (${this.maxRetryAttempts}), Unable to retry skillId [${userSkillId}]`);
               }
