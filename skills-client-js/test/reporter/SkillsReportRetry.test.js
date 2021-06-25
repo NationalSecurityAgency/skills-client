@@ -247,4 +247,61 @@ describe('retryTests()', () => {
     expect(count).toEqual(1);
     expect(handler1).toHaveBeenCalledWith(JSON.parse(mockError));
   });
+
+
+  it('reportSkill will retry for errors when maxRetryAttempts is undefined', async () => {
+    SkillsReporter.maxRetryAttempts = undefined;
+    expect.assertions(8);
+    const mockUserSkillId = 'skill1-random';
+
+    mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
+    SkillsConfiguration.configure({
+      serviceUrl: mockServiceUrl,
+      projectId: mockProjectId,
+      authenticator: authEndpoint,
+    });
+    await flushPromises();
+    const handler1 = jest.fn();
+    const mockSuccess = '{"data":{"id":"abc-123"}}';
+    const mockError = JSON.stringify({
+      explanation: 'Some random error occurred.', errorCode: 'RandomError', success: false, projectId: 'movies', skillId: 'IronMan', userId: 'user1',
+    });
+    let body = mockError;
+    let status = 503;
+
+    SkillsReporter.addErrorHandler(handler1);
+
+    const url = `${mockServiceUrl}/api/projects/${mockProjectId}/skills/${mockUserSkillId}`;
+    let count = 0;
+    let timestamp = null;
+    mock.post(url, (req, res) => {
+      expect(req.header('Authorization')).toEqual('Bearer token');
+      count++;
+      if (count > 1) {
+        const reqBody = JSON.parse(req.body());
+        expect(reqBody.isRetry).toEqual(true); // verify that isRetry is set to true
+        if (timestamp == null) {
+          timestamp = reqBody.timestamp;
+        } else {
+          expect(timestamp).toEqual(reqBody.timestamp); // verify the timestamp remains the same
+        }
+      }
+
+      // fail the first two times, then succeed after that
+      if (count > 2) {
+        body = mockSuccess;
+        status = 200;
+      }
+      return res.status(status).body(body);
+    });
+
+    try {
+      await SkillsReporter.reportSkill(mockUserSkillId);
+    } catch (e) {
+    }
+    // sleep for 3 seconds
+    await new Promise((r) => setTimeout(r, 3000));
+    expect(count).toEqual(3);
+    expect(handler1).toHaveBeenCalledWith(JSON.parse(mockError));
+  });
 });
