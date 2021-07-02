@@ -18,7 +18,7 @@
         "axios": "0.21.1",
         "bootstrap": "4.5.3",
         "bootstrap-vue": "2.17.3",
-        "core-js": "^3.2.1",
+        "core-js": "3.2.1",
         "highlightjs": "9.16.2",
         "js-beautify": "1.13.0",
         "vue": "2.6.12",
