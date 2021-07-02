@@ -38,23 +38,4 @@
         <node.version>v14.15.0</node.version>
     </properties>
 
-    <distributionManagement>
-        <repository>
-            <id>nexus-releases</id>
-            <name>Release Repository</name>
-            <uniqueVersion>false</uniqueVersion>
-            <url>
-                ${nexusServer}/repository/maven-releases/
-            </url>
-        </repository>
-        <snapshotRepository>
-            <id>nexus-snapshots</id>
-            <name>Snapshot Repository</name>
-            <uniqueVersion>true</uniqueVersion>
-            <url>
-                ${nexusServer}/repository/maven-snapshots/
-            </url>
-        </snapshotRepository>
-    </distributionManagement>
-
 </project>
