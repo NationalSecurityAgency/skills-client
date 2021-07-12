@@ -67,6 +67,11 @@ limitations under the License.
         this.clientDisplay.version = newValue;
       },
     },
+    methods: {
+      navigate(path) {
+        this.clientDisplay.navigate(path);
+      },
+    },
     mounted() {
       Logger.info('SkillsDisplay::mounted');
       this.clientDisplay = new SkillsDisplayJS({

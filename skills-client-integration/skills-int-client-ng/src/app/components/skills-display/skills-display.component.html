@@ -36,6 +36,8 @@ limitations under the License.
       <label class="custom-control-label" for="customSwitch2">Internal Back Button</label>
     </div>
 
+    <button class="btn btn-outline-primary" id="navButton" data-cy="navigateButton" (click)="navigate()">Navigate</button>
+
     <a href="javascript:void(0)" class="ml-2" (click)="scrollTo('sample-code')">Show Source</a>
   </div>
   <div>
@@ -43,7 +45,7 @@ limitations under the License.
   </div>
 
   <div class="border rounded">
-    <skills-display *ngIf="selectedTheme" [options]="displayOptions" [version]="version" [theme]="selectedTheme.theme" [handleRouteChanged]="skillsDisplayRouteChanged">
+    <skills-display #skillsDisplay *ngIf="selectedTheme" [options]="displayOptions" [version]="version" [theme]="selectedTheme.theme" [handleRouteChanged]="skillsDisplayRouteChanged">
     </skills-display>
   </div>
 

@@ -108,7 +108,12 @@ const ShowSkill = () => {
     }, [isSummaryOnly, internalBackButton, selectedTheme, skillsVersion, previousIsSummaryOnly, previousInternalBackButton, previousSelectedTheme, previousSkillsVersion, history]);
 
     const sampleCodeRef = React.createRef();
+    const skillsDisplayRef = React.createRef();
     const executeScroll = () => scrollToRef(sampleCodeRef);
+
+    const navigate = () => {
+        skillsDisplayRef.current.navigate('/subjects/subj0');
+    };
 
     const style = {
         paddingTop: '55px'
@@ -140,13 +145,17 @@ const ShowSkill = () => {
                 <Button variant={internalBackButton ? 'primary' : 'outline-primary'}
                         onClick={() => { setInternalBackButton(!internalBackButton);
                             setOptions({isSummaryOnly:isSummaryOnly,internalBackButton:!internalBackButton,autoScrollStrategy: 'top-offset', scrollTopOffset: 110}) }}>Internal Back Button</Button>
+
+                <Button variant={internalBackButton ? 'primary' : 'outline-primary'}
+                        onClick={navigate} data-cy="navigateButton">Navigate</Button>
+
                 <Button variant="link" onClick={executeScroll}>Show Source</Button>
             </div>
             <div>
                 <span id="skillsDisplayPath" data-cy="skillsDisplayPath"></span>
             </div>
             <div className="border rounded">
-                <SkillsDisplay options={options} theme={selectedTheme.theme} version={skillsVersion} handleRouteChanged={handleRouteChanged}/>
+                <SkillsDisplay ref={skillsDisplayRef} options={options} theme={selectedTheme.theme} version={skillsVersion} handleRouteChanged={handleRouteChanged}/>
             </div>
 
             <div ref={sampleCodeRef}>

@@ -46,6 +46,12 @@ export class SkillsDisplayComponent implements OnInit, OnDestroy {
     this.clientDisplay.attachTo(document.getElementById('clientDisplayContainer'));
   }
 
+  navigate(path: string): void {
+    if (this.clientDisplay) {
+      this.clientDisplay.navigate(path);
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.clientDisplay) {
       this.clientDisplay.destroy();

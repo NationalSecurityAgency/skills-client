@@ -562,4 +562,21 @@ context('Vue Tests', () => {
         });
     }
 
+
+    if (Utils.skillsServiceVersionLaterThan('1.6.0')) {
+        it('navigate skills-display programatically', () => {
+            cy.createDefaultTinyProject()
+            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
+
+            // visit client display
+            cy.visit('/vuejs#/showSkills?internalBackButton=false');
+            cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/]');
+            cy.clientDisplay().contains('User Skills');
+
+            // to subject page
+            cy.get('[data-cy=navigateButton]').click();
+            cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/subjects/subj0]');
+        });
+    }
+
 })

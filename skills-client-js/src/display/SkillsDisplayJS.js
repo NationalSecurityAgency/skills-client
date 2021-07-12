@@ -45,6 +45,12 @@ export default class SkillsDisplayJS {
     return uniqueId;
   }
 
+  navigate(path = this.skillsDisplayPath, skipParentHistory = true, replace = true) {
+    if (this._childFrame && !(path == null)) {
+      this._childFrame.call('navigate', { path, replace, query: { skipParentHistory } });
+    }
+  }
+
   attachTo(selectorOrElement) {
     log.info(`SkillsClient::SkillsDisplayJS::attaching to [${selectorOrElement ? selectorOrElement.toString() : selectorOrElement}]`);
     let iframeContainer = selectorOrElement;
@@ -81,16 +87,11 @@ export default class SkillsDisplayJS {
     iframeContainer.height = 0;
     iframeContainer.style.height = '0px';
 
-    const updateChildRoute = (previousLocation = this.skillsDisplayPath, skipParentHistory = true, replace = true) => {
-      if (this._childFrame && !(previousLocation == null)) {
-        this._childFrame.call('navigate', { path: previousLocation, replace, query: { skipParentHistory } });
-      }
-    };
     history = createBrowserHistory();
     // Listen for changes to the current location from the back/forward browser buttons.
     unlisten = history.listen(({ action }) => {
       if (action === POP) {
-        updateChildRoute(this.skillsDisplayPath || '/', true);
+        this.navigate(this.skillsDisplayPath || '/', true);
       }
     });
 
@@ -149,14 +150,14 @@ export default class SkillsDisplayJS {
           this.authenticationPromise = skillsService.getAuthenticationToken(this.configuration.authenticator, this.configuration.serviceUrl, this.configuration.projectId)
             .then((result) => {
               child.call('updateAuthenticationToken', result);
-              updateChildRoute();
+              this.navigate();
             })
             .finally(() => {
               this.authenticationPromise = null;
             });
         } else if (isPkiMode) {
           child.call('updateAuthenticationToken', 'pki');
-          updateChildRoute();
+          this.navigate();
         }
       });
     });
