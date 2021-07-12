@@ -204,7 +204,6 @@ limitations under the License.
       },
 
       navigate() {
-        console.log('navigate');
         this.$refs.skillsDisplayRef.navigate('/subjects/subj0');
       },
     },
