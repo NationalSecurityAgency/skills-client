@@ -1,6 +1,6 @@
 {
     "name": "@skilltree/skills-client-vue",
-    "version": "3.3.0",
+    "version": "3.3.1",
     "license": "Apache-2.0",
     "description": "SkillTree Client Lib - Vue.js",
     "main": "dist/skills-client-vue.umd.min.js",
@@ -52,7 +52,7 @@
         "vue-template-compiler": "2.6.12"
     },
     "dependencies": {
-        "@skilltree/skills-client-js": "3.3.0",
+        "@skilltree/skills-client-js": "3.3.1",
         "axios": "0.21.1",
         "axios-auth-refresh": "3.1.0",
         "lodash": "4.17.21",
