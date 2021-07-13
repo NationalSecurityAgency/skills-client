@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { themes } from './themes'
 import { ViewportScroller } from '@angular/common';
@@ -25,6 +25,10 @@ import { js_beautify } from 'js-beautify'
   styleUrls: ['./skills-display.component.css']
 })
 export class SkillsDisplayComponent implements OnInit {
+
+  @ViewChild('skillsDisplay')
+  skillsDisplay: any;
+
 
   displayOptions: any;
   version: number;
@@ -45,6 +49,9 @@ export class SkillsDisplayComponent implements OnInit {
       };
       this.selectedTheme = params['themeName'] ? this.findTheme(params['themeName']) : this.themes[0];
     });
+  }
+  navigate() {
+    this.skillsDisplay.navigate('/subjects/subj0')
   }
 
   findTheme(name: string) {

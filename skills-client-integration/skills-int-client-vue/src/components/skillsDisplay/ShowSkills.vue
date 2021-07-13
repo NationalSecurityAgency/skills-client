@@ -40,6 +40,8 @@ limitations under the License.
         Internal Back Button
       </b-form-checkbox>
 
+      <b-button variant="outline-primary" data-cy="navigateButton" @click="navigate">Navigate</b-button>
+
       <b-link
         class="ml-2"
         href="javascript:void"
@@ -50,7 +52,7 @@ limitations under the License.
       <span id="skillsDisplayPath" data-cy="skillsDisplayPath">Skills Display Path: [{{skillsDisplayPath}}]</span>
     </div>
     <div class="border rounded">
-      <skills-display
+      <skills-display ref="skillsDisplayRef"
         v-if="selectedTheme"
         :options="displayOptions"
         :version="version"
@@ -199,7 +201,11 @@ limitations under the License.
 
       skillsDisplayRouteChanged(newPath) {
         this.skillsDisplayPath = newPath;
-      }
+      },
+
+      navigate() {
+        this.$refs.skillsDisplayRef.navigate('/subjects/subj0');
+      },
     },
   }
 </script>

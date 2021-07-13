@@ -34,6 +34,8 @@ limitations under the License.
     const isSummaryOnly = params.get('isSummaryOnly') ? JSON.parse(params.get('isSummaryOnly')) : false;
     const internalBackButton = params.get('internalBackButton') ? JSON.parse(params.get('internalBackButton')) : false;
 
+    let clientDisplay = null;
+
     const options = {
       autoScrollStrategy: 'top-of-page',
       isSummaryOnly,
@@ -87,6 +89,10 @@ limitations under the License.
       window.location.search = params;
     };
 
+    const navigate = () => {
+      clientDisplay.navigate('/subjects/subj0');
+    }
+
     const setInternalBackButton = () => {
       const params = new URLSearchParams(window.location.search);
       params.set('internalBackButton', !options.internalBackButton);
@@ -127,7 +133,7 @@ limitations under the License.
           defaultThemeElement.classList.add('active');
         }
 
-        const clientDisplay = new SkillsClient.SkillsDisplayJS({
+        clientDisplay = new SkillsClient.SkillsDisplayJS({
           options,
           version: getVersion(),
           theme: theme.theme,
@@ -185,6 +191,10 @@ limitations under the License.
             <input type="checkbox" class="custom-control-input" id="internalBackButtonControl" onclick="setInternalBackButton()" checked>
             <label class="custom-control-label" for="internalBackButtonControl">Internal Back Button</label>
           </div>
+
+          <button class="btn btn-outline-primary" type="button" data-cy="navigateButton" onclick="navigate()">
+            Navigate
+          </button>
         </div>
         <div>
           <span id="skillsDisplayPath" data-cy="skillsDisplayPath"></span>

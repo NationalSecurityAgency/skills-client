@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect } from 'react';
+import React, { useEffect, forwardRef, useImperativeHandle } from 'react';
 import { SkillsDisplayJS } from '@skilltree/skills-client-js';
 import PropTypes from 'prop-types';
 import './SkillsDisplay.css';
@@ -26,7 +26,7 @@ const destroy = (cd) => {
 };
 
 // eslint-disable-next-line object-curly-newline
-const SkillDisplay = ({ theme = null, version = null, userId = null, handleRouteChanged = null, options = {} }) => {
+const SkillDisplay = forwardRef(({ theme = null, version = null, userId = null, handleRouteChanged = null, options = {} }, ref) => {
   useEffect(() => {
     clientDisplay = new SkillsDisplayJS({
       options,
@@ -43,8 +43,16 @@ const SkillDisplay = ({ theme = null, version = null, userId = null, handleRoute
     };
   }, [theme, version, userId, handleRouteChanged, options]);
 
+  useImperativeHandle(ref, () => ({
+    navigate(path) {
+      if (clientDisplay) {
+        clientDisplay.navigate(path);
+      }
+    },
+  }), []);
+
   return (<div id='clientSkillsDisplayContainer'/>);
-};
+});
 
 SkillDisplay.propTypes = {
   theme: PropTypes.object,
