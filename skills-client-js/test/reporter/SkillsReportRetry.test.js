@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import mock from 'xhr-mock';
+import mock, {sequence} from 'xhr-mock';
 import SkillsConfiguration from '../../src/config/SkillsConfiguration';
 import { SkillsReporter } from '../../src/reporter/SkillsReporter';
 
@@ -304,4 +304,162 @@ describe('retryTests()', () => {
     expect(count).toEqual(3);
     expect(handler1).toHaveBeenCalledWith(JSON.parse(mockError));
   });
+
+  it('reportSkill will retry for errors when token is null', async () => {
+    let authCount = 0;
+    expect.assertions(6);
+    const mockUserSkillId = 'skill1-random';
+
+    mock.get(authEndpoint, (req, res) => {
+      authCount++;
+      if (authCount == 1 || authCount == 4) {
+        // first authEndpoint call will be from SkillsConfiguration.configure()
+        // fail the next two attempts, then succeed on the fourth
+        return res.status(200).body('{"access_token": "token"}');
+      } else {
+        // return empty response simulating dashboard is unable to respond
+        return res;
+      }
+    });
+
+    SkillsConfiguration.configure({
+      serviceUrl: mockServiceUrl,
+      projectId: mockProjectId,
+      authenticator: authEndpoint,
+    });
+    await flushPromises();
+
+    // reset the auth token to null so that reportSkill will attempt to re-authenticate
+    SkillsConfiguration.setAuthToken(null)
+    const handler1 = jest.fn();
+    const mockSuccess = '{"data":{"id":"abc-123"}}';
+    let body = mockSuccess;
+    let status = 200;
+
+    SkillsReporter.addErrorHandler(handler1);
+
+    const url = `${mockServiceUrl}/api/projects/${mockProjectId}/skills/${mockUserSkillId}`;
+    let count = 0;
+    mock.post(url, (req, res) => {
+      expect(req.header('Authorization')).toEqual('Bearer token');
+      count++;
+      body = mockSuccess;
+      status = 200;
+      return res.status(status).body(body);
+    });
+
+    try {
+      await SkillsReporter.reportSkill(mockUserSkillId);
+    } catch (e) {}
+
+    // sleep for 3 seconds
+    await new Promise((r) => setTimeout(r, 3000));
+
+    // SkillsConfigure.configure(), plus initial reportSkill attempt, plus 2 retries (last one succeeds)
+    expect(authCount).toEqual(4);
+    expect(count).toEqual(1);
+    expect(handler1).toHaveBeenCalledWith(
+      expect.objectContaining( { message: expect.stringContaining('Unable to authenticate') })
+    );
+    expect(handler1).toHaveBeenCalledTimes(2);
+
+    const retryQueue = JSON.parse(window.localStorage.getItem('skillTreeRetryQueue'));
+    expect(retryQueue).toBeNull();
+  });
+
+  it('reportSkill will retry for errors when 401 is returned when reporting', async () => {
+    let authCount = 0;
+    expect.assertions(4);
+    const mockUserSkillId = 'skill1-random';
+
+    mock.get(authEndpoint, (req, res) => {
+      authCount++;
+        return res.status(200).body('{"access_token": "token"}');
+    });
+
+    SkillsConfiguration.configure({
+      serviceUrl: mockServiceUrl,
+      projectId: mockProjectId,
+      authenticator: authEndpoint,
+    });
+    await flushPromises();
+
+    // reset the auth token to null so that reportSkill will attempt to re-authenticate
+    // SkillsConfiguration.setAuthToken(null)
+    const handler1 = jest.fn();
+
+    SkillsReporter.addErrorHandler(handler1);
+
+    const url = `${mockServiceUrl}/api/projects/${mockProjectId}/skills/${mockUserSkillId}`;
+    mock.post(url, sequence([
+      { status: 401, body: '{"data":{"error":"true"}}' },
+      { status: 401, body: '{"data":{"error":"true"}}' },
+      { status: 200, body: '{"data":{"id":"abc-123"}}' },
+    ]));
+
+    try {
+      await SkillsReporter.reportSkill(mockUserSkillId);
+    } catch (e) {}
+
+    // sleep for 3 seconds
+    await new Promise((r) => setTimeout(r, 3000));
+
+    // SkillsConfigure.configure(), plus 2 retries due to 401 responses from first two reportSkill calls
+    expect(authCount).toEqual(3);
+    expect(handler1).toHaveBeenCalledWith({ data: {error: 'true'} });
+    expect(handler1).toHaveBeenCalledTimes(2);
+    const retryQueue = JSON.parse(window.localStorage.getItem('skillTreeRetryQueue'));
+    expect(retryQueue).toBeNull();
+  });
+
+  it('do not exceed the max retry attempts size on auth failures', async () => {
+    expect.assertions(9);
+    const maxRetryAttempts = 2;
+    SkillsReporter.configure({ retryInterval: 60, maxRetryAttempts });
+
+    mock.get(authEndpoint, (req, res) => res.status(200).body('{"access_token": "token"}'));
+    SkillsConfiguration.configure({
+      serviceUrl: mockServiceUrl,
+      projectId: mockProjectId,
+      authenticator: authEndpoint,
+    });
+    await flushPromises();
+
+    const handler1 = jest.fn();
+    SkillsReporter.addErrorHandler(handler1);
+    const mockUserSkillId = 'skill1-random';
+    const mockError = JSON.stringify({
+      explanation: 'Some random error occurred - maxRetryAttempts.', errorCode: 'RandomError', success: false, projectId: 'movies', skillId: 'IronMan', userId: 'user1',
+    });
+    const url = `${mockServiceUrl}/api/projects/${mockProjectId}/skills/${mockUserSkillId}`;
+    let count = 0;
+    let timestamp = null;
+    mock.post(url, (req, res) => {
+      expect(req.header('Authorization')).toEqual('Bearer token');
+      count++;
+      if (count > 1) {
+        const reqBody = JSON.parse(req.body());
+        expect(reqBody.isRetry).toEqual(true); // verify that isRetry is set to true
+        if (timestamp == null) {
+          timestamp = reqBody.timestamp;
+        } else {
+          expect(timestamp).toEqual(reqBody.timestamp); // verify the timestamp remains the same
+        }
+      }
+      return res.status(401).body(mockError);
+    });
+
+    try {
+      await SkillsReporter.reportSkill(mockUserSkillId);
+    } catch (e) {
+    }
+    // sleep for 3 seconds
+    await new Promise((r) => setTimeout(r, 3000));
+    expect(count).toEqual(maxRetryAttempts + 1);  // initial attempt plus 2 retries
+    expect(handler1).toHaveBeenCalledWith(JSON.parse(mockError));
+
+    const retryQueue = JSON.parse(window.localStorage.getItem('skillTreeRetryQueue'));
+    expect(retryQueue).toBeNull();
+  });
 });
+

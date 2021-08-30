@@ -49,6 +49,8 @@ describe('authPkiTests()', () => {
 
   it('do not attempt to re-auth in pki mode', async () => {
     expect.assertions(2);
+    const handler1 = jest.fn();
+    SkillsReporter.addErrorHandler(handler1);
     const mockUserSkillId = 'skill1';
     const url = `${mockServiceUrl}/api/projects/${mockProjectId}/skills/${mockUserSkillId}`;
     mock.post(url, (req, res) => {
@@ -56,8 +58,10 @@ describe('authPkiTests()', () => {
       return res.status(401).body('{"data":{"error":"true"}}');
     });
 
-    const res = await SkillsReporter.reportSkill('skill1');
-    expect(res).toEqual({ data: {error: 'true'} });
+    try {
+      await SkillsReporter.reportSkill(mockUserSkillId);
+    } catch (e) {}
+    expect(handler1).toHaveBeenCalledWith({ data: {error: 'true'} });
   });
 
   // it('should resolve with some data when status=201', async () => {
