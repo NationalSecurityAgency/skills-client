@@ -5,6 +5,9 @@
     "description": "SkillTree Client Lib - Native JS Lib",
     "main": "dist/skills-client-js.umd.min.js",
     "module": "dist/skills-client-js.esm.min.js",
+    "jest": {
+        "testEnvironment": "./test/custom-test-env.js"
+    },
     "scripts": {
         "clean": "rm -rf dist",
         "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;Apache-2.0' --summary",
@@ -50,8 +53,8 @@
         "history": "5.0.0",
         "js-logger": "1.6.0",
         "postmate": "1.5.2",
-        "sockjs-client": "1.5.0",
-        "webstomp-client": "1.2.6"
+        "sockjs-client": "1.5.2",
+        "@stomp/stompjs": "6.1.1"
     },
     "keywords": [
         "SkillTree",

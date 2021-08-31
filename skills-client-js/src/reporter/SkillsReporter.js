@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import SockJS from 'sockjs-client';
-import Stomp from 'webstomp-client';
+import { Client } from '@stomp/stompjs';
 import log from 'js-logger';
 import SkillsConfiguration from '../config/SkillsConfiguration';
 import skillsService from '../SkillsService';
@@ -37,33 +37,53 @@ const callErrorHandlers = (event) => {
   errorHandlerCache.forEach((it) => it(event));
 };
 
+let websocketConnecting = false;
+let websocketConnected = false;
 const connectWebsocket = (serviceUrl) => {
-  const wsUrl = `${serviceUrl}/skills-websocket`;
-  log.info(`SkillsClient::SkillsReporter::connecting websocket using SockJS to [${wsUrl}]`);
-  const socket = new SockJS(wsUrl);
-  const stompClient = Stomp.over(socket);
-  stompClient.debug = () => {};
-  let headers = {};
-  if (!SkillsConfiguration.isPKIMode()) {
-    log.debug('SkillsClient::SkillsReporter::adding Authorization header to web socket connection');
-    headers = { Authorization: `Bearer ${SkillsConfiguration.getAuthToken()}` };
-  }
-  if (!stompClient.connected) {
-    log.info('SkillsClient::SkillsReporter::connecting stompClient over ws');
-    stompClient.connect(headers, () => {
-      log.info('SkillsClient::SkillsReporter::stompClient connected');
-      const topic = `/user/queue/${SkillsConfiguration.getProjectId()}-skill-updates`;
-      log.info(`SkillsClient::SkillsReporter::stompClient subscribing to topic [${topic}]`);
-      stompClient.subscribe(topic, (update) => {
-        log.info(`SkillsClient::SkillsReporter::ws message [${update.body}] received over topic [${topic}]. calling success handlers...`);
-        callSuccessHandlers(JSON.parse(update.body));
-        log.info('SkillsClient::SkillsReporter::Done calling success handlers...');
-      });
-      window.postMessage({ skillsWebsocketConnected: true }, window.location.origin);
-      log.info('SkillsClient::SkillsReporter::window.postMessage skillsWebsocketConnected');
+  if (!websocketConnecting && !websocketConnected) {
+    websocketConnecting = true;
+    const wsUrl = `${serviceUrl}/skills-websocket`;
+    log.info(`SkillsClient::SkillsReporter::connecting websocket using SockJS to [${wsUrl}]`);
+    const stompClient = new Client();
+    let headers = {};
+    if (!SkillsConfiguration.isPKIMode()) {
+      log.debug('SkillsClient::SkillsReporter::adding Authorization header to web socket connection');
+      headers = { Authorization: `Bearer ${SkillsConfiguration.getAuthToken()}` };
+    }
+
+    stompClient.configure({
+      webSocketFactory: () => new SockJS(wsUrl),
+      connectHeaders: headers,
+      onConnect: () => {
+        websocketConnected = true;
+        websocketConnecting = false;
+        log.info('SkillsClient::SkillsReporter::stompClient connected');
+        const topic = `/user/queue/${SkillsConfiguration.getProjectId()}-skill-updates`;
+        log.info(`SkillsClient::SkillsReporter::stompClient subscribing to topic [${topic}]`);
+
+        stompClient.subscribe(topic, (update) => {
+          log.debug(`SkillsClient::SkillsReporter::ws message [${update.body}] received over topic [${topic}]. calling success handlers...`);
+          callSuccessHandlers(JSON.parse(update.body));
+          log.debug('SkillsClient::SkillsReporter::Done calling success handlers...');
+        });
+        window.postMessage({ skillsWebsocketConnected: true }, window.location.origin);
+        log.debug('SkillsClient::SkillsReporter::window.postMessage skillsWebsocketConnected');
+      },
+      // debug: (str) => {
+      //   console.log(new Date(), str);
+      // },
     });
+    log.debug('SkillsClient::SkillsReporter::activating stompClient...');
+    stompClient.activate();
+    log.debug('SkillsClient::SkillsReporter::stompClient activated');
+  } else {
+    log.warn('SkillsClient::SkillsReporter::websocket already connecting, preventing duplicate connection.', websocketConnecting);
   }
 };
+
+SkillsConfiguration.afterConfigure().then(() => {
+  connectWebsocket(SkillsConfiguration.getServiceUrl());
+});
 
 const retryQueueKey = 'skillTreeRetryQueue';
 const defaultMaxRetryQueueSize = 1000;
@@ -131,13 +151,6 @@ const SkillsReporter = {
   },
 
   addSuccessHandler(handler) {
-    if (!this.websocketConnected) {
-      SkillsConfiguration.afterConfigure()
-        .then(() => {
-          connectWebsocket(SkillsConfiguration.getServiceUrl());
-        });
-      this.websocketConnected = true;
-    }
     successHandlerCache.add(handler);
     log.info(`SkillsClient::SkillsReporter::added success handler [${handler ? handler.toString() : handler}]`);
   },

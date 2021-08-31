@@ -50,7 +50,7 @@ limitations under the License.
       SkillsReporter.configure( { notifyIfSkillNotApplied });
     }
     document.querySelector('#all-events-check').addEventListener('click', toggleAllEvents);
-
+    toggleAllEvents();
     SkillsConfiguration.afterConfigure()
       .then(() => {
         if (window.Cypress) {
@@ -89,7 +89,7 @@ limitations under the License.
         <h2>Report Skills Examples</h2>
         <div class="text-primary">Global Event Result:</div>
         <div>
-          Include Skills Not Applied: <input type="checkbox" id="all-events-check">
+          Include Skills Not Applied: <input type="checkbox" id="all-events-check" checked>
         </div>
         <div id="globalEventResultDiv" class="border rounded p-3 mb-5 bg-light">
           <pre id="global-event-result-container-js" data-cy="globalEventResult"></pre>

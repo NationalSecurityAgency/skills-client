@@ -78,6 +78,7 @@ context("Native JS Tests", () => {
         Cypress.Commands.add("clickSubmit", () => {
             cy.get(`${sendEventViaDropdownId} .btn`).click();
         });
+        cy.get('[type="checkbox"]').uncheck()
         cy.clickSubmit()
 
         cy.get('pre[data-cy=globalEventResult]').should('be.empty');
