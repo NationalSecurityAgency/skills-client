@@ -13,7 +13,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import { Component, OnInit, AfterViewInit, OnDestroy, ComponentFactoryResolver, ViewChildren, ViewContainerRef, QueryList } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  OnDestroy,
+  ComponentFactoryResolver,
+  ViewChildren,
+  ViewContainerRef,
+  QueryList,
+  ChangeDetectorRef
+} from '@angular/core';
 import { Example } from './code-example/example'
 import { ExampleService } from './code-example/example.service';
 import { CodeExampleLayoutComponent } from './code-example/code-example-layout.component'
@@ -32,11 +42,14 @@ export class ReportSkillsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChildren('examplesTarget', { read: ViewContainerRef }) exampleTargets: QueryList<ViewContainerRef>;
 
-  constructor(private exampleService: ExampleService, private componentFactoryResolver: ComponentFactoryResolver) { }
+  constructor(private exampleService: ExampleService, private componentFactoryResolver: ComponentFactoryResolver, private ref: ChangeDetectorRef) { }
 
   ngOnInit() {
     SkillsReporter.addSuccessHandler(result => {
       this.globalEventResult = JSON.stringify(result, null, ' ')
+
+      // force change detection
+      this.ref.detectChanges();
     });
   }
 
