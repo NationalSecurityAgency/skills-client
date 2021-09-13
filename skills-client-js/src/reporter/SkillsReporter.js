@@ -95,14 +95,15 @@ const retryErrors = function retryErrors() {
   if (retryQueue !== null) {
     retryQueue.forEach((item) => {
       log.info(`SkillsClient::SkillsReporter::retryErrors retrying skillId [${item.skillId}], timestamp [${item.timestamp}], retryAttempt [${item.retryAttempt}]`);
-      this.reportSkill(item.skillId, 0, item.timestamp, true, item.retryAttempt);
+      this.reportSkill(item.skillId, item.timestamp, true, item.retryAttempt);
     });
   }
 };
 
 const addToRetryQueue = (skillId, timeReported, retryAttempt, xhr, maxQueueSize) => {
-  log.info(`SkillsClient::SkillsReporter::addToRetryQueue [${skillId}], timeReported [${timeReported}], retryAttempt[${retryAttempt}], status [${xhr.status}]`);
-  if (xhr.response) {
+  const status = xhr ? xhr.status : null;
+  log.info(`SkillsClient::SkillsReporter::addToRetryQueue [${skillId}], timeReported [${timeReported}], retryAttempt[${retryAttempt}], status [${status}]`);
+  if (xhr && xhr.response) {
     const xhrResponse = JSON.parse(xhr.response);
     if (xhrResponse && xhrResponse.errorCode === 'SkillNotFound') {
       log.info('not adding to retry queue because the skillId does not exist.');
@@ -122,22 +123,43 @@ const addToRetryQueue = (skillId, timeReported, retryAttempt, xhr, maxQueueSize)
   }
 };
 
-const authenticateAndRetry = function authenticateAndRetry(userSkillId, attemptCount, resolve, reject) {
-  log.info(`SkillsClient::SkillsReporter::authenticateAndRetry [${userSkillId}] attemptCount [${attemptCount}]`);
-  skillsService.getAuthenticationToken(SkillsConfiguration.getAuthenticator(), SkillsConfiguration.getServiceUrl(), SkillsConfiguration.getProjectId())
-    .then((token) => {
-      SkillsConfiguration.setAuthToken(token);
-      this.reportSkill(userSkillId, attemptCount + 1)
-        .then((result) => {
-          resolve(result);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    })
-    .catch((error) => {
-      reject(error);
-    });
+const reportInternal = (resolve, reject, userSkillId, timestamp, isRetry, retryAttempt, maxRetryAttempts, maxRetryQueueSize, notifyIfSkillNotApplied) => {
+  SkillsConfiguration.validate();
+  const xhr = new XMLHttpRequest();
+
+  xhr.open('POST', `${SkillsConfiguration.getServiceUrl()}/api/projects/${SkillsConfiguration.getProjectId()}/skills/${userSkillId}`);
+  xhr.withCredentials = true;
+  if (!SkillsConfiguration.isPKIMode()) {
+    xhr.setRequestHeader('Authorization', `Bearer ${SkillsConfiguration.getAuthToken()}`);
+  }
+
+  xhr.onreadystatechange = () => {
+    // some browsers don't understand XMLHttpRequest.Done, which should be 4
+    if (xhr.readyState === 4) {
+      if (xhr.status !== 200) {
+        if (retryAttempt <= maxRetryAttempts) {
+          if ((xhr.status === 401) && !SkillsConfiguration.isPKIMode()) {
+            SkillsConfiguration.setAuthToken(null);
+          }
+          addToRetryQueue(userSkillId, timestamp, retryAttempt, xhr, maxRetryQueueSize);
+        } else {
+          log.warn(`Max retry attempts has been reached (${maxRetryAttempts}), Unable to retry skillId [${userSkillId}]`);
+        }
+        if (xhr.response) {
+          reject(JSON.parse(xhr.response));
+        } else {
+          reject(new Error(`Error occurred reporting skill [${userSkillId}], status returned [${xhr.status}]`));
+        }
+      } else {
+        resolve(JSON.parse(xhr.response));
+      }
+    }
+  };
+
+  const body = JSON.stringify({ timestamp, notifyIfSkillNotApplied, isRetry });
+  xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+  xhr.send(body);
+  log.info(`SkillsClient::SkillsReporter::reporting skill request sent: ${body}`);
 };
 
 const SkillsReporter = {
@@ -158,23 +180,13 @@ const SkillsReporter = {
     errorHandlerCache.add(handler);
     log.info(`SkillsClient::SkillsReporter::added error handler [${handler ? handler.toString() : handler}]`);
   },
-  reportSkill(userSkillId, count = undefined, timestamp = null, isRetry = false, retryAttempt = undefined) {
-    log.info(`SkillsClient::SkillsReporter::reporting skill [${userSkillId}] count [${count}]`);
+  reportSkill(userSkillId, timestamp = null, isRetry = false, retryAttempt = undefined) {
+    log.info(`SkillsClient::SkillsReporter::reporting skill [${userSkillId}] retryAttempt [${retryAttempt}]`);
     SkillsConfiguration.validate();
     if (!this.retryEnabled) {
       log.info('SkillsClient::SkillsReporter::Enabling retries...');
       retryIntervalId = setInterval(() => { retryErrors.call(this); }, this.retryInterval || defaultRetryInterval);
       this.retryEnabled = true;
-    }
-    if (count >= 25) {
-      const errorMessage = 'Unable to authenticate after 25 attempts';
-      log.error(`SkillsReporter::${errorMessage}`);
-      throw new Error(errorMessage);
-    }
-
-    let countInternal = 0;
-    if (count !== undefined) {
-      countInternal = count;
     }
 
     let retryAttemptInternal = 1;
@@ -182,46 +194,27 @@ const SkillsReporter = {
       retryAttemptInternal = retryAttempt + 1;
     }
 
+    const maxRetryAttempts = this.maxRetryAttempts || defaultMaxRetryAttempts;
+    const maxRetryQueueSize = this.maxRetryQueueSize || defaultMaxRetryQueueSize;
+
     const promise = new Promise((resolve, reject) => {
       if (!SkillsConfiguration.getAuthToken() && !SkillsConfiguration.isPKIMode()) {
-        authenticateAndRetry.call(this, userSkillId, countInternal, resolve, reject);
-      } else {
-        const xhr = new XMLHttpRequest();
-
-        xhr.open('POST', `${SkillsConfiguration.getServiceUrl()}/api/projects/${SkillsConfiguration.getProjectId()}/skills/${userSkillId}`);
-        xhr.withCredentials = true;
-        if (!SkillsConfiguration.isPKIMode()) {
-          xhr.setRequestHeader('Authorization', `Bearer ${SkillsConfiguration.getAuthToken()}`);
-        }
-
-        xhr.onreadystatechange = () => {
-          // some browsers don't understand XMLHttpRequest.Done, which should be 4
-          if (xhr.readyState === 4) {
-            if (xhr.status !== 200 && xhr.status !== 401) {
-              const maxRetryAttempts = this.maxRetryAttempts || defaultMaxRetryAttempts;
-              const maxRetryQueueSize = this.maxRetryQueueSize || defaultMaxRetryQueueSize;
-              if (retryAttemptInternal <= maxRetryAttempts) {
-                addToRetryQueue(userSkillId, timestamp, retryAttemptInternal, xhr, maxRetryQueueSize);
-              } else {
-                log.warn(`Max retry attempts has been reached (${this.maxRetryAttempts}), Unable to retry skillId [${userSkillId}]`);
-              }
-              if (xhr.response) {
-                reject(JSON.parse(xhr.response));
-              } else {
-                reject(new Error(`Error occurred reporting skill [${userSkillId}], status returned [${xhr.status}]`));
-              }
-            } else if ((xhr.status === 401) && !SkillsConfiguration.isPKIMode()) {
-              authenticateAndRetry.call(this, userSkillId, countInternal, resolve, reject);
+        skillsService.getAuthenticationToken(SkillsConfiguration.getAuthenticator(), SkillsConfiguration.getServiceUrl(), SkillsConfiguration.getProjectId())
+          .then((token) => {
+            SkillsConfiguration.setAuthToken(token);
+            reportInternal(resolve, reject, userSkillId, timestamp, isRetry, retryAttemptInternal, maxRetryAttempts, maxRetryQueueSize, this.notifyIfSkillNotApplied);
+          })
+          .catch((err) => {
+            if (retryAttemptInternal <= maxRetryAttempts) {
+              addToRetryQueue(userSkillId, timestamp, retryAttemptInternal, null, maxRetryQueueSize);
             } else {
-              resolve(JSON.parse(xhr.response));
+              log.warn(`Max retry attempts has been reached (${this.maxRetryAttempts}), Unable to retry skillId [${userSkillId}]`);
             }
-          }
-        };
-
-        const body = JSON.stringify({ timestamp, notifyIfSkillNotApplied: this.notifyIfSkillNotApplied, isRetry });
-        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-        xhr.send(body);
-        log.info(`SkillsClient::SkillsReporter::reporting skill request sent: ${body}`);
+            log.error(`SkillsReporter::Unable to retrieve auth token reporting skill [${userSkillId}]`);
+            reject(err);
+          });
+      } else {
+        reportInternal(resolve, reject, userSkillId, timestamp, isRetry, retryAttemptInternal, maxRetryAttempts, maxRetryQueueSize, this.notifyIfSkillNotApplied);
       }
     });
 
