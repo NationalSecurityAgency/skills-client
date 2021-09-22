@@ -9,8 +9,21 @@ index 745a168..90d231c 100755
 -        <node.version>v11.6.0</node.version>
 +        <node.version>v14.15.0</node.version>
      </properties>
-
+ 
      <distributionManagement>
+diff --git a/skills-client-integration/skills-int-client-vue/package.json b/skills-client-integration/skills-int-client-vue/package.json
+index 046ba82..127b69b 100644
+--- a/skills-client-integration/skills-int-client-vue/package.json
++++ b/skills-client-integration/skills-int-client-vue/package.json
+@@ -5,7 +5,7 @@
+     "description": "SkillTree Client Lib Integration Tests - Vue",
+     "scripts": {
+         "serve": "vue-cli-service serve",
+-        "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;BSD-3-Clause;Apache-2.0' --summary",
++        "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;BSD-2-Clause;BSD-3-Clause;Apache-2.0' --summary",
+         "licenseHeaderCheck": "license-check-and-add check -f '../license-add/license-add-config.json'",
+         "licenseHeaderAdd": "license-check-and-add add -f ../license-add/license-add-config.json",
+         "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck ",
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress.json b/skills-client-integration/skills-int-e2e-test/cypress.json
 index 52f9451..a87626c 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress.json
@@ -39,7 +52,7 @@ index 2b73362..2787c53 100644
 +        .and("equal", "rgba(0, 0, 0, 0)");
      });
    });
-
+ 
 @@ -175,7 +175,7 @@ context("Native JS Tests", () => {
        cy.wrap(body)
          .find(".skills-page-title-text-color")
@@ -48,7 +61,7 @@ index 2b73362..2787c53 100644
 +        .and("equal", "rgba(0, 0, 0, 0)");
      });
    });
-
+ 
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/react.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/react.specs.js
 index 1cc8b29..8e4895f 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/integration/react.specs.js
@@ -61,7 +74,7 @@ index 1cc8b29..8e4895f 100644
 +                .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
          });
      })
-
+ 
 @@ -186,7 +186,7 @@ context('React Tests', () => {
              // verify that there is no background set
              // cypress always validates against rgb
@@ -70,7 +83,7 @@ index 1cc8b29..8e4895f 100644
 +                .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
          })
      })
-
+ 
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 index 2283896..665e697 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
@@ -101,7 +114,7 @@ index 2283896..665e697 100644
 +                .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
          });
      })
-
+ 
 @@ -274,7 +274,7 @@ context('Vue Tests', () => {
              // verify that there is no background set
              // cypress always validates against rgb
@@ -110,7 +123,7 @@ index 2283896..665e697 100644
 +                .should('have.css', 'background-color').and('equal', 'rgba(0, 0, 0, 0)');
          })
      })
-
+ 
 diff --git a/skills-client-integration/skills-int-e2e-test/package.json b/skills-client-integration/skills-int-e2e-test/package.json
 index 2dfe4e3..6d7ec41 100644
 --- a/skills-client-integration/skills-int-e2e-test/package.json
@@ -182,16 +195,16 @@ index 80ed5f3..ad2889c 100644
 @@ -15,7 +15,7 @@ limitations under the License.
  */
  package skills
-
+ 
 -import callStack.profiler.Profile
 +//import callStack.profiler.Profile
  import groovy.util.logging.Slf4j
  import org.apache.commons.io.FileUtils
-
+ 
 @@ -29,7 +29,7 @@ class DownloadServiceJars {
      // internal
      TitlePrinter titlePrinter = new TitlePrinter()
-
+ 
 -    @Profile
 +  //  @Profile
      void cleanOutputDir(){
@@ -200,7 +213,7 @@ index 80ed5f3..ad2889c 100644
 @@ -40,7 +40,7 @@ class DownloadServiceJars {
  //        outputDir.mkdirs()
      }
-
+ 
 -    @Profile
 +    //@Profile
      void remove(String artifact, String version) {
@@ -209,7 +222,7 @@ index 80ed5f3..ad2889c 100644
 @@ -49,7 +49,7 @@ class DownloadServiceJars {
          }
      }
-
+ 
 -    @Profile
 +    //@Profile
      void download(String artifact, String version) {
@@ -222,16 +235,16 @@ index 168e90d..ea13f9c 100644
 @@ -15,7 +15,7 @@ limitations under the License.
  */
  package skills
-
+ 
 -import callStack.profiler.Profile
 +//import callStack.profiler.Profile
  import groovy.util.logging.Slf4j
-
+ 
  @Slf4j
 @@ -57,7 +57,7 @@ class NpmProjBuilder {
          }
      }
-
+ 
 -    @Profile
 +  //  @Profile
      List<NpmProj> build() {
@@ -244,16 +257,16 @@ index 4b8ba60..724ca5b 100644
 @@ -15,7 +15,7 @@ limitations under the License.
  */
  package skills
-
+ 
 -import callStack.profiler.Profile
 +//import callStack.profiler.Profile
  import groovy.util.logging.Slf4j
  import org.apache.commons.io.FileUtils
-
+ 
 @@ -39,7 +39,7 @@ class ProjectsOps {
          new File(workDir, "skills-client")
      }
-
+ 
 -    @Profile
 + //   @Profile
      private void clearWorkDir() {
@@ -262,7 +275,7 @@ index 4b8ba60..724ca5b 100644
 @@ -51,7 +51,7 @@ class ProjectsOps {
          workDir.mkdirs()
      }
-
+ 
 -    @Profile
 +   // @Profile
      void checkoutLinkedNpmLibs(String switchToBranch = null) {
@@ -270,8 +283,8 @@ index 4b8ba60..724ca5b 100644
          titlePrinter.printTitle("Checkout skills-client")
 @@ -68,7 +68,7 @@ class ProjectsOps {
      }
-
-
+ 
+ 
 -    @Profile
 +    //@Profile
      void buildClientIntApp() {
@@ -279,8 +292,8 @@ index 4b8ba60..724ca5b 100644
          File loc = new File(skillsClient, "skills-client-integration")
 @@ -76,7 +76,7 @@ class ProjectsOps {
      }
-
-
+ 
+ 
 -    @Profile
 +    //@Profile
      void runCypressTests(File location, String msg, List<String> cypressEnv = [], String npmIntegrationNamespace = "integration") {
@@ -293,14 +306,14 @@ index 0193982..cfad14d 100644
 @@ -15,8 +15,8 @@ limitations under the License.
  */
  package skills
-
+ 
 -import callStack.profiler.CProf
 -import callStack.profiler.Profile
 +//import callStack.profiler.CProf
 +//import callStack.profiler.Profile
  import groovy.util.logging.Slf4j
  import org.apache.commons.io.FileUtils
-
+ 
 @@ -29,7 +29,7 @@ class SetupNpmLinks {
      static void main(String[] args) {
          boolean shouldPrune = args.find({ it.equalsIgnoreCase("--prune") })
@@ -308,12 +321,12 @@ index 0193982..cfad14d 100644
 -        log.info("Execution Prof:\n{}", CProf.prettyPrint())
 +        //log.info("Execution Prof:\n{}", CProf.prettyPrint())
      }
-
+ 
      // configure
 @@ -44,7 +44,7 @@ class SetupNpmLinks {
          return this
      }
-
+ 
 -    @Profile
 +  //  @Profile
      void doLink() {
@@ -322,7 +335,7 @@ index 0193982..cfad14d 100644
 @@ -57,7 +57,7 @@ class SetupNpmLinks {
          build()
      }
-
+ 
 -    @Profile
 +    //@Profile
      void removeAnyExistingLinks() {
@@ -331,7 +344,7 @@ index 0193982..cfad14d 100644
 @@ -78,7 +78,7 @@ class SetupNpmLinks {
          }
      }
-
+ 
 -    @Profile
 +    //@Profile
      private void build() {
@@ -340,7 +353,7 @@ index 0193982..cfad14d 100644
 @@ -86,7 +86,7 @@ class SetupNpmLinks {
          }
      }
-
+ 
 -    @Profile
 +    //@Profile
      private void validateLinks() {
@@ -349,7 +362,7 @@ index 0193982..cfad14d 100644
 @@ -106,7 +106,7 @@ class SetupNpmLinks {
          }
      }
-
+ 
 -    @Profile
 +   // @Profile
      private void npmLinkToSkills() {
@@ -358,7 +371,7 @@ index 0193982..cfad14d 100644
 @@ -117,7 +117,7 @@ class SetupNpmLinks {
          }
      }
-
+ 
 -    @Profile
 +    //@Profile
      private void npmLinkToReact() {
@@ -367,7 +380,7 @@ index 0193982..cfad14d 100644
 @@ -127,7 +127,7 @@ class SetupNpmLinks {
          }
      }
-
+ 
 -    @Profile
 +    //@Profile
      private void createLinks() {
@@ -376,7 +389,7 @@ index 0193982..cfad14d 100644
 @@ -138,7 +138,7 @@ class SetupNpmLinks {
          }
      }
-
+ 
 -    @Profile
 +    //@Profile
      private void npmInstall() {
@@ -389,7 +402,7 @@ index 55c9c7c..d399b1b 100644
 @@ -15,8 +15,8 @@ limitations under the License.
  */
  package skills
-
+ 
 -import callStack.profiler.CProf
 -import callStack.profiler.Profile
 +//import callStack.profiler.CProf
@@ -400,9 +413,9 @@ index 55c9c7c..d399b1b 100644
 @@ -64,7 +64,7 @@ class TestDashboardBackwardCompat {
          log.info("Profile \n{}", CProf.prettyPrint())
      }
-
+ 
 -    @Profile
 +  //  @Profile
      private void doTest() {
-
+ 
          titlePrinter.printTitle("Release Dashboard")
