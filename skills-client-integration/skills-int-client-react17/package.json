@@ -1,0 +1,55 @@
+{
+    "name": "skills-int-client-react17",
+    "version": "3.3.1",
+    "license": "Apache-2.0",
+    "description": "SkillTree Client Lib Integration Tests - React",
+    "homepage": "/react/",
+    "dependencies": {
+        "@skilltree/skills-client-react": "3.3.1",
+        "axios": "0.23.0",
+        "bootstrap": "5.1.3",
+        "core-js": "3.6.5",
+        "highlightjs": "9.16.2",
+        "js-beautify": "1.14.0",
+        "prop-types": "15.7.2",
+        "react": "17.0.2",
+        "react-bootstrap": "2.0.0",
+        "react-dom": "17.0.2",
+        "react-highlight": "0.14.0",
+        "react-router": "5.2.1",
+        "react-router-dom": "5.3.0"
+    },
+    "scripts": {
+        "serve": "PORT=8084 react-scripts start",
+        "buildDepsAndServe": "cd ../../skills-client-js/ && npm run build && cd ../skills-client-react/ && npm run build && cd ../skills-client-integration/skills-int-client-react/ && npm run serve",
+        "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;BSD-3;BSD-2-Clause;Apache-2.0' --summary",
+        "licenseHeaderCheck": "license-check-and-add check -f '../license-add/license-add-config.json'",
+        "licenseHeaderAdd": "license-check-and-add add -f ../license-add/license-add-config.json",
+        "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck ",
+        "clean": "find  node_modules/ -maxdepth 1 ! -name \"@skilltree\" ! -name node_modules -exec rm -rf {} \\;",
+        "reinstall": "npm run clean && npm install",
+        "build": "npm run licenseCheck && react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "license-check-and-add": "3.0.4",
+        "license-checker": "25.0.1",
+        "react-scripts": "4.0.3"
+    }
+}
