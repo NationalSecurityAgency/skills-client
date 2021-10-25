@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export default {
+const exportedObj = {
   default: {
     name: 'Bright (default)',
     theme: {
@@ -47,4 +47,5 @@ export default {
       graphLegendBorderColor: '1px solid grey',
     },
   }
-}
+};
+export default exportedObj;
