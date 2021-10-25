@@ -52,7 +52,8 @@ class SetupNpmLinks {
         createLinks()
         npmLinkToSkills()
         install()
-        npmLinkToReact()
+//        now that we have multiple versions of react being tested against, this doesn't make sense
+//        npmLinkToReact()
         validateLinks()
         build()
     }
@@ -95,7 +96,8 @@ class SetupNpmLinks {
         projs.findAll({ it.isReactApp() }).each { NpmProj npmProj ->
             titlePrinter.printSubTitle("validating [${npmProj.getReactModuleDir().absolutePath}]")
             npmProj.exec("ls -l node_modules/react/")
-            assert Files.isSymbolicLink(npmProj.getReactModuleDir().toPath())
+//            now that we have multiple versions of react being tested against, this doesn't make sense
+//            assert Files.isSymbolicLink(npmProj.getReactModuleDir().toPath())
         }
     }
 
