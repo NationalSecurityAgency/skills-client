@@ -50,7 +50,7 @@
     "devDependencies": {
         "license-check-and-add": "3.0.4",
         "license-checker": "25.0.1",
-        "react-scripts": "3.4.3",
+        "react-scripts": "4.0.3",
         "@craco/craco": "6.4.0"
     }
 }
