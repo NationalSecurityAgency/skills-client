@@ -17,7 +17,7 @@ import Utils from "./Utils";
 
 const homePage = '/react17/index.html#/'
 
-context('React Tests', () => {
+context('React17 Tests', () => {
 
     const laterThan_1_4_0 = Utils.skillsServiceVersionLaterThan('1.4.0');
     const noThemeBackground = laterThan_1_4_0 ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)';
@@ -82,20 +82,22 @@ context('React Tests', () => {
         cy.createDefaultProject()
         const sendEventViaDropdownId = '#exampleDirectiveClickEvent';
         Cypress.Commands.add("clickSubmit", () => {
-            cy.get(`${sendEventViaDropdownId} .btn`).click()
+            cy.get(`${sendEventViaDropdownId} .btn`).click({force: true})
         })
         Cypress.Commands.add("selectSkill", (skill) => {
-            cy.get(`${sendEventViaDropdownId} select`).select(`${skill}`)
+            cy.get(`${sendEventViaDropdownId} select`).select(`${skill}`, {force: true})
         })
 
         cy.visitHomePage(homePage);
 
         cy.contains('Level 0')
 
+        cy.intercept('/api/projects/proj1/skills/IronMan').as('w');
         cy.selectSkill('IronMan')
         cy.clickSubmit()
         cy.contains('Level 1')
 
+        cy.wait('@w');
         cy.selectSkill('Thor')
         cy.clickSubmit()
         cy.contains('Level 2')
