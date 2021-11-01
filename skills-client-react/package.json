@@ -26,8 +26,8 @@
     "author": "SkillTree Team",
     "peerDependencies": {
         "prop-types": "15.X",
-        "react": "16.X",
-        "react-dom": "16.X"
+        "react": "16.X || 17.X",
+        "react-dom": "16.X || 17.X"
     },
     "devDependencies": {
         "@babel/cli": "7.11.6",
@@ -57,8 +57,8 @@
     },
     "dependencies": {
         "@skilltree/skills-client-js": "3.3.1",
-        "axios": "0.21.1",
-        "axios-auth-refresh": "3.1.0"
+        "axios": "0.23.0",
+        "axios-auth-refresh": "3.2.1"
     },
     "eslintConfig": {
         "extends": "react-app"

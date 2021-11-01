@@ -49,12 +49,12 @@
         "xhr-mock": "2.5.1"
     },
     "dependencies": {
-        "axios": "0.21.1",
-        "history": "5.0.0",
-        "js-logger": "1.6.0",
+        "axios": "0.23.0",
+        "history": "5.0.1",
+        "js-logger": "1.6.1",
         "postmate": "1.5.2",
         "sockjs-client": "1.5.2",
-        "@stomp/stompjs": "6.1.1"
+        "@stomp/stompjs": "6.1.2"
     },
     "keywords": [
         "SkillTree",

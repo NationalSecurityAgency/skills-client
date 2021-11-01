@@ -40,7 +40,7 @@ export class AnySkillCodeExampleComponent implements OnInit {
 
     axios.get("/api/skills")
     .then((result) => {
-        this.available = result.data;
+        this.available = result.data as string[];
     });
   }
 
@@ -66,8 +66,8 @@ export class AnySkillCodeExampleComponent implements OnInit {
     let sampleCode = `SkillsReporter.reportSkill(this.skill)
     .then((res) => {
         this.reportResult = res;
-    });`
+    });`;
     sampleCode = 'SkillsReporter.reportSkill(this.skill)\n  .then((res) => {\n    this.reportResult = res;\n  \});';
-    return sampleCode
+    return sampleCode;
   }
 }

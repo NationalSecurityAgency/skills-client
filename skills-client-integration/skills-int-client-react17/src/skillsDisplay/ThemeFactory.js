@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const exported = {
+const exportedObj = {
   default: {
     name: 'Bright (default)',
     theme: {
@@ -48,4 +48,4 @@ const exported = {
     },
   }
 };
-export default exported;
+export default exportedObj;
