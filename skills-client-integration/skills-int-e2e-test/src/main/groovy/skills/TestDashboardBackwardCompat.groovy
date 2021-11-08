@@ -117,7 +117,7 @@ class TestDashboardBackwardCompat {
 
             titlePrinter.printSubTitle("[${version}]: Update package.json and prune")
             intProjs.each { NpmProj intProj ->
-                String lookForDep = intProj.name.replaceAll("-int", "")
+                String lookForDep = intProj.name.replaceAll("-int", "").replaceAll("\\d","")
                 updatePackageJsonDeps(intProj, "@skilltree/$lookForDep", version)
                 intProj.exec("npm prune")
             }
@@ -135,14 +135,18 @@ class TestDashboardBackwardCompat {
     private void updatePackageJsonDeps(NpmProj packageToChange, String depName, String version) {
         assert packageToChange && depName && version
         def json = packageToChange.getPackageJson()
-        json.dependencies."${depName}" = version
-        String jsonToSave = JsonOutput.prettyPrint(JsonOutput.toJson(json))
-        File f = new File(packageToChange.loc, "package.json")
-        assert f.exists()
-        f.write(jsonToSave)
+        if (json.dependencies."${depName}") {
+            json.dependencies."${depName}" = version
+            String jsonToSave = JsonOutput.prettyPrint(JsonOutput.toJson(json))
+            File f = new File(packageToChange.loc, "package.json")
+            assert f.exists()
+            f.write(jsonToSave)
 
-        // sanity check
-        assert packageToChange.packageJson.dependencies."${depName}" == version
+            // sanity check
+            assert packageToChange.packageJson.dependencies."${depName}" == version
+        } else {
+            throw new RuntimeException("[$depName] not foundin package.json [${packageToChange.loc}]")
+        }
     }
 
 }
