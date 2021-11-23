@@ -3,16 +3,8 @@
 name: Continuous Integration expired token tests
 
 on:
-  push:
-    paths-ignore:
-      - 'README.md'
-      - .github/workflows/skills-service-backward-compat.yml
-      - .github/workflows/client-libs-backward-compat.yml
-  pull_request:
-    paths-ignore:
-      - 'README.md'
-      - .github/workflows/skills-service-backward-compat.yml
-      - .github/workflows/client-libs-backward-compat.yml
+  schedule:
+    - cron: '0 8 * * *'
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
