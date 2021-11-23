@@ -69,6 +69,25 @@ const connectWebsocket = (serviceUrl) => {
         window.postMessage({ skillsWebsocketConnected: true }, window.location.origin);
         log.debug('SkillsClient::SkillsReporter::window.postMessage skillsWebsocketConnected');
       },
+      onStompError: (frame) => {
+        log.error(`Received STOMP error event. headers [${JSON.stringify(headers)}] frame [${frame}]`);
+        if (!SkillsConfiguration.isPKIMode() && frame && frame.headers && frame.headers.message && frame.headers.message.includes('invalid_token')) {
+          skillsService.getAuthenticationToken(SkillsConfiguration.getAuthenticator(), SkillsConfiguration.getServiceUrl(), SkillsConfiguration.getProjectId())
+            .then((token) => {
+              SkillsConfiguration.setAuthToken(token);
+              stompClient.deactivate();
+              websocketConnected = false;
+              websocketConnecting = false;
+              connectWebsocket(SkillsConfiguration.getServiceUrl());
+            })
+            .catch((err) => {
+              log.error(`SkillsReporter::Unable to retrieve auth token when attempting to reconnect web socket [${err}]`);
+            });
+        }
+      },
+      onDisconnect: (frame) => {
+        log.info(`Received disconnect event.  frame [${frame}]`);
+      },
       // debug: (str) => {
       //   console.log(new Date(), str);
       // },
@@ -138,7 +157,7 @@ const reportInternal = (resolve, reject, userSkillId, timestamp, isRetry, retryA
     if (xhr.readyState === 4) {
       if (xhr.status !== 200) {
         if (retryAttempt <= maxRetryAttempts) {
-          if ((xhr.status === 401) && !SkillsConfiguration.isPKIMode()) {
+          if ((xhr.status === 401 || xhr.status === 0) && !SkillsConfiguration.isPKIMode()) {
             SkillsConfiguration.setAuthToken(null);
           }
           addToRetryQueue(userSkillId, timestamp, retryAttempt, xhr, maxRetryQueueSize);
