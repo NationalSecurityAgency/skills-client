@@ -37,14 +37,14 @@ const callErrorHandlers = (event) => {
   errorHandlerCache.forEach((it) => it(event));
 };
 
-let websocketConnecting = false;
-let websocketConnected = false;
+let stompClient;
 const connectWebsocket = (serviceUrl) => {
-  if (!websocketConnecting && !websocketConnected) {
-    websocketConnecting = true;
+  if (!stompClient || !stompClient.active) {
     const wsUrl = `${serviceUrl}/skills-websocket`;
     log.info(`SkillsClient::SkillsReporter::connecting websocket using SockJS to [${wsUrl}]`);
-    const stompClient = new Client();
+    if (!stompClient) {
+      stompClient = new Client();
+    }
     let headers = {};
     if (!SkillsConfiguration.isPKIMode()) {
       log.debug('SkillsClient::SkillsReporter::adding Authorization header to web socket connection');
@@ -55,8 +55,6 @@ const connectWebsocket = (serviceUrl) => {
       webSocketFactory: () => new SockJS(wsUrl),
       connectHeaders: headers,
       onConnect: () => {
-        websocketConnected = true;
-        websocketConnecting = false;
         log.info('SkillsClient::SkillsReporter::stompClient connected');
         const topic = `/user/queue/${SkillsConfiguration.getProjectId()}-skill-updates`;
         log.info(`SkillsClient::SkillsReporter::stompClient subscribing to topic [${topic}]`);
@@ -69,6 +67,23 @@ const connectWebsocket = (serviceUrl) => {
         window.postMessage({ skillsWebsocketConnected: true }, window.location.origin);
         log.debug('SkillsClient::SkillsReporter::window.postMessage skillsWebsocketConnected');
       },
+      onStompError: (frame) => {
+        log.error(`Received STOMP error event. headers [${JSON.stringify(headers)}] frame [${frame}]`);
+        if (!SkillsConfiguration.isPKIMode() && frame && frame.headers && frame.headers.message && frame.headers.message.includes('invalid_token')) {
+          skillsService.getAuthenticationToken(SkillsConfiguration.getAuthenticator(), SkillsConfiguration.getServiceUrl(), SkillsConfiguration.getProjectId())
+            .then((token) => {
+              SkillsConfiguration.setAuthToken(token);
+              stompClient.deactivate();
+              connectWebsocket(SkillsConfiguration.getServiceUrl());
+            })
+            .catch((err) => {
+              log.error(`SkillsReporter::Unable to retrieve auth token when attempting to reconnect web socket [${err}]`);
+            });
+        }
+      },
+      onDisconnect: (frame) => {
+        log.info(`Received disconnect event.  frame [${frame}]`);
+      },
       // debug: (str) => {
       //   console.log(new Date(), str);
       // },
@@ -77,13 +92,9 @@ const connectWebsocket = (serviceUrl) => {
     stompClient.activate();
     log.debug('SkillsClient::SkillsReporter::stompClient activated');
   } else {
-    log.warn('SkillsClient::SkillsReporter::websocket already connecting, preventing duplicate connection.', websocketConnecting);
+    log.warn('SkillsClient::SkillsReporter::websocket already connecting, preventing duplicate connection.', stompClient.active);
   }
 };
-
-SkillsConfiguration.afterConfigure().then(() => {
-  connectWebsocket(SkillsConfiguration.getServiceUrl());
-});
 
 const retryQueueKey = 'skillTreeRetryQueue';
 const defaultMaxRetryQueueSize = 1000;
@@ -138,7 +149,7 @@ const reportInternal = (resolve, reject, userSkillId, timestamp, isRetry, retryA
     if (xhr.readyState === 4) {
       if (xhr.status !== 200) {
         if (retryAttempt <= maxRetryAttempts) {
-          if ((xhr.status === 401) && !SkillsConfiguration.isPKIMode()) {
+          if ((xhr.status === 401 || xhr.status === 0) && !SkillsConfiguration.isPKIMode()) {
             SkillsConfiguration.setAuthToken(null);
           }
           addToRetryQueue(userSkillId, timestamp, retryAttempt, xhr, maxRetryQueueSize);
@@ -170,6 +181,13 @@ const SkillsReporter = {
     this.retryInterval = retryInterval;
     this.maxRetryQueueSize = maxRetryQueueSize;
     this.maxRetryAttempts = maxRetryAttempts;
+
+    if (retryInterval != null) {
+      // cancel existing RetryChecker, then start w/ passed in retryInterval
+      this.cancelRetryChecker();
+    }
+    log.info(`SkillsClient::SkillsReporter::Enabling retries. retryInterval [${this.retryInterval}]`);
+    retryIntervalId = setInterval(() => { retryErrors.call(this); }, this.retryInterval || defaultRetryInterval);
   },
 
   addSuccessHandler(handler) {
@@ -183,10 +201,9 @@ const SkillsReporter = {
   reportSkill(userSkillId, timestamp = null, isRetry = false, retryAttempt = undefined) {
     log.info(`SkillsClient::SkillsReporter::reporting skill [${userSkillId}] retryAttempt [${retryAttempt}]`);
     SkillsConfiguration.validate();
-    if (!this.retryEnabled) {
-      log.info('SkillsClient::SkillsReporter::Enabling retries...');
+    if (retryIntervalId == null) {
+      log.info(`SkillsClient::SkillsReporter::Enabling retries. retryInterval [${this.retryInterval}]`);
       retryIntervalId = setInterval(() => { retryErrors.call(this); }, this.retryInterval || defaultRetryInterval);
-      this.retryEnabled = true;
     }
 
     let retryAttemptInternal = 1;
@@ -230,11 +247,21 @@ const SkillsReporter = {
   },
 
   cancelRetryChecker() {
-    clearInterval(retryIntervalId);
-    this.retryEnabled = false;
+    if (retryIntervalId != null) {
+      clearInterval(retryIntervalId);
+      retryIntervalId = null;
+    }
   },
 
 };
+
+SkillsConfiguration.afterConfigure().then(() => {
+  connectWebsocket(SkillsConfiguration.getServiceUrl());
+  if (!retryIntervalId) {
+    log.info(`SkillsClient::SkillsReporter::Enabling retries. retryInterval [${SkillsReporter.retryInterval}]`);
+    retryIntervalId = setInterval(() => { retryErrors.call(SkillsReporter); }, SkillsReporter.retryInterval || defaultRetryInterval);
+  }
+});
 
 export {
   SkillsReporter,
