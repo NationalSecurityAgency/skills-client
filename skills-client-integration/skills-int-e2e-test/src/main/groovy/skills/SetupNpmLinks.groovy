@@ -110,7 +110,7 @@ class SetupNpmLinks {
                 if (npmProj.getAngularApp() || npmProj.getAngularModule()) {
                     npmProj.exec("npm install --force")
                 }
-                npmProj.exec("npm link ${it}".toString())
+                npmProj.exec("npm link --force ${it}".toString())
                 if (npmProj.getAngularModule()) {
                     File origLoc = npmProj.loc
                     npmProj.loc = npmProj.getAngularModuleLinkDir(true)
