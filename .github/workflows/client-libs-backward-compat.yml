@@ -39,6 +39,7 @@ jobs:
         mvn --version
         java -version
         npm -version
+        node --version
 
     - name: Cache local Maven repository
       uses: actions/cache@v2
