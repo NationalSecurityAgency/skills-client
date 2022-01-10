@@ -32,6 +32,7 @@
         "@types/js-beautify": "1.11.0",
         "axios": "0.23.0",
         "bootstrap": "4.5.3",
+        "highlight.js": "11.3.1",
         "jquery": "3.5.1",
         "js-beautify": "1.13.0",
         "ngx-highlightjs": "4.1.2",
