@@ -20,7 +20,7 @@ index ae3c24a..718b7a2 100644
              // navigate to Rank Overview that contains the back button
              cy.clientDisplay().find('[data-cy=myRank]').click();
 -            cy.clientDisplay().contains('Rank Overview');
-+            cy.clientDisplay().contains();
++            cy.clientDisplay().contains('My Rank');
              cy.clientDisplay().find('[data-cy=back]').should('exist');
  
              // now visit the "Report Skills" (external) page
@@ -29,7 +29,7 @@ index ae3c24a..718b7a2 100644
              // navigate to Rank Overview that contains the back button
              cy.clientDisplay().find('[data-cy=myRank]').click();
 -            cy.clientDisplay().contains('Rank Overview');
-+            cy.clientDisplay().contains();
++            cy.clientDisplay().contains('My Rank');
              cy.clientDisplay().find('[data-cy=back]').should('exist');
  
              // now visit the "Report Skills" (external) page
@@ -38,7 +38,7 @@ index ae3c24a..718b7a2 100644
              cy.get('[data-cy=userDisplayLink]').click()
              // verify we are still on the Rank Overview page
 -            cy.clientDisplay(true).contains('Rank Overview');
-+            cy.clientDisplay(true).contains();
++            cy.clientDisplay(true).contains('My Rank');
  
              // click the back button and verify that we are still in the
              // client display (Subject page)
