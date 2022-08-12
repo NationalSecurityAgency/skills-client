@@ -141,7 +141,7 @@ index d0d7a1d..3ca2982 100644
      })
  
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
-index b010108..95e7b93 100644
+index b010108..8727ebe 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 +++ b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 @@ -204,7 +204,7 @@ context('Vue Tests', () => {
@@ -180,6 +180,42 @@ index b010108..95e7b93 100644
          })
      })
  
+@@ -378,7 +378,7 @@ context('Vue Tests', () => {
+ 
+                 // navigate to Rank Overview that contains the back button
+                 cy.wrap(body).find('[data-cy=myRank]').click();
+-                cy.wrap(body).contains('Rank Overview');
++                cy.wrap(body).contains('My Rank');
+                 cy.wrap(body).find('[data-cy=back]').should('exist');
+             });
+ 
+@@ -390,7 +390,7 @@ context('Vue Tests', () => {
+             cy.get('[data-cy=userDisplayLink]').click()
+             // cy.iframe((body) => {
+             //   // verify we are still on the Rank Overview page
+-            //   cy.wrap(body).contains('Rank Overview');
++            //   cy.wrap(body).contains('My Rank');
+             //
+             //   // click the back button and verify that we are still in the
+             //   // client display (main page), and not on the "Report Skills" page
+@@ -419,7 +419,7 @@ context('Vue Tests', () => {
+ 
+                 // navigate to Rank Overview that contains the back button
+                 cy.wrap(body).find('[data-cy=myRank]').click();
+-                cy.wrap(body).contains('Rank Overview');
++                cy.wrap(body).contains('My Rank');
+                 cy.wrap(body).find('[data-cy=back]').should('exist');
+             });
+ 
+@@ -431,7 +431,7 @@ context('Vue Tests', () => {
+             cy.get('[data-cy=userDisplayLink]').click()
+             cy.iframe((body) => {
+                 // verify we are still on the Rank Overview page
+-                cy.wrap(body).contains('Rank Overview');
++                cy.wrap(body).contains('My Rank');
+ 
+                 // click the back button and verify that we are still in the
+                 // client display (Subject page)
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/support/commands.js b/skills-client-integration/skills-int-e2e-test/cypress/support/commands.js
 index 6a65d80..689aa4f 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/support/commands.js

@@ -105,7 +105,7 @@ index 38151c4..5a95fbe 100644
  
      it('skill display - theme', () => {
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
-index d861deb..4037779 100644
+index d861deb..32c33e3 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 +++ b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 @@ -207,7 +207,7 @@ context('Vue Tests', () => {
@@ -162,6 +162,33 @@ index d861deb..4037779 100644
          });*!/
      })*/
  
+@@ -426,7 +426,7 @@ context('Vue Tests', () => {
+ 
+             // navigate to Rank Overview that contains the back button
+             cy.wrapIframe().find('[data-cy=myRank]').click();
+-            cy.wrapIframe().contains('Rank Overview');
++            cy.wrapIframe().contains('My Rank');
+             cy.wrapIframe().find('[data-cy=back]').should('exist');
+ 
+             // now visit the "Report Skills" (external) page
+@@ -456,7 +456,7 @@ context('Vue Tests', () => {
+ 
+             // navigate to Rank Overview that contains the back button
+             cy.wrapIframe().find('[data-cy=myRank]').click();
+-            cy.wrapIframe().contains('Rank Overview');
++            cy.wrapIframe().contains('My Rank');
+             cy.wrapIframe().find('[data-cy=back]').should('exist');
+ 
+             // now visit the "Report Skills" (external) page
+@@ -466,7 +466,7 @@ context('Vue Tests', () => {
+             // switch back to the the client display
+             cy.get('[data-cy=userDisplayLink]').click()
+             // verify we are still on the Rank Overview page
+-            cy.wrapIframe().contains('Rank Overview');
++            cy.wrapIframe().contains('My Rank');
+ 
+             // click the back button and verify that we are still in the
+             // client display (Subject page)
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/support/commands.js b/skills-client-integration/skills-int-e2e-test/cypress/support/commands.js
 index 48da2de..d66fb30 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/support/commands.js
