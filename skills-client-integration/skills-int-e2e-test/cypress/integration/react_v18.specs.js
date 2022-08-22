@@ -15,9 +15,9 @@
  */
 import Utils from "./Utils";
 
-const homePage = '/react17/index.html#/'
+const homePage = '/react18/index.html#/'
 
-context('React17 Tests', () => {
+context('React18 Tests', () => {
 
     const laterThan_1_4_0 = Utils.skillsServiceVersionLaterThan('1.4.0');
     const laterThan_1_11_1 = Utils.skillsServiceVersionLaterThan('1.11.1');
