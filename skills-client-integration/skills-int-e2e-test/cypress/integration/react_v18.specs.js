@@ -24,7 +24,7 @@ context('React18 Tests', () => {
     const noThemeBackground = laterThan_1_4_0 ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)';
     const rankDetailsTitle = laterThan_1_11_1 ? 'My Rank' : 'Rank Overview'
 
-    it.only('level component should be reactive (skills reported directly to backend endpoint)', () => {
+    it('level component should be reactive (skills reported directly to backend endpoint)', () => {
         cy.createDefaultProject()
         cy.visitHomePage(homePage);
 
