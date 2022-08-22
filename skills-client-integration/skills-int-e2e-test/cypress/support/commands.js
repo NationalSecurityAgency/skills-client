@@ -171,6 +171,7 @@ Cypress.Commands.add('visitHomePage', (homepage) => {
   cy.get('@skillsWebsocketConnected').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
   cy.window().should('have.property', 'skillsLogger')
   cy.skillsLog(`Visit Home page for test [${Cypress.mocha.getRunner().test.title}]`)
+  cy.wait(1000).reload()
 });
 
 Cypress.Commands.add("cdClickSubj", (subjIndex, expectedTitle) => {
