@@ -154,7 +154,6 @@ Cypress.Commands.add("iframe", (handleIframeBody) => {
 
 Cypress.Commands.add('visitHomePage', (homepage) => {
   let skillsWebsocketConnected = null;
-  cy.intercept('GET', '/api/projects/*/level').as('getLevel')
   cy.visit(homepage, {
     onBeforeLoad(win) {
       skillsWebsocketConnected = cy.spy().as('skillsWebsocketConnected')
@@ -172,8 +171,6 @@ Cypress.Commands.add('visitHomePage', (homepage) => {
   cy.get('@skillsWebsocketConnected').its('lastCall.args.0').its('skillsWebsocketConnected').should('eq', true);
   cy.window().should('have.property', 'skillsLogger')
   cy.skillsLog(`Visit Home page for test [${Cypress.mocha.getRunner().test.title}]`)
-  cy.wait(1000).reload()
-  cy.wait('@getLevel')
 });
 
 Cypress.Commands.add("cdClickSubj", (subjIndex, expectedTitle) => {
