@@ -18,7 +18,7 @@ import Navigation from "./skillsDisplay/Navigation";
 import './App.css';
 import {
     HashRouter as Router,
-    Switch,
+    Routes,
     Route,
 } from "react-router-dom";
 import ShowSkills from "./skillsDisplay/ShowSkills";
@@ -30,16 +30,10 @@ export default function App() {
       <div className="App">
         <Navigation projectId="movies"/>
       </div>
-      <Switch>
-        <Route exact path="/showSkills">
-          <ShowSkills/>
-        </Route>
-        <Route exact path="/">
-          <ReportSkill/>
-        </Route>
-          {/*<Route exact path="/reportSkillEvent">
-        </Route>*/}
-      </Switch>
+      <Routes>
+        <Route path="/showSkills" element={<ShowSkills/>} />
+        <Route path="/" element={<ReportSkill/>} />
+      </Routes>
     </Router>
   );
 }

@@ -14,59 +14,28 @@
  * limitations under the License.
  */
 import React from 'react';
-// import ReactDOM from 'react-dom';
-// import { createRoot } from 'react-dom/client';
-import ReactDOM from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 import axios from 'axios';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+// import * as serviceWorker from './serviceWorker';
 import { SkillsConfiguration, Logger } from '@skilltree/skills-client-react';
 
 SkillsConfiguration.afterConfigure().then(() => {
   if (window.Cypress) {
     window.skillsLogger = Logger;
   }
-  // ReactDOM.render(<App />, document.getElementById('root'));
-
-  const root = ReactDOM.createRoot(document.getElementById('root'));
-  console.log('rendering to root element...', root);
-  root.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  );
-
-  // const container = document.getElementById('root');
-  // const root = createRoot(container); // createRoot(container!) if you use TypeScript
-  // root.render(<App />);
+  const container = document.getElementById('root');
+  const root = createRoot(container); // createRoot(container!) if you use TypeScript
+  root.render(<App />);
 })
 axios.get("/api/config")
   .then((result) => {
     SkillsConfiguration.configure(result.data);
-  });
-  // .then(() => {
-  //   SkillsConfiguration.afterConfigure().then(() => {
-  //     if (window.Cypress) {
-  //       window.skillsLogger = Logger;
-  //     }
-  //     // ReactDOM.render(<App />, document.getElementById('root'));
-  //
-  //     const root = ReactDOM.createRoot(document.getElementById('root'));
-  //     root.render(
-  //       <React.StrictMode>
-  //         <App />
-  //       </React.StrictMode>
-  //     );
-  //
-  //     // const container = document.getElementById('root');
-  //     // const root = createRoot(container); // createRoot(container!) if you use TypeScript
-  //     // root.render(<App />);
-  //   })
-  // });
+  })
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+// serviceWorker.unregister();

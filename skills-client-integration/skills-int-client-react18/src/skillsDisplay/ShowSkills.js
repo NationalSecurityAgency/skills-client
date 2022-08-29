@@ -20,7 +20,7 @@ import { SkillsDisplay } from '@skilltree/skills-client-react';
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
-import { useHistory } from "react-router-dom";
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const getThemes = () => {
     return Object.values(SkillsDisplayThemeFactory);
@@ -43,13 +43,14 @@ function usePrevious(value){
     });
     return ref.current;
 }
-
+let skillsDisplayRef;
 const ShowSkill = () => {
-    const history = useHistory();
+    const location = useLocation();
+    const navigator = useNavigate();
 
     const getUrlParam = (name) => {
-        const urlSearchParams = new URLSearchParams(history.location.search);
-        return urlSearchParams.get(name);
+            const urlSearchParams = new URLSearchParams(location.search);
+            return urlSearchParams.get(name);
     };
 
     const [selectedTheme, saveSelectedTheme] = React.useState(() => {
@@ -98,17 +99,19 @@ const ShowSkill = () => {
                 params+=`${key}=${paramsObj[key]}&`;
             });
             params = params.replace(/&$/,'');
-            history.replace({pathname:history.location.pathname, search: params});
+            navigator({pathname:location.pathname, search: params}, {replace: true});
         };
 
         if (isSummaryOnly !== previousIsSummaryOnly || internalBackButton !== previousInternalBackButton || selectedTheme !== previousSelectedTheme) {
             saveUrlParam({'isSummaryOnly': isSummaryOnly, 'internalBackButton': internalBackButton, 'themeName': selectedTheme.name, 'skillsVersion': skillsVersion});
         }
 
-    }, [isSummaryOnly, internalBackButton, selectedTheme, skillsVersion, previousIsSummaryOnly, previousInternalBackButton, previousSelectedTheme, previousSkillsVersion, history]);
+    }, [isSummaryOnly, internalBackButton, selectedTheme, skillsVersion, previousIsSummaryOnly, previousInternalBackButton, previousSelectedTheme, previousSkillsVersion, location, navigator]);
 
     const sampleCodeRef = React.createRef();
-    const skillsDisplayRef = React.createRef();
+    if (!skillsDisplayRef) {
+        skillsDisplayRef = React.createRef();
+    }
     const executeScroll = () => scrollToRef(sampleCodeRef);
 
     const navigate = () => {
@@ -120,49 +123,49 @@ const ShowSkill = () => {
     };
 
     return (
-      <div className="container" style={style}>
-          <div className="d-flex align-items-center">
-              <DropdownButton
-                id="dropdown-1"
-                className="mb-3"
-                title="Theme"
-                variant="Primary">
+          <div className="container" style={style}>
+              <div className="d-flex align-items-center">
+                  <DropdownButton
+                    id="dropdown-1"
+                    className="mb-3"
+                    title="Theme"
+                    variant="Primary">
 
-                  { getThemes().map ( (theme) => {
-                      return <Dropdown.Item
-                        onClick={() => saveSelectedTheme(theme)}
-                        key={theme.name}
-                        eventKey={theme.name} {... (selectedTheme.name === theme.name ? {disabled:true} : "")}>
-                          {theme.name}
-                      </Dropdown.Item>
-                  })}
+                      { getThemes().map ( (theme) => {
+                          return <Dropdown.Item
+                            onClick={() => saveSelectedTheme(theme)}
+                            key={theme.name}
+                            eventKey={theme.name} {... (selectedTheme.name === theme.name ? {disabled:true} : "")}>
+                              {theme.name}
+                          </Dropdown.Item>
+                      })}
 
-              </DropdownButton>
-              <Button variant={isSummaryOnly ? 'primary' : 'outline-primary'}
-                      onClick={() => { setIsSummaryOnly(!isSummaryOnly);
-                          setOptions({isSummaryOnly:!isSummaryOnly,internalBackButton:internalBackButton,autoScrollStrategy: 'top-offset', scrollTopOffset: 110}) }}>Summary Only</Button>
+                  </DropdownButton>
+                  <Button variant={isSummaryOnly ? 'primary' : 'outline-primary'}
+                          onClick={() => { setIsSummaryOnly(!isSummaryOnly);
+                              setOptions({isSummaryOnly:!isSummaryOnly,internalBackButton:internalBackButton,autoScrollStrategy: 'top-offset', scrollTopOffset: 110}) }}>Summary Only</Button>
 
-              <Button variant={internalBackButton ? 'primary' : 'outline-primary'}
-                      onClick={() => { setInternalBackButton(!internalBackButton);
-                          setOptions({isSummaryOnly:isSummaryOnly,internalBackButton:!internalBackButton,autoScrollStrategy: 'top-offset', scrollTopOffset: 110}) }}>Internal Back Button</Button>
+                  <Button variant={internalBackButton ? 'primary' : 'outline-primary'}
+                          onClick={() => { setInternalBackButton(!internalBackButton);
+                              setOptions({isSummaryOnly:isSummaryOnly,internalBackButton:!internalBackButton,autoScrollStrategy: 'top-offset', scrollTopOffset: 110}) }}>Internal Back Button</Button>
 
-              <Button variant={internalBackButton ? 'primary' : 'outline-primary'}
-                      onClick={navigate} data-cy="navigateButton">Navigate</Button>
+                  <Button variant={internalBackButton ? 'primary' : 'outline-primary'}
+                          onClick={navigate} data-cy="navigateButton">Navigate</Button>
 
-              <Button variant="link" onClick={executeScroll}>Show Source</Button>
+                  <Button variant="link" onClick={executeScroll}>Show Source</Button>
+              </div>
+              <div>
+                  <span id="skillsDisplayPath" data-cy="skillsDisplayPath"></span>
+              </div>
+              <div className="border rounded">
+                  <SkillsDisplay ref={skillsDisplayRef} options={options} theme={selectedTheme.theme} version={skillsVersion} handleRouteChanged={handleRouteChanged}/>
+              </div>
+
+              <div ref={sampleCodeRef}>
+                  <SampleCode options={options} selectedTheme={selectedTheme}/>
+              </div>
           </div>
-          <div>
-              <span id="skillsDisplayPath" data-cy="skillsDisplayPath"></span>
-          </div>
-          <div className="border rounded">
-              <SkillsDisplay ref={skillsDisplayRef} options={options} theme={selectedTheme.theme} version={skillsVersion} handleRouteChanged={handleRouteChanged}/>
-          </div>
-
-          <div ref={sampleCodeRef}>
-              <SampleCode options={options} selectedTheme={selectedTheme}/>
-          </div>
-      </div>
-    );
+        );
 };
 
 export default ShowSkill;

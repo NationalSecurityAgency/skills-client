@@ -39,8 +39,8 @@ const Navigation = () => {
         <Navbar.Toggle target="nav-collapse"></Navbar.Toggle>
         <Navbar.Collapse id="nav-collapse" is-nav="true">
           <Nav>
-            <NavLink activeClassName="router-link-active" className="nav-link" to="/">Report Skill Events</NavLink>
-            <NavLink activeClassName="router-link-active" className="nav-link" to="/showSkills?isSummaryOnly=false&internalBackButton=false&themeName=Bright%20(default)&skillsVersion=">User Display</NavLink>
+            <NavLink className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")} to="/">Report Skill Events</NavLink>
+            <NavLink className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")} to="/showSkills?isSummaryOnly=false&internalBackButton=false&themeName=Bright%20(default)&skillsVersion=">User Display</NavLink>
           </Nav>
         </Navbar.Collapse>
           <Button variant="primary">
