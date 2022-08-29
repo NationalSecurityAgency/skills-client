@@ -14,7 +14,7 @@
         "licenseHeaderCheck": " npx license-check-and-add check -f license-add/license-add-config.json",
         "licenseHeaderAdd": " npx license-check-and-add add -f license-add/license-add-config.json",
         "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck ",
-        "build": "npm run licenseCheck && npm run clean && npm run build:umd && npm run build:esm",
+        "build": "npm run licenseCheck && npm run test && npm run clean && npm run build:umd && npm run build:esm",
         "build:umd": "rollup --config --format umd --file dist/skills-client-js.umd.min.js --name SkillsClient",
         "build:esm": "rollup --config --format esm --file dist/skills-client-js.esm.min.js",
         "deploy-to-examples": "npm run build && cp ./dist/skills-display-js.umd.min.js ../skills-examples/skills-example-client-js/app/assets/js/@skilltree/skills-client-js/dist",
@@ -50,7 +50,7 @@
     },
     "dependencies": {
         "axios": "0.23.0",
-        "history": "5.0.1",
+        "history": "5.3.0",
         "js-logger": "1.6.1",
         "postmate": "1.5.2",
         "sockjs-client": "1.5.2",
