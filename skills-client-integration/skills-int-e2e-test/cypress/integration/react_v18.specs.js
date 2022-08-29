@@ -25,7 +25,13 @@ context('React18 Tests', () => {
     const rankDetailsTitle = laterThan_1_11_1 ? 'My Rank' : 'Rank Overview'
 
     beforeEach(() => {
-        cy.intercept('POST', '/api/projects/proj1/skillsClientVersion').as('reportClientVersion')
+        cy.intercept('POST', '/api/projects/proj1/skillsClientVersion', (req) => {
+            expect(req.body).to.have.property('skillsClientVersion').and.to.contain('@skilltree/skills-client-react-')
+            req.reply((res) => {
+                expect(res.statusCode).to.eq(200)
+                expect(res.body).to.have.property('success').to.eq(true)
+            })
+        }).as('reportClientVersion')
     });
 
     it('level component should be reactive (skills reported directly to backend endpoint)', () => {
@@ -267,13 +273,6 @@ context('React18 Tests', () => {
 
     it('skillsClientVersion is reported correctly', () => {
         cy.createDefaultProject()
-        cy.intercept('POST', '/api/projects/proj1/skillsClientVersion', (req) => {
-            expect(req.body).to.have.property('skillsClientVersion').and.to.contain('@skilltree/skills-client-react-')
-            req.reply((res) => {
-                expect(res.statusCode).to.eq(200)
-                expect(res.body).to.have.property('success').to.eq(true)
-            })
-        }).as('reportClientVersion')
 
         cy.visit('/react/index.html#/')
         cy.wait('@reportClientVersion')
