@@ -35,10 +35,13 @@ context('React18 Tests', () => {
     });
 
     it('level component should be reactive (skills reported directly to backend endpoint)', () => {
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.createDefaultProject()
-        cy.visitHomePage(homePage);
+        cy.visit('/react/index.html#/showSkills')
+        cy.wait('@getToken')
+        cy.wait('@getToken')
+        cy.get('[data-cy=reportSkillsLink]').click()
         cy.wait('@reportClientVersion')
-        cy.reload()
 
         cy.contains('Level 0')
 
@@ -82,10 +85,13 @@ context('React18 Tests', () => {
     })
 
     it('global event show correct results', () => {
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.createDefaultProject()
-        cy.visitHomePage(homePage);
+        cy.visit('/react/index.html#/showSkills')
+        cy.wait('@getToken')
+        cy.wait('@getToken')
+        cy.get('[data-cy=reportSkillsLink]').click()
         cy.wait('@reportClientVersion')
-        cy.reload()
 
         cy.contains('Level 0')
 
