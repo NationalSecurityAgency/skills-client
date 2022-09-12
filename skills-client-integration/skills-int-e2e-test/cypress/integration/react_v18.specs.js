@@ -24,24 +24,9 @@ context('React18 Tests', () => {
     const noThemeBackground = laterThan_1_4_0 ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)';
     const rankDetailsTitle = laterThan_1_11_1 ? 'My Rank' : 'Rank Overview'
 
-    beforeEach(() => {
-        cy.intercept('POST', '/api/projects/proj1/skillsClientVersion', (req) => {
-            expect(req.body).to.have.property('skillsClientVersion').and.to.contain('@skilltree/skills-client-react-')
-            req.reply((res) => {
-                expect(res.statusCode).to.eq(200)
-                expect(res.body).to.have.property('success').to.eq(true)
-            })
-        }).as('reportClientVersion')
-    });
-
     it('level component should be reactive (skills reported directly to backend endpoint)', () => {
-        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.createDefaultProject()
-        cy.visit('/react/index.html#/showSkills')
-        cy.wait('@getToken')
-        cy.wait('@getToken')
-        cy.get('[data-cy=reportSkillsLink]').click()
-        cy.wait('@reportClientVersion')
+        cy.visitHomePage(homePage);
 
         cy.contains('Level 0')
 
@@ -72,26 +57,17 @@ context('React18 Tests', () => {
         // validate that level is still 0
         cy.reportSkillForUser('IronMan', 'skills@skill.org')
         cy.visitHomePage(homePage);
-        cy.wait('@reportClientVersion')
-        cy.reload()
         cy.contains('Level 0')
 
 
         cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
-        cy.visitHomePage(homePage);
-        cy.wait('@reportClientVersion')
-        cy.reload()
+        // cy.visitHomePage(homePage);
         cy.contains('Level 1')
     })
 
     it('global event show correct results', () => {
-        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.createDefaultProject()
-        cy.visit('/react/index.html#/showSkills')
-        cy.wait('@getToken')
-        cy.wait('@getToken')
-        cy.get('[data-cy=reportSkillsLink]').click()
-        cy.wait('@reportClientVersion')
+        cy.visitHomePage(homePage);
 
         cy.contains('Level 0')
 
@@ -115,8 +91,6 @@ context('React18 Tests', () => {
         })
 
         cy.visitHomePage(homePage);
-        cy.wait('@reportClientVersion')
-        cy.reload()
 
         cy.contains('Level 0')
 
@@ -151,8 +125,6 @@ context('React18 Tests', () => {
         cy.createDefaultProject()
         cy.createDefaultTinyProject('proj2')
         cy.visitHomePage(homePage);
-        cy.wait('@reportClientVersion')
-        cy.reload()
 
         cy.contains('Level 0')
 
@@ -165,8 +137,6 @@ context('React18 Tests', () => {
     it('level component should not update when admin reports skill for other user', () => {
         cy.createDefaultProject()
         cy.visitHomePage(homePage);
-        cy.wait('@reportClientVersion')
-        cy.reload()
 
         cy.contains('Level 0')
 
@@ -279,6 +249,13 @@ context('React18 Tests', () => {
 
     it('skillsClientVersion is reported correctly', () => {
         cy.createDefaultProject()
+        cy.intercept('POST', '/api/projects/proj1/skillsClientVersion', (req) => {
+            expect(req.body).to.have.property('skillsClientVersion').and.to.contain('@skilltree/skills-client-react-')
+            req.reply((res) => {
+                expect(res.statusCode).to.eq(200)
+                expect(res.body).to.have.property('success').to.eq(true)
+            })
+        }).as('reportClientVersion')
 
         cy.visit('/react/index.html#/')
         cy.wait('@reportClientVersion')

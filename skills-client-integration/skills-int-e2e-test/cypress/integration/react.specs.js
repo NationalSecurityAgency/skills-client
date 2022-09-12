@@ -61,7 +61,7 @@ context('React Tests', () => {
 
 
         cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
-        cy.visitHomePage(homePage);
+        // cy.visitHomePage(homePage);
         cy.contains('Level 1')
     })
 
@@ -84,10 +84,10 @@ context('React Tests', () => {
         cy.createDefaultProject()
         const sendEventViaDropdownId = '#exampleDirectiveClickEvent';
         Cypress.Commands.add("clickSubmit", () => {
-            cy.get(`${sendEventViaDropdownId} .btn`).click()
+            cy.get(`${sendEventViaDropdownId} .btn`).click({force: true})
         })
         Cypress.Commands.add("selectSkill", (skill) => {
-            cy.get(`${sendEventViaDropdownId} select`).select(`${skill}`)
+            cy.get(`${sendEventViaDropdownId} select`).select(`${skill}`, {force:true})
         })
 
         cy.visitHomePage(homePage);

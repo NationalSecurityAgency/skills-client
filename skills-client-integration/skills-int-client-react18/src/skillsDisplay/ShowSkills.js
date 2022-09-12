@@ -43,7 +43,6 @@ function usePrevious(value){
     });
     return ref.current;
 }
-let skillsDisplayRef;
 const ShowSkill = () => {
     const location = useLocation();
     const navigator = useNavigate();
@@ -109,9 +108,7 @@ const ShowSkill = () => {
     }, [isSummaryOnly, internalBackButton, selectedTheme, skillsVersion, previousIsSummaryOnly, previousInternalBackButton, previousSelectedTheme, previousSkillsVersion, location, navigator]);
 
     const sampleCodeRef = React.createRef();
-    if (!skillsDisplayRef) {
-        skillsDisplayRef = React.createRef();
-    }
+    const skillsDisplayRef = React.createRef();
     const executeScroll = () => scrollToRef(sampleCodeRef);
 
     const navigate = () => {

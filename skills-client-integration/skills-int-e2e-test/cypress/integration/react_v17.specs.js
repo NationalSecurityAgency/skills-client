@@ -61,7 +61,7 @@ context('React17 Tests', () => {
 
 
         cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
-        cy.visitHomePage(homePage);
+        // cy.visitHomePage(homePage);
         cy.contains('Level 1')
     })
 
