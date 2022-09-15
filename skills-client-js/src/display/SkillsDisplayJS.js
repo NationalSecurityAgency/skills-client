@@ -27,6 +27,7 @@ let unlisten = () => {};
 
 const skillsClientDisplayPath = 'skillsClientDisplayPath';
 const POP = 'POP';
+const markedForDestruction = [];
 
 export default class SkillsDisplayJS {
   /* eslint-disable object-curly-newline */
@@ -96,6 +97,17 @@ export default class SkillsDisplayJS {
     });
 
     handshake.then((child) => {
+      // make sure this frame has not already been marked for destruction
+      const childFrameClassName = child.frame.className;
+      const index = markedForDestruction.indexOf(childFrameClassName);
+      if (index > -1) {
+        log.info(`SkillsClient::SkillsDisplayJS::handshake: child frame [${childFrameClassName}] already marked for destruction, not initializing.`);
+        if (child) {
+          child.destroy();
+          markedForDestruction.splice(index, 1);
+        }
+        return;
+      }
       this._childFrame = child;
       child.on('height-changed', (data) => {
         log.debug(`SkillsClient::SkillsDisplayJS::height-changed: data [${data}]`);
@@ -256,6 +268,10 @@ export default class SkillsDisplayJS {
     log.info(`SkillsClient::SkillsDisplayJS::destroy called. _childFrame [${this._childFrame}]`);
     if (this._childFrame) {
       this._childFrame.destroy();
+    } else {
+      const childFrameClassName = `client-display-iframe-${uniqueId}`;
+      log.info(`SkillsClient::SkillsDisplayJS::destroy child frame [${childFrameClassName}] not yet initialized, marking for future destruction`);
+      markedForDestruction.push(childFrameClassName);
     }
     const queryParams = new URLSearchParams(window.location.search);
     queryParams.delete(skillsClientDisplayPath);

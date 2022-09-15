@@ -163,6 +163,8 @@ describe('SkillsDisplayJS', () => {
 
           call: jest.fn(),
 
+          frame: { className: 'client-display-iframe-1' },
+
           on(eventName, handler) {
             this.eventHandlers[eventName] = handler;
           },
