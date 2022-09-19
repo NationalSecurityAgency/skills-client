@@ -15,18 +15,14 @@
  */
 import Postmate from 'postmate';
 import log from 'js-logger';
-import { createBrowserHistory } from 'history';
 
 import SkillsConfiguration from '../config/SkillsConfiguration';
 import ErrorPageUtils from './ErrorPageUtils';
 import skillsService from '../SkillsService';
 
 let uniqueId = 0;
-let history = null; // createBrowserHistory();
-let unlisten = () => {};
-
+let popstateListener;
 const skillsClientDisplayPath = 'skillsClientDisplayPath';
-const POP = 'POP';
 const markedForDestruction = [];
 
 export default class SkillsDisplayJS {
@@ -87,14 +83,11 @@ export default class SkillsDisplayJS {
 
     iframeContainer.height = 0;
     iframeContainer.style.height = '0px';
-
-    history = createBrowserHistory();
-    // Listen for changes to the current location from the back/forward browser buttons.
-    unlisten = history.listen(({ action }) => {
-      if (action === POP) {
-        this.navigate(this.skillsDisplayPath || '/', true);
-      }
-    });
+    popstateListener = () => {
+      this.navigate(this.skillsDisplayPath || '/', true);
+    };
+    window.addEventListener('popstate', popstateListener);
+    window.addEventListener('hashchange', popstateListener);
 
     handshake.then((child) => {
       // make sure this frame has not already been marked for destruction
@@ -126,7 +119,7 @@ export default class SkillsDisplayJS {
             const queryParams = new URLSearchParams(window.location.search);
             queryParams.set(skillsClientDisplayPath, routePath);
             const newUrl = `${window.location.pathname}?${queryParams.toString()}${window.location.hash}`;
-            history.push(newUrl, { skillsClientDisplayPath: newPath });
+            window.history.pushState({ skillsClientDisplayPath: newPath }, '', newUrl);
           }
 
           // if the client has configured a handleRouteChanged call back, invoke it
@@ -275,6 +268,7 @@ export default class SkillsDisplayJS {
     }
     const queryParams = new URLSearchParams(window.location.search);
     queryParams.delete(skillsClientDisplayPath);
-    unlisten();
+    window.removeEventListener('popstate', popstateListener);
+    window.removeEventListener('hashchange', popstateListener);
   }
 }
