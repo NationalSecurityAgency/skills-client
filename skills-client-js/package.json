@@ -50,7 +50,6 @@
     },
     "dependencies": {
         "axios": "0.23.0",
-        "history": "5.3.0",
         "js-logger": "1.6.1",
         "postmate": "1.5.2",
         "sockjs-client": "1.5.2",
