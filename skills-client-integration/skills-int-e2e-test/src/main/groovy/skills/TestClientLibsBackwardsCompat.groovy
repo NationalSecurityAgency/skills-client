@@ -64,7 +64,7 @@ class TestClientLibsBackwardsCompat {
     }
 
     void test() {
-        List<String> versions = getBackendVersionsToTest()
+        List<File> versions = getBackendVersionsToTest()
         CypressTestsHelper cypressTestsHelper = new CypressTestsHelper(e2eDir: e2eDir, recordInDashboard: recordInDashboard, tag: "'${tag}'")
         versions.each { File versionFile ->
             titlePrinter.printTitle("Testing against skills-service version [${versionFile.name}]")
@@ -99,7 +99,7 @@ class TestClientLibsBackwardsCompat {
         log.info("Copy [$jar] => [$dest]")
     }
 
-    private List<String> getBackendVersionsToTest() {
+    private List<File> getBackendVersionsToTest() {
         List<File> versions = []
         ["./", "../", "../../"].findAll {
             File dir = new File(it, "skills-service-versions")
@@ -112,7 +112,7 @@ class TestClientLibsBackwardsCompat {
             }
         }
         versions = versions.sort({ it.name })
-        List<String> versionsToTest = new NextVersionHelper().getVersionsToTest(minVersionToTest, versions.collect {it.name})
+        List<File> versionsToTest = new NextVersionHelper().getVersionsToTest(minVersionToTest, versions)
         titlePrinter.printTitle("Backend versions to test:\n  ${versionsToTest.join('\n  ')}\n")
         return versionsToTest
     }

@@ -42,14 +42,14 @@ class NextVersionHelper {
     }
 
     // returns on the most recent patch version for each unique major.minor version and exclude and version < minVersion
-    List<String> getVersionsToTest(String minVersion, List<String> jarFiles) {
+    List<File> getVersionsToTest(String minVersion, List<File> jarFiles) {
         Semver minVersionToTest = new Semver(minVersion)
-        List<String> versionsToTest = []
+        List<File> versionsToTest = []
         List<FileWithVersion> filesWithVersion = []
-        jarFiles.each { jarFilename ->
-            String version = StringUtils.substringBeforeLast(StringUtils.substringAfterLast(jarFilename, '-'), '.')
+        jarFiles.each { jarFile ->
+            String version = StringUtils.substringBeforeLast(StringUtils.substringAfterLast(jarFile.name, '-'), '.')
             if (new Semver(version).isGreaterThanOrEqualTo(minVersionToTest)) {
-                filesWithVersion.add(new FileWithVersion(filename: jarFilename, version: new Semver(version)))
+                filesWithVersion.add(new FileWithVersion(file: jarFile, version: new Semver(version)))
             }
         }
 
@@ -58,18 +58,18 @@ class NextVersionHelper {
             FileWithVersion last
             filesWithVersion.each {
                 if (last != null && (it.version.major != last.version.major || it.version.minor != last.version.minor)) {
-                    versionsToTest.add(last.filename)
+                    versionsToTest.add(last.file)
                 }
                 last = it
             }
-            versionsToTest.add(last.filename)
+            versionsToTest.add(last.file)
         }
         return versionsToTest
     }
 
-    @Sortable(excludes = ['filename'])
+    @Sortable(excludes = ['file'])
     static class FileWithVersion {
         Semver version
-        String filename
+        File file
     }
 }
