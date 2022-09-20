@@ -65,8 +65,8 @@ jobs:
         ls ./
         cd ../
 
-#    - name: setup npm links
-#      run: ./.github/workflows/scripts/setupNpmLinks.sh
+    - name: setup npm links
+      run: ./.github/workflows/scripts/setupNpmLinks.sh
 
     - name: build integration test apps
       run: |
