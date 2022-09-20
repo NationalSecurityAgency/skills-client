@@ -19,6 +19,7 @@ import groovy.cli.picocli.CliBuilder
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
+import skills.helpers.NextVersionHelper
 
 @Slf4j
 class TestClientLibsBackwardsCompat {
@@ -27,13 +28,18 @@ class TestClientLibsBackwardsCompat {
         def cli = new CliBuilder()
         cli.record(type: boolean, 'record tests in cypress dashboard')
         cli.tag(type: String, 'tag to give cypress test')
+        cli.minVersion(type: String, 'the minimum skills-service version to test against', defaultValue: '1.9.0')
         def options = cli.parse(args)
         def shouldRecord = options.record
         String tag
         if (options.tag && options.tag instanceof String) {
             tag = options.tag
         }
-        new TestClientLibsBackwardsCompat(recordInDashboard: shouldRecord, tag: tag).init().test()
+        String minVersionToTest
+        if (options.minVersion && options.minVersion instanceof String) {
+            minVersionToTest = options.minVersion
+        }
+        new TestClientLibsBackwardsCompat(recordInDashboard: shouldRecord, tag: tag, minVersionToTest: minVersionToTest).init().test()
     }
 
     private TitlePrinter titlePrinter = new TitlePrinter()
@@ -41,6 +47,7 @@ class TestClientLibsBackwardsCompat {
     private String serviceName = "skills-service"
     boolean recordInDashboard = false
     String tag
+    String minVersionToTest
 
     TestClientLibsBackwardsCompat init() {
         JsonSlurper jsonSlurper = new JsonSlurper()
@@ -92,7 +99,7 @@ class TestClientLibsBackwardsCompat {
         log.info("Copy [$jar] => [$dest]")
     }
 
-    private List<File> getBackendVersionsToTest() {
+    private List<String> getBackendVersionsToTest() {
         List<File> versions = []
         ["./", "../", "../../"].findAll {
             File dir = new File(it, "skills-service-versions")
@@ -105,7 +112,8 @@ class TestClientLibsBackwardsCompat {
             }
         }
         versions = versions.sort({ it.name })
-        titlePrinter.printTitle("Backend versions to test:\n  ${versions.join('\n  ')}\n")
-        return versions
+        List<String> versionsToTest = new NextVersionHelper().getVersionsToTest(minVersionToTest, versions.collect {it.name})
+        titlePrinter.printTitle("Backend versions to test:\n  ${versionsToTest.join('\n  ')}\n")
+        return versionsToTest
     }
 }

@@ -16,6 +16,8 @@ limitations under the License.
 package skills.helpers
 
 import com.vdurmont.semver4j.Semver
+import groovy.transform.Sortable
+import org.apache.commons.lang3.StringUtils
 
 class NextVersionHelper {
     ScriptParamsHelper.ReleaseMode releaseMode
@@ -37,5 +39,37 @@ class NextVersionHelper {
                 throw new IllegalArgumentException("Unknown release type")
         }
         newVersion
+    }
+
+    // returns on the most recent patch version for each unique major.minor version and exclude and version < minVersion
+    List<String> getVersionsToTest(String minVersion, List<String> jarFiles) {
+        Semver minVersionToTest = new Semver(minVersion)
+        List<String> versionsToTest = []
+        List<FileWithVersion> filesWithVersion = []
+        jarFiles.each { jarFilename ->
+            String version = StringUtils.substringBeforeLast(StringUtils.substringAfterLast(jarFilename, '-'), '.')
+            if (new Semver(version).isGreaterThanOrEqualTo(minVersionToTest)) {
+                filesWithVersion.add(new FileWithVersion(filename: jarFilename, version: new Semver(version)))
+            }
+        }
+
+        if (filesWithVersion) {
+            filesWithVersion = filesWithVersion.toSorted()
+            FileWithVersion last
+            filesWithVersion.each {
+                if (last != null && (it.version.major != last.version.major || it.version.minor != last.version.minor)) {
+                    versionsToTest.add(last.filename)
+                }
+                last = it
+            }
+            versionsToTest.add(last.filename)
+        }
+        return versionsToTest
+    }
+
+    @Sortable(excludes = ['filename'])
+    static class FileWithVersion {
+        Semver version
+        String filename
     }
 }
