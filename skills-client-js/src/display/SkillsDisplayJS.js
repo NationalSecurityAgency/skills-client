@@ -29,7 +29,6 @@ export default class SkillsDisplayJS {
   /* eslint-disable object-curly-newline */
   constructor({ options, theme, version, handleRouteChanged, userId } = {}) {
     log.debug(`SkillsClient::SkillsDisplayJS::Constructing with options [${options}], theme [${theme}], version [${version}], userId [${userId}]`);
-    this._validateOptions(options);
     this._options = { ...{ }, ...options };
     this._theme = theme;
     this._version = version;
@@ -73,6 +72,7 @@ export default class SkillsDisplayJS {
         version: this.version,
         userId: this.configuration.authenticator === 'pki' ? this.userId : null,
         theme: this.theme,
+        options: this.options,
         minHeight: `${minHeight}px`,
         isSummaryOnly: this.options.isSummaryOnly,
         internalBackButton: this.options.internalBackButton == null ? false : this.options.internalBackButton,
@@ -235,26 +235,6 @@ export default class SkillsDisplayJS {
     const urlParams = new URLSearchParams(window.location.search);
     const clientDisplayPath = urlParams.get(skillsClientDisplayPath);
     return clientDisplayPath;
-  }
-
-  _validateOptions(options) {
-    const configOptions = [
-      'authenticator',
-      'serviceUrl',
-      'projectId',
-      'disableAutoScroll',
-      'autoScrollStrategy',
-      'isSummaryOnly',
-      'scrollTopOffset',
-      'internalBackButton',
-      'updateHistory',
-    ];
-    const toTest = { ...this._options, ...options };
-    const passedOptions = Object.keys(toTest);
-    const invalidOption = passedOptions.find((passedOption) => !configOptions.includes(passedOption));
-    if (invalidOption) {
-      throw new Error(`Invalid option passed to SkillsDisplayJS ["${invalidOption}"]`);
-    }
   }
 
   destroy() {
