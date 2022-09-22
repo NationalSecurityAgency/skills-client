@@ -413,12 +413,19 @@ describe('SkillsDisplayJS', () => {
       let mockProjectId;
       let mockTheme;
       let mockVersion;
+      let mockOptions;
 
       beforeEach(() => {
         mockServiceUrl = `${Math.random()}`;
         mockAuthenticator = `${Math.random()}`;
         mockProjectId = `${Math.random()}`;
         mockTheme = { };
+        mockOptions = {
+          authenticator: mockAuthenticator,
+          isSummaryOnly: false,
+          projectId: mockProjectId,
+          serviceUrl: mockServiceUrl,
+        };
         mockVersion =`${Math.random()}`;
 
         Postmate.mockImplementation(() => {
@@ -430,14 +437,15 @@ describe('SkillsDisplayJS', () => {
 
       it('properly configures Postmate isSummaryOnly === false and pki mode', () => {
         const mockUserId = `${Math.random()}`;
+        const options = {
+          isSummaryOnly: false,
+              authenticator: 'pki',
+              serviceUrl: mockServiceUrl,
+              projectId: mockProjectId,
+        };
 
         const client = new SkillsDisplayJS({
-          options: {
-            isSummaryOnly: false,
-            authenticator: 'pki',
-            serviceUrl: mockServiceUrl,
-            projectId: mockProjectId,
-          },
+          options,
           userId: mockUserId,
           theme: mockTheme,
           version: mockVersion,
@@ -463,6 +471,7 @@ describe('SkillsDisplayJS', () => {
             version: mockVersion,
             userId: mockUserId,
             theme: mockTheme,
+            options,
             minHeight: '960px',
             isSummaryOnly: false,
             internalBackButton: false,
@@ -471,13 +480,14 @@ describe('SkillsDisplayJS', () => {
       });
 
       it('properly configures Postmate isSummaryOnly === true and !pki mode', () => {
+        const options = {
+          isSummaryOnly: true,
+          authenticator: mockAuthenticator,
+          serviceUrl: mockServiceUrl,
+          projectId: mockProjectId,
+        };
         const client = new SkillsDisplayJS({
-          options: {
-            isSummaryOnly: true,
-            authenticator: mockAuthenticator,
-            serviceUrl: mockServiceUrl,
-            projectId: mockProjectId,
-          },
+          options,
           theme: mockTheme,
           version: mockVersion,
         });
@@ -500,21 +510,24 @@ describe('SkillsDisplayJS', () => {
             version: mockVersion,
             userId: null,
             theme: mockTheme,
+            options,
             minHeight: '600px',
             isSummaryOnly: true,
             internalBackButton: false,
           },
         });
       });
+
       it('properly configures Postmate internalBackButton === false when set explicitly', () => {
+        const options = {
+          isSummaryOnly: true,
+          authenticator: mockAuthenticator,
+          serviceUrl: mockServiceUrl,
+          projectId: mockProjectId,
+          internalBackButton: false,
+        };
         const client = new SkillsDisplayJS({
-          options: {
-            isSummaryOnly: true,
-            authenticator: mockAuthenticator,
-            serviceUrl: mockServiceUrl,
-            projectId: mockProjectId,
-            internalBackButton: false,
-          },
+          options,
           theme: mockTheme,
           version: mockVersion,
         });
@@ -537,6 +550,7 @@ describe('SkillsDisplayJS', () => {
             version: mockVersion,
             userId: null,
             theme: mockTheme,
+            options,
             minHeight: '600px',
             isSummaryOnly: true,
             internalBackButton: false,
@@ -545,14 +559,15 @@ describe('SkillsDisplayJS', () => {
       });
 
       it('properly configures Postmate internalBackButton === true when set explicitly', () => {
+        const options = {
+          isSummaryOnly: true,
+          authenticator: mockAuthenticator,
+          serviceUrl: mockServiceUrl,
+          projectId: mockProjectId,
+          internalBackButton: true,
+        };
         const client = new SkillsDisplayJS({
-          options: {
-            isSummaryOnly: true,
-            authenticator: mockAuthenticator,
-            serviceUrl: mockServiceUrl,
-            projectId: mockProjectId,
-            internalBackButton: true,
-          },
+          options,
           theme: mockTheme,
           version: mockVersion,
         });
@@ -575,6 +590,7 @@ describe('SkillsDisplayJS', () => {
             version: mockVersion,
             userId: null,
             theme: mockTheme,
+            options,
             minHeight: '600px',
             isSummaryOnly: true,
             internalBackButton: true,
@@ -584,13 +600,14 @@ describe('SkillsDisplayJS', () => {
 
 
       it('properly configures Postmate internalBackButton === false when NOT set explicitly', () => {
+        const options = {
+          isSummaryOnly: true,
+          authenticator: mockAuthenticator,
+          serviceUrl: mockServiceUrl,
+          projectId: mockProjectId,
+        };
         const client = new SkillsDisplayJS({
-          options: {
-            isSummaryOnly: true,
-            authenticator: mockAuthenticator,
-            serviceUrl: mockServiceUrl,
-            projectId: mockProjectId,
-          },
+          options,
           theme: mockTheme,
           version: mockVersion,
         });
@@ -608,6 +625,7 @@ describe('SkillsDisplayJS', () => {
           url: `${mockServiceUrl}/static/clientPortal/index.html`,
           classListArray: [`client-display-iframe-${client.currentIframeId()}`],
           model: {
+            options,
             serviceUrl: mockServiceUrl,
             projectId: mockProjectId,
             version: mockVersion,
@@ -642,17 +660,6 @@ describe('SkillsDisplayJS', () => {
       it('supports empty constructor', () => {
         let client = new SkillsDisplayJS();
         expect(client.options).toEqual({});
-      });
-
-      it('validates options', () => {
-        const invalidOption = `${Math.random()}`;
-        const options = {
-          [invalidOption]: Math.random(),
-          authenticator: 'this is a valid option',
-        };
-        expect(() => {
-          new SkillsDisplayJS({options});
-        }).toThrowError(`Invalid option passed to SkillsDisplayJS ["${invalidOption}"]`);
       });
 
       it('accepts valid options', () => {
