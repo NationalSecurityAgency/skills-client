@@ -27,7 +27,7 @@
         "@angular/localize": "11.2.14",
         "@angular/platform-browser": "11.2.14",
         "@angular/platform-browser-dynamic": "11.2.14",
-        "@angular/router": "10.0.14",
+        "@angular/router": "11.2.14",
         "@ng-bootstrap/ng-bootstrap": "7.0.0",
         "@skilltree/skills-client-ng": "3.4.1",
         "@types/js-beautify": "1.11.0",
