@@ -10,7 +10,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/skilltree/skills-client-ng/tsconfig.lib.json",
             "project": "projects/skilltree/skills-client-ng/ng-package.json"
