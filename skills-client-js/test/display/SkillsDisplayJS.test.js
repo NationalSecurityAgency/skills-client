@@ -242,6 +242,32 @@ describe('SkillsDisplayJS', () => {
             done();
           });
         });
+
+        it('do-scroll event is called with iframe start above the viewable area', (done) => {
+          const client = new SkillsDisplayJS({
+            options: {
+              scrollTopOffset: 133,
+            },
+          });
+
+          const mockIframeContainer = {
+            setAttribute: jest.fn(),
+            style: {},
+            // iframe starts outside of browsers viewable area
+            getBoundingClientRect: jest.fn(() => ({ top: -123 })),
+          };
+
+          global.document.querySelector = () => mockIframeContainer;
+          global.scroll = jest.fn();
+
+          client.attachTo(mockIframeContainer);
+
+          setTimeout(() => {
+            mockChildFrame.emit('do-scroll', 500);
+            expect(global.scroll).toHaveBeenCalledWith({ top: 367, behavior: 'smooth' });
+            done();
+          });
+        });
       });
 
       describe('route-changed event', () => {

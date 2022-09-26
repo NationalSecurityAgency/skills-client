@@ -114,7 +114,7 @@ export default class SkillsDisplayJS {
         if (componentOptions.scrollTopOffset) {
           additionalOffset = this.options.scrollTopOffset;
         }
-        const fromTopToIframe = iframe.getBoundingClientRect().top;
+        const fromTopToIframe = Math.max(iframe.getBoundingClientRect().top, 0);
         const withinIframe = data;
         const toScroll = fromTopToIframe + withinIframe - additionalOffset;
         log.debug(`do-scroll fromTopToIframe=[${fromTopToIframe}], withinIframe=[${withinIframe}], additionalOffset=[${additionalOffset}], toScroll=[${toScroll}]`);
