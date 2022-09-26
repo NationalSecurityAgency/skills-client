@@ -89,7 +89,6 @@ export default class SkillsDisplayJS {
     window.addEventListener('popstate', popstateListener);
     window.addEventListener('hashchange', popstateListener);
 
-    const componentOptions = this.options;
     handshake.then((child) => {
       // make sure this frame has not already been marked for destruction
       const childFrameClassName = child.frame.className;
@@ -111,7 +110,7 @@ export default class SkillsDisplayJS {
       });
       child.on('do-scroll', (data) => {
         let additionalOffset = 0;
-        if (componentOptions.scrollTopOffset) {
+        if (this.options.scrollTopOffset) {
           additionalOffset = this.options.scrollTopOffset;
         }
         const fromTopToIframe = Math.max(iframe.getBoundingClientRect().top, 0);
