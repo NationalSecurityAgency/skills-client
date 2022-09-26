@@ -49,10 +49,10 @@
         "xhr-mock": "2.5.1"
     },
     "dependencies": {
-        "axios": "0.23.0",
+        "axios": "0.27.2",
         "js-logger": "1.6.1",
         "postmate": "1.5.2",
-        "sockjs-client": "1.5.2",
+        "sockjs-client": "1.6.1",
         "@stomp/stompjs": "6.1.2"
     },
     "keywords": [
