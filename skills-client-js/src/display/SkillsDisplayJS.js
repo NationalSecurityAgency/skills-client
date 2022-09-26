@@ -89,6 +89,7 @@ export default class SkillsDisplayJS {
     window.addEventListener('popstate', popstateListener);
     window.addEventListener('hashchange', popstateListener);
 
+    const componentOptions = this.options;
     handshake.then((child) => {
       // make sure this frame has not already been marked for destruction
       const childFrameClassName = child.frame.className;
@@ -107,6 +108,17 @@ export default class SkillsDisplayJS {
         const adjustedHeight = Math.max(data, minHeight);
         iframeContainer.height = adjustedHeight;
         iframeContainer.style.height = `${adjustedHeight}px`;
+      });
+      child.on('do-scroll', (data) => {
+        let additionalOffset = 0;
+        if (componentOptions.scrollTopOffset) {
+          additionalOffset = this.options.scrollTopOffset;
+        }
+        const fromTopToIframe = iframe.getBoundingClientRect().top;
+        const withinIframe = data;
+        const toScroll = fromTopToIframe + withinIframe - additionalOffset;
+        log.debug(`do-scroll fromTopToIframe=[${fromTopToIframe}], withinIframe=[${withinIframe}], additionalOffset=[${additionalOffset}], toScroll=[${toScroll}]`);
+        window.scroll({ top: toScroll, behavior: 'smooth' });
       });
       child.on('route-changed', (params) => {
         const newPath = params ? params.path : null;
