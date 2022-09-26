@@ -84,7 +84,7 @@ const ShowSkill = () => {
         return '';
     });
 
-    const [options, setOptions] = React.useState({ isSummaryOnly: isSummaryOnly, internalBackButton: internalBackButton, autoScrollStrategy: 'top-offset', scrollTopOffset: 110 });
+    const [options, setOptions] = React.useState({ isSummaryOnly: isSummaryOnly, internalBackButton: internalBackButton, autoScrollStrategy: 'top-offset', scrollTopOffset: 156 });
 
     const previousIsSummaryOnly = usePrevious(isSummaryOnly);
     const previousInternalBackButton = usePrevious(internalBackButton);
@@ -140,11 +140,11 @@ const ShowSkill = () => {
                   </DropdownButton>
                   <Button variant={isSummaryOnly ? 'primary' : 'outline-primary'}
                           onClick={() => { setIsSummaryOnly(!isSummaryOnly);
-                              setOptions({isSummaryOnly:!isSummaryOnly,internalBackButton:internalBackButton,autoScrollStrategy: 'top-offset', scrollTopOffset: 110}) }}>Summary Only</Button>
+                              setOptions({isSummaryOnly:!isSummaryOnly,internalBackButton:internalBackButton,autoScrollStrategy: 'top-offset', scrollTopOffset: 156}) }}>Summary Only</Button>
 
                   <Button variant={internalBackButton ? 'primary' : 'outline-primary'}
                           onClick={() => { setInternalBackButton(!internalBackButton);
-                              setOptions({isSummaryOnly:isSummaryOnly,internalBackButton:!internalBackButton,autoScrollStrategy: 'top-offset', scrollTopOffset: 110}) }}>Internal Back Button</Button>
+                              setOptions({isSummaryOnly:isSummaryOnly,internalBackButton:!internalBackButton,autoScrollStrategy: 'top-offset', scrollTopOffset: 156}) }}>Internal Back Button</Button>
 
                   <Button variant={internalBackButton ? 'primary' : 'outline-primary'}
                           onClick={navigate} data-cy="navigateButton">Navigate</Button>
