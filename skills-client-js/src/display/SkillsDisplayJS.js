@@ -108,6 +108,17 @@ export default class SkillsDisplayJS {
         iframeContainer.height = adjustedHeight;
         iframeContainer.style.height = `${adjustedHeight}px`;
       });
+      child.on('do-scroll', (data) => {
+        let additionalOffset = 0;
+        if (this.options.scrollTopOffset) {
+          additionalOffset = this.options.scrollTopOffset;
+        }
+        const fromTopToIframe = Math.max(iframe.getBoundingClientRect().top, 0);
+        const withinIframe = data;
+        const toScroll = fromTopToIframe + withinIframe - additionalOffset;
+        log.debug(`do-scroll fromTopToIframe=[${fromTopToIframe}], withinIframe=[${withinIframe}], additionalOffset=[${additionalOffset}], toScroll=[${toScroll}]`);
+        window.scroll({ top: toScroll, behavior: 'smooth' });
+      });
       child.on('route-changed', (params) => {
         const newPath = params ? params.path : null;
         log.debug(`SkillsClient::SkillsDisplayJS::route-changed - newPath [${newPath}]`);

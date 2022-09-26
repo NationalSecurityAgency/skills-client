@@ -51,7 +51,7 @@ describe('SkillsDisplayJS', () => {
       destroy: jest.fn(),
     };
     const client = new SkillsDisplayJS({
-      options: null
+      options: null,
     });
 
     client._childFrame = mockChildFrame;
@@ -66,7 +66,7 @@ describe('SkillsDisplayJS', () => {
       destroy: jest.fn(),
     };
     const client = new SkillsDisplayJS({
-      options: null
+      options: null,
     });
 
     client._childFrame = null;
@@ -98,11 +98,9 @@ describe('SkillsDisplayJS', () => {
         },
       });
 
-      Postmate.mockImplementation(() => {
-        return {
-          then: jest.fn(),
-        };
-      });
+      Postmate.mockImplementation(() => ({
+        then: jest.fn(),
+      }));
       // mock.get(`${mockServiceUrl}/public/status`, () => Promise.reject(new Error()));
       mock.get(`${mockServiceUrl}/public/status`, { status: 503 });
 
@@ -113,13 +111,9 @@ describe('SkillsDisplayJS', () => {
       };
 
       const mockErrorPage = `I am an error page ${Math.random()}`;
-      ErrorPageUtils.buildErrorPage.mockImplementation(() => {
-        return mockErrorPage;
-      });
+      ErrorPageUtils.buildErrorPage.mockImplementation(() => mockErrorPage);
 
-      global.document.querySelector = () => {
-        return mockIframeContainer;
-      };
+      global.document.querySelector = () => mockIframeContainer;
 
       console.error = jest.fn();
 
@@ -137,11 +131,9 @@ describe('SkillsDisplayJS', () => {
     it('throws an error if element to attach to does not exist', () => {
       const client = new SkillsDisplayJS({ options: null });
 
-      global.document.querySelector = jest.fn(() => {
-        return null;
-      });
+      global.document.querySelector = jest.fn(() => null);
 
-      const mockSelector = `#${Math.random()}`
+      const mockSelector = `#${Math.random()}`;
       expect(() => {
         client.attachTo(mockSelector);
       }).toThrow(`Can't find element with selector='${mockSelector}'`);
@@ -171,11 +163,9 @@ describe('SkillsDisplayJS', () => {
 
           emit(eventName, args) {
             this.eventHandlers[eventName].bind(skillsDisplay, args)();
-          }
+          },
         };
-        Postmate.mockImplementation(() => {
-          return Promise.resolve(mockChildFrame);
-        });
+        Postmate.mockImplementation(() => Promise.resolve(mockChildFrame));
       });
 
       it('adjusts the iframe containers height on height-changed event', (done) => {
@@ -185,9 +175,7 @@ describe('SkillsDisplayJS', () => {
           style: {},
         };
 
-        global.document.querySelector = () => {
-          return mockIframeContainer;
-        };
+        global.document.querySelector = () => mockIframeContainer;
 
         client.attachTo(mockIframeContainer);
 
@@ -204,12 +192,90 @@ describe('SkillsDisplayJS', () => {
         });
       });
 
+      describe('do-scroll event', () => {
+        it('do-scroll event is called', (done) => {
+          const client = new SkillsDisplayJS({
+            options: {},
+          });
+
+          const mockIframeContainer = {
+            setAttribute: jest.fn(),
+            style: {},
+
+            getBoundingClientRect: jest.fn(() => ({ top: 200 })),
+          };
+
+          global.document.querySelector = () => mockIframeContainer;
+          global.scroll = jest.fn();
+
+          client.attachTo(mockIframeContainer);
+
+          setTimeout(() => {
+            mockChildFrame.emit('do-scroll', 500);
+            expect(global.scroll).toHaveBeenCalledWith({ top: 700, behavior: 'smooth' });
+            done();
+          });
+        });
+
+        it('do-scroll event is called with scrollTopOffset', (done) => {
+          const client = new SkillsDisplayJS({
+            options: {
+              scrollTopOffset: 133,
+            },
+          });
+
+          const mockIframeContainer = {
+            setAttribute: jest.fn(),
+            style: {},
+
+            getBoundingClientRect: jest.fn(() => ({ top: 200 })),
+          };
+
+          global.document.querySelector = () => mockIframeContainer;
+          global.scroll = jest.fn();
+
+          client.attachTo(mockIframeContainer);
+
+          setTimeout(() => {
+            mockChildFrame.emit('do-scroll', 500);
+            expect(global.scroll).toHaveBeenCalledWith({ top: 567, behavior: 'smooth' });
+            done();
+          });
+        });
+
+        it('do-scroll event is called with iframe start above the viewable area', (done) => {
+          const client = new SkillsDisplayJS({
+            options: {
+              scrollTopOffset: 133,
+            },
+          });
+
+          const mockIframeContainer = {
+            setAttribute: jest.fn(),
+            style: {},
+            // iframe starts outside of browsers viewable area
+            getBoundingClientRect: jest.fn(() => ({ top: -123 })),
+          };
+
+          global.document.querySelector = () => mockIframeContainer;
+          global.scroll = jest.fn();
+
+          client.attachTo(mockIframeContainer);
+
+          setTimeout(() => {
+            mockChildFrame.emit('do-scroll', 500);
+            expect(global.scroll).toHaveBeenCalledWith({ top: 367, behavior: 'smooth' });
+            done();
+          });
+        });
+      });
+
       describe('route-changed event', () => {
         it('does not attempt to scroll if disableAutoScroll option is set', (done) => {
           const client = new SkillsDisplayJS({
             options: {
               disableAutoScroll: true,
-            }
+            },
           });
 
           const mockIframeContainer = {
@@ -218,9 +284,7 @@ describe('SkillsDisplayJS', () => {
             scrollIntoView: jest.fn(),
           };
 
-          global.document.querySelector = () => {
-            return mockIframeContainer;
-          };
+          global.document.querySelector = () => mockIframeContainer;
 
           client.attachTo(mockIframeContainer);
 
@@ -240,9 +304,7 @@ describe('SkillsDisplayJS', () => {
             scrollIntoView: jest.fn(),
           };
 
-          global.document.querySelector = () => {
-            return mockIframeContainer;
-          };
+          global.document.querySelector = () => mockIframeContainer;
 
           client.attachTo(mockIframeContainer);
 
@@ -292,9 +354,8 @@ describe('SkillsDisplayJS', () => {
           global.document.querySelector = (selector) => {
             if (selector === 'body') {
               return mockBody;
-            } else {
-              return mockIframeContainer;
             }
+            return mockIframeContainer;
           };
 
           client.attachTo(mockIframeContainer);
@@ -310,7 +371,7 @@ describe('SkillsDisplayJS', () => {
           const client = new SkillsDisplayJS({
             options: {
               disableAutoScroll: true,
-            }
+            },
           });
 
           const mockIframeContainer = {
@@ -319,9 +380,7 @@ describe('SkillsDisplayJS', () => {
             scrollIntoView: jest.fn(),
           };
 
-          global.document.querySelector = () => {
-            return mockIframeContainer;
-          };
+          global.document.querySelector = () => mockIframeContainer;
 
           client.attachTo(mockIframeContainer);
 
@@ -338,7 +397,7 @@ describe('SkillsDisplayJS', () => {
           const client = new SkillsDisplayJS({
             options: {
               authenticator: 'pki',
-            }
+            },
           });
 
           const mockIframeContainer = {
@@ -346,9 +405,7 @@ describe('SkillsDisplayJS', () => {
             style: {},
           };
 
-          global.document.querySelector = () => {
-            return mockIframeContainer;
-          };
+          global.document.querySelector = () => mockIframeContainer;
 
           client.attachTo(mockIframeContainer);
 
@@ -377,15 +434,13 @@ describe('SkillsDisplayJS', () => {
             style: {},
           };
 
-          global.document.querySelector = () => {
-            return mockIframeContainer;
-          };
+          global.document.querySelector = () => mockIframeContainer;
 
           client.attachTo(mockIframeContainer);
 
           const mockAccessToken = `${Math.random()}`;
           mockHttp.onGet(mockAuthenticator).reply(200, {
-            access_token: mockAccessToken
+            access_token: mockAccessToken,
           });
 
           mock.get('http://urltonowhere.com/', (req, res) => res.status(200).body(`{"access_token":"${mockAccessToken}"}`));
@@ -400,7 +455,7 @@ describe('SkillsDisplayJS', () => {
                 // finally block
                 expect(client.authenticationPromise).toBe(null);
                 done();
-              })
+              });
             });
           });
         });
@@ -426,22 +481,20 @@ describe('SkillsDisplayJS', () => {
           projectId: mockProjectId,
           serviceUrl: mockServiceUrl,
         };
-        mockVersion =`${Math.random()}`;
+        mockVersion = `${Math.random()}`;
 
-        Postmate.mockImplementation(() => {
-          return {
-            then: jest.fn(),
-          };
-        });
+        Postmate.mockImplementation(() => ({
+          then: jest.fn(),
+        }));
       });
 
       it('properly configures Postmate isSummaryOnly === false and pki mode', () => {
         const mockUserId = `${Math.random()}`;
         const options = {
           isSummaryOnly: false,
-              authenticator: 'pki',
-              serviceUrl: mockServiceUrl,
-              projectId: mockProjectId,
+          authenticator: 'pki',
+          serviceUrl: mockServiceUrl,
+          projectId: mockProjectId,
         };
 
         const client = new SkillsDisplayJS({
@@ -455,9 +508,7 @@ describe('SkillsDisplayJS', () => {
           style: {},
         };
 
-        global.document.querySelector = () => {
-          return mockIframeContainer;
-        };
+        global.document.querySelector = () => mockIframeContainer;
 
         client.attachTo(mockIframeContainer);
 
@@ -496,7 +547,7 @@ describe('SkillsDisplayJS', () => {
           style: { },
         };
 
-        global.document.querySelector = () => { return mockIframeContainer; };
+        global.document.querySelector = () => mockIframeContainer;
 
         client.attachTo(mockIframeContainer);
 
@@ -536,7 +587,7 @@ describe('SkillsDisplayJS', () => {
           style: { },
         };
 
-        global.document.querySelector = () => { return mockIframeContainer; };
+        global.document.querySelector = () => mockIframeContainer;
 
         client.attachTo(mockIframeContainer);
 
@@ -576,7 +627,7 @@ describe('SkillsDisplayJS', () => {
           style: { },
         };
 
-        global.document.querySelector = () => { return mockIframeContainer; };
+        global.document.querySelector = () => mockIframeContainer;
 
         client.attachTo(mockIframeContainer);
 
@@ -598,7 +649,6 @@ describe('SkillsDisplayJS', () => {
         });
       });
 
-
       it('properly configures Postmate internalBackButton === false when NOT set explicitly', () => {
         const options = {
           isSummaryOnly: true,
@@ -616,7 +666,7 @@ describe('SkillsDisplayJS', () => {
           style: { },
         };
 
-        global.document.querySelector = () => { return mockIframeContainer; };
+        global.document.querySelector = () => mockIframeContainer;
 
         client.attachTo(mockIframeContainer);
 
@@ -643,41 +693,41 @@ describe('SkillsDisplayJS', () => {
   describe('construction', () => {
     describe('options', () => {
       it('accepts options in the constructor', () => {
-        const mockOptions = {authenticator: 'option'};
+        const mockOptions = { authenticator: 'option' };
         const client = new SkillsDisplayJS({
-          options: mockOptions
+          options: mockOptions,
         });
         expect(client.options).toEqual(mockOptions);
       });
 
       it('supports null or undefined being passed', () => {
-        let client = new SkillsDisplayJS({options: null});
+        let client = new SkillsDisplayJS({ options: null });
         expect(client.options).toEqual({});
-        client = new SkillsDisplayJS({options: undefined});
+        client = new SkillsDisplayJS({ options: undefined });
         expect(client.options).toEqual({});
       });
 
       it('supports empty constructor', () => {
-        let client = new SkillsDisplayJS();
+        const client = new SkillsDisplayJS();
         expect(client.options).toEqual({});
       });
 
       it('accepts valid options', () => {
         const options = {
-          'authenticator': true,
-          'serviceUrl': true,
-          'projectId': true,
-          'disableAutoScroll': true,
-          'autoScrollStrategy': true,
+          authenticator: true,
+          serviceUrl: true,
+          projectId: true,
+          disableAutoScroll: true,
+          autoScrollStrategy: true,
         };
-        new SkillsDisplayJS({options});
+        new SkillsDisplayJS({ options });
       });
     });
 
     describe('theme', () => {
       it('accepts sets the theme object', () => {
-        const mockTheme = {mock: 'theme'};
-        const client = new SkillsDisplayJS({theme: mockTheme});
+        const mockTheme = { mock: 'theme' };
+        const client = new SkillsDisplayJS({ theme: mockTheme });
 
         expect(client.theme).toBe(mockTheme);
       });
@@ -686,7 +736,7 @@ describe('SkillsDisplayJS', () => {
     describe('version', () => {
       it('accepts a version', () => {
         const mockVersion = Math.random();
-        const client = new SkillsDisplayJS({version: mockVersion});
+        const client = new SkillsDisplayJS({ version: mockVersion });
 
         expect(client.version).toBe(mockVersion);
       });
@@ -695,7 +745,7 @@ describe('SkillsDisplayJS', () => {
     describe('userId', () => {
       it('accepts a version', () => {
         const userId = `${Math.random()}`;
-        const client = new SkillsDisplayJS({userId});
+        const client = new SkillsDisplayJS({ userId });
 
         expect(client.userId).toBe(userId);
       });
@@ -712,9 +762,9 @@ describe('SkillsDisplayJS', () => {
         authenticator: mockAuthenticator,
         projectId: mockProjectId,
       };
-      const client = new SkillsDisplayJS( { options });
+      const client = new SkillsDisplayJS({ options });
 
-      const configuration = client.configuration;
+      const { configuration } = client;
       expect(configuration.serviceUrl).toBe(mockServiceUrl);
       expect(configuration.authenticator).toBe(mockAuthenticator);
       expect(configuration.projectId).toBe(mockProjectId);
@@ -726,11 +776,11 @@ describe('SkillsDisplayJS', () => {
       call: jest.fn(),
     };
     const newVersion = 2;
-    let client = new SkillsDisplayJS({ version: newVersion - 1 });
+    const client = new SkillsDisplayJS({ version: newVersion - 1 });
     client._childFrame = mockClientFrame;
 
     client.version = newVersion;
 
-    expect(mockClientFrame.call).toHaveBeenCalledWith('updateVersion', newVersion)
+    expect(mockClientFrame.call).toHaveBeenCalledWith('updateVersion', newVersion);
   });
 });
