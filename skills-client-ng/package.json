@@ -1,6 +1,6 @@
 {
     "name": "skills-client-ng-parent",
-    "version": "3.4.1",
+    "version": "3.5.0",
     "license": "Apache-2.0",
     "description": "SkillTree Client Lib - Angular",
     "author": "SkillTree Team",
@@ -27,7 +27,7 @@
         "@angular/platform-browser": "11.2.14",
         "@angular/platform-browser-dynamic": "11.2.14",
         "@angular/router": "11.2.14",
-        "@skilltree/skills-client-js": "3.4.1",
+        "@skilltree/skills-client-js": "3.5.0",
         "lodash-es": "4.17.21",
         "rxjs": "6.6.3",
         "tslib": "2.0.3",

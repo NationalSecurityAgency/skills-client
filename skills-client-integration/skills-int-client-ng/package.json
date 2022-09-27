@@ -1,6 +1,6 @@
 {
     "name": "skills-int-client-ng",
-    "version": "3.4.1",
+    "version": "3.5.0",
     "license": "Apache-2.0",
     "description": "SkillTree Client Lib - Angular",
     "author": "SkillTree Team",
@@ -28,7 +28,7 @@
         "@angular/platform-browser-dynamic": "11.2.14",
         "@angular/router": "11.2.14",
         "@ng-bootstrap/ng-bootstrap": "7.0.0",
-        "@skilltree/skills-client-ng": "3.4.1",
+        "@skilltree/skills-client-ng": "3.5.0",
         "@types/js-beautify": "1.11.0",
         "axios": "0.23.0",
         "bootstrap": "4.5.3",
