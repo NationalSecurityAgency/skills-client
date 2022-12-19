@@ -22,7 +22,7 @@
     "scripts": {
         "serve": "PORT=8084 craco start",
         "buildDepsAndServe": "cd ../../skills-client-js/ && npm run build && cd ../skills-client-react/ && npm run build && cd ../skills-client-integration/skills-int-client-react/ && npm run serve",
-        "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;BSD-3;BSD-2-Clause;Apache-2.0' --summary",
+        "licenseDepCheck": "license-checker --production --onlyAllow='MIT;ISC;0BSD;BSD-3;BSD-2-Clause;Apache-2.0' --summary",
         "licenseHeaderCheck": "license-check-and-add check -f '../license-add/license-add-config.json'",
         "licenseHeaderAdd": "license-check-and-add add -f ../license-add/license-add-config.json",
         "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck ",
