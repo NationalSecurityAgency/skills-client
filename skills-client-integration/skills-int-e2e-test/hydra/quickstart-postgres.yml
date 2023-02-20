@@ -40,4 +40,4 @@ services:
       - POSTGRES_USER=hydra
       - POSTGRES_PASSWORD=secret
       - POSTGRES_DB=hydra
-      - PGPORT=5433
+      - POSTGRES_PORT=5433
