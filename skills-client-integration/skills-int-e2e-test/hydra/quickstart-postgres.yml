@@ -31,7 +31,7 @@ services:
       - DSN=postgres://hydra:secret@postgresd:5433/hydra?sslmode=disable&max_conns=20&max_idle_conns=4
 
   postgresd:
-    image: postgres:9.6
+    image: postgres:15.2
     mem_limit: 512m
     container_name: hydra_postgres
     ports:
@@ -41,3 +41,4 @@ services:
       - POSTGRES_PASSWORD=secret
       - POSTGRES_DB=hydra
       - POSTGRES_PORT=5433
+      - PGPORT=5433
