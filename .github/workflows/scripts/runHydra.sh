@@ -36,4 +36,5 @@ wait-for-url() {
   done' ${1}
   echo "OK!"
 }
+docker ps -a
 wait-for-url http://${HOST}
