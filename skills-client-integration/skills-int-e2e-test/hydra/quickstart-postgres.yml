@@ -35,8 +35,9 @@ services:
     mem_limit: 512m
     container_name: hydra_postgres
     ports:
-      - "5433:5432"
+      - "5433:5433"
     environment:
       - POSTGRES_USER=hydra
       - POSTGRES_PASSWORD=secret
       - POSTGRES_DB=hydra
+      - PGPORT=5433
