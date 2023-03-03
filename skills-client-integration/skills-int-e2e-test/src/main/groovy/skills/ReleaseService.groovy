@@ -16,6 +16,7 @@ limitations under the License.
 package skills
 
 import groovy.util.logging.Slf4j
+import groovy.xml.XmlSlurper
 import skills.helpers.NextVersionHelper
 import skills.helpers.ScriptParamsHelper
 
