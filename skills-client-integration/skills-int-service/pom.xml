@@ -10,10 +10,6 @@
 	<artifactId>skills-int-service</artifactId>
 	<description>SkillTree Client Lib Integration Tests</description>
 
-	<properties>
-		<log4j2.version>2.17.0</log4j2.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -24,11 +20,9 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5.13</version>
+			<groupId>org.apache.httpcomponents.client5</groupId>
+			<artifactId>httpclient5</artifactId>
 		</dependency>
-
 	</dependencies>
 
 	<build>
