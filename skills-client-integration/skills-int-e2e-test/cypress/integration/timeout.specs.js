@@ -25,7 +25,7 @@ context("Token timeout JS Tests", () => {
       cy.visitHomePage(homePage);
 
       cy.wait("@getToken");
-      cy.wait(10000)  // wait 10 seconds to ensure the token has expired
+      cy.wait(71000)  // wait 71 seconds to ensure the token has expired
       cy.get('[data-cy="exampleDirectiveClickEventButton"]').click();
 
       cy.get('pre[data-cy=globalEventResult]').should('be.empty');
