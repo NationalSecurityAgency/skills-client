@@ -21,39 +21,35 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-#    services:
-#      postgres:
-#        # Docker Hub image
-#        image: postgres
-#        # Provide the password for postgres
-#        env:
-#          POSTGRES_PASSWORD: skillsPassword
-#          POSTGRES_DB: skills
-#        # Set health checks to wait until postgres has started
-#        options: >-
-#          --health-cmd pg_isready
-#          --health-interval 10s
-#          --health-timeout 5s
-#          --health-retries 5
-#        ports:
-#          # Maps tcp port 5432 on service container to the host
-#          - 5432:5432
+    services:
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: skillsPassword
+          POSTGRES_DB: skills
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-#    - uses: actions/checkout@v2
-#
-#    - uses: actions/setup-node@v2-beta
-#      with:
-#        node-version: '14'
+    - uses: actions/checkout@v2
 
     - uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
         java-version: |
-          19
           11
+          19
 
     - name: Print Versions
       run: |
@@ -61,9 +57,6 @@ jobs:
         java -version
         npm -version
         node --version
-        ls -latr ~/.m2
-        cat ~/.m2/toolchains.xml
-        env
 
     - name: Cache local Maven repository
       uses: actions/cache@v2
@@ -73,34 +66,34 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
 
-#    - name: Cache npm
-#      uses: actions/cache@v2
-#      with:
-#        path: ~/.npm
-#        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-#        restore-keys: |
-#          ${{ runner.os }}-node-
-#
-#    - name: build skill-service
-#      run: ./.github/workflows/scripts/getSkillsService.sh
-#
-#    - name: run backwards compat tests
-#      run: |
-#        cd skills-client-integration/skills-int-e2e-test
-#        mvn --batch-mode clean package
-#        export NO_COLOR=1
-#        export CYPRESS_RECORD_KEY=${{ secrets.CYPRESS_RECORD_KEY }}
-#        java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.TestDashboardBackwardCompat org.springframework.boot.loader.PropertiesLauncher -record -tag "${{ github.workflow }}"
-#        cd ../../
-#
-#    - name: upload result artifacts
-#      if: ${{ always() }}
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: result artifacts
-#        path: |
-#          ./skills-client-integration/skills-int-e2e-test/target/logs/*
-#          ./skills-client-integration/skills-int-e2e-test/target/skills-client/skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
-#          ./skills-client-integration/skills-int-e2e-test/target/skills-client/skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
-#          ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
-#          ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
+    - name: Cache npm
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: build skill-service
+      run: ./.github/workflows/scripts/getSkillsService.sh
+
+    - name: run backwards compat tests
+      run: |
+        cd skills-client-integration/skills-int-e2e-test
+        mvn --batch-mode clean package
+        export NO_COLOR=1
+        export CYPRESS_RECORD_KEY=${{ secrets.CYPRESS_RECORD_KEY }}
+        java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.TestDashboardBackwardCompat org.springframework.boot.loader.PropertiesLauncher -record -tag "${{ github.workflow }}"
+        cd ../../
+
+    - name: upload result artifacts
+      if: ${{ always() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: result artifacts
+        path: |
+          ./skills-client-integration/skills-int-e2e-test/target/logs/*
+          ./skills-client-integration/skills-int-e2e-test/target/skills-client/skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
+          ./skills-client-integration/skills-int-e2e-test/target/skills-client/skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
+          ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
+          ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
