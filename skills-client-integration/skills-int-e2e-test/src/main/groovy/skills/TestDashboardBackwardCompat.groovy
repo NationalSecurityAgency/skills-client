@@ -135,7 +135,7 @@ class TestDashboardBackwardCompat implements CommandLineRunner {
             titlePrinter.printSubTitle("[${version}]: Update package.json and prune")
             intProjs.each { NpmProj intProj ->
                 String lookForDep = intProj.name.replaceAll("-int", "").replaceAll("\\d","")
-                updatePackageJsonDeps(intProj, "@skilltree/$lookForDep", version)
+                updatePackageJsonDeps(intProj, "@skilltree/$lookForDep".toString(), version)
                 intProj.exec("npm prune")
             }
 
