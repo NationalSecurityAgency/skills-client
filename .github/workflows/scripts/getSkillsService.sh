@@ -57,8 +57,7 @@ git checkout ${switchToBranch} --
 echo "git status:"
 git status
 
-find . -name package-lock.json -exec rm {} \;
-mvn --batch-mode package -DskipTests
+mvn --batch-mode -pl '!client-display' package -DskipTests
 jar=$(ls ./service/target/*.jar)
 mv $jar ./
 
