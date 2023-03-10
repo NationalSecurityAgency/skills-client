@@ -74,8 +74,8 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-    - name: build skill-service
-      run: ./.github/workflows/scripts/getSkillsService.sh
+#    - name: build skill-service
+#      run: ./.github/workflows/scripts/getSkillsService.sh
 
     - name: run backwards compat tests
       run: |
