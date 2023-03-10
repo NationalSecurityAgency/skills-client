@@ -46,7 +46,7 @@ jobs:
 
     - uses: actions/setup-java@v3
       with:
-        distribution: 'temurin'
+        distribution: 'zulu'
         java-version: |
           11
           19
@@ -74,8 +74,8 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-#    - name: build skill-service
-#      run: ./.github/workflows/scripts/getSkillsService.sh
+    - name: build skill-service
+      run: ./.github/workflows/scripts/getSkillsService.sh
 
     - name: run backwards compat tests
       run: |
