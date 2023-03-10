@@ -52,8 +52,8 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: |
-          11
           19
+          11
 
     - name: Print Versions
       run: |
