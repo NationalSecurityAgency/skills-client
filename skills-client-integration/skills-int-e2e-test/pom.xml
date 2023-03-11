@@ -82,7 +82,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>skills.NpmProjBuilder</mainClass>
+                    <mainClass>skills.TestDashboardBackwardCompat</mainClass>
                 </configuration>
             </plugin>
             <plugin>
