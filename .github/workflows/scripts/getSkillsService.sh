@@ -57,7 +57,7 @@ git checkout ${switchToBranch} --
 echo "git status:"
 git status
 
-mvn --batch-mode -pl '!client-display' package -DskipTests
+mvn --batch-mode package -DskipTests
 jar=$(ls ./service/target/*.jar)
 mv $jar ./
 
