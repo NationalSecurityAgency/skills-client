@@ -80,12 +80,12 @@ class TestDashboardBackwardCompat implements CommandLineRunner {
                 serviceJar = new File(it).listFiles().find({ it?.name.startsWith("skills-service") && it?.name.endsWith(".jar") })
             }
         }
-//        assert serviceJar
-//        assert serviceJar
-//        File dest = new File(serviceDir, serviceJar.name)
-//        FileUtils.copyFile(serviceJar, dest)
-//        assert dest.exists()
-//        log.info("Copied service jar to [$dest]")
+        assert serviceJar
+        assert serviceJar
+        File dest = new File(serviceDir, serviceJar.name)
+        FileUtils.copyFile(serviceJar, dest)
+        assert dest.exists()
+        log.info("Copied service jar to [$dest]")
     }
 
     void applyPatch(String version) {
