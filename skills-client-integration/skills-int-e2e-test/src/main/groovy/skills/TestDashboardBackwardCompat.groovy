@@ -140,7 +140,7 @@ class TestDashboardBackwardCompat implements CommandLineRunner {
             }
 
             titlePrinter.printSubTitle("[${version}]: Building Client Examples App")
-            String javaHomeAlt = config?.versionProps?.find {it.version == version}?.javaHomeAlt
+            String javaHomeAlt = config?.versionProps?.find {it.version == version}?.altJavaHomeEnv
             if (javaHomeAlt) {
                 log.info("Using alternative JAVA_HOME [${javaHomeAlt}]")
                 new ProcessRunner(loc: clientIntLoc).run("JAVA_HOME=${javaHomeAlt} && mvn --batch-mode clean package")
