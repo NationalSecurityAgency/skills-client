@@ -91,7 +91,8 @@ jobs:
         mvn --batch-mode clean package
         export NO_COLOR=1
         export CYPRESS_RECORD_KEY=${{ secrets.CYPRESS_RECORD_KEY }}
-        java -jar target/skills-int-e2e-test-*.jar -record -tag "${{ github.workflow }}"
+        java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.TestDashboardBackwardCompat org.springframework.boot.loader.PropertiesLauncher -record -tag "${{ github.workflow }}"
+#        java -jar target/skills-int-e2e-test-*.jar -record -tag "${{ github.workflow }}"
         cd ../../
 
     - name: upload result artifacts
