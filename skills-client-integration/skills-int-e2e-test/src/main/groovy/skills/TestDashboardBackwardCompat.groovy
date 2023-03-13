@@ -108,6 +108,15 @@ class TestDashboardBackwardCompat implements CommandLineRunner {
         }
     }
 
+    List<String> getEnvWithAltJavaHome(String javaHomeAltEnv) {
+        Map<String, String> currentEnv = new HashMap<>(System.getenv())
+        String javaHomeAlt = currentEnv.get(javaHomeAltEnv)
+        assert javaHomeAlt, "Failed to find expected JAVA_HOME alternative env variable [${javaHomeAltEnv}].  Current env: ${currentEnv}"
+        log.info("Setting alternative JAVA_HOME to [${javaHomeAlt}]")
+        currentEnv.put('JAVA_HOME', javaHomeAlt)
+        return currentEnv.collect {key, value -> "${key}=${value}"}
+    }
+
     void testNew() {
         checkoutWorkingCopy()
         File clientIntLoc = new File(workDir, "skills-client-integration")
@@ -139,10 +148,11 @@ class TestDashboardBackwardCompat implements CommandLineRunner {
             }
 
             titlePrinter.printSubTitle("[${version}]: Building Client Examples App")
-            String altJavaHome = config?.versionProps?.find {it.version == version}?.altJavaHomeEnv
-            if (altJavaHome) {
-                log.info("Using alternative JAVA_HOME [${altJavaHome}]")
-                new ProcessRunner(loc: clientIntLoc, env: ["JAVA_HOME=${altJavaHome}"]).run("mvn --batch-mode clean package")
+            String altJavaHomeEnv = config?.versionProps?.find {it.version == version}?.altJavaHomeEnv
+            if (altJavaHomeEnv) {
+                log.info("Using alternative JAVA_HOME [${altJavaHomeEnv}]")
+                new ProcessRunner(loc: clientIntLoc, env: getEnvWithAltJavaHome(altJavaHomeEnv)).run("mvn --batch-mode clean package")
+//                new ProcessRunner(loc: clientIntLoc, env: ["JAVA_HOME=${altJavaHome}"]).run("mvn --batch-mode clean package")
             } else {
                 new ProcessRunner(loc: clientIntLoc).run("mvn --batch-mode clean package")
             }
