@@ -18,6 +18,7 @@ package skills
 import groovy.util.logging.Slf4j
 import org.apache.commons.text.StringTokenizer
 import org.apache.commons.text.matcher.StringMatcherFactory
+import org.codehaus.groovy.runtime.ProcessGroovyMethods
 import org.zeroturnaround.exec.stream.TeeOutputStream
 import org.zeroturnaround.exec.stream.slf4j.Slf4jStream
 
@@ -58,7 +59,7 @@ class ProcessRunner {
             return new ProcessRes(serr: "", sout: "")
         } else {
             log.info("Executing: [${cmd}] in [$loc.absoluteFile.absolutePath]")
-            Process p = cmd.execute(null, env, loc)
+            Process p = ProcessGroovyMethods.execute(cmd, env, loc)
 
             if (waitForOutput) {
                 if (printOutput) {
