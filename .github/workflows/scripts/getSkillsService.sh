@@ -46,6 +46,7 @@ else
     echo "Found matching branch [${switchToBranch}]"
 fi
 
+switchToBranch="2.3.3"
 if [[ -z "$switchToBranch" ]]
 then
     exit -1
