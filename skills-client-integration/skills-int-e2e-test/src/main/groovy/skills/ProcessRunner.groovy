@@ -59,7 +59,12 @@ class ProcessRunner {
             return new ProcessRes(serr: "", sout: "")
         } else {
             log.info("Executing: [${cmd}] in [$loc.absoluteFile.absolutePath]")
-            Process p = ProcessGroovyMethods.execute(cmd, env, loc)
+            Process p
+            if (env) {
+                p = ProcessGroovyMethods.execute(cmd, env, loc)
+            } else {
+                p = cmd.execute(null, loc)
+            }
 
             if (waitForOutput) {
                 if (printOutput) {
