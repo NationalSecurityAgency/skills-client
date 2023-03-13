@@ -37,6 +37,7 @@ class ProcessRunner {
 //    OutputStream sout = new StringBuilder()
 //    Appendable serr = new StringBuilder()
     File loc = new File("./")
+    List env
 
     ProcessRes run(String cmd) {
         StringTokenizer st = new StringTokenizer(cmd)
@@ -57,7 +58,7 @@ class ProcessRunner {
             return new ProcessRes(serr: "", sout: "")
         } else {
             log.info("Executing: [${cmd}] in [$loc.absoluteFile.absolutePath]")
-            Process p = cmd.execute(null, loc)
+            Process p = cmd.execute(null, env as String[], loc)
 
             if (waitForOutput) {
                 if (printOutput) {
