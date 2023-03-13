@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.13</version>
+        <version>3.0.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>skills</groupId>
@@ -38,6 +38,7 @@
         <nexusServer>${nexus.url}</nexusServer>
         <frontend-maven-plugin.version>1.10.3</frontend-maven-plugin.version>
         <node.version>v14.15.0</node.version>
+        <java.version>19</java.version>
     </properties>
 
 </project>
