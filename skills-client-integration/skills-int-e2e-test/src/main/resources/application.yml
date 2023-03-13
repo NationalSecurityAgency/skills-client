@@ -2,31 +2,31 @@ skills:
   versionProps:
     -
       version: 2.0.1
-      altJavaHomeEnv: $JAVA_HOME_11_X64
+      altJavaHomeEnv: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/11.0.18-10/x64
     -
       version: 3.0.0
-      altJavaHomeEnv: $JAVA_HOME_11_X64
+      altJavaHomeEnv: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/11.0.18-10/x64
     -
       version: 3.0.1
-      altJavaHomeEnv: $JAVA_HOME_11_X64
+      altJavaHomeEnv: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/11.0.18-10/x64
     -
       version: 3.1.0
-      altJavaHomeEnv: $JAVA_HOME_11_X64
+      altJavaHomeEnv: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/11.0.18-10/x64
     -
       version: 3.1.1
-      altJavaHomeEnv: $JAVA_HOME_11_X64
+      altJavaHomeEnv: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/11.0.18-10/x64
     -
       version: 3.2.0
-      altJavaHomeEnv: $JAVA_HOME_11_X64
+      altJavaHomeEnv: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/11.0.18-10/x64
     -
       version: 3.3.0
-      altJavaHomeEnv: $JAVA_HOME_11_X64
+      altJavaHomeEnv: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/11.0.18-10/x64
     -
       version: 3.3.1
-      altJavaHomeEnv: $JAVA_HOME_11_X64
+      altJavaHomeEnv: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/11.0.18-10/x64
     -
       version: 3.4.0
-      altJavaHomeEnv: $JAVA_HOME_11_X64
+      altJavaHomeEnv: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/11.0.18-10/x64
     -
       version: 3.4.1
-      altJavaHomeEnv: $JAVA_HOME_11_X64
+      altJavaHomeEnv: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/11.0.18-10/x64

@@ -81,7 +81,6 @@ class TestDashboardBackwardCompat implements CommandLineRunner {
             }
         }
         assert serviceJar
-        assert serviceJar
         File dest = new File(serviceDir, serviceJar.name)
         FileUtils.copyFile(serviceJar, dest)
         assert dest.exists()
