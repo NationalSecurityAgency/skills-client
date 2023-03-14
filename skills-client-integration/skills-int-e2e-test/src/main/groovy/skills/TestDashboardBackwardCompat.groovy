@@ -135,7 +135,7 @@ class TestDashboardBackwardCompat implements CommandLineRunner {
             }
 
             titlePrinter.printSubTitle("[${version}]: Building Client Examples App")
-            new ProcessRunner(loc: clientIntLoc, env: getEnvWithAltJavaHome(version)).run("mvn -v --batch-mode clean package")
+            new ProcessRunner(loc: clientIntLoc, env: getEnvWithAltJavaHome(version)).run("mvn --batch-mode clean package")
 
             titlePrinter.printSubTitle("[${version}]: Running cypress test with")
             String output = "Testing version [$version]"

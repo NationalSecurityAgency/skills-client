@@ -55,10 +55,10 @@ class ProcessRunner {
 
         String name = loc.name
         if (dryRun) {
-            log.info("DRY RUN [${cmd}] in [${loc.absoluteFile.absolutePath}]")
+            log.info("DRY RUN [${cmd}] in [${loc.absoluteFile.absolutePath}]${env ? " Custom ENV ${env}" : ""}")
             return new ProcessRes(serr: "", sout: "")
         } else {
-            log.info("Executing: [${cmd}] in [$loc.absoluteFile.absolutePath]")
+            log.info("Executing: [${cmd}] in [$loc.absoluteFile.absolutePath]${env ? " Custom ENV ${env}" : ""}")
             Process p
             if (env) {
                 p = ProcessGroovyMethods.execute(cmd, env, loc)
