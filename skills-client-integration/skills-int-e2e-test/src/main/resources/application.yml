@@ -30,3 +30,6 @@ skills:
     -
       version: 3.4.1
       altJavaHomeEnv: JAVA_HOME_11_X64
+    -
+      version: 3.5.0
+      altJavaHomeEnv: JAVA_HOME_11_X64

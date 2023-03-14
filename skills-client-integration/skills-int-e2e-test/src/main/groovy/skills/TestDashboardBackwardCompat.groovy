@@ -135,13 +135,7 @@ class TestDashboardBackwardCompat implements CommandLineRunner {
             }
 
             titlePrinter.printSubTitle("[${version}]: Building Client Examples App")
-            String altJavaHomeEnv = config?.versionProps?.find {it.version == version}?.altJavaHomeEnv
-            if (altJavaHomeEnv) {
-                log.info("Using alternative JAVA_HOME [${altJavaHomeEnv}]")
-                new ProcessRunner(loc: clientIntLoc, env: getEnvWithAltJavaHome(altJavaHomeEnv)).run("mvn --batch-mode clean package")
-            } else {
-                new ProcessRunner(loc: clientIntLoc).run("mvn --batch-mode clean package")
-            }
+            new ProcessRunner(loc: clientIntLoc, env: getEnvWithAltJavaHome(version)).run("mvn -v --batch-mode clean package")
 
             titlePrinter.printSubTitle("[${version}]: Running cypress test with")
             String output = "Testing version [$version]"
@@ -150,13 +144,19 @@ class TestDashboardBackwardCompat implements CommandLineRunner {
         }
     }
 
-    List<String> getEnvWithAltJavaHome(String javaHomeAltEnv) {
-        Map<String, String> currentEnv = new HashMap<>(System.getenv())
-        String javaHomeAlt = currentEnv.get(javaHomeAltEnv)
-        assert javaHomeAlt, "Failed to find expected JAVA_HOME alternative env variable [${javaHomeAltEnv}].  Current env: ${currentEnv}"
-        log.info("Setting alternative JAVA_HOME to [${javaHomeAlt}]")
-        currentEnv.put('JAVA_HOME', javaHomeAlt)
-        return currentEnv.collect {key, value -> "${key}=${value}"}
+    List<String> getEnvWithAltJavaHome(String version) {
+        String altJavaHomeEnv = config?.versionProps?.find {it.version == version}?.altJavaHomeEnv
+        if (altJavaHomeEnv) {
+            log.info("Using alternative JAVA_HOME [${altJavaHomeEnv}]")
+            Map<String, String> currentEnv = new HashMap<>(System.getenv())
+            String javaHomeAlt = currentEnv.get(altJavaHomeEnv)
+            assert javaHomeAlt, "Failed to find expected JAVA_HOME alternative env variable [${altJavaHomeEnv}].  Current env: ${currentEnv}"
+            log.info("Setting alternative JAVA_HOME to [${javaHomeAlt}]")
+            currentEnv.put('JAVA_HOME', javaHomeAlt)
+            return currentEnv.collect {key, value -> "${key}=${value}"}
+        } else {
+            return [] // inherit env from parent process
+        }
     }
 
     void updatePackageJsonDeps(NpmProj packageToChange, String depName, String version) {
