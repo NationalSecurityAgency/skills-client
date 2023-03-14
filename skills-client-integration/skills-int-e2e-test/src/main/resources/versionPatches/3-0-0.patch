@@ -253,3 +253,21 @@ index 8664332..5bedcd4 100644
      "license-check-and-add": "3.0.4",
      "license-checker": "25.0.1",
      "semver": "7.1.2",
+diff --git a/skills-client-integration/skills-int-e2e-test/serverConfigs/backend_application.properties b/skills-client-integration/skills-int-e2e-test/serverConfigs/backend_application.properties
+index ae6bbb4..7b4bf1b 100644
+--- a/skills-client-integration/skills-int-e2e-test/serverConfigs/backend_application.properties
++++ b/skills-client-integration/skills-int-e2e-test/serverConfigs/backend_application.properties
+@@ -11,10 +11,9 @@
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+-spring.datasource.url=jdbc:h2:mem:skills
+-spring.datasource.driverClassName=org.h2.Driver
+-spring.datasource.username=sa
+-spring.datasource.password=
++spring.datasource.username = postgres
++spring.datasource.url = jdbc:postgresql://localhost:5432/skills
++spring.datasource.password = skillsPassword
+ spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
+ 
+ logging.level.org.springframework.security.web.access.intercept.FilterSecurityInterceptor=DEBUG
