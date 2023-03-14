@@ -141,7 +141,7 @@ index 5c51e84..c64f0b8 100644
  
      it('skill display - theme', () => {
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
-index 2544edf..ba5b908 100644
+index 2544edf..80124cf 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 +++ b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 @@ -207,7 +207,7 @@ context('Vue Tests', () => {
@@ -238,3 +238,18 @@ index e899916..4761ae5 100644
  
      // back button should not exist on the home page, whose title is the default value
      if (expectedTitle === 'User Skills'){
+diff --git a/skills-client-integration/skills-int-e2e-test/package.json b/skills-client-integration/skills-int-e2e-test/package.json
+index e2e9989..0a6b62f 100644
+--- a/skills-client-integration/skills-int-e2e-test/package.json
++++ b/skills-client-integration/skills-int-e2e-test/package.json
+@@ -26,8 +26,8 @@
+     "backend:start:ci": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ../../skills-service/skills-service-*.jar",
+     "backend:start:ci:background": "mkdir -p ./target/logs && npm run backend:start:ci | awk '/ClientLoggingController/{ print > \"./target/logs/skills-client.out\" }!/ClientLoggingController/{ print > \"./target/logs/skills-service.out\" }' &",
+     "backend:start:release": "java -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ./target/servicesJars/skills-service-*.jar",
+-    "backend:waitToStart": "npx wait-port -v -t 60000 localhost:8080",
+-    "backend:resetDb": "java -cp ./db/h2-1.4.200.jar org.h2.tools.RunScript -url jdbc:h2:tcp://localhost:9090/mem:skills -user sa -script ./db/reset.sql",
++    "backend:waitToStart": "npx wait-port -t 60000 localhost:8080",
++    "backend:resetDb": "export PGPASSWORD=skillsPassword && psql -U postgres -h localhost -d skills -f ./db/reset.sql",
+     "release": "release-it --dry-run",
+     "cyServices:start:skills-service": "npm run backend:start:background && npm run backend:waitToStart && echo 'skill-service started!!'",
+     "cyServices:start:skills-service:ci": "npm run backend:start:ci:background && npm run backend:waitToStart && echo 'skill-service started!!'",

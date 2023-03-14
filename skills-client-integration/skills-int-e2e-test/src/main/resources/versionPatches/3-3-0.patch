@@ -31,7 +31,7 @@ index 0a5c6d7..0335ca1 100644
          "licenseHeaderAdd": "license-check-and-add add -f ../license-add/license-add-config.json",
          "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck ",
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/angular.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/angular.specs.js
-index 01b79f1..a490080 100644
+index 01b79f1..78cb745 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/integration/angular.specs.js
 +++ b/skills-client-integration/skills-int-e2e-test/cypress/integration/angular.specs.js
 @@ -347,7 +347,7 @@ context('Angular Tests', () => {
@@ -90,7 +90,7 @@ index 01b79f1..a490080 100644
              cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/subjects/subj0/rank]');
          });
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/js.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/js.specs.js
-index de922fd..d3141ee 100644
+index de922fd..b193e16 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/integration/js.specs.js
 +++ b/skills-client-integration/skills-int-e2e-test/cypress/integration/js.specs.js
 @@ -302,7 +302,7 @@ context("Native JS Tests", () => {
@@ -158,7 +158,7 @@ index de922fd..d3141ee 100644
              cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/subjects/subj0/rank]');
          });
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/react.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/react.specs.js
-index af8151a..8fb2ae4 100644
+index af8151a..b42dae2 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/integration/react.specs.js
 +++ b/skills-client-integration/skills-int-e2e-test/cypress/integration/react.specs.js
 @@ -273,7 +273,7 @@ context('React Tests', () => {
@@ -217,7 +217,7 @@ index af8151a..8fb2ae4 100644
              cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/subjects/subj0/rank]');
          });
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
-index ebcc22b..e4b8080 100644
+index ebcc22b..40d3652 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 +++ b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 @@ -420,7 +420,7 @@ context('Vue Tests', () => {
@@ -293,3 +293,18 @@ index ebcc22b..e4b8080 100644
  
              cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/subjects/subj0/rank]');
          });
+diff --git a/skills-client-integration/skills-int-e2e-test/package.json b/skills-client-integration/skills-int-e2e-test/package.json
+index 8f5e775..9c4aaa7 100644
+--- a/skills-client-integration/skills-int-e2e-test/package.json
++++ b/skills-client-integration/skills-int-e2e-test/package.json
+@@ -30,8 +30,8 @@
+     "backend:start:ci:background": "mkdir -p ./target/logs && npm run backend:start:ci | awk '/ClientLoggingController/{ print > \"./target/logs/skills-client.out\" }!/ClientLoggingController/{ print > \"./target/logs/skills-service.out\" }' &",
+     "backend:start:ci:background:oauth": "mkdir -p ./target/logs && npm run backend:start:ci:oauth | awk '/ClientLoggingController/{ print > \"./target/logs/skills-client.out\" }!/ClientLoggingController/{ print > \"./target/logs/skills-service.out\" }' &",
+     "backend:start:release": "java -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ./target/servicesJars/skills-service-*.jar",
+-    "backend:waitToStart": "npx wait-port -v -t 60000 localhost:8080",
+-    "backend:resetDb": "java -cp ./db/h2-1.4.200.jar org.h2.tools.RunScript -url jdbc:h2:tcp://localhost:9090/mem:skills -user sa -script ./db/reset.sql",
++    "backend:waitToStart": "npx wait-port -t 60000 localhost:8080",
++    "backend:resetDb": "export PGPASSWORD=skillsPassword && psql -U postgres -h localhost -d skills -f ./db/reset.sql",
+     "release": "release-it --dry-run",
+     "cyServices:start:skills-service": "npm run backend:start:background && npm run backend:waitToStart && echo 'skill-service started!!'",
+     "cyServices:start:skills-service:ci": "npm run backend:start:ci:background && npm run backend:waitToStart && echo 'skill-service started!!'",

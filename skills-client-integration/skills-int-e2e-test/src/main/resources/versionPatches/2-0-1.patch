@@ -125,7 +125,7 @@ index 2283896..665e697 100644
      })
  
 diff --git a/skills-client-integration/skills-int-e2e-test/package.json b/skills-client-integration/skills-int-e2e-test/package.json
-index 2dfe4e3..6d7ec41 100644
+index 2dfe4e3..ff3112f 100644
 --- a/skills-client-integration/skills-int-e2e-test/package.json
 +++ b/skills-client-integration/skills-int-e2e-test/package.json
 @@ -18,16 +18,21 @@
@@ -137,11 +137,13 @@ index 2dfe4e3..6d7ec41 100644
      "backend:start": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ../../../skills-service/service/target/skills-service-*.jar",
 -    "backend:start:ci": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -Dlogging.level.org.springframework.web.socket=TRACE -Dlogging.level.skills.services.events.SkillEventPublisher=TRACE -Dlogging.level.org.springframework.messaging=TRACE -jar ../../skills-service/backend-*.jar",
 -    "backend:start:release": "java -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ./target/servicesJars/backend-*.jar",
+-    "backend:waitToStart": "npx wait-port -v -t 60000 localhost:8080",
+-    "backend:resetDb": "java -cp ./db/h2-1.4.200.jar org.h2.tools.RunScript -url jdbc:h2:tcp://localhost:9090/mem:skills -user sa -script ./db/reset.sql",
 +    "backend:start:ci": "java  -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -Dlogging.level.org.springframework.web.socket=TRACE -Dlogging.level.skills.services.events.SkillEventPublisher=TRACE -Dlogging.level.org.springframework.messaging=TRACE -jar ../../skills-service/skills-service-*.jar",
 +    "backend:start:ci:background": "mkdir -p ./target/logs && npm run backend:start:ci > ./target/logs/skills-service.out &",
 +    "backend:start:release": "java -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ./target/servicesJars/skills-service-*.jar",
-     "backend:waitToStart": "npx wait-port -v -t 60000 localhost:8080",
-     "backend:resetDb": "java -cp ./db/h2-1.4.200.jar org.h2.tools.RunScript -url jdbc:h2:tcp://localhost:9090/mem:skills -user sa -script ./db/reset.sql",
++    "backend:waitToStart": "npx wait-port -t 60000 localhost:8080",
++    "backend:resetDb": "export PGPASSWORD=skillsPassword && psql -U postgres -h localhost -d skills -f ./db/reset.sql",
 +    "cyServices:start:skills-service:ci": "npm run backend:start:ci:background && npm run backend:waitToStart && echo 'skill-service started!!'",
 +    "cyServices:start:integration-apps": "npm run integration:start:background && npm run integration:waitToStart && echo 'integration apps started!!'",
 +    "cyServices:kill": "for procid in $(ps -aux | grep \"serverConfigs/.*properties\" | grep \"jar$\" | awk '{print $2}'); do echo \"killing ${procid}\"; kill -9 $procid; done",

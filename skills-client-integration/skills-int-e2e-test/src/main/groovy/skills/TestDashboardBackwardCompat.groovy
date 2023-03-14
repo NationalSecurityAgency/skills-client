@@ -50,15 +50,11 @@ class TestDashboardBackwardCompat implements CommandLineRunner {
         cli.record(type: boolean, 'record tests in cypress dashboard')
         cli.tag(type: String, 'tag to give cypress test')
         def options = cli.parse(args)
-        def shouldRecord = options.record
+        this.recordInDashboard = options.record
         String tag
         if (options.tag && options.tag instanceof String) {
-            tag = options.tag
+            this.tag = options.tag
         }
-//        new TestDashboardBackwardCompat(recordInDashboard: shouldRecord, tag: tag).testNew()
-
-        this.recordInDashboard = shouldRecord
-        this.tag = tag
         this.testNew()
     }
 
@@ -108,15 +104,6 @@ class TestDashboardBackwardCompat implements CommandLineRunner {
         }
     }
 
-    List<String> getEnvWithAltJavaHome(String javaHomeAltEnv) {
-        Map<String, String> currentEnv = new HashMap<>(System.getenv())
-        String javaHomeAlt = currentEnv.get(javaHomeAltEnv)
-        assert javaHomeAlt, "Failed to find expected JAVA_HOME alternative env variable [${javaHomeAltEnv}].  Current env: ${currentEnv}"
-        log.info("Setting alternative JAVA_HOME to [${javaHomeAlt}]")
-        currentEnv.put('JAVA_HOME', javaHomeAlt)
-        return currentEnv.collect {key, value -> "${key}=${value}"}
-    }
-
     void testNew() {
         checkoutWorkingCopy()
         File clientIntLoc = new File(workDir, "skills-client-integration")
@@ -152,7 +139,6 @@ class TestDashboardBackwardCompat implements CommandLineRunner {
             if (altJavaHomeEnv) {
                 log.info("Using alternative JAVA_HOME [${altJavaHomeEnv}]")
                 new ProcessRunner(loc: clientIntLoc, env: getEnvWithAltJavaHome(altJavaHomeEnv)).run("mvn --batch-mode clean package")
-//                new ProcessRunner(loc: clientIntLoc, env: ["JAVA_HOME=${altJavaHome}"]).run("mvn --batch-mode clean package")
             } else {
                 new ProcessRunner(loc: clientIntLoc).run("mvn --batch-mode clean package")
             }
@@ -162,6 +148,15 @@ class TestDashboardBackwardCompat implements CommandLineRunner {
             String currentTag = [tag, "version ${version}"].findAll { it }.collect { "'${it}'" }.join(',')
             new CypressTestsHelper(e2eDir: e2eLoc, recordInDashboard: recordInDashboard, tag: currentTag).runCypressTests(output)
         }
+    }
+
+    List<String> getEnvWithAltJavaHome(String javaHomeAltEnv) {
+        Map<String, String> currentEnv = new HashMap<>(System.getenv())
+        String javaHomeAlt = currentEnv.get(javaHomeAltEnv)
+        assert javaHomeAlt, "Failed to find expected JAVA_HOME alternative env variable [${javaHomeAltEnv}].  Current env: ${currentEnv}"
+        log.info("Setting alternative JAVA_HOME to [${javaHomeAlt}]")
+        currentEnv.put('JAVA_HOME', javaHomeAlt)
+        return currentEnv.collect {key, value -> "${key}=${value}"}
     }
 
     void updatePackageJsonDeps(NpmProj packageToChange, String depName, String version) {
