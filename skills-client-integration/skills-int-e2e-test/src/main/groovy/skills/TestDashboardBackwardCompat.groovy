@@ -19,31 +19,44 @@ import groovy.cli.picocli.CliBuilder
 import groovy.json.JsonOutput
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.FileUtils
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.CommandLineRunner
+import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.core.io.Resource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.core.io.support.ResourcePatternResolver
 
 @Slf4j
-class TestDashboardBackwardCompat {
-
-    static void main(String[] args) {
-        def cli = new CliBuilder()
-        cli.record(type: boolean, 'record tests in cypress dashboard')
-        cli.tag(type: String, 'tag to give cypress test')
-        def options = cli.parse(args)
-        def shouldRecord = options.record
-        String tag
-        if (options.tag && options.tag instanceof String) {
-            tag = options.tag
-        }
-        new TestDashboardBackwardCompat(recordInDashboard: shouldRecord, tag: tag).testNew()
-    }
+@SpringBootApplication
+class TestDashboardBackwardCompat implements CommandLineRunner {
 
     File workDir = new File("./target/skills-client")
     TitlePrinter titlePrinter = new TitlePrinter()
     List<String> versionsToExclude = ["2.0.0"]
     boolean recordInDashboard = false
     String tag
+
+    @Autowired
+    Config config
+
+    static void main(String[] args) {
+        SpringApplication.run(TestDashboardBackwardCompat.class, args)
+    }
+
+    @Override
+    void run(String... args) {
+        def cli = new CliBuilder()
+        cli.record(type: boolean, 'record tests in cypress dashboard')
+        cli.tag(type: String, 'tag to give cypress test')
+        def options = cli.parse(args)
+        this.recordInDashboard = options.record
+        String tag
+        if (options.tag && options.tag instanceof String) {
+            this.tag = options.tag
+        }
+        this.testNew()
+    }
 
     void checkoutWorkingCopy() {
         if (workDir.exists()) {
@@ -63,7 +76,6 @@ class TestDashboardBackwardCompat {
                 serviceJar = new File(it).listFiles().find({ it?.name.startsWith("skills-service") && it?.name.endsWith(".jar") })
             }
         }
-        assert serviceJar
         assert serviceJar
         File dest = new File(serviceDir, serviceJar.name)
         FileUtils.copyFile(serviceJar, dest)
@@ -99,7 +111,7 @@ class TestDashboardBackwardCompat {
 
         String tagsStrs = new ProcessRunner(loc: workDir).run("git tag").sout
         assert tagsStrs
-        List<String> versionsToTest = tagsStrs.split("\n").toList();
+        List<String> versionsToTest = tagsStrs.split("\n").toList()
         versionsToTest.removeAll(versionsToExclude)
         log.info("Versions to test:\n  ${versionsToTest.join("\n  ")}")
 
@@ -118,12 +130,12 @@ class TestDashboardBackwardCompat {
             titlePrinter.printSubTitle("[${version}]: Update package.json and prune")
             intProjs.each { NpmProj intProj ->
                 String lookForDep = intProj.name.replaceAll("-int", "").replaceAll("\\d","")
-                updatePackageJsonDeps(intProj, "@skilltree/$lookForDep", version)
+                updatePackageJsonDeps(intProj, "@skilltree/$lookForDep".toString(), version)
                 intProj.exec("npm prune")
             }
 
             titlePrinter.printSubTitle("[${version}]: Building Client Examples App")
-            new ProcessRunner(loc: clientIntLoc).run("mvn --batch-mode clean package")
+            new ProcessRunner(loc: clientIntLoc, env: getEnvWithAltJavaHome(version)).run("mvn --batch-mode clean package")
 
             titlePrinter.printSubTitle("[${version}]: Running cypress test with")
             String output = "Testing version [$version]"
@@ -132,7 +144,22 @@ class TestDashboardBackwardCompat {
         }
     }
 
-    private void updatePackageJsonDeps(NpmProj packageToChange, String depName, String version) {
+    List<String> getEnvWithAltJavaHome(String version) {
+        String altJavaHomeEnv = config?.versionProps?.find {it.version == version}?.altJavaHomeEnv
+        if (altJavaHomeEnv) {
+            log.info("Using alternative JAVA_HOME [${altJavaHomeEnv}]")
+            Map<String, String> currentEnv = new HashMap<>(System.getenv())
+            String javaHomeAlt = currentEnv.get(altJavaHomeEnv)
+            assert javaHomeAlt, "Failed to find expected JAVA_HOME alternative env variable [${altJavaHomeEnv}].  Current env: ${currentEnv}"
+            log.info("Setting alternative JAVA_HOME to [${javaHomeAlt}]")
+            currentEnv.put('JAVA_HOME', javaHomeAlt)
+            return currentEnv.collect {key, value -> "${key}=${value}"}
+        } else {
+            return [] // inherit env from parent process
+        }
+    }
+
+    void updatePackageJsonDeps(NpmProj packageToChange, String depName, String version) {
         assert packageToChange && depName && version
         def json = packageToChange.getPackageJson()
         if (json.dependencies."${depName}") {

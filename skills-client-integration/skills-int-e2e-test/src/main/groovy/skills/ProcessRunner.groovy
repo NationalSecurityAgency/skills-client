@@ -18,6 +18,7 @@ package skills
 import groovy.util.logging.Slf4j
 import org.apache.commons.text.StringTokenizer
 import org.apache.commons.text.matcher.StringMatcherFactory
+import org.codehaus.groovy.runtime.ProcessGroovyMethods
 import org.zeroturnaround.exec.stream.TeeOutputStream
 import org.zeroturnaround.exec.stream.slf4j.Slf4jStream
 
@@ -37,6 +38,7 @@ class ProcessRunner {
 //    OutputStream sout = new StringBuilder()
 //    Appendable serr = new StringBuilder()
     File loc = new File("./")
+    List env = []
 
     ProcessRes run(String cmd) {
         StringTokenizer st = new StringTokenizer(cmd)
@@ -53,11 +55,16 @@ class ProcessRunner {
 
         String name = loc.name
         if (dryRun) {
-            log.info("DRY RUN [${cmd}] in [${loc.absoluteFile.absolutePath}]")
+            log.info("DRY RUN [${cmd}] in [${loc.absoluteFile.absolutePath}]${env ? " Custom ENV ${env}" : ""}")
             return new ProcessRes(serr: "", sout: "")
         } else {
-            log.info("Executing: [${cmd}] in [$loc.absoluteFile.absolutePath]")
-            Process p = cmd.execute(null, loc)
+            log.info("Executing: [${cmd}] in [$loc.absoluteFile.absolutePath]${env ? " Custom ENV ${env}" : ""}")
+            Process p
+            if (env) {
+                p = ProcessGroovyMethods.execute(cmd, env, loc)
+            } else {
+                p = cmd.execute(null, loc)
+            }
 
             if (waitForOutput) {
                 if (printOutput) {

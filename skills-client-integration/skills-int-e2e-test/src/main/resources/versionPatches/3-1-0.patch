@@ -105,7 +105,7 @@ index 38151c4..5a95fbe 100644
  
      it('skill display - theme', () => {
 diff --git a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
-index d861deb..32c33e3 100644
+index d861deb..9ce094c 100644
 --- a/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 +++ b/skills-client-integration/skills-int-e2e-test/cypress/integration/vue.specs.js
 @@ -207,7 +207,7 @@ context('Vue Tests', () => {
@@ -202,3 +202,36 @@ index 48da2de..d66fb30 100644
  
    // back button should not exist on the home page, whose title is the default value
    if (expectedTitle === 'User Skills') {
+diff --git a/skills-client-integration/skills-int-e2e-test/package.json b/skills-client-integration/skills-int-e2e-test/package.json
+index a40cb09..7c55bc0 100644
+--- a/skills-client-integration/skills-int-e2e-test/package.json
++++ b/skills-client-integration/skills-int-e2e-test/package.json
+@@ -30,8 +30,8 @@
+     "backend:start:ci:background": "mkdir -p ./target/logs && npm run backend:start:ci | awk '/ClientLoggingController/{ print > \"./target/logs/skills-client.out\" }!/ClientLoggingController/{ print > \"./target/logs/skills-service.out\" }' &",
+     "backend:start:ci:background:oauth": "mkdir -p ./target/logs && npm run backend:start:ci:oauth | awk '/ClientLoggingController/{ print > \"./target/logs/skills-client.out\" }!/ClientLoggingController/{ print > \"./target/logs/skills-service.out\" }' &",
+     "backend:start:release": "java -Dspring.config.location=classpath:/application.yml,file:serverConfigs/backend_application.properties -jar ./target/servicesJars/skills-service-*.jar",
+-    "backend:waitToStart": "npx wait-port -v -t 60000 localhost:8080",
+-    "backend:resetDb": "java -cp ./db/h2-1.4.200.jar org.h2.tools.RunScript -url jdbc:h2:tcp://localhost:9090/mem:skills -user sa -script ./db/reset.sql",
++    "backend:waitToStart": "npx wait-port -t 60000 localhost:8080",
++    "backend:resetDb": "export PGPASSWORD=skillsPassword && psql -U postgres -h localhost -d skills -f ./db/reset.sql",
+     "release": "release-it --dry-run",
+     "cyServices:start:skills-service": "npm run backend:start:background && npm run backend:waitToStart && echo 'skill-service started!!'",
+     "cyServices:start:skills-service:ci": "npm run backend:start:ci:background && npm run backend:waitToStart && echo 'skill-service started!!'",
+diff --git a/skills-client-integration/skills-int-e2e-test/serverConfigs/backend_application.properties b/skills-client-integration/skills-int-e2e-test/serverConfigs/backend_application.properties
+index 57c4f5b..6c0c05a 100644
+--- a/skills-client-integration/skills-int-e2e-test/serverConfigs/backend_application.properties
++++ b/skills-client-integration/skills-int-e2e-test/serverConfigs/backend_application.properties
+@@ -11,10 +11,9 @@
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+-spring.datasource.url=jdbc:h2:mem:skills
+-spring.datasource.driverClassName=org.h2.Driver
+-spring.datasource.username=sa
+-spring.datasource.password=
++spring.datasource.username = postgres
++spring.datasource.url = jdbc:postgresql://localhost:5432/skills
++spring.datasource.password = skillsPassword
+ spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
+ 
+ logging.level.org.springframework.security.web.access.intercept.FilterSecurityInterceptor=DEBUG
