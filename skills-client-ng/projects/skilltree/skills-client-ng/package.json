@@ -8,8 +8,8 @@
         "prepare": "node -e \"console.log('APP_VERSION = \\''+ process.env.npm_package_name + '-' + process.env.npm_package_version +'\\';')\" > src/version.js"
     },
     "peerDependencies": {
-        "@angular/common": "11.2.14",
-        "@angular/core": "11.2.14"
+        "@angular/common": "14.3.0",
+        "@angular/core": "14.3.0"
     },
     "dependencies": {
         "tslib": "2.0.0",
