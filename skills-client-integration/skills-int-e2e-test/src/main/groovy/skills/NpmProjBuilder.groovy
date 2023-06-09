@@ -46,13 +46,13 @@ class NpmProjBuilder {
             new NpmProj(name: "skills-client-js", doOthersLinkToMe: true, hasLinksToOtherProjects: false, initialVersion: '2.0.0'),
             new NpmProj(name: "skills-client-vue", doOthersLinkToMe: true, initialVersion: '2.0.0'),
             new NpmProj(name: "skills-client-react", doOthersLinkToMe: true, reactModule: true, initialVersion: '2.0.0'),
-            new NpmProj(name: "skills-client-ng", doOthersLinkToMe: true, angularModule: true, initialVersion: '3.0.0'),
+//            new NpmProj(name: "skills-client-ng", doOthersLinkToMe: true, angularModule: true, initialVersion: '3.0.0'),
             new NpmProj(name: "skills-int-client-js", doOthersLinkToMe: false, initialVersion: '2.0.0'),
             new NpmProj(name: "skills-int-client-vue", doOthersLinkToMe: false, initialVersion: '2.0.0'),
             new NpmProj(name: "skills-int-client-react", doOthersLinkToMe: false, reactApp: true, initialVersion: '2.0.0'),
             new NpmProj(name: "skills-int-client-react17", doOthersLinkToMe: false, reactApp: true, initialVersion: '3.4.0'),
             new NpmProj(name: "skills-int-client-react18", doOthersLinkToMe: false, reactApp: true, initialVersion: '3.4.2'),
-            new NpmProj(name: "skills-int-client-ng", doOthersLinkToMe: false, angularApp: true, initialVersion: '3.0.0'),
+//            new NpmProj(name: "skills-int-client-ng", doOthersLinkToMe: false, angularApp: true, initialVersion: '3.0.0'),
     ]
 
     private void assertExist() {
