@@ -4,16 +4,17 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "paths": { "@skilltree/skills-client-ng":  [ "./node_modules/@skilltree/skills-client-ng"]},
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2015",
-    "module": "es2020",
+    "target": "es2022",
+    "module": "es2022",
     "lib": [
-      "es2018",
+      "es2022",
       "dom"
     ]
   }

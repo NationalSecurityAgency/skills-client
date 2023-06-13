@@ -1,6 +1,6 @@
 {
     "name": "@skilltree/skills-client-ng",
-    "version": "3.6.0",
+    "version": "4.0.0",
     "license": "Apache-2.0",
     "description": "SkillTree Client Lib - Angular",
     "author": "SkillTree Team",
@@ -8,8 +8,8 @@
         "prepare": "node -e \"console.log('APP_VERSION = \\''+ process.env.npm_package_name + '-' + process.env.npm_package_version +'\\';')\" > src/version.js"
     },
     "peerDependencies": {
-        "@angular/common": "14.3.0",
-        "@angular/core": "14.3.0"
+        "@angular/common": "16.0.5",
+        "@angular/core": "16.0.5"
     },
     "dependencies": {
         "tslib": "2.0.0",
