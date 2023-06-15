@@ -4,7 +4,10 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
-    "paths": { "@skilltree/skills-client-ng":  [ "./node_modules/@skilltree/skills-client-ng"]},
+    "paths": {
+        "@skilltree/skills-client-ng":  [ "./node_modules/@skilltree/skills-client-ng"],
+        "@angular/*": [ "./node_modules/@angular/*" ]
+    },
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
