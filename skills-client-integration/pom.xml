@@ -37,7 +37,7 @@
         <!--suppress UnresolvedMavenProperty -->
         <nexusServer>${nexus.url}</nexusServer>
         <frontend-maven-plugin.version>1.10.3</frontend-maven-plugin.version>
-        <node.version>v14.15.0</node.version>
+        <node.version>v16.14.2</node.version>
         <java.version>19</java.version>
     </properties>
 
