@@ -107,9 +107,9 @@ class SetupNpmLinks {
         projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
             npmProj.skillsDependenciesFromPackageJson.each {
                 titlePrinter.printSubTitle("Linking module [${it}] in project [${npmProj}]")
-                if (npmProj.getAngularApp() || npmProj.getAngularModule()) {
-                    npmProj.exec("npm install --force")
-                }
+//                if (npmProj.getAngularApp() || npmProj.getAngularModule()) {
+//                    npmProj.exec("npm install --force")
+//                }
                 npmProj.exec("npm link --force ${it}".toString())
                 if (npmProj.getAngularModule()) {
                     File origLoc = npmProj.loc
@@ -136,7 +136,7 @@ class SetupNpmLinks {
         titlePrinter.printTitle("create links")
         projs.findAll({ it.doOthersLinkToMe }).each {
             File origLoc
-            if (it.isAngularModule()) {
+            if (it.isAngularModule() || it.isAngularApp()) {
                 titlePrinter.printTitle("install and build angular module")
                 it.exec("npm install --force")
                 it.exec("npm run build")
@@ -147,7 +147,7 @@ class SetupNpmLinks {
             it.exec("ls")
             it.exec("node -v")
             it.exec("npm link")
-            if (it.isAngularModule()) {
+            if (it.isAngularModule() || it.isAngularApp()) {
                 it.loc = origLoc
             }
         }
