@@ -23,6 +23,5 @@ ls -la target/skills-int-e2e-test-*.jar
 du -sh target/*
 java --version
 java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.PropertiesLauncher
-./buildAngularProject.sh
 cd ../../
 echo "------- DONE: Setup npm links -------"
