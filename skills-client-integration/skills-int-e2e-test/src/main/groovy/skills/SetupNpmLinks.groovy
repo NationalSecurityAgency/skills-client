@@ -62,7 +62,7 @@ class SetupNpmLinks {
     private void install() {
         titlePrinter.printTitle("install")
         projs.each { NpmProj npmProj ->
-            if (!npmProj.isAngularModule()) {
+            if (!npmProj.isAngularModule() && !npmProj.isAngularApp()) {
                 // angular modules were installed within createLinks()
                 npmProj.exec("npm install --force")
             }
@@ -73,7 +73,7 @@ class SetupNpmLinks {
     private void build() {
         titlePrinter.printTitle("build")
         projs.each { NpmProj npmProj ->
-            if (!npmProj.isAngularModule()) {
+            if (!npmProj.isAngularModule() && !npmProj.isAngularApp()) {
                 // angular modules were built within createLinks()
                 npmProj.exec("npm run build")
             }
