@@ -35,6 +35,9 @@ public class SkillsExampleApplication implements WebMvcConfigurer {
 			HttpsURLConnection.setDefaultHostnameVerifier((s, sslSession) -> true);
 		}
 
+		// allows the secrets to be passed in via file instead of using command line or env variables
+		new SecretsUtil().updateSecrets();
+
 		SpringApplication.run(SkillsExampleApplication.class, args);
 	}
 
