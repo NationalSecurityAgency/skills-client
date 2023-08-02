@@ -43,7 +43,7 @@ public class SecretsUtil {
 
         String tsPasswordFile = System.getProperty(TS_PW_FILE_KEY);
         if (StringUtils.hasText(tsPasswordFile)) {
-            System.out.println("Setting keystore password using file [" + tsPasswordFile + "]");
+            System.out.println("Setting truststore password using file [" + tsPasswordFile + "]");
             System.setProperty(TS_CLIENT_PW_PROP_KEY, getTextFromFile(tsPasswordFile));
             System.setProperty(TS_SERVER_PW_PROP_KEY, getTextFromFile(tsPasswordFile));
         }
