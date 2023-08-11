@@ -57,6 +57,7 @@ git checkout ${switchToBranch} --
 echo "git status:"
 git status
 
+export MAVEN_OPTS="-Xmx2048m"
 mvn --batch-mode package -DskipTests
 jar=$(ls ./service/target/*.jar)
 mv $jar ./
