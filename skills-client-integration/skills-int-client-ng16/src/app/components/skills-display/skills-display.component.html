@@ -1,0 +1,65 @@
+<!--
+Copyright 2020 SkillTree
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<div class="container">
+  <div class="d-flex align-items-center mb-3">
+
+    <div ngbDropdown class="d-inline-block">
+      <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Change Theme</button>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+        <button ngbDropdownItem *ngFor="let themeItem of themes"
+          (click)="setIsThemeUrlParam(themeItem)">{{themeItem.name}}</button>
+      </div>
+    </div>
+
+    <div class="custom-control custom-switch d-inline-block ml-3 border-right pr-2">
+      <input type="checkbox" class="custom-control-input" id="customSwitch1" (click)="setIsSummaryOnlyUrlParam()"
+        [checked]="displayOptions.isSummaryOnly">
+      <label class="custom-control-label" for="customSwitch1">Summary Only</label>
+    </div>
+
+    <div class="custom-control custom-switch d-inline-block ml-3 border-right pr-2">
+      <input type="checkbox" class="custom-control-input" id="customSwitch2" (click)="setInternalBackButtonUrlParam()"
+             [checked]="displayOptions.internalBackButton">
+      <label class="custom-control-label" for="customSwitch2">Internal Back Button</label>
+    </div>
+
+    <button class="btn btn-outline-primary" id="navButton" data-cy="navigateButton" (click)="navigate()">Navigate</button>
+
+    <a href="javascript:void(0)" class="ml-2" (click)="scrollTo('sample-code')">Show Source</a>
+  </div>
+  <div>
+    <span id="skillsDisplayPath" data-cy="skillsDisplayPath">Skills Display Path: [{{ skillsDisplayRoutePath }}]</span>
+  </div>
+
+  <div class="border rounded">
+    <skills-display #skillsDisplay *ngIf="selectedTheme" [options]="displayOptions" [version]="version" [theme]="selectedTheme.theme" [handleRouteChanged]="skillsDisplayRouteChanged">
+    </skills-display>
+  </div>
+
+  <div [hidden]="!showSampleCode" id="sample-code" class="row">
+    <div class="col-12">
+      <div class="mb-5 mt-5 card bg-light">
+        <h5 class=" card-header text-info">
+          <strong>Sample Code</strong>
+        </h5>
+        <div class="card-body py-0">
+          <pre><code [highlight]="getSampleCode()" [languages]="['html', 'javascript']"></code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

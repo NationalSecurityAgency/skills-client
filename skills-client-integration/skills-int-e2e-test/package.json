@@ -19,6 +19,7 @@
     "cy:open:dev:react17": "cypress open --config baseUrl=http://localhost:8084",
     "cy:open:dev:react18": "cypress open --config baseUrl=http://localhost:8085",
     "cy:open:dev:ng": "cypress open --config baseUrl=http://localhost:4200",
+    "cy:open:dev:ng16": "cypress open --config baseUrl=http://localhost:4200",
     "integration:start": "java -Dspring.config.location=classpath:/application.properties,file:serverConfigs/integration_application.properties -jar ../skills-int-service/target/skills-int-service-*.jar",
     "integration:start:oauth": "java -Dskills.service.authenticator=hydra -Dspring.config.location=classpath:/application.properties,file:serverConfigs/integration_application.properties -jar ../skills-int-service/target/skills-int-service-*.jar",
     "integration:start:background": "mkdir -p ./target/logs && npm run integration:start > ./target/logs/integration-apps.out &",

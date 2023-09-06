@@ -95,6 +95,14 @@ jobs:
         mvn --batch-mode clean install
         cd ../
 
+    - name: build angular 16 app
+      env:
+        MAVEN_OPTS: -Xmx2048m
+      run: |
+        cd ./skills-client-integration/skills-int-client-ng16
+        mvn clean install
+        cd ../../
+
     - name: start services for cypress tests
       run: |
         cd skills-client-integration/skills-int-e2e-test
