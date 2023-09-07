@@ -231,7 +231,7 @@ context('Angular 16 Tests', () => {
     it('skill display', () => {
         cy.createDefaultTinyProject()
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-        cy.visit('/angular/showSkills')
+        cy.visit('/angular16/showSkills')
         cy.clientDisplay(true).contains('My Level')
         cy.clientDisplay().contains('50 Points earned Today')
         cy.clientDisplay().contains('Subject 0')
@@ -246,7 +246,7 @@ context('Angular 16 Tests', () => {
         cy.createDefaultTinyProject()
         cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-        cy.visit('/angular/showSkills?isSummaryOnly=true')
+        cy.visit('/angular16/showSkills?isSummaryOnly=true')
         cy.clientDisplay(true).contains('My Level')
         cy.clientDisplay().contains('50 Points earned Today')
         cy.clientDisplay().contains('Subject 0').should('not.exist')
@@ -260,7 +260,7 @@ context('Angular 16 Tests', () => {
     it('skill display - theme', () => {
         cy.createDefaultTinyProject()
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-        cy.visit('/angular/showSkills?themeName=Dark Blue')
+        cy.visit('/angular16/showSkills?themeName=Dark Blue')
         cy.clientDisplay(true).contains('My Level')
         cy.clientDisplay().contains('50 Points earned Today')
         cy.clientDisplay().contains('Subject 0')
@@ -274,7 +274,7 @@ context('Angular 16 Tests', () => {
     it('skill display - summary only - theme', () => {
         cy.createDefaultTinyProject()
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-        cy.visit('/angular/showSkills?themeName=Dark Blue&isSummaryOnly=true')
+        cy.visit('/angular16/showSkills?themeName=Dark Blue&isSummaryOnly=true')
         cy.clientDisplay(true).contains('My Level')
         cy.clientDisplay().contains('50 Points earned Today')
         cy.clientDisplay().contains('Subject 0').should('not.exist')
@@ -292,7 +292,7 @@ context('Angular 16 Tests', () => {
             statusCode: 503, // server is down
             body: {}
         }).as('getStatus')
-        cy.visit('/angular/showSkills')
+        cy.visit('/angular16/showSkills')
         cy.wait('@getStatus')
 
         cy.contains('Could NOT reach Skilltree Service')
@@ -303,19 +303,19 @@ context('Angular 16 Tests', () => {
         cy.backendAddSkill('skillv1', 1)
         cy.backendAddSkill('skillv2', 2)
 
-        cy.visit('/angular/showSkills')
+        cy.visit('/angular16/showSkills')
         cy.clientDisplay(true).contains('Earn up to 200 points')
 
-        cy.visit('/angular/reportSkills')
+        cy.visit('/angular16/reportSkills')
         cy.get('#globalEventResultDiv').should('be.visible');
 
-        cy.visit('/angular/showSkills?skillsVersion=1')
+        cy.visit('/angular16/showSkills?skillsVersion=1')
         cy.clientDisplay().contains('Earn up to 150 points')
 
-        cy.visit('/angular/reportSkills')
+        cy.visit('/angular16/reportSkills')
         cy.get('#globalEventResultDiv').should('be.visible');
 
-        cy.visit('/angular/showSkills?skillsVersion=0')
+        cy.visit('/angular16/showSkills?skillsVersion=0')
         cy.clientDisplay().contains('Earn up to 100 points')
     });
 
@@ -339,7 +339,7 @@ context('Angular 16 Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
-            cy.visit('/angular/showSkills?internalBackButton=true');
+            cy.visit('/angular16/showSkills?internalBackButton=true');
 
             cy.clientDisplay().find('[data-cy=back]').should('not.exist');
             cy.clientDisplay().contains('User Skills');
@@ -365,7 +365,7 @@ context('Angular 16 Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
-            cy.visit('/angular/showSkills?internalBackButton=false');
+            cy.visit('/angular16/showSkills?internalBackButton=false');
 
             cy.clientDisplay().find('[data-cy=back]').should('not.exist');
             cy.clientDisplay().contains('User Skills');
@@ -393,7 +393,7 @@ context('Angular 16 Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // navigate to Rank Overview via direct link
-            cy.visit('/angular/showSkills?skillsClientDisplayPath=%2Frank');
+            cy.visit('/angular16/showSkills?skillsClientDisplayPath=%2Frank');
             cy.clientDisplay().contains(rankDetailsTitle);
 
             // reload and confirm we are still on Rank Overview page
@@ -406,7 +406,7 @@ context('Angular 16 Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
-            cy.visit('/angular/showSkills?internalBackButton=false');
+            cy.visit('/angular16/showSkills?internalBackButton=false');
 
             cy.clientDisplay().find('[data-cy=back]').should('not.exist');
             cy.clientDisplay().contains('User Skills');
@@ -437,7 +437,7 @@ context('Angular 16 Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
-            cy.visit('/angular/showSkills?internalBackButton=false');
+            cy.visit('/angular16/showSkills?internalBackButton=false');
             cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/]');
 
             // to subject page
@@ -458,7 +458,7 @@ context('Angular 16 Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
-            cy.visit('/angular/showSkills?internalBackButton=false');
+            cy.visit('/angular16/showSkills?internalBackButton=false');
             cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/]');
             cy.clientDisplay().contains('User Skills');
 
