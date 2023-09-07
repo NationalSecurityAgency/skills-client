@@ -87,6 +87,14 @@ jobs:
     - name: setup npm links
       run: ./.github/workflows/scripts/setupNpmLinks.sh
 
+    - name: build angular 16 app
+      env:
+        MAVEN_OPTS: -Xmx2048m
+      run: |
+        cd ./skills-client-integration/skills-int-client-ng16
+        mvn clean install
+        cd ../../      
+
     - name: build integration test apps
       env:
         MAVEN_OPTS: -Xmx2048m
@@ -102,22 +110,6 @@ jobs:
         cd ./skills-client-integration/skills-int-client-ng16
         mvn clean install
         cd ../../
-
-    - name: build skills int service
-      env:
-        MAVEN_OPTS: -Xmx2048m
-      run: |
-        cd ./skills-client-integration/skills-int-service
-        mvn clean install
-        cd ../../
-
-    - name: build skills e2e service
-      env:
-        MAVEN_OPTS: -Xmx2048m
-      run: |
-        cd ./skills-client-integration/skills-int-e2e-test
-        mvn clean install
-        cd ../../              
 
     - name: start services for cypress tests
       run: |
