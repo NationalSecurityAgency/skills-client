@@ -103,6 +103,22 @@ jobs:
         mvn clean install
         cd ../../
 
+    - name: build skills int service
+      env:
+        MAVEN_OPTS: -Xmx2048m
+      run: |
+        cd ./skills-client-integration/skills-int-service
+        mvn clean install
+        cd ../../
+
+    - name: build skills e2e service
+      env:
+        MAVEN_OPTS: -Xmx2048m
+      run: |
+        cd ./skills-client-integration/skills-int-e2e-test
+        mvn clean install
+        cd ../../              
+
     - name: start services for cypress tests
       run: |
         cd skills-client-integration/skills-int-e2e-test
