@@ -24,10 +24,10 @@ const routes: Routes = [{
   redirectTo: 'reportSkills',
   pathMatch: 'full'
 }, {
-  path: 'angular/reportSkills',
+  path: 'angular16/reportSkills',
   component: ReportSkillsComponent
 }, {
-  path: 'angular/showSkills',
+  path: 'angular16/showSkills',
   component: SkillsDisplayComponent
 }
 ];

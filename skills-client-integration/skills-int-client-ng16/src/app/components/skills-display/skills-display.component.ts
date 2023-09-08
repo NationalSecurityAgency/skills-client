@@ -69,19 +69,19 @@ export class SkillsDisplayComponent implements OnInit {
   }
 
   setIsThemeUrlParam(theme) {
-    this.router.navigate(['angular/showSkills'], { queryParams: { themeName: theme.name }, queryParamsHandling: 'merge' });
+    this.router.navigate(['angular16/showSkills'], { queryParams: { themeName: theme.name }, queryParamsHandling: 'merge' });
     this.refreshPage();
   }
 
   setIsSummaryOnlyUrlParam() {
     this.displayOptions.isSummaryOnly = !this.displayOptions.isSummaryOnly;
-    this.router.navigate(['angular/showSkills'], { queryParams: { isSummaryOnly: this.displayOptions.isSummaryOnly }, queryParamsHandling: 'merge' });
+    this.router.navigate(['angular16/showSkills'], { queryParams: { isSummaryOnly: this.displayOptions.isSummaryOnly }, queryParamsHandling: 'merge' });
     this.refreshPage();
   }
 
   setInternalBackButtonUrlParam() {
     this.displayOptions.internalBackButton = !this.displayOptions.internalBackButton;
-    this.router.navigate(['angular/showSkills'], { queryParams: { internalBackButton: this.displayOptions.internalBackButton }, queryParamsHandling: 'merge' });
+    this.router.navigate(['angular16/showSkills'], { queryParams: { internalBackButton: this.displayOptions.internalBackButton }, queryParamsHandling: 'merge' });
     this.refreshPage();
   }
   scrollTo(elementId: string) {
