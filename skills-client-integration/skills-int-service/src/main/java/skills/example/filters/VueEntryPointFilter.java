@@ -43,6 +43,9 @@ public class VueEntryPointFilter implements Filter {
             if (isAngularEntryPoint(requestUri)) {
                 targetUri = "/angular/index.html";
             }
+            if (isAngular16EntryPoint(requestUri)) {
+                targetUri = "/angular16/index.html";
+            }
             httpServletRequest.getRequestDispatcher(targetUri).forward(request, response);
         } else {
             // backend resource, continue with the filter chain
@@ -61,5 +64,8 @@ public class VueEntryPointFilter implements Filter {
     }
     private boolean isAngularEntryPoint(String requestUri) {
         return requestUri.contains("/angular/reportSkills") || requestUri.contains("/angular/showSkills");
+    }
+    private boolean isAngular16EntryPoint(String requestUri) {
+        return requestUri.contains("/angular16/reportSkills") || requestUri.contains("/angular16/showSkills");
     }
 }
