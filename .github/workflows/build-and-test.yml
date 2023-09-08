@@ -40,16 +40,19 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
 
+    strategy:
+      matrix:
+        version: [14, 16]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - uses: actions/setup-node@v2-beta
+    - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: ${{ matrix.version }}
 
-    - uses: actions/setup-java@v1
+    - uses: actions/setup-java@v2
       with:
         java-version: '19' # The JDK version to make available on the path.
 
