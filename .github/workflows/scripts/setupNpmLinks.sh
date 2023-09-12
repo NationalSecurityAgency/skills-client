@@ -16,12 +16,13 @@
 set -e
 set -o pipefail
 
+npmVersion=$1;
 echo "------- START: Setup npm links -------"
 cd skills-client-integration/skills-int-e2e-test
 mvn --batch-mode clean package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
 ls -la target/skills-int-e2e-test-*.jar
 du -sh target/*
 java --version
-java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.PropertiesLauncher
+java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.PropertiesLauncher $npmVersion
 cd ../../
 echo "------- DONE: Setup npm links -------"

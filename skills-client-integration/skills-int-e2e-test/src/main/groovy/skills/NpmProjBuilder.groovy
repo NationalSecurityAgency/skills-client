@@ -25,6 +25,7 @@ class NpmProjBuilder {
     String version
     boolean locate = true
     File loc = new File("./")
+    Integer targetNodeVersion
 
     private File locate(String name) {
         List<File> toCheck = [new File(loc, name),
@@ -43,17 +44,17 @@ class NpmProjBuilder {
 
 
     private List<NpmProj> projs = [
-            new NpmProj(name: "skills-client-js", doOthersLinkToMe: true, hasLinksToOtherProjects: false, initialVersion: '2.0.0'),
-            new NpmProj(name: "skills-client-vue", doOthersLinkToMe: true, initialVersion: '2.0.0'),
-            new NpmProj(name: "skills-client-react", doOthersLinkToMe: true, reactModule: true, initialVersion: '2.0.0'),
-            new NpmProj(name: "skills-client-ng", doOthersLinkToMe: true, angularModule: true, initialVersion: '3.0.0'),
-            new NpmProj(name: "skills-int-client-js", doOthersLinkToMe: false, initialVersion: '2.0.0'),
-            new NpmProj(name: "skills-int-client-vue", doOthersLinkToMe: false, initialVersion: '2.0.0'),
-            new NpmProj(name: "skills-int-client-react", doOthersLinkToMe: false, reactApp: true, initialVersion: '2.0.0'),
-            new NpmProj(name: "skills-int-client-react17", doOthersLinkToMe: false, reactApp: true, initialVersion: '3.4.0'),
-            new NpmProj(name: "skills-int-client-react18", doOthersLinkToMe: false, reactApp: true, initialVersion: '3.4.2'),
-            new NpmProj(name: "skills-int-client-ng", doOthersLinkToMe: false, angularApp: true, initialVersion: '3.0.0'),
-//            new NpmProj(name: "skills-int-client-ng16", doOthersLinkToMe: false, angularApp: true, initialVersion: '3.0.0'),
+            new NpmProj(name: "skills-client-js", doOthersLinkToMe: true, hasLinksToOtherProjects: false, initialVersion: '2.0.0', nodeVersion: 14),
+            new NpmProj(name: "skills-client-vue", doOthersLinkToMe: true, initialVersion: '2.0.0', nodeVersion: 14),
+            new NpmProj(name: "skills-client-react", doOthersLinkToMe: true, reactModule: true, initialVersion: '2.0.0', nodeVersion: 14),
+            new NpmProj(name: "skills-client-ng", doOthersLinkToMe: true, angularModule: true, initialVersion: '3.0.0', nodeVersion: 14),
+            new NpmProj(name: "skills-int-client-js", doOthersLinkToMe: false, initialVersion: '2.0.0', nodeVersion: 14),
+            new NpmProj(name: "skills-int-client-vue", doOthersLinkToMe: false, initialVersion: '2.0.0', nodeVersion: 14),
+            new NpmProj(name: "skills-int-client-react", doOthersLinkToMe: false, reactApp: true, initialVersion: '2.0.0', nodeVersion: 14),
+            new NpmProj(name: "skills-int-client-react17", doOthersLinkToMe: false, reactApp: true, initialVersion: '3.4.0', nodeVersion: 14),
+            new NpmProj(name: "skills-int-client-react18", doOthersLinkToMe: false, reactApp: true, initialVersion: '3.4.2', nodeVersion: 14),
+            new NpmProj(name: "skills-int-client-ng", doOthersLinkToMe: false, angularApp: true, initialVersion: '3.0.0', nodeVersion: 14),
+            new NpmProj(name: "skills-int-client-ng16", doOthersLinkToMe: false, angularApp: true, initialVersion: '3.0.0', nodeVersion: 16),
     ]
 
     private void assertExist() {
@@ -68,6 +69,12 @@ class NpmProjBuilder {
     List<NpmProj> build() {
         if (this.version) {
             projs.removeAll { it.initialVersion > this.version }
+        }
+        if (this.targetNodeVersion) {
+            println "----------------------- BUILD TARGET NODE VERSION ---------------------------"
+            println this.targetNodeVersion
+            projs.removeAll { it.nodeVersion != this.targetNodeVersion }
+            println projs.collect{ it.name }
         }
         if (locate) {
             for (NpmProj p : projs) {

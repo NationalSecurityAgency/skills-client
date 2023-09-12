@@ -15,32 +15,37 @@ limitations under the License.
 */
 package skills
 
+import groovy.util.logging.Slf4j
+
 //import callStack.profiler.CProf
 //import callStack.profiler.Profile
-import groovy.util.logging.Slf4j
-import org.apache.commons.io.FileUtils
 
-import javax.print.attribute.SetOfIntegerSyntax
 import java.nio.file.Files
 
 @Slf4j
 class SetupNpmLinks {
 
+    // private
+    TitlePrinter titlePrinter = new TitlePrinter()
+
     static void main(String[] args) {
+        Integer targetNodeVersion = 0
         boolean shouldPrune = args.find({ it.equalsIgnoreCase("--prune") })
-        new SetupNpmLinks(shouldPrune: shouldPrune).init().doLink()
+        if (args.length > 0) {
+            targetNodeVersion = args[0].toInteger()
+        }
+        new SetupNpmLinks(shouldPrune: shouldPrune, targetNodeVersion: targetNodeVersion).init().doLink()
 //        log.info("Execution Prof:\n{}", CProf.prettyPrint())
     }
 
     // configure
     File root = new File("./")
     boolean shouldPrune = false
+    Integer targetNodeVersion = 14
 
-    // private
-    TitlePrinter titlePrinter = new TitlePrinter()
     List<NpmProj> projs
     SetupNpmLinks init(){
-        projs = new NpmProjBuilder(loc: root).build()
+        projs = new NpmProjBuilder(loc: root, targetNodeVersion: targetNodeVersion).build()
         return this
     }
 

@@ -40,6 +40,7 @@ class NpmProj {
 
     // for backwards compatibility testing
     String initialVersion
+    Integer nodeVersion
 
     ProcessRunner.ProcessRes exec(String command, boolean dryRun = false, File loc = this.loc) {
         if (!dryRun) {
