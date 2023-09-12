@@ -42,7 +42,7 @@ jobs:
 
     strategy:
       matrix:
-        version: [14]
+        version: [14, 16]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -50,7 +50,7 @@ jobs:
 
     - uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.version }}
+        node-version: 14
 
     - uses: actions/setup-java@v1
       with:
@@ -86,6 +86,10 @@ jobs:
         curl -s https://api.github.com/repos/NationalSecurityAgency/skills-service/releases/latest | grep browser_download_url | cut -d '"' -f 4 | wget -qi -
         ls ./
         cd ..
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.version }}
 
     - name: setup npm links
       run: ./.github/workflows/scripts/setupNpmLinks.sh ${{ matrix.version }}
