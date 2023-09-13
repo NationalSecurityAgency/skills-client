@@ -94,7 +94,7 @@ class SetupNpmLinks {
             npmProj.skillsDependenciesFromPackageJson.each {
                 File shouldBeSymbolic = new File(npmProj.loc, "node_modules/${it}")
                 assert shouldBeSymbolic.exists()
-//                assert Files.isSymbolicLink(shouldBeSymbolic.toPath())
+                assert Files.isSymbolicLink(shouldBeSymbolic.toPath())
             }
         }
 

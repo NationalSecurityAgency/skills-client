@@ -44,11 +44,12 @@ class NpmProjBuilder {
 
 
     private List<NpmProj> projs = [
-            new NpmProj(name: "skills-client-js", doOthersLinkToMe: true, hasLinksToOtherProjects: false, initialVersion: '2.0.0', nodeVersion: 14),
+            new NpmProj(name: "skills-client-js", doOthersLinkToMe: true, hasLinksToOtherProjects: false, initialVersion: '2.0.0', nodeVersion: -1),
             new NpmProj(name: "skills-client-vue", doOthersLinkToMe: true, initialVersion: '2.0.0', nodeVersion: 14),
             new NpmProj(name: "skills-client-react", doOthersLinkToMe: true, reactModule: true, initialVersion: '2.0.0', nodeVersion: 14),
             new NpmProj(name: "skills-client-ng", doOthersLinkToMe: true, angularModule: true, initialVersion: '3.0.0', nodeVersion: 14),
-            new NpmProj(name: "skills-int-client-js", doOthersLinkToMe: false, initialVersion: '2.0.0', nodeVersion: 14),
+            new NpmProj(name: "skills-client-ng16", doOthersLinkToMe: true, angularModule: true, initialVersion: '3.0.0', nodeVersion: 16),
+            new NpmProj(name: "skills-int-client-js", doOthersLinkToMe: false, initialVersion: '2.0.0', nodeVersion: -1),
             new NpmProj(name: "skills-int-client-vue", doOthersLinkToMe: false, initialVersion: '2.0.0', nodeVersion: 14),
             new NpmProj(name: "skills-int-client-react", doOthersLinkToMe: false, reactApp: true, initialVersion: '2.0.0', nodeVersion: 14),
             new NpmProj(name: "skills-int-client-react17", doOthersLinkToMe: false, reactApp: true, initialVersion: '3.4.0', nodeVersion: 14),
@@ -73,7 +74,7 @@ class NpmProjBuilder {
         if (this.targetNodeVersion) {
             println "----------------------- BUILD TARGET NODE VERSION ---------------------------"
             println this.targetNodeVersion
-            projs.removeAll { it.nodeVersion != this.targetNodeVersion }
+            projs.removeAll { it.nodeVersion != -1 && it.nodeVersion != this.targetNodeVersion }
             println projs.collect{ it.name }
         }
         if (locate) {
