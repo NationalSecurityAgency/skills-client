@@ -16,7 +16,7 @@ limitations under the License.
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import axios from 'axios';
 import { Example } from './example';
-import { SkillsReporter } from '@skilltree/skills-client-ng';
+import { SkillsReporter } from '@skilltree/skills-client-ng16';
 
 @Component({
   selector: 'app-anyskill-code-example',

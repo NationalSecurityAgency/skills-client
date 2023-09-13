@@ -14,16 +14,7 @@
  * limitations under the License.
  */
 module.exports = {
-  packages: {
-    '@skilltree/skills-client-ng16':  {
-      ignorableDeepImportMatchers: [
-        /lodash\//
-      ]
-    },
-    'ngx-highlightjs':  {
-      ignorableDeepImportMatchers: [
-        /highlight/
-      ]
-    },
-  }
-};
+  ignorableDeepImportMatchers: [
+    /lodash.*/,
+  ]
+}

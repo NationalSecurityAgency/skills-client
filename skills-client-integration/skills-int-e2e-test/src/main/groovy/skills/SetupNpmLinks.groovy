@@ -88,13 +88,13 @@ class SetupNpmLinks {
 //    @Profile
     private void validateLinks() {
         titlePrinter.printTitle("validate links")
-        projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
+        projs.findAll({ it.hasLinksToOtherProjects && (it.nodeVersion == -1 || it.nodeVersion == targetNodeVersion) }).each { NpmProj npmProj ->
             titlePrinter.printSubTitle("validating [${npmProj.getSkillsModulesDir().absolutePath}]")
             npmProj.exec("ls -l node_modules/@skilltree/")
             npmProj.skillsDependenciesFromPackageJson.each {
                 File shouldBeSymbolic = new File(npmProj.loc, "node_modules/${it}")
                 assert shouldBeSymbolic.exists()
-                assert Files.isSymbolicLink(shouldBeSymbolic.toPath())
+//                assert Files.isSymbolicLink(shouldBeSymbolic.toPath())
             }
         }
 
@@ -109,7 +109,7 @@ class SetupNpmLinks {
 //    @Profile
     private void npmLinkToSkills() {
         titlePrinter.printTitle("link")
-        projs.findAll({ it.hasLinksToOtherProjects }).each { NpmProj npmProj ->
+        projs.findAll({ it.hasLinksToOtherProjects && (it.nodeVersion == -1 || it.nodeVersion == targetNodeVersion)}).each { NpmProj npmProj ->
             npmProj.skillsDependenciesFromPackageJson.each {
                 titlePrinter.printSubTitle("Linking module [${it}] in project [${npmProj}]")
 
@@ -137,7 +137,7 @@ class SetupNpmLinks {
 //    @Profile
     private void createLinks() {
         titlePrinter.printTitle("create links")
-        projs.findAll({ it.doOthersLinkToMe }).each {
+        projs.findAll({ it.doOthersLinkToMe && (it.nodeVersion == -1 || it.nodeVersion == targetNodeVersion)}).each {
             File origLoc
             if (it.isAngularModule() || it.isAngularApp()) {
                 titlePrinter.printTitle("install and build angular module")

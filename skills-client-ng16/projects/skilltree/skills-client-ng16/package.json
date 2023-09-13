@@ -1,0 +1,35 @@
+{
+    "name": "@skilltree/skills-client-ng16",
+    "version": "3.6.0",
+    "license": "Apache-2.0",
+    "description": "SkillTree Client Lib - Angular",
+    "author": "SkillTree Team",
+    "scripts": {
+        "prepare": "node -e \"console.log('APP_VERSION = \\''+ process.env.npm_package_name + '-' + process.env.npm_package_version +'\\';')\" > src/version.js"
+    },
+    "peerDependencies": {
+        "@angular/common": "16.2.5",
+        "@angular/core": "16.2.5"
+    },
+    "dependencies": {
+        "tslib": "2.0.0",
+        "@skilltree/skills-client-js": "3.5.0"
+    },
+    "keywords": [
+        "SkillTree",
+        "gamification",
+        "training",
+        "User Engagement",
+        "Rapid Integration",
+        "Angular",
+        "AngularJS"
+    ],
+    "homepage": "https://code.nsa.gov/skills-docs/",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/NationalSecurityAgency/skills-client.git"
+    },
+    "bugs": {
+        "url": "https://github.com/NationalSecurityAgency/skills-client/issues"
+    }
+}

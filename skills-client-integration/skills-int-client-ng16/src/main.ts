@@ -16,7 +16,7 @@ limitations under the License.
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import axios from 'axios';
-import { SkillsConfiguration, Logger } from '@skilltree/skills-client-ng'
+import { SkillsConfiguration, Logger } from '@skilltree/skills-client-ng16'
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';

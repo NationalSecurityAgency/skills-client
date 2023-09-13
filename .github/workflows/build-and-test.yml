@@ -104,12 +104,22 @@ jobs:
         cd ../../
 
     - name: build integration test apps
+      if: matrix.version == 14
       env:
         MAVEN_OPTS: -Xmx2048m
       run: |
         cd ./skills-client-integration
         mvn --batch-mode clean install
         cd ../
+
+    - name: build remaining integration test apps
+      if: matrix.version >= 15
+      env:
+        MAVEN_OPTS: -Xmx2048m
+      run: |
+        cd ./skills-client-integration
+        mvn --batch-mode clean install -pl skills-int-e2e-test,skills-int-service
+        cd ../        
 
     - name: start services for cypress tests
       run: |
@@ -125,6 +135,24 @@ jobs:
         cd skills-client-integration/skills-int-e2e-test
         npm run cy:run
         cd ../../
+
+    - name: Run node 16 Cypress tests
+      if: matrix.version >= 15
+      uses: cypress-io/github-action@v2
+      with:
+        working-directory: skills-client-integration/skills-int-e2e-test
+        record: true
+        parallel: false
+        group: 'skills-client node16 tests'
+        tag: "${{ github.workflow }}"
+        spec: |
+          cypress/integration/angular16.specs.js
+          cypress/integration/timeout.specs.js
+      env:
+        # pass the Dashboard record key as an environment variable
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        # pass GitHub token to allow accurately detecting a build vs a re-run build
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: upload result artifacts
       if: ${{ always() }}

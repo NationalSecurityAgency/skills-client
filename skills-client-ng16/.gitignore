@@ -45,5 +45,3 @@ testem.log
 .DS_Store
 Thumbs.db
 package-lock.json
-
-projects/skilltree/skills-client-ng16/src/version.js

@@ -1,0 +1,23 @@
+{
+  "ignore": [ ".git", "coverage", ".*/**", ".*", "*.iml", "tsconfig.*", "skills.d.ts", "angular.json", "**/version.js"],
+  "license": "license-add/LICENSE-HEADER.txt",
+  "licenseFormats": {
+    "js": {
+      "prepend": "/*",
+      "append": " */",
+      "eachLine": {
+        "prepend": " * "
+      }
+    },
+    "dotfile": {
+      "eachLine": {
+        "prepend": "# "
+      }
+    },
+    "md": {
+      "prepend": "<!---",
+      "append": " -->"
+    }
+  },
+  "trailingWhitespace": "TRIM"
+}

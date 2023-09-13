@@ -27,7 +27,7 @@ import {
 import { Example } from './code-example/example'
 import { ExampleService } from './code-example/example.service';
 import { CodeExampleLayoutComponent } from './code-example/code-example-layout.component'
-import { SkillsReporter } from '@skilltree/skills-client-ng';
+import { SkillsReporter } from '@skilltree/skills-client-ng16';
 
 @Component({
   selector: 'app-report-skills',
