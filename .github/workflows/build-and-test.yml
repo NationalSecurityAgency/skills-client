@@ -110,7 +110,7 @@ jobs:
         MAVEN_OPTS: -Xmx2048m
       run: |
         cd ./skills-client-integration
-        mvn --batch-mode clean install -pl '!skills-int-client-ng16`
+        mvn --batch-mode clean install -pl '!skills-int-client-ng16'
         cd ../
 
     - name: build node 16 integration test apps
@@ -119,7 +119,7 @@ jobs:
         MAVEN_OPTS: -Xmx2048m
       run: |
         cd ./skills-client-integration
-        mvn --batch-mode clean install -pl '!skills-int-client-ng`
+        mvn --batch-mode clean install -pl '!skills-int-client-ng'
         cd ../        
 
     - name: start services for cypress tests
