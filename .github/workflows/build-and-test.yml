@@ -110,7 +110,7 @@ jobs:
         MAVEN_OPTS: -Xmx2048m
       run: |
         cd ./skills-client-integration
-        mvn --batch-mode clean install -pl skills-int-e2e-test,skills-int-service
+        mvn --batch-mode clean install -pl '!skills-int-client-ng'
         cd ../        
 
     - name: build angular 16 app
