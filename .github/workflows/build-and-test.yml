@@ -104,13 +104,13 @@ jobs:
         mvn --batch-mode clean install
         cd ../
 
-    - name: build remaining integration test apps
+    - name: build integration test apps for node16
       if: matrix.version >= 15
       env:
         MAVEN_OPTS: -Xmx2048m
       run: |
         cd ./skills-client-integration
-        mvn --batch-mode clean install -pl '!skills-int-client-vue,!skills-int-client-react,!skills-int-client-react17,!skills-int-client-react18,!skills-int-client-ng'
+        mvn --batch-mode clean install -pl skills-int-e2e-test,skills-int-service
         cd ../        
 
     - name: build angular 16 app
@@ -120,7 +120,7 @@ jobs:
       run: |
         cd ./skills-client-integration/skills-int-client-ng16
         mvn clean install
-        cd ../../             
+        cd ../../
 
     - name: start services for cypress tests
       run: |
