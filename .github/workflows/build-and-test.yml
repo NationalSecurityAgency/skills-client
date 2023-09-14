@@ -95,6 +95,15 @@ jobs:
     - name: setup npm links
       run: ./.github/workflows/scripts/setupNpmLinks.sh ${{ matrix.version }}
 
+    - name: build angular 16 app
+      if: matrix.version >= 15
+      env:
+        MAVEN_OPTS: -Xmx2048m
+      run: |
+        cd ./skills-client-integration/skills-int-client-ng16
+        mvn clean install
+        cd ../../
+
     - name: build integration test apps
       if: matrix.version == 14
       env:
@@ -104,23 +113,14 @@ jobs:
         mvn --batch-mode clean install
         cd ../
 
-    - name: build integration test apps for node16
+    - name: build remaining integration test apps
       if: matrix.version >= 15
       env:
         MAVEN_OPTS: -Xmx2048m
       run: |
         cd ./skills-client-integration
-        mvn --batch-mode clean install -pl '!skills-int-client-ng'
+        mvn --batch-mode clean install -pl skills-int-e2e-test,skills-int-service
         cd ../        
-
-    - name: build angular 16 app
-      if: matrix.version >= 15
-      env:
-        MAVEN_OPTS: -Xmx2048m
-      run: |
-        cd ./skills-client-integration/skills-int-client-ng16
-        mvn clean install
-        cd ../../
 
     - name: start services for cypress tests
       run: |
