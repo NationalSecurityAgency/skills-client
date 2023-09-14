@@ -139,7 +139,7 @@ jobs:
 
     - name: Run node 16 Cypress tests
       if: matrix.version >= 15
-      uses: cypress-io/github-action@v2
+      uses: cypress-io/github-action@v6
       with:
         working-directory: skills-client-integration/skills-int-e2e-test
         record: true
