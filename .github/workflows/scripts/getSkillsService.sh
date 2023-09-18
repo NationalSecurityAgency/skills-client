@@ -28,39 +28,46 @@ if [[ "$myGitBranch" == *"HEAD detached at pull"* ]]; then
   echo "Looking for branch associated with PR#${pullNumber}"
   myGitBranch=$(curl -s https://api.github.com/repos/NationalSecurityAgency/skills-client/pulls/"${pullNumber}" | jq -r '.head.ref')
   echo "Found new Git Branch: [${myGitBranch}]"
-fi
 
-echo "Checkout skill-service code and build it."
-git clone https://github.com/NationalSecurityAgency/skills-service.git
-cd ./skills-service/
+  echo "Checkout skill-service code and build it."
+  git clone https://github.com/NationalSecurityAgency/skills-service.git
+  cd ./skills-service/
 
-switchToBranch="master"
-echo "Default branch to consider [${myGitBranch}]"
-matchingBranch=`git branch -a | grep "remotes/origin/${myGitBranch}" | gawk -F'remotes/origin/' '{print $2}' | cat`
-echo "Matching branch to consider [${matchingBranch}]"
-if [[ "$myGitBranch" == *\.X ]] || [[ "$myGitBranch" == "master" ]] || [[ -z "$matchingBranch" ]]
-then
-    echo "Building skill-service from [master] branch"
+  echo "Default branch to consider [${myGitBranch}]"
+  matchingBranch=`git branch -a | grep "remotes/origin/${myGitBranch}" | gawk -F'remotes/origin/' '{print $2}' | cat`
+  echo "Matching branch to consider [${matchingBranch}]"
+  if [[ "$myGitBranch" == *\.X ]] || [[ "$myGitBranch" == "master" ]] || [[ -z "$matchingBranch" ]]
+  then
+      echo "ERROR: Failed to find matching branch"
+  else
+      switchToBranch=$matchingBranch
+      echo "Found matching branch [${switchToBranch}]"
+  fi
+
+  if [[ -z "$switchToBranch" ]]
+  then
+      exit 255
+  fi
+
+  echo "Checking out [${switchToBranch}]"
+  git checkout ${switchToBranch} --
+
+  echo "git status:"
+  git status
+
+  export MAVEN_OPTS="-Xmx2048m"
+  mvn --batch-mode package -DskipTests
+  jar=$(ls ./service/target/*.jar)
+  mv $jar ./
+
+  cd ../
 else
-    switchToBranch=$matchingBranch
-    echo "Found matching branch [${switchToBranch}]"
+  echo 'Downloading latest skills-service release'
+  mkdir skills-service
+  cd skills-service
+  curl -s https://api.github.com/repos/NationalSecurityAgency/skills-service/releases/latest | grep browser_download_url | cut -d '"' -f 4 | wget -qi -
+  ls ./
+  cd ..
 fi
 
-if [[ -z "$switchToBranch" ]]
-then
-    exit -1
-fi
-
-echo "Checking out [${switchToBranch}]"
-git checkout ${switchToBranch} --
-
-echo "git status:"
-git status
-
-export MAVEN_OPTS="-Xmx2048m"
-mvn --batch-mode package -DskipTests
-jar=$(ls ./service/target/*.jar)
-mv $jar ./
-
-cd ../
 echo "------- DONE: Build skills-service jar -------"
