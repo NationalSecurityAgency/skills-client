@@ -17,8 +17,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+  setup:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -40,54 +39,56 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
 
-    strategy:
-      matrix:
-        version: [14, 16]
-      fail-fast: false
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '19' # The JDK version to make available on the path.
+
+      - name: Print Versions
+        run: |
+          mvn --version
+          java -version
+          npm -version
+          node --version
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Cache npm
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: download or build skill-service
+        run: |
+          mkdir skills-service
+          cd skills-service
+          curl -s https://api.github.com/repos/NationalSecurityAgency/skills-service/releases/latest | grep browser_download_url | cut -d '"' -f 4 | wget -qi -
+          ls ./
+          cd ..
+  build:
+    needs: [setup],
+#    strategy:
+#      matrix:
+#        version: [14, 16]
+#      fail-fast: false
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v3
-
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 14
-
-    - uses: actions/setup-java@v1
-      with:
-        java-version: '19' # The JDK version to make available on the path.
-
-    - name: Print Versions
-      run: |
-        mvn --version
-        java -version
-        npm -version
-        node --version
-
-    - name: Cache local Maven repository
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
-
-    - name: Cache npm
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-
-    - name: download or build skill-service
-      run: |
-        mkdir skills-service
-        cd skills-service
-        curl -s https://api.github.com/repos/NationalSecurityAgency/skills-service/releases/latest | grep browser_download_url | cut -d '"' -f 4 | wget -qi -
-        ls ./
-        cd ..
-
     - uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.version }}
