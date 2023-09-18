@@ -3,7 +3,7 @@
     "rollup.config.js", "app/assets/**", "target/**", "pom.xml",
     "build/**", "**/robots.txt", "**.svg", "vue.config.js",
     "cypress/videos/**", "**/*.jar", "**.xml", "src/license/*.properties",
-    "nohup.out", "logs/*", "**.patch"
+    "nohup.out", "logs/*", "**.patch", "**.yml"
   ],
   "license": "../license-add/LICENSE-HEADER.txt",
   "licenseFormats": {
