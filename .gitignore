@@ -3,7 +3,7 @@
 /skills-client-js/coverage/
 /skills-client-js/dist/
 /skills-client-integration/skills-int-service/src/main/resources/public/
-
+.angular/
 .history
 /target/
 /skills-client-integration/skills-int-e2e-test/logs/

@@ -132,6 +132,7 @@ jobs:
 
 
     - name: Run Cypress tests
+      if: matrix.version == 14
       run: |
         cd skills-client-integration/skills-int-e2e-test
         npm run cy:run
@@ -139,21 +140,10 @@ jobs:
 
     - name: Run node 16 Cypress tests
       if: matrix.version >= 15
-      uses: cypress-io/github-action@v6
-      with:
-        working-directory: skills-client-integration/skills-int-e2e-test
-        record: true
-        parallel: false
-        group: 'skills-client node16 tests'
-        tag: "${{ github.workflow }}"
-        spec: |
-          cypress/integration/angular16.specs.js
-          cypress/integration/timeout.specs.js
-      env:
-        # pass the Dashboard record key as an environment variable
-        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-        # pass GitHub token to allow accurately detecting a build vs a re-run build
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        cd skills-client-integration/skills-int-e2e-test
+        npm run cy:run:test:ng16
+        cd ../../
 
     - name: upload result artifacts
       if: ${{ always() }}
