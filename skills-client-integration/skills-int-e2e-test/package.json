@@ -13,6 +13,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "cy:open": "cypress open",
     "cy:run": "npm run licenseCheck && cypress run",
+    "cy:run:test:ng16": "cypress run --spec \"cypress/integration/angular16.specs.js\"",    
     "cy:open:dev:vue": "cypress open --config baseUrl=http://localhost:8091",
     "cy:open:dev:js": "cypress open --config baseUrl=http://localhost:8092",
     "cy:open:dev:react": "cypress open --config baseUrl=http://localhost:8083",

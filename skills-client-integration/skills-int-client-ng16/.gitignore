@@ -46,4 +46,6 @@ testem.log
 Thumbs.db
 package-lock.json
 
+.angular/
+
 projects/skilltree/skills-client-ng16/src/version.js
