@@ -93,6 +93,9 @@ jobs:
       with:
         node-version: ${{ matrix.version }}
 
+    - name: test ls
+      run: ls
+
     - name: setup npm links
       run: ./.github/workflows/scripts/setupNpmLinks.sh ${{ matrix.version }}
 
