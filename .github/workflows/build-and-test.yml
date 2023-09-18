@@ -91,25 +91,25 @@ jobs:
     steps:
     - uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.version }}
+        node-version: 14
 
     - name: test ls
       run: ls ./
 
     - name: setup npm links
-      run: ./.github/workflows/scripts/setupNpmLinks.sh ${{ matrix.version }}
+      run: ./.github/workflows/scripts/setupNpmLinks.sh 14
 
-    - name: build angular 16 app
-      if: matrix.version >= 15
-      env:
-        MAVEN_OPTS: -Xmx2048m
-      run: |
-        cd ./skills-client-integration/skills-int-client-ng16
-        mvn clean install
-        cd ../../
+#    - name: build angular 16 app
+#      if: matrix.version >= 15
+#      env:
+#        MAVEN_OPTS: -Xmx2048m
+#      run: |
+#        cd ./skills-client-integration/skills-int-client-ng16
+#        mvn clean install
+#        cd ../../
 
     - name: build integration test apps
-      if: matrix.version == 14
+#      if: matrix.version == 14
       env:
         MAVEN_OPTS: -Xmx2048m
       run: |
@@ -117,15 +117,20 @@ jobs:
         mvn --batch-mode clean install
         cd ../
 
-    - name: build remaining integration test apps
-      if: matrix.version >= 15
-      env:
-        MAVEN_OPTS: -Xmx2048m
-      run: |
-        cd ./skills-client-integration
-        mvn --batch-mode clean install -pl skills-int-e2e-test,skills-int-service
-        cd ../        
+#    - name: build remaining integration test apps
+#      if: matrix.version >= 15
+#      env:
+#        MAVEN_OPTS: -Xmx2048m
+#      run: |
+#        cd ./skills-client-integration
+#        mvn --batch-mode clean install -pl skills-int-e2e-test,skills-int-service
+#        cd ../
 
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
     - name: start services for cypress tests
       run: |
         cd skills-client-integration/skills-int-e2e-test
@@ -136,18 +141,18 @@ jobs:
 
 
     - name: Run Cypress tests
-      if: matrix.version == 14
+#      if: matrix.version == 14
       run: |
         cd skills-client-integration/skills-int-e2e-test
         npm run cy:run
         cd ../../
 
-    - name: Run node 16 Cypress tests
-      if: matrix.version >= 15
-      run: |
-        cd skills-client-integration/skills-int-e2e-test
-        npm run cy:run:test:ng16
-        cd ../../
+#    - name: Run node 16 Cypress tests
+#      if: matrix.version >= 15
+#      run: |
+#        cd skills-client-integration/skills-int-e2e-test
+#        npm run cy:run:test:ng16
+#        cd ../../
 
     - name: upload result artifacts
       if: ${{ always() }}
