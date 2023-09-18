@@ -76,11 +76,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-    - name: build skill-service
+    - name: download or build skill-service
       run: ./.github/workflows/scripts/getSkillsService.sh
 
-#    - name: setup npm links
-#      run: ./.github/workflows/scripts/setupNpmLinks.sh
+    - name: setup npm links
+      run: ./.github/workflows/scripts/setupNpmLinks.sh
 
     - name: build integration test apps
       env:
