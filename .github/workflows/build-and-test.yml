@@ -98,19 +98,12 @@ jobs:
         npm run cyServices:start:integration-apps
         cd ../../
 
+
     - name: Run Cypress tests
-      uses: cypress-io/github-action@v2
-      with:
-        working-directory: skills-client-integration/skills-int-e2e-test
-        record: true
-        parallel: false
-        group: 'skills-client tests'
-        tag: "${{ github.workflow }}"
-      env:
-        # pass the Dashboard record key as an environment variable
-        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-        # pass GitHub token to allow accurately detecting a build vs a re-run build
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        cd skills-client-integration/skills-int-e2e-test
+        npm run cy:run
+        cd ../../
 
     - name: upload result artifacts
       if: ${{ always() }}
@@ -123,3 +116,8 @@ jobs:
           ./skills-client-integration/skills-int-e2e-test/target/logs/*.out
           ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
           ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
+          ./skills-client-integration/skills-int-e2e-test/logs
+          ./skills-client-integration/skills-int-e2e-test/cypress/videos
+          ./skills-client-integration/skills-int-e2e-test/cypress/screenshots
+          ./skills-client-integration/skills-int-e2e-test/cypress/snapshots/**/**/__diff_output__/*.png
+          ./skills-client-integration/skills-int-e2e-test/cypress/snapshots/**/__diff_output__/*.png
