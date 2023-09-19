@@ -161,7 +161,6 @@ jobs:
     - uses: action/download-artifact@v3
       with:
         name: skills-service-artifact
-        path: ./*.jar
 
 #    - uses: action/download-artifact@v3
 #      with:
