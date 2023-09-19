@@ -158,14 +158,16 @@ jobs:
       with:
         java-version: '19' # The JDK version to make available on the path.
 
-    - uses: action/download-artifact@v3
+    - uses: actions/download-artifact@v3
       with:
         name: skills-service-artifact
 
-#    - uses: action/download-artifact@v3
-#      with:
-#        name: skills-client-integration
-#        path: ./skills-client-integration
+    - uses: actions/download-artifact@v3
+      with:
+        name: skills-client-integration
+
+    - name: Run ls
+      run: ls -la .\
 
     - name: start services for cypress tests
       run: |
