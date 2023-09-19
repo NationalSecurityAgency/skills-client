@@ -165,12 +165,12 @@ jobs:
       run: ls
 
     - name: create skills-service directory
-      run: mkdir ./skills-service
+      run: mkdir ../skills-service
 
     - uses: actions/download-artifact@v3
       with:
         name: skills-service-artifact
-        path: ./skills-service/
+        path: ../skills-service/
 
 #    - uses: actions/download-artifact@v3
 #      with:
