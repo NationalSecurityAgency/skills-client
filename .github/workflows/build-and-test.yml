@@ -82,6 +82,9 @@ jobs:
           ls ./
           cd ..
 
+      - name: test ls
+        run: pwd
+
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
