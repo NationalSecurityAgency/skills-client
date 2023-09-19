@@ -96,10 +96,9 @@ jobs:
       with:
         node-version: 14
 
-    - name: test ls
-      run: |
-        ls -la ./
-        ls -la ../
+    - uses: actions/setup-java@v1
+      with:
+        java-version: '19' # The JDK version to make available on the path.
 
     - name: setup npm links
       run: ./.github/workflows/scripts/setupNpmLinks.sh 14
