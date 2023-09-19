@@ -13,6 +13,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "cy:open": "cypress open",
     "cy:run": "npm run licenseCheck && cypress run",
+    "cy:run:oauth": "npm run licenseCheck && cypress run --env authMode=oauth",
+    "cy:run:timeout": "npm run licenseCheck && cypress run --env timeout=true --spec \"cypress/integration/timeout.specs.js\"",
     "cy:open:dev:vue": "cypress open --config baseUrl=http://localhost:8091",
     "cy:open:dev:js": "cypress open --config baseUrl=http://localhost:8092",
     "cy:open:dev:react": "cypress open --config baseUrl=http://localhost:8083",
