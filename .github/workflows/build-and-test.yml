@@ -81,16 +81,11 @@ jobs:
           curl -s https://api.github.com/repos/NationalSecurityAgency/skills-service/releases/latest | grep browser_download_url | cut -d '"' -f 4 | wget -qi -
           ls ./
 
-      - name: list
-        run: |
-          pwd
-          ls ./          
-
       - name: upload skills-service artifacts
         uses: actions/upload-artifact@v3
         with:
           name: skills-service-artifact
-          path: ./skills-service-2.9.0.jar
+          path: ./skills-service/*.jar
 
   build:
     # The type of runner that the job will run on
