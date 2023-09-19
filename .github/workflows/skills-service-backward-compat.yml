@@ -78,16 +78,22 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-    - name: build skill-service
-      run: ./.github/workflows/scripts/getSkillsService.sh
+#    - name: build skill-service
+#      run: ./.github/workflows/scripts/getSkillsService.sh
+    - name: download skill-service
+      run: |
+        mkdir skills-service
+        cd skills-service
+        curl -s https://api.github.com/repos/NationalSecurityAgency/skills-service/releases/latest | grep browser_download_url | cut -d '"' -f 4 | wget -qi -
+        ls ./
+        cd ..
 
     - name: run backwards compat tests
       run: |
         cd skills-client-integration/skills-int-e2e-test
         mvn --batch-mode clean package
         export NO_COLOR=1
-        export CYPRESS_RECORD_KEY=${{ secrets.CYPRESS_RECORD_KEY }}
-        java -jar target/skills-int-e2e-test-*.jar -record -tag "${{ github.workflow }}"
+        java -jar target/skills-int-e2e-test-*.jar
         cd ../../
 
     - name: upload result artifacts

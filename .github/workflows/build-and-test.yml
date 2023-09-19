@@ -76,7 +76,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-    - name: download or build skill-service
+    - name: download skill-service
       run: |
         mkdir skills-service
         cd skills-service

@@ -79,8 +79,13 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-    - name: build skill-service
-      run: ./.github/workflows/scripts/getSkillsService.sh
+    - name: download skill-service
+      run: |
+        mkdir skills-service
+        cd skills-service
+        curl -s https://api.github.com/repos/NationalSecurityAgency/skills-service/releases/latest | grep browser_download_url | cut -d '"' -f 4 | wget -qi -
+        ls ./
+        cd ..
 
     - name: setup npm links
       run: ./.github/workflows/scripts/setupNpmLinks.sh
@@ -125,20 +130,26 @@ jobs:
         npm run cyServices:start:integration-apps:oauth
         cd ../../
 
-    - name: Run Cypress tests using OAuth
-      uses: cypress-io/github-action@v2
-      with:
-        working-directory: skills-client-integration/skills-int-e2e-test
-        record: true
-        parallel: false
-        group: 'skills-client oauth tests'
-        tag: "${{ github.workflow }}"
-        env: 'authMode=oauth'
-      env:
-        # pass the Dashboard record key as an environment variable
-        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-        # pass GitHub token to allow accurately detecting a build vs a re-run build
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#    - name: Run Cypress tests using OAuth
+#      uses: cypress-io/github-action@v2
+#      with:
+#        working-directory: skills-client-integration/skills-int-e2e-test
+#        record: true
+#        parallel: false
+#        group: 'skills-client oauth tests'
+#        tag: "${{ github.workflow }}"
+#        env: 'authMode=oauth'
+#      env:
+#        # pass the Dashboard record key as an environment variable
+#        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+#        # pass GitHub token to allow accurately detecting a build vs a re-run build
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run Cypress tests
+      run: |
+        cd skills-client-integration/skills-int-e2e-test
+        npm run cy:run:oauth
+        cd ../../
 
     - name: upload result artifacts
       if: ${{ always() }}
@@ -151,3 +162,8 @@ jobs:
           ./skills-client-integration/skills-int-e2e-test/target/logs/*.out
           ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
           ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
+          ./skills-client-integration/skills-int-e2e-test/logs
+          ./skills-client-integration/skills-int-e2e-test/cypress/videos
+          ./skills-client-integration/skills-int-e2e-test/cypress/screenshots
+          ./skills-client-integration/skills-int-e2e-test/cypress/snapshots/**/**/__diff_output__/*.png
+          ./skills-client-integration/skills-int-e2e-test/cypress/snapshots/**/__diff_output__/*.png
