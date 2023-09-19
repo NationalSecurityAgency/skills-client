@@ -134,37 +134,37 @@ jobs:
 #        cd ./skills-client-integration
 #        mvn --batch-mode clean install -pl skills-int-e2e-test,skills-int-service
 #        cd ../
-    - name: upload skills-service artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: skills-client-integration
-        path: ./skills-client-integration
-
-  test:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    needs: build
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v3
-
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 14
-
-    - uses: actions/setup-java@v1
-      with:
-        java-version: '19' # The JDK version to make available on the path.
+#    - name: upload skills-service artifacts
+#      uses: actions/upload-artifact@v3
+#      with:
+#        name: skills-client-integration
+#        path: ./skills-client-integration
+#
+#  test:
+#    # The type of runner that the job will run on
+#    runs-on: ubuntu-latest
+#    needs: build
+#
+#    # Steps represent a sequence of tasks that will be executed as part of the job
+#    steps:
+#    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+#    - uses: actions/checkout@v3
+#
+#    - uses: actions/setup-node@v3
+#      with:
+#        node-version: 14
+#
+#    - uses: actions/setup-java@v1
+#      with:
+#        java-version: '19' # The JDK version to make available on the path.
 
     - uses: actions/download-artifact@v3
       with:
         name: skills-service-artifact
 
-    - uses: actions/download-artifact@v3
-      with:
-        name: skills-client-integration
+#    - uses: actions/download-artifact@v3
+#      with:
+#        name: skills-client-integration
 
     - name: Run ls
       run: ls -la .\
