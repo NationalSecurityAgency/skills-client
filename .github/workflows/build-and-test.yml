@@ -94,7 +94,7 @@ jobs:
         node-version: 14
 
     - name: test ls
-      run: ls ./
+      run: pwd
 
     - name: setup npm links
       run: ./.github/workflows/scripts/setupNpmLinks.sh 14
