@@ -181,7 +181,7 @@ jobs:
 #      if: matrix.version == 14
       run: |
         cd skills-client-integration/skills-int-e2e-test
-        npm run cy:run
+        npm run cy:run:test
         cd ../../
 
 #    - name: Run node 16 Cypress tests
