@@ -173,6 +173,12 @@ jobs:
     - name: Run ls
       run: ls -la .\
 
+    - name: Run ls 1
+      run: ls -la ../
+
+    - name: Run ls 2
+      run: ls -la ../../
+
     - name: start services for cypress tests
       run: |
         cd skills-client-integration/skills-int-e2e-test
