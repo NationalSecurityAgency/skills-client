@@ -82,9 +82,6 @@ jobs:
           ls ./
           cd ..
 
-      - name: test ls
-        run: pwd
-
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -97,7 +94,9 @@ jobs:
         node-version: 14
 
     - name: test ls
-      run: pwd
+      run: |
+        ls -la ./
+        ls -la ../
 
     - name: setup npm links
       run: ./.github/workflows/scripts/setupNpmLinks.sh 14
