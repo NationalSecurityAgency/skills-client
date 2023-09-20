@@ -25,6 +25,10 @@ context('Angular 16 Tests', () => {
     const noThemeBackground = laterThan_1_4_0 ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)';
     const rankDetailsTitle = laterThan_1_11_1 ? 'My Rank' : 'Rank Overview'
 
+    beforeEach(() => {
+        cy.viewport(1280, 1280);
+    })
+
     it('level component should be reactive', () => {
         cy.createDefaultProject()
         const sendEventViaDropdownId = '#PureJSReportAnySkill';
