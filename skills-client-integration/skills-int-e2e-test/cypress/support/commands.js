@@ -186,7 +186,7 @@ Cypress.Commands.add("cdBack", (expectedTitle = 'User Skills') => {
 
 Cypress.Commands.add("clientDisplay", (firstVisit=false, project='proj1') => {
   cy.intercept(`/api/projects/${project}/rank`).as(`getRank${project}`)
-  cy.intercept(`/api/projects/${project}/pointHistory`).as(`getPointsHistory${project}`)
+  cy.intercept(`/api/projects/${project}/pointHistory?*`).as(`getPointsHistory${project}`)
   if (firstVisit) {
     cy.wait(`@getRank${project}`)
     cy.wait(`@getPointsHistory${project}`)

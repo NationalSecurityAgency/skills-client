@@ -4,6 +4,7 @@ module.exports = defineConfig({
   chromeWebSecurity: false,
   defaultCommandTimeout: 10000,
   projectId: '3yas4t',
+  requestTimeout: 10000,
   retries: {
     runMode: 2,
     openMode: 0,
