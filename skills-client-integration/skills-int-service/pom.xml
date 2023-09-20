@@ -87,7 +87,7 @@
 							<overwrite>true</overwrite>
 							<resources>
 								<resource>
-									<directory>${project.parent.basedir}/skills-int-client-ng16/dist/skills-int-client-ng</directory>
+									<directory>${project.parent.basedir}/skills-int-client-ng16/dist/skills-int-client-ng16</directory>
 								</resource>
 							</resources>
 						</configuration>

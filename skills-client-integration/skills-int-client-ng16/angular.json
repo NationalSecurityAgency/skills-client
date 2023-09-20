@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "skills-int-client-ng": {
+    "skills-int-client-ng16": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -20,7 +20,7 @@
               "js-beautify"
             ],
             "preserveSymlinks": true,
-            "outputPath": "dist/skills-int-client-ng",
+            "outputPath": "dist/skills-int-client-ng16",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -73,11 +73,11 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "skills-int-client-ng:build"
+            "browserTarget": "skills-int-client-ng16:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "skills-int-client-ng:build:production"
+              "browserTarget": "skills-int-client-ng16:build:production"
             }
           }
         },
@@ -115,15 +115,15 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "skills-int-client-ng:serve"
+            "devServerTarget": "skills-int-client-ng16:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "skills-int-client-ng:serve:production"
+              "devServerTarget": "skills-int-client-ng16:serve:production"
             }
           }
         }
       }
     }},
-  "defaultProject": "skills-int-client-ng"
+  "defaultProject": "skills-int-client-ng16"
 }

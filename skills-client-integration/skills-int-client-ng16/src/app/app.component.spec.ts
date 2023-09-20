@@ -35,16 +35,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'skills-int-client-ng'`, () => {
+  it(`should have as title 'skills-int-client-ng16'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('skills-int-client-ng');
+    expect(app.title).toEqual('skills-int-client-ng16');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('skills-int-client-ng app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain('skills-int-client-ng16 app is running!');
   });
 });

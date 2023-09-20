@@ -25,7 +25,7 @@ describe('workspace-project App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getTitleText()).toEqual('skills-int-client-ng app is running!');
+    expect(page.getTitleText()).toEqual('skills-int-client-ng16 app is running!');
   });
 
   afterEach(async () => {
