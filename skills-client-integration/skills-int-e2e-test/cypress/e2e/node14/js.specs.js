@@ -300,7 +300,13 @@ context("Native JS Tests", () => {
             cy.visit('/native/clientDisplay.html?internalBackButton=true');
             // cy.wait('@getToken')
 
-            cy.clientDisplay(true).find('[data-cy=back]').should('not.exist');
+            cy.intercept(`/api/projects/proj1/rank`).as(`getRankproj1`)
+            cy.intercept(`/api/projects/proj1/pointHistory`).as(`getPointsHistoryproj1`)
+            cy.wait(`@getRankproj1`)
+            cy.wait(`@getPointsHistoryproj1`)
+
+            cy.wrapIframe().find('[data-cy=back]').should('not.exist');
+
             cy.clientDisplay().contains('User Skills');
 
             // navigate to Rank Overview that contains the back button

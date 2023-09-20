@@ -254,7 +254,7 @@ context('Vue Tests', () => {
             cy.intercept(Cypress.env('tokenUrl')).as('getToken')
             cy.intercept('/api/users/proj2/user2/token').as('getToken2')
             cy.intercept('api/projects/proj1/rank').as('getRankUser2')
-            cy.intercept('api/projects/proj1/pointHistory').as('getPointsHistoryUser2')
+            cy.intercept('api/projects/proj1/pointHistory?*').as('getPointsHistoryUser2')
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
             cy.visit('/vuejs#/showSkills')
             cy.wait('@getToken')
