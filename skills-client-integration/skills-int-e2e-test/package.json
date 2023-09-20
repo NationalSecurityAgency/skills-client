@@ -14,7 +14,7 @@
     "cy:open": "cypress open",
     "cy:run": "npm run licenseCheck && cypress run",
     "cy:run:test": "cypress run --browser chrome --spec \"cypress/e2e/node14/*.specs.js\"",
-    "cy:run:test:ng16": "cypress run --headed --browser chrome --spec \"cypress/e2e/node16/*.specs.js\"",
+    "cy:run:test:ng16": "cypress run --browser chrome --spec \"cypress/e2e/node16/*.specs.js\"",
     "cy:open:dev:vue": "cypress open --config baseUrl=http://localhost:8091",
     "cy:open:dev:js": "cypress open --config baseUrl=http://localhost:8092",
     "cy:open:dev:react": "cypress open --config baseUrl=http://localhost:8083",
