@@ -13,73 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Utils from "./Utils";
+import Utils from "../Utils";
 
-const homePage = '/angular16/reportSkills'
+const homePage = '/react17/index.html#/'
 
-context('Angular 16 Tests', () => {
+context('React17 Tests', () => {
 
     const laterThan_1_4_0 = Utils.skillsServiceVersionLaterThan('1.4.0');
     const laterThan_1_11_1 = Utils.skillsServiceVersionLaterThan('1.11.1');
-    const missingSkillErrorCode = laterThan_1_4_0 ? 404 : 400;
     const noThemeBackground = laterThan_1_4_0 ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)';
     const rankDetailsTitle = laterThan_1_11_1 ? 'My Rank' : 'Rank Overview'
-
-    it('level component should be reactive', () => {
-        cy.createDefaultProject()
-        const sendEventViaDropdownId = '#PureJSReportAnySkill';
-        Cypress.Commands.add("clickSubmit", () => {
-            cy.get(`${sendEventViaDropdownId} .btn`).contains('Report Skill').click()
-        })
-        Cypress.Commands.add("selectSkill", (skill) => {
-            cy.get('[data-cy=anySkillDropDownButton]').click()
-            cy.get('[data-cy=anySkillDropDownItemButton]').contains(skill).click()//.select(`${skill}`)
-        })
-
-        cy.visitHomePage(homePage);
-
-        cy.contains('Level 0')
-
-        cy.selectSkill('IronMan')
-        cy.clickSubmit()
-        cy.contains('Level 1')
-
-        cy.selectSkill('Thor')
-        cy.clickSubmit()
-        cy.contains('Level 2')
-
-        cy.selectSkill('subj1_skill0')
-        cy.clickSubmit()
-        cy.contains('Level 3')
-
-        cy.selectSkill('subj1_skill1')
-        cy.clickSubmit()
-        cy.contains('Level 3')
-
-        cy.selectSkill('subj2_skill0')
-        cy.clickSubmit()
-        cy.contains('Level 4')
-
-        cy.selectSkill('subj2_skill1')
-        cy.clickSubmit()
-        cy.contains('Level 5')
-    })
-
-    it('level component should load initial level', () => {
-        cy.createDefaultProject()
-        // cy.reportSkill('subj1_skill0')
-
-        // this will increment levels for skills@skills.org but Level and display components display data for the proxyUser
-        // validate that level is still 0
-        cy.reportSkillForUser('IronMan', 'skills@skill.org')
-        cy.visitHomePage(homePage);
-        cy.contains('Level 0')
-
-
-        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
-        // cy.visitHomePage(homePage);
-        cy.contains('Level 1')
-    })
 
     it('level component should be reactive (skills reported directly to backend endpoint)', () => {
         cy.createDefaultProject()
@@ -106,6 +49,22 @@ context('Angular 16 Tests', () => {
         cy.contains('Level 5')
     })
 
+    it('level component should load initial level', () => {
+        cy.createDefaultProject()
+        // cy.reportSkill('subj1_skill0')
+
+        // this will increment levels for the default user = skills@skills.org but Level and display components display data for Cypress.env('proxyUser')
+        // validate that level is still 0
+        cy.reportSkillForUser('IronMan', 'skills@skill.org')
+        cy.visitHomePage(homePage);
+        cy.contains('Level 0')
+
+
+        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
+        // cy.visitHomePage(homePage);
+        cy.contains('Level 1')
+    })
+
     it('global event show correct results', () => {
         cy.createDefaultProject()
         cy.visitHomePage(homePage);
@@ -113,12 +72,53 @@ context('Angular 16 Tests', () => {
         cy.contains('Level 0')
 
         cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
-
         cy.contains('Level 1')
+
         cy.get('[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
         cy.get('[data-cy=globalEventResult]').contains('"pointsEarned": 50')
         cy.get('[data-cy=globalEventResult]').contains('"skillApplied": true')
         cy.get('[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
+    })
+
+    it('level component should be reactive', () => {
+        cy.createDefaultProject()
+        const sendEventViaDropdownId = '#exampleDirectiveClickEvent';
+        Cypress.Commands.add("clickSubmit", () => {
+            cy.get(`${sendEventViaDropdownId} .btn`).click({force: true})
+        })
+        Cypress.Commands.add("selectSkill", (skill) => {
+            cy.get(`${sendEventViaDropdownId} select`).select(`${skill}`, {force: true})
+        })
+
+        cy.visitHomePage(homePage);
+
+        cy.contains('Level 0')
+
+        cy.intercept('/api/projects/proj1/skills/IronMan').as('w');
+        cy.selectSkill('IronMan')
+        cy.clickSubmit()
+        cy.contains('Level 1')
+
+        cy.wait('@w');
+        cy.selectSkill('Thor')
+        cy.clickSubmit()
+        cy.contains('Level 2')
+
+        cy.selectSkill('subj1_skill0')
+        cy.clickSubmit()
+        cy.contains('Level 3')
+
+        cy.selectSkill('subj1_skill1')
+        cy.clickSubmit()
+        cy.contains('Level 3')
+
+        cy.selectSkill('subj2_skill0')
+        cy.clickSubmit()
+        cy.contains('Level 4')
+
+        cy.selectSkill('subj2_skill1')
+        cy.clickSubmit()
+        cy.contains('Level 5')
     })
 
     it('global event does not update when skill reported for a different project', () => {
@@ -134,26 +134,8 @@ context('Angular 16 Tests', () => {
         cy.get('[data-cy=globalEventResult]').should('be.empty');
     })
 
-    it('global event is not reported when skill is not applied', () => {
-        cy.createDefaultProject()
-        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
-
-        cy.visitHomePage(homePage);
-
-        cy.contains('Level 1')
-
-        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
-        cy.contains('Level 1')
-
-        cy.get('[data-cy=globalEventResult]').should('be.empty');
-    })
-
     it('level component should not update when admin reports skill for other user', () => {
-
         cy.createDefaultProject()
-        Cypress.Commands.add("reportSkill", (skillId) => {
-            cy.backendPost(`/api/projects/proj1/skills/${skillId}`)
-        })
         cy.visitHomePage(homePage);
 
         cy.contains('Level 0')
@@ -162,126 +144,71 @@ context('Angular 16 Tests', () => {
         cy.contains('Level 0')
     })
 
-    it('skilltree directive on click', () => {
-        cy.createDefaultProject(1, 2, 50, 2)
-
-        cy.intercept('POST', '/api/projects/proj1/skills/IronMan').as('postSkill')
-
-        cy.visitHomePage(homePage);
-
-        Cypress.Commands.add("clickOnDirectiveBtn", (skillApplied = true) => {
-            cy.get('#SkillsDirectiveClickEvent button').click()
-            cy.wait('@postSkill').then((intercept) => {
-                expect(intercept.response.statusCode).to.eq(200)
-                expect(intercept.response.body).to.have.property('skillApplied').to.eq(skillApplied)
-            });
-        })
-
-        cy.clickOnDirectiveBtn()
-        cy.clickOnDirectiveBtn()
-        cy.clickOnDirectiveBtn(false)
-    })
-
-
-    it('skilltree directive on input', () => {
-        cy.createDefaultProject(1, 2, 50, 2)
-        cy.intercept('POST', '/api/projects/proj1/skills/Thor').as('postSkill')
-
-        cy.visitHomePage(homePage);
-
-        Cypress.Commands.add("typeToInput", (skillApplied = true) => {
-            cy.get('#SkillsDirectiveInputEvent input').type('h')
-            cy.wait('@postSkill').then((intercept) => {
-                expect(intercept.response.statusCode).to.eq(200)
-                expect(intercept.response.body).to.have.property('skillApplied').to.eq(skillApplied)
-            });
-        })
-
-        cy.typeToInput()
-        cy.typeToInput()
-        cy.typeToInput(false)
-    })
-
-    it('skilltree directive on click with error', () => {
-        cy.createDefaultTinyProject()
-        cy.intercept('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
-
-        cy.visitHomePage(homePage);
-
-        cy.get('#SkillsDirectiveErrorwithButton button').click()
-        cy.wait('@postSkill').then((intercept) => {
-            expect(intercept.response.statusCode).to.eq(missingSkillErrorCode)
-            expect(intercept.response.body).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
-        });
-    })
-
-    it('skilltree directive on input with error', () => {
-        cy.createDefaultTinyProject()
-        cy.intercept('POST', '/api/projects/proj1/skills/DoesNotExist').as('postSkill')
-
-        cy.visitHomePage(homePage);
-
-        cy.get('#SkillsDirectiveErrorwithInput input').type('h')
-        cy.wait('@postSkill').then((intercept) => {
-            expect(intercept.response.statusCode).to.eq(missingSkillErrorCode)
-            expect(intercept.response.body).to.have.property('explanation').to.eq('Failed to report skill event because skill definition does not exist.')
-        });
-    })
-
     it('skill display', () => {
         cy.createDefaultTinyProject()
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-        cy.visit('/angular16/showSkills')
-        cy.clientDisplay(true).contains('My Level')
-        cy.clientDisplay().contains('50 Points earned Today')
-        cy.clientDisplay().contains('Subject 0')
+        cy.visit('/react/index.html#/showSkills')
+        cy.wait('@getToken')
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0')
 
         // verify that there is no background set
         // cypress always validates against rgb
-        cy.clientDisplay().find('.skills-page-title-text-color')
-          .should('have.css', 'background-color').and('equal', noThemeBackground);
+        cy.wrapIframe().find('.skills-page-title-text-color')
+            .should('have.css', 'background-color').and('equal', noThemeBackground);
     })
 
     it('skill display - summary only', () => {
         cy.createDefaultTinyProject()
         cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-        cy.visit('/angular16/showSkills?isSummaryOnly=true')
-        cy.clientDisplay(true).contains('My Level')
-        cy.clientDisplay().contains('50 Points earned Today')
-        cy.clientDisplay().contains('Subject 0').should('not.exist')
+        cy.visit('/react/index.html#/showSkills?isSummaryOnly=true')
+        cy.wait('@getToken')
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0').should('not.exist')
 
         // verify that there is no background set
         // cypress always validates against rgb
-        cy.clientDisplay().find('.skills-page-title-text-color')
+        cy.wrapIframe().find('.skills-page-title-text-color')
             .should('have.css', 'background-color').and('equal', noThemeBackground);
     })
 
     it('skill display - theme', () => {
         cy.createDefaultTinyProject()
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-        cy.visit('/angular16/showSkills?themeName=Dark Blue')
-        cy.clientDisplay(true).contains('My Level')
-        cy.clientDisplay().contains('50 Points earned Today')
-        cy.clientDisplay().contains('Subject 0')
+        cy.visit('/react/index.html#/showSkills?themeName=Dark Blue')
+        cy.wait('@getToken')
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0')
 
         // verify dark blue background of hex #152E4d
         // cypress always validates against rgb
-        cy.clientDisplay().find('.skills-page-title-text-color')
+        cy.wrapIframe().find('.skills-page-title-text-color')
             .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
     })
 
     it('skill display - summary only - theme', () => {
         cy.createDefaultTinyProject()
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-        cy.visit('/angular16/showSkills?themeName=Dark Blue&isSummaryOnly=true')
-        cy.clientDisplay(true).contains('My Level')
-        cy.clientDisplay().contains('50 Points earned Today')
-        cy.clientDisplay().contains('Subject 0').should('not.exist')
+        cy.visit('/react/index.html#/showSkills?themeName=Dark Blue&isSummaryOnly=true')
+        cy.wait('@getToken')
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('My Level')
+        cy.wrapIframe().contains('50 Points earned Today')
+        cy.wrapIframe().contains('Subject 0').should('not.exist')
 
         // verify dark blue background of hex #152E4d
         // cypress always validates against rgb
-        cy.clientDisplay().find('.skills-page-title-text-color')
+        cy.wrapIframe().find('.skills-page-title-text-color')
             .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
     })
 
@@ -292,7 +219,7 @@ context('Angular 16 Tests', () => {
             statusCode: 503, // server is down
             body: {}
         }).as('getStatus')
-        cy.visit('/angular16/showSkills')
+        cy.visit('/react/index.html#/showSkills')
         cy.wait('@getStatus')
 
         cy.contains('Could NOT reach Skilltree Service')
@@ -300,36 +227,37 @@ context('Angular 16 Tests', () => {
 
     it('only display skills up-to the provided version', () => {
         cy.createDefaultTinyProject()
+        cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendAddSkill('skillv1', 1)
         cy.backendAddSkill('skillv2', 2)
+        cy.visit('/react/index.html#/showSkills')
+        cy.wait('@getToken')
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('Earn up to 200 points')
 
-        cy.visit('/angular16/showSkills')
-        cy.clientDisplay(true).contains('Earn up to 200 points')
+        cy.visit('/react/index.html#/')
+        cy.visit('/react/index.html#/showSkills?skillsVersion=1')
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('Earn up to 150 points')
 
-        cy.visit('/angular16/reportSkills')
-        cy.get('#globalEventResultDiv').should('be.visible');
+        cy.visit('/react/index.html#/')
+        cy.visit('/react/index.html#/showSkills?skillsVersion=0')
+        cy.wait('@getToken')
+        cy.wrapIframe().contains('Earn up to 100 points')
 
-        cy.visit('/angular16/showSkills?skillsVersion=1')
-        cy.clientDisplay().contains('Earn up to 150 points')
-
-        cy.visit('/angular16/reportSkills')
-        cy.get('#globalEventResultDiv').should('be.visible');
-
-        cy.visit('/angular16/showSkills?skillsVersion=0')
-        cy.clientDisplay().contains('Earn up to 100 points')
     });
 
     it('skillsClientVersion is reported correctly', () => {
         cy.createDefaultProject()
         cy.intercept('POST', '/api/projects/proj1/skillsClientVersion', (req) => {
-            expect(req.body).to.have.property('skillsClientVersion').and.to.contain('@skilltree/skills-client-ng-')
+            expect(req.body).to.have.property('skillsClientVersion').and.to.contain('@skilltree/skills-client-react-')
             req.reply((res) => {
                 expect(res.statusCode).to.eq(200)
                 expect(res.body).to.have.property('success').to.eq(true)
             })
         }).as('reportClientVersion')
 
-        cy.visit(homePage)
+        cy.visit('/react/index.html#/')
         cy.wait('@reportClientVersion')
     })
 
@@ -339,7 +267,7 @@ context('Angular 16 Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
-            cy.visit('/angular16/showSkills?internalBackButton=true');
+            cy.visit('/react/index.html#/showSkills?internalBackButton=true');
 
             cy.clientDisplay().find('[data-cy=back]').should('not.exist');
             cy.clientDisplay().contains('User Skills');
@@ -365,7 +293,7 @@ context('Angular 16 Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
-            cy.visit('/angular16/showSkills?internalBackButton=false');
+            cy.visit('/react/index.html#/showSkills?internalBackButton=false');
 
             cy.clientDisplay().find('[data-cy=back]').should('not.exist');
             cy.clientDisplay().contains('User Skills');
@@ -393,7 +321,7 @@ context('Angular 16 Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // navigate to Rank Overview via direct link
-            cy.visit('/angular16/showSkills?skillsClientDisplayPath=%2Frank');
+            cy.visit('/react/index.html?skillsClientDisplayPath=%2Frank#/showSkills');
             cy.clientDisplay().contains(rankDetailsTitle);
 
             // reload and confirm we are still on Rank Overview page
@@ -406,7 +334,7 @@ context('Angular 16 Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
-            cy.visit('/angular16/showSkills?internalBackButton=false');
+            cy.visit('/react/index.html#/showSkills?internalBackButton=false');
 
             cy.clientDisplay().find('[data-cy=back]').should('not.exist');
             cy.clientDisplay().contains('User Skills');
@@ -437,7 +365,7 @@ context('Angular 16 Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
-            cy.visit('/angular16/showSkills?internalBackButton=false');
+            cy.visit('/react/index.html#/showSkills?internalBackButton=false');
             cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/]');
 
             // to subject page
@@ -458,7 +386,7 @@ context('Angular 16 Tests', () => {
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
-            cy.visit('/angular16/showSkills?internalBackButton=false');
+            cy.visit('/react/index.html#/showSkills?internalBackButton=false');
             cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/]');
             cy.clientDisplay().contains('User Skills');
 
@@ -467,5 +395,4 @@ context('Angular 16 Tests', () => {
             cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/subjects/subj0]');
         });
     }
-
 })
