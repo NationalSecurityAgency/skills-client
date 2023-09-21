@@ -40,10 +40,10 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
 
-    strategy:
-      matrix:
-        version: [16]
-      fail-fast: false
+#    strategy:
+#      matrix:
+#        version: [16]
+#      fail-fast: false
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -90,13 +90,20 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.version }}
+          node-version: 14
 
-      - name: setup npm links
-        run: ./.github/workflows/scripts/setupNpmLinks.sh ${{ matrix.version }}
+      - name: setup node 14 npm links
+        run: ./.github/workflows/scripts/setupNpmLinks.sh 14
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: setup node 16 npm links
+        run: ./.github/workflows/scripts/setupNpmLinks.sh 16
 
       - name: build angular 16 app
-        if: matrix.version >= 15
+#        if: matrix.version >= 15
         env:
           MAVEN_OPTS: -Xmx2048m
         run: |
@@ -104,23 +111,27 @@ jobs:
           mvn clean install
           cd ../../
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
       - name: build integration test apps
-        if: matrix.version == 14
+        #        if: matrix.version == 14
         env:
           MAVEN_OPTS: -Xmx2048m
         run: |
           cd ./skills-client-integration
           mvn --batch-mode clean install
-          cd ../
+          cd ../                  
 
-      - name: build remaining integration test apps
-        if: matrix.version >= 15
-        env:
-          MAVEN_OPTS: -Xmx2048m
-        run: |
-          cd ./skills-client-integration
-          mvn --batch-mode clean install -pl skills-int-e2e-test,skills-int-service
-          cd ../        
+#      - name: build remaining integration test apps
+##        if: matrix.version >= 15
+#        env:
+#          MAVEN_OPTS: -Xmx2048m
+#        run: |
+#          cd ./skills-client-integration
+#          mvn --batch-mode clean install -pl skills-int-e2e-test,skills-int-service
+#          cd ../
 
       - name: start services for cypress tests
         run: |
@@ -132,18 +143,18 @@ jobs:
 
 
       - name: Run Cypress tests
-        if: matrix.version == 14
+#        if: matrix.version == 14
         run: |
           cd skills-client-integration/skills-int-e2e-test
           npm run cy:run:test
           cd ../../
 
-      - name: Run node 16 Cypress tests
-        if: matrix.version >= 15
-        run: |
-          cd skills-client-integration/skills-int-e2e-test
-          npm run cy:run:test:ng16
-          cd ../../
+#      - name: Run node 16 Cypress tests
+#        if: matrix.version >= 15
+#        run: |
+#          cd skills-client-integration/skills-int-e2e-test
+#          npm run cy:run:test:ng16
+#          cd ../../
 
       - name: upload result artifacts
         if: ${{ always() }}
