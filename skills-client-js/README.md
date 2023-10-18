@@ -38,10 +38,4 @@ These pages provide in-depth guidance on the installation, usage and contributio
 
 ## Installation and Usage
 
-To learn how to install and use this library please visit [SkillTree's Native JS Integration Guide](https://code.nsa.gov/skills-docs/skills-client/js.html).
-
-**Please Note**: If you are using one of the following frameworks, SkillTree offers native support via: 
-- [@skilltree/skills-client-vue](https://www.npmjs.com/package/@skilltree/skills-client-vue)
-- [@skilltree/skills-client-react](https://www.npmjs.com/package/@skilltree/skills-client-react)
-- [@skilltree/skills-client-ng](https://www.npmjs.com/package/@skilltree/skills-client-ng)
- 
+To learn how to install and use this library please visit [SkillTree's Native JS Integration Guide](https://code.nsa.gov/skills-docs/skills-client/js.html). 

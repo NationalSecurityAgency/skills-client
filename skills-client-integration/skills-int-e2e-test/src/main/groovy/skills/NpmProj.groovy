@@ -30,14 +30,6 @@ class NpmProj {
     // indicates whether it has node_modules/@skilltree/
     boolean hasLinksToOtherProjects = true
 
-    // need extra npm link setup for react apps/modules
-    boolean reactModule = false
-    boolean reactApp = false
-
-    // need extra npm link setup for angular apps/modules
-    boolean angularModule = false
-    boolean angularApp = false
-
     // for backwards compatibility testing
     String initialVersion
 
@@ -64,24 +56,6 @@ class NpmProj {
         }
         return skillsModules
     }
-
-    File getReactModuleDir(boolean checkForExistence = true) {
-        File reactModule = new File(getNodeModulesDir(checkForExistence), "react/")
-        if (checkForExistence) {
-            assert reactModule.exists()
-        }
-        return reactModule
-    }
-
-    File getAngularModuleLinkDir(boolean checkForExistence = true) {
-        // dist/skilltree/skills-client-ng
-        File ngModuleLinkDir = new File(new File(new File(loc, "dist/"), "skilltree"), this.name)
-        if (checkForExistence) {
-            assert ngModuleLinkDir.exists()
-        }
-        return ngModuleLinkDir
-    }
-
 
     static JsonSlurper slurper = new JsonSlurper()
 
