@@ -52,8 +52,6 @@ class SetupNpmLinks {
         createLinks()
         npmLinkToSkills()
         install()
-//        now that we have multiple versions of react being tested against, this doesn't make sense
-//        npmLinkToReact()
         validateLinks()
         build()
     }
@@ -62,10 +60,7 @@ class SetupNpmLinks {
     private void install() {
         titlePrinter.printTitle("install")
         projs.each { NpmProj npmProj ->
-            if (!npmProj.isAngularModule()) {
-                // angular modules were installed within createLinks()
-                npmProj.exec("npm install --force")
-            }
+            npmProj.exec("npm install --force")
         }
     }
 
@@ -73,10 +68,7 @@ class SetupNpmLinks {
     private void build() {
         titlePrinter.printTitle("build")
         projs.each { NpmProj npmProj ->
-            if (!npmProj.isAngularModule()) {
-                // angular modules were built within createLinks()
-                npmProj.exec("npm run build")
-            }
+            npmProj.exec("npm run build")
         }
     }
 
@@ -92,13 +84,6 @@ class SetupNpmLinks {
                 assert Files.isSymbolicLink(shouldBeSymbolic.toPath())
             }
         }
-
-        projs.findAll({ it.isReactApp() }).each { NpmProj npmProj ->
-            titlePrinter.printSubTitle("validating [${npmProj.getReactModuleDir().absolutePath}]")
-            npmProj.exec("ls -l node_modules/react/")
-//            now that we have multiple versions of react being tested against, this doesn't make sense
-//            assert Files.isSymbolicLink(npmProj.getReactModuleDir().toPath())
-        }
     }
 
 //    @Profile
@@ -109,23 +94,7 @@ class SetupNpmLinks {
                 titlePrinter.printSubTitle("Linking module [${it}] in project [${npmProj}]")
 
                 npmProj.exec("npm link --force ${it}".toString())
-                if (npmProj.getAngularModule()) {
-                    File origLoc = npmProj.loc
-                    npmProj.loc = npmProj.getAngularModuleLinkDir(true)
-                    npmProj.exec("npm link --force ${it}".toString())
-                    npmProj.loc = origLoc
-                }
             }
-        }
-    }
-
-//    @Profile
-    private void npmLinkToReact() {
-        titlePrinter.printTitle("link react")
-        projs.findAll({ it.reactApp }).each { NpmProj npmProj ->
-            File reactModuleDir = projs.find { it.reactModule }.getReactModuleDir()
-            titlePrinter.printSubTitle("Linking react module [${reactModuleDir.absoluteFile.absolutePath}]")
-            npmProj.exec("npm link ${reactModuleDir.absoluteFile.absolutePath}".toString())
         }
     }
 
@@ -133,21 +102,10 @@ class SetupNpmLinks {
     private void createLinks() {
         titlePrinter.printTitle("create links")
         projs.findAll({ it.doOthersLinkToMe }).each {
-            File origLoc
-            if (it.isAngularModule() || it.isAngularApp()) {
-                titlePrinter.printTitle("install and build angular module")
-                it.exec("npm install --force")
-                it.exec("npm run build")
-                origLoc = it.loc;
-                it.loc = it.getAngularModuleLinkDir(true)
-            }
             titlePrinter.printSubTitle("create link for ${it.loc.name}")
             it.exec("ls")
             it.exec("node -v")
             it.exec("npm link")
-            if (it.isAngularModule() || it.isAngularApp()) {
-                it.loc = origLoc
-            }
         }
     }
 }

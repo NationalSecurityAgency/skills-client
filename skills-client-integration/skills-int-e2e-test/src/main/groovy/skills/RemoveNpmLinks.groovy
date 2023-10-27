@@ -51,13 +51,6 @@ class RemoveNpmLinks {
                     FileUtils.deleteDirectory(depDir.absoluteFile)
                 }
             }
-            if (proj.isReactApp()) {
-                File reactModuleDir = proj.getReactModuleDir(false)
-                if (reactModuleDir.exists()) {
-                    log.info("Deleting [{}]", reactModuleDir.absoluteFile.absolutePath)
-                    FileUtils.deleteDirectory(reactModuleDir.absoluteFile)
-                }
-            }
         }
 
         if (npmInstall){
