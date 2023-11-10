@@ -57,7 +57,7 @@
     },
     "dependencies": {
         "@skilltree/skills-client-js": "3.5.0",
-        "axios": "0.23.0",
+        "axios": "1.6.0",
         "axios-auth-refresh": "3.2.1"
     },
     "eslintConfig": {
