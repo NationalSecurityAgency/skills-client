@@ -44,8 +44,8 @@
     "cyServices:start:integration-apps:oauth": "npm run integration:start:background:oauth && npm run integration:waitToStart && echo 'integration apps started!!'",
     "cyServices:start": "npm run cyServices:start:skills-service && npm run cyServices:start:integration-apps",
     "cyServices:kill": "for procid in $(ps -aux | grep \"serverConfigs/.*properties\" | grep \"jar$\" | awk '{print $2}'); do echo \"killing ${procid}\"; kill -9 $procid; done",
-    "dev:setupNpmLinks": "mvn --batch-mode clean package && java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.PropertiesLauncher",
-    "dev:removeNpmLinks": "mvn --batch-mode clean package && java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.RemoveNpmLinks org.springframework.boot.loader.PropertiesLauncher"
+    "dev:setupNpmLinks": "mvn --batch-mode clean package && java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.launch.PropertiesLauncher",
+    "dev:removeNpmLinks": "mvn --batch-mode clean package && java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.RemoveNpmLinks org.springframework.boot.loader.launch.PropertiesLauncher"
   },
   "devDependencies": {
     "cypress": "6.6.0",
