@@ -6,7 +6,7 @@
     "homepage": "/react18/",
     "dependencies": {
         "@skilltree/skills-client-react": "3.5.0",
-        "axios": "0.23.0",
+        "axios": "1.6.0",
         "bootstrap": "5.1.3",
         "core-js": "3.6.5",
         "js-beautify": "1.14.0",
