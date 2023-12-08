@@ -6,7 +6,7 @@
     "homepage": "/react17/",
     "dependencies": {
         "@skilltree/skills-client-react": "3.5.0",
-        "axios": "0.23.0",
+        "axios": "1.6.0",
         "bootstrap": "5.1.3",
         "core-js": "3.6.5",
         "highlightjs": "9.16.2",
