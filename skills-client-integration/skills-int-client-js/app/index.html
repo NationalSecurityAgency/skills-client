@@ -33,7 +33,11 @@ limitations under the License.
         SkillsConfiguration.configure(result.data);
       });
 
-      SkillsReporter.addSuccessHandler((result) => {
+    SkillsReporter.addSuccessHandler((result) => {
+      document.querySelector('#global-event-result-container-js').innerHTML = JSON.stringify(result, null, 2);
+    });
+
+    SkillsReporter.addErrorHandler((result) => {
       document.querySelector('#global-event-result-container-js').innerHTML = JSON.stringify(result, null, 2);
     });
 
@@ -41,9 +45,15 @@ limitations under the License.
       SkillsReporter.reportSkill(skillId)
         .then((response) => {
           document.querySelector('#report-result-container').innerHTML = JSON.stringify(response, null, 2);
-        });
+        }).catch((err) => {
+          document.querySelector('#report-result-container').innerHTML = JSON.stringify(err, null, 2);
+      });
     };
-    document.querySelector('#exampleDirectiveClickEvent').addEventListener('click', () => { reportSkill('IronMan'); });
+
+    document.querySelector('#exampleDirectiveClickEvent').addEventListener('click', () => {
+      var skillId = document.getElementById('skillId').value;
+      reportSkill(skillId);
+    });
 
     const toggleAllEvents = () => {
       const notifyIfSkillNotApplied = document.querySelector('#all-events-check').checked
@@ -95,7 +105,7 @@ limitations under the License.
           <pre id="global-event-result-container-js" data-cy="globalEventResult"></pre>
         </div>
         <div>
-          <h5 class="text-info"><strong>Skills Directive - Click Event</strong></h5>
+          <h5 class="text-info"><strong>Report Any Skill</strong></h5>
           <div class="card card-body bg-light">
             <pre class="m-0 sample-code">
 <code class="javascript">SkillsReporter.reportSkill(this.skill)
@@ -105,12 +115,18 @@ limitations under the License.
 
           </div>
           <div class="card card-body mt-3">
+            <div class="text-primary">Skill Id:</div>
+            <div class="code-example">
+              <input class="form-control" id="skillId" type="text" value="IronMan" />
+            </div>
+            <div>
             <div id="exampleDirectiveClickEvent">
-              <button
-                data-cy="exampleDirectiveClickEventButton"
-                class="btn btn-outline-primary">
-                Report Skill
-              </button>
+                <button
+                  data-cy="exampleDirectiveClickEventButton"
+                  class="btn btn-outline-primary">
+                  Report Skill
+                </button>
+              </div>
             </div>
             <hr>
             <div class="text-primary">Result:</div>
