@@ -14,7 +14,7 @@
     "cy:open": "cypress open",
     "cy:run": "npm run licenseCheck && cypress run",
     "cy:run:oauth": "npm run licenseCheck && cypress run --env authMode=oauth",
-    "cy:run:timeout": "npm run licenseCheck && cypress run --env timeout=true --spec \"cypress/integration/timeout.specs.js\"",
+    "cy:run:timeout": "npm run licenseCheck && cypress run --env timeout=true --spec \"cypress/e2e/timeout.specs.js\"",
     "cy:open:dev:js": "cypress open --config baseUrl=http://localhost:8092",
     "cy:open:dev:ng": "cypress open --config baseUrl=http://localhost:4200",
     "integration:start": "java -Dspring.config.location=classpath:/application.properties,file:serverConfigs/integration_application.properties -jar ../skills-int-service/target/skills-int-service-*.jar",
@@ -48,7 +48,7 @@
     "dev:removeNpmLinks": "mvn --batch-mode clean package && java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.RemoveNpmLinks org.springframework.boot.loader.launch.PropertiesLauncher"
   },
   "devDependencies": {
-    "cypress": "6.6.0",
+    "cypress": "13.6.1",
     "license-check-and-add": "3.0.4",
     "license-checker": "25.0.1",
     "semver": "7.3.2",
