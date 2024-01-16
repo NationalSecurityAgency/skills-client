@@ -94,22 +94,22 @@ jobs:
         npm run cyServices:start:integration-apps
         cd ../../
 
-   - name: Run Cypress tests
-     uses: cypress-io/github-action@v5
-     with:
-       working-directory: skills-client-integration/skills-int-e2e-test
-       record: true
-       parallel: false
-       group: 'skills-client expired token tests'
-       tag: "${{ github.workflow }}"
-       spec: cypress/integration/timeout.specs.js
-       env: 'timeout=true'
-       browser: chrome
-     env:
-       # pass the Dashboard record key as an environment variable
-       CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-       # pass GitHub token to allow accurately detecting a build vs a re-run build
-       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Run Cypress tests
+      uses: cypress-io/github-action@v5
+      with:
+        working-directory: skills-client-integration/skills-int-e2e-test
+        record: true
+        parallel: false
+        group: 'skills-client expired token tests'
+        tag: "${{ github.workflow }}"
+        spec: cypress/integration/timeout.specs.js
+        env: 'timeout=true'
+        browser: chrome
+      env:
+        # pass the Dashboard record key as an environment variable
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        # pass GitHub token to allow accurately detecting a build vs a re-run build
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 #     - name: Run Cypress tests
 #       run: |
