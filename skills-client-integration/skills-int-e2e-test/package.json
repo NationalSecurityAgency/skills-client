@@ -14,7 +14,7 @@
     "cy:open": "cypress open",
     "cy:run": "npm run licenseCheck && cypress run",
     "cy:run:oauth": "npm run licenseCheck && cypress run --env authMode=oauth",
-    "cy:run:timeout": "npm run licenseCheck && cypress run --env timeout=true --spec \"cypress/integration/timeout.specs.js\"",
+    "cy:run:timeout": "npm run licenseCheck && cypress run --env timeout=true --spec \"cypress/e2e/timeout.specs.js\"",
     "cy:open:dev:js": "cypress open --config baseUrl=http://localhost:8092",
     "cy:open:dev:ng": "cypress open --config baseUrl=http://localhost:4200",
     "integration:start": "java -Dspring.config.location=classpath:/application.properties,file:serverConfigs/integration_application.properties -jar ../skills-int-service/target/skills-int-service-*.jar",
