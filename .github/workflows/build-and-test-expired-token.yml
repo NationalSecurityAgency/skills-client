@@ -103,7 +103,7 @@ jobs:
         parallel: false
         group: 'skills-client expired token tests'
         tag: "${{ github.workflow }}"
-        spec: cypress/integration/timeout.specs.js
+        spec: cypress/e2e/timeout.specs.js
         env: 'timeout=true'
         browser: chrome
       env:
