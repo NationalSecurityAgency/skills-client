@@ -363,10 +363,12 @@ context("Native JS Tests", () => {
             // click the browser back button and verify that we are still in the
             // client display (Subject page)
             cy.go('back')  // browser back button
+            cy.wait(1000);
             cy.clientDisplay().contains('Subject 0');
 
             // then back one more time and we should be back on the client display home page
             cy.go('back')  // browser back button
+            cy.wait(1000);
             cy.clientDisplay().contains('User Skills');
         });
 
@@ -407,10 +409,12 @@ context("Native JS Tests", () => {
             // click the browser back button and verify that we are still in the
             // client display (Subject page)
             cy.go('back')  // browser back button
+            cy.wait(1000);
             cy.clientDisplay().contains('Subject 0');
 
             // then back one more time and we should be back on the client display home page
             cy.go('back')  // browser back button
+            cy.wait(1000);
             cy.clientDisplay().contains('User Skills');
         });
 
