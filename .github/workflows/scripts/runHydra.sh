@@ -9,7 +9,7 @@ PROMETHEUS=${PROMETHEUS:-false}
 echo "PWD: "
 echo $(pwd)
 cd ./skills-client-integration/skills-int-e2e-test/hydra
-DC="docker-compose -f quickstart.yml"
+DC="docker compose -f quickstart.yml"
 if [[ $DB == "mysql" ]]; then
     DC+=" -f quickstart-mysql.yml"
 fi
