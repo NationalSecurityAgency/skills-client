@@ -17,7 +17,7 @@
     "author": "SkillTree Team",
     "dependencies": {
         "@skilltree/skills-client-js": "3.5.0",
-        "axios": "1.6.0",
+        "axios": "1.7.4",
         "bootstrap": "4.5.2",
         "jquery": "3.5.1",
         "js-beautify": "1.13.0"
