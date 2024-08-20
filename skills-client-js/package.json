@@ -53,7 +53,7 @@
     },
     "dependencies": {
         "@stomp/stompjs": "6.1.2",
-        "axios": "^1.7.4",
+        "axios": "1.7.4",
         "js-logger": "1.6.1",
         "postmate": "1.5.2",
         "sockjs-client": "1.6.1"
