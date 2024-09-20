@@ -91,7 +91,7 @@ const exportObject = {
     this.authenticator = authenticator;
     this.authToken = authToken;
 
-    skillsService.getServiceStatus(`${this.getServiceUrl()}/public/status`).then((response) => {
+    return skillsService.getServiceStatus(`${this.getServiceUrl()}/public/status`).then((response) => {
       this.status = response.status;
       skillsService.configureLogging(this.getServiceUrl(), response);
       log.info(`Returned status [${JSON.stringify(response)}]`);
@@ -101,7 +101,7 @@ const exportObject = {
       }
 
       if (!this.isPKIMode() && !this.getAuthToken()) {
-        skillsService.getAuthenticationToken(this.getAuthenticator(), this.getServiceUrl(), this.getProjectId(), oauthRedirect)
+        return skillsService.getAuthenticationToken(this.getAuthenticator(), this.getServiceUrl(), this.getProjectId(), oauthRedirect)
           .then((token) => {
             this.setAuthToken(token);
             setInitialized(this);
