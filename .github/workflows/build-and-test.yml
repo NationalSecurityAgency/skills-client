@@ -77,11 +77,20 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-    - name: download skill-service
+#    - name: download skill-service
+#      run: |
+#        mkdir skills-service
+#        cd skills-service
+#        curl -s https://api.github.com/repos/NationalSecurityAgency/skills-service/releases/latest | grep browser_download_url | cut -d '"' -f 4 | wget -qi -
+#        ls ./
+#        cd ..
+
+    - name: build skill-service very specific branch
       run: |
-        mkdir skills-service
+        git clone git@github.com:NationalSecurityAgency/skills-service.git
         cd skills-service
-        curl -s https://api.github.com/repos/NationalSecurityAgency/skills-service/releases/latest | grep browser_download_url | cut -d '"' -f 4 | wget -qi -
+        git checkout t#2886/skills_display_iframe
+        mvn --batch-mode clean install
         ls ./
         cd ..
 
