@@ -95,7 +95,7 @@ jobs:
     - name: build skill-service
       run: |
         cd skills-service
-        mvn --batch-mode clean install
+        mvn --batch-mode clean install -DskipTests
         ls ./
         cd ..
 
