@@ -88,7 +88,7 @@ jobs:
 #        ls ./
 #        cd ..
 
-    - name: build skill-service specific branch
+    - name: build skill-service very specific branch
       run: |
         git clone git@github.com:NationalSecurityAgency/skills-service.git
         cd skills-service
