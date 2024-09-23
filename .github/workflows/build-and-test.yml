@@ -85,11 +85,16 @@ jobs:
 #        ls ./
 #        cd ..
 
-    - name: build skill-service very specific branch
+    - name: Checkout specific branch fo skills-cervice
+      uses: actions/checkout@v4
+      with:
+        repository: NationalSecurityAgency/skills-service
+        path: skills-service
+        ref: t#2886/skills_display_iframe
+
+    - name: build skill-service
       run: |
-        git clone git@github.com:NationalSecurityAgency/skills-service.git
         cd skills-service
-        git checkout t#2886/skills_display_iframe
         mvn --batch-mode clean install
         ls ./
         cd ..
