@@ -12,7 +12,7 @@
         "licenseHeaderCheck": "license-check-and-add check -f '../license-add/license-add-config.json'",
         "licenseHeaderAdd": "license-check-and-add add -f ../license-add/license-add-config.json",
         "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck",
-        "build": "npm run licenseCheck && echo nothingelsetodo"
+        "build": "npm install && npm run licenseCheck && echo nothingelsetodo"
     },
     "author": "SkillTree Team",
     "dependencies": {

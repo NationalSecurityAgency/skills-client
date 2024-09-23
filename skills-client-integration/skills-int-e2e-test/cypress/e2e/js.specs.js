@@ -19,9 +19,17 @@ const homePage = '/native/index.html'
 
 context("Native JS Tests", () => {
 
+    const laterThan_3_1_0 = Utils.skillsServiceVersionLaterThan('3.1.0');
     const laterThan_1_4_0 = Utils.skillsServiceVersionLaterThan('1.4.0');
     const laterThan_1_11_1 = Utils.skillsServiceVersionLaterThan('1.11.1');
-    const noThemeBackground = laterThan_1_4_0 ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)';
+    const computeNoThemeBackground = () => {
+        if (laterThan_3_1_0) {
+            return 'rgb(255, 255, 255)'
+        }
+        return laterThan_1_4_0 ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)';
+    }
+    const noThemeBackground = computeNoThemeBackground()
+
     const rankDetailsTitle = laterThan_1_11_1 ? 'My Rank' : 'Rank Overview'
 
     it("global event show correct results", () => {
@@ -121,7 +129,7 @@ context("Native JS Tests", () => {
 
         // verify that there is no background set
         // cypress always validates against rgb
-        cy.wrapIframe().find('.skills-page-title-text-color')
+        cy.wrapIframe().find('[data-cy="skillsTitle"]')
             .should('have.css', 'background-color').and('equal', noThemeBackground);
     });
 
@@ -139,10 +147,11 @@ context("Native JS Tests", () => {
         cy.wrapIframe().contains('My Level')
         cy.wrapIframe().contains('50 Points earned Today')
         cy.wrapIframe().contains('Subject 0')
+        cy.wrapIframe().find('[data-cy="subjectTile-subj0"] [data-cy="subjectTileBtn"]')
 
         // verify that there is no background set
         // cypress always validates against rgb
-        cy.wrapIframe().find('.skills-page-title-text-color')
+        cy.wrapIframe().find('[data-cy="skillsTitle"]')
             .should('have.css', 'background-color').and('equal', noThemeBackground);
     });
 
@@ -159,11 +168,11 @@ context("Native JS Tests", () => {
         
         cy.wrapIframe().contains('My Level')
         cy.wrapIframe().contains('50 Points earned Today')
-        cy.wrapIframe().contains('Subject 0').should('not.exist')
+        cy.wrapIframe().find('[data-cy="subjectTile-subj0"] [data-cy="subjectTileBtn"]').should('not.exist')
 
         // verify that there is no background set
         // cypress always validates against rgb
-        cy.wrapIframe().find('.skills-page-title-text-color')
+        cy.wrapIframe().find('[data-cy="skillsTitle"]')
             .should('have.css', 'background-color').and('equal', noThemeBackground);
     });
 
@@ -184,7 +193,7 @@ context("Native JS Tests", () => {
 
         // verify dark blue background of hex #152E4d
         // cypress always validates against rgb
-        cy.wrapIframe().find('.skills-page-title-text-color')
+        cy.wrapIframe().find('[data-cy="skillsTitle"]')
             .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
     });
 
@@ -202,11 +211,11 @@ context("Native JS Tests", () => {
         
         cy.wrapIframe().contains('My Level')
         cy.wrapIframe().contains('50 Points earned Today')
-        cy.wrapIframe().contains('Subject 0').should('not.exist')
+        cy.wrapIframe().find('[data-cy="subjectTile-subj0"] [data-cy="subjectTileBtn"]').should('not.exist')
 
         // verify dark blue background of hex #152E4d
         // cypress always validates against rgb
-        cy.wrapIframe().find('.skills-page-title-text-color')
+        cy.wrapIframe().find('[data-cy="skillsTitle"]')
             .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
     });
 
