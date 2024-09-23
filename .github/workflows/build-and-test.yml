@@ -96,6 +96,7 @@ jobs:
       run: |
         cd skills-service
         mvn --batch-mode clean install -DskipTests
+        cp ./service/target/skills-service-*.jar ./
         ls ./
         cd ..
 
