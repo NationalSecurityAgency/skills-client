@@ -38,6 +38,7 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+import selectors from './selectors.js'
 
 const backend = 'http://localhost:8080';
 const baseUrl = Cypress.config().baseUrl;
@@ -168,19 +169,19 @@ Cypress.Commands.add('visitHomePage', (homepage) => {
 });
 
 Cypress.Commands.add("cdClickSubj", (subjIndex, expectedTitle) => {
-  cy.wrapIframe().find(`.user-skill-subject-tile:nth-child(${subjIndex + 1})`).first().click();
+  cy.wrapIframe().find(`[data-cy="subjectTile-subj${subjIndex}"] [data-cy="subjectTileBtn"]`).click();
   if (expectedTitle) {
-    cy.wrapIframe().contains(expectedTitle);
+    cy.wrapIframe().find('[data-cy="skillsTitle"]').contains(expectedTitle);
   }
 });
 
 Cypress.Commands.add("cdBack", (expectedTitle = 'User Skills') => {
-  cy.wrapIframe().find('[data-cy=back]').click()
+  cy.wrapIframe().find(selectors.backButton).click()
   cy.wrapIframe().contains(expectedTitle);
 
   // back button should not exist on the home page, whose title is the default value
   if (expectedTitle === 'User Skills') {
-    cy.wrapIframe().find('[data-cy=back]').should('not.exist');
+    cy.wrapIframe().find(selectors.backButton).should('not.exist');
   }
 });
 

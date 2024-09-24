@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import Utils from "./Utils";
+import selectors from "../support/selectors";
 
 const homePage = '/native/index.html'
 
@@ -233,9 +234,7 @@ context("Native JS Tests", () => {
     });
 
     it("only display skills up-to the provided version", () => {
-        const noVersionPoints = 'Earn up to 200 points';
-        const v1Points = 'Earn up to 150 points';
-        const v0Points = 'Earn up to 100 points';
+        const totalPointsSelector = '[data-cy="totalPoints"]'
         cy.createDefaultTinyProject();
         cy.intercept(Cypress.env('tokenUrl'))
             .as("getToken");
@@ -244,17 +243,17 @@ context("Native JS Tests", () => {
         cy.visit("/native/clientDisplay.html");
         cy.wait("@getToken");
         cy.wait('@getToken')
-        cy.wrapIframe().contains(noVersionPoints);
+        cy.wrapIframe().find(totalPointsSelector).should('have.text', '200');
 
         // cy.visit("/native/index.html");
         cy.visit("/native/clientDisplay.html?skillsVersion=1");
         cy.wait('@getToken')
-        cy.wrapIframe().contains(v1Points);
+        cy.wrapIframe().find(totalPointsSelector).should('have.text', '150');
 
         // cy.visit("/native/index.html");
         cy.visit("/native/clientDisplay.html?skillsVersion=0");
         cy.wait('@getToken')
-        cy.wrapIframe().contains(v0Points);
+        cy.wrapIframe().find(totalPointsSelector).should('have.text', '100');
     });
 
     it('skillsClientVersion is reported correctly', () => {
@@ -309,13 +308,14 @@ context("Native JS Tests", () => {
             cy.visit('/native/clientDisplay.html?internalBackButton=true');
             // cy.wait('@getToken')
 
-            cy.clientDisplay(true).find('[data-cy=back]').should('not.exist');
-            cy.clientDisplay().contains('User Skills');
+            // cy.clientDisplay(true)
+            cy.wrapIframe().find(selectors.myRankButton)
+            cy.wrapIframe().find(selectors.titleSection).find(selectors.backButton).should('not.exist')
 
             // navigate to Rank Overview that contains the back button
-            cy.clientDisplay().find('[data-cy=myRank]').click();
-            cy.clientDisplay().contains(rankDetailsTitle);
-            cy.clientDisplay().find('[data-cy=back]').should('exist');
+            cy.wrapIframe().find(selectors.myRankButton).click();
+            cy.wrapIframe().find(selectors.titleSection).contains(rankDetailsTitle);
+            cy.wrapIframe().find(selectors.titleSection).find(selectors.backButton).should('exist')
 
             // now visit the "Report Skills" (external) page
             cy.get('[data-cy=reportSkillsLink]').click()
@@ -332,16 +332,16 @@ context("Native JS Tests", () => {
             // visit client display
             cy.visit('/native/clientDisplay.html?internalBackButton=true');
 
-            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
-            cy.clientDisplay().contains('User Skills');
+            cy.clientDisplay().find(selectors.myRankButton)
+            cy.clientDisplay().find(selectors.titleSection).find(selectors.backButton).should('not.exist')
 
             // to subject page
             cy.cdClickSubj(0, 'Subject 0');
 
             // navigate to Rank Overview that contains the back button
-            cy.clientDisplay().find('[data-cy=myRank]').click();
-            cy.clientDisplay().contains(rankDetailsTitle);
-            cy.clientDisplay().find('[data-cy=back]').should('exist');
+            cy.clientDisplay().find(selectors.myRankButton).click();
+            cy.clientDisplay().find(selectors.titleSection).contains(rankDetailsTitle);
+            cy.clientDisplay().find(selectors.backButton).should('exist');
 
             // click the back button and verify that we are still in the
             // client display (Subject page)
@@ -358,29 +358,29 @@ context("Native JS Tests", () => {
             // visit client display
             cy.visit("/native/clientDisplay.html?internalBackButton=false");
 
-            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
-            cy.clientDisplay().contains('User Skills');
+            cy.clientDisplay().find(selectors.myRankButton)
+            cy.clientDisplay().find(selectors.titleSection).find(selectors.backButton).should('not.exist')
 
             // to subject page
             cy.cdClickSubj(0, 'Subject 0');
 
             // navigate to Rank Overview and that it does NOT contains the internal back button
-            cy.clientDisplay().find('[data-cy=myRank]').click();
-            cy.clientDisplay().contains(rankDetailsTitle);
-            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
+            cy.clientDisplay().find(selectors.myRankButton).click()
+            cy.clientDisplay().find(selectors.titleSection).contains(rankDetailsTitle);
+            cy.clientDisplay().find(selectors.titleSection).find(selectors.backButton).should('not.exist')
 
             // click the browser back button and verify that we are still in the
             // client display (Subject page)
             cy.wait(1000);
             cy.go('back')  // browser back button
             cy.wait(1000);
-            cy.clientDisplay().contains('Subject 0');
+            cy.clientDisplay().find(selectors.titleSection).contains('Subject 0');
 
             // then back one more time and we should be back on the client display home page
             cy.wait(1000);
             cy.go('back')  // browser back button
             cy.wait(1000);
-            cy.clientDisplay().contains('User Skills');
+            cy.clientDisplay().find(selectors.titleSection).contains('User Skills');
         });
 
         it('deep link and reload', () => {
@@ -389,11 +389,11 @@ context("Native JS Tests", () => {
 
             // navigate to Rank Overview via direct link
             cy.visit('/native/clientDisplay.html?skillsClientDisplayPath=%2Frank#/showSkills');
-            cy.clientDisplay().contains(rankDetailsTitle);
+            cy.clientDisplay().find(selectors.titleSection).contains(rankDetailsTitle);
 
             // reload and confirm we are still on Rank Overview page
             cy.reload();
-            cy.clientDisplay().contains(rankDetailsTitle);
+            cy.clientDisplay().find(selectors.titleSection).contains(rankDetailsTitle);
         });
 
         it('back button after reload', () => {
@@ -403,18 +403,20 @@ context("Native JS Tests", () => {
             // visit client display
             cy.visit("/native/clientDisplay.html?internalBackButton=false");
 
-            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
-            cy.clientDisplay().contains('User Skills');
+            cy.clientDisplay().find(selectors.myRankButton)
+            cy.clientDisplay().find(selectors.titleSection).contains('User Skills');
+            cy.clientDisplay().find(selectors.titleSection).find(selectors.backButton).should('not.exist')
 
             // to subject page
             cy.cdClickSubj(0, 'Subject 0');
 
-            // navigate to Rank Overview and that it does NOT contains the internal back button
-            cy.clientDisplay().find('[data-cy=myRank]').click();
-            cy.clientDisplay().contains(rankDetailsTitle);
-            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
+            // navigate to Rank Overview and that it does NOT contain the internal back button
+            cy.clientDisplay().find(selectors.myRankButton).click();
+            cy.clientDisplay().find(selectors.titleSection).contains(rankDetailsTitle);
+            cy.clientDisplay().find(selectors.titleSection).find(selectors.backButton).should('not.exist')
 
             cy.reload();
+            cy.clientDisplay().find(selectors.titleSection).contains(rankDetailsTitle);
             cy.clientDisplay().contains(rankDetailsTitle);
 
             // click the browser back button and verify that we are still in the
@@ -422,13 +424,13 @@ context("Native JS Tests", () => {
             cy.wait(1000);
             cy.go('back')  // browser back button
             cy.wait(1000);
-            cy.clientDisplay().contains('Subject 0');
+            cy.clientDisplay().find(selectors.titleSection).contains('Subject 0');
 
             // then back one more time and we should be back on the client display home page
             cy.wait(1000);
             cy.go('back')  // browser back button
             cy.wait(1000);
-            cy.clientDisplay().contains('User Skills');
+            cy.clientDisplay().find(selectors.titleSection).contains('User Skills');
         });
 
         it('route change is passed to the client app', () => {
@@ -444,8 +446,8 @@ context("Native JS Tests", () => {
             cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/subjects/subj0]');
 
             // navigate to Rank Overview and that it does NOT contains the internal back button
-            cy.clientDisplay().find('[data-cy=myRank]').click();
-            cy.clientDisplay().contains(rankDetailsTitle);
+            cy.clientDisplay().find(selectors.myRankButton).click();
+            cy.clientDisplay().find(selectors.titleSection).contains(rankDetailsTitle);
 
             cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/subjects/subj0/rank]');
         });
