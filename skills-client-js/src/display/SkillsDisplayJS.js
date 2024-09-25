@@ -121,22 +121,38 @@ export default class SkillsDisplayJS {
       });
       child.on('route-changed', (params) => {
         const newPath = params ? params.path : null;
-        log.debug(`SkillsClient::SkillsDisplayJS::route-changed - newPath [${newPath}]`);
+        log.debug(`SkillsClient::SkillsDisplayJS::route-changed - provided params are [${JSON.stringify(params)}]`);
         if (!(newPath == null)) {
           const routePath = newPath.endsWith('index.html') ? '/' : newPath;
+          log.debug(`SkillsClient::SkillsDisplayJS::route-changed - route path is [${routePath}]`);
           if (this._shouldUpdateHistory(params)) {
             // put the new path in the URL so that when the page is reloaded or
             // sent as a link the proper route will be set in the child iframe
             const queryParams = new URLSearchParams(window.location.search);
+            const oldUrl = `${window.location.pathname}?${queryParams.toString()}`
             queryParams.set(skillsClientDisplayPath, routePath);
-            const newUrl = `${window.location.pathname}?${queryParams.toString()}${window.location.hash}`;
-            window.history.pushState({ skillsClientDisplayPath: newPath }, '', newUrl);
+            const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
+            const data = {
+              position: window.history?.state?.position ? 0 : (window.history?.state?.position + 1),
+              back: oldUrl,
+              currentPath: newUrl,
+              replaced: true,
+              scroll: null,
+              skillsClientDisplayPath: newPath,
+              newUrl
+            }
+            log.debug(`SkillsClient::SkillsDisplayJS::route-changed - pushState [${JSON.stringify(data)}]`);
+            window.history.replaceState(data, '', newUrl);
+          } else {
+            log.debug(`SkillsClient::SkillsDisplayJS::route-changed - did not update history`);
           }
 
           // if the client has configured a handleRouteChanged call back, invoke it
           if (this._handleRouteChanged) {
             this._handleRouteChanged(routePath);
           }
+        } else {
+          log.debug(`SkillsClient::SkillsDisplayJS::route-changed - path was null`);
         }
 
         if (!this.options.disableAutoScroll) {

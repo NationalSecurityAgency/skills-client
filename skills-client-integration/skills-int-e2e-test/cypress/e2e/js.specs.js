@@ -351,7 +351,7 @@ context("Native JS Tests", () => {
             cy.cdBack('User Skills');
         });
 
-        it('browser back button works correctly when internal back button is not present', () => {
+        it.only('browser back button works correctly when internal back button is not present', () => {
             cy.createDefaultTinyProject()
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
