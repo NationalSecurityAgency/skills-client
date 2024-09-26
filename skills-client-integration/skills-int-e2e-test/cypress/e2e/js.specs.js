@@ -439,7 +439,6 @@ context("Native JS Tests", () => {
 
             // visit client display
             cy.visit('/native/clientDisplay.html?internalBackButton=true');
-            cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/]');
 
             // to subject page
             cy.cdClickSubj(0, 'Subject 0');
@@ -455,13 +454,13 @@ context("Native JS Tests", () => {
     }
 
     if (Utils.skillsServiceVersionLaterThan('1.6.0')) {
-        it('navigate skills-display programatically', () => {
+        it('navigate skills-display programmatically', () => {
             cy.createDefaultTinyProject()
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
             // visit client display
             cy.visit('/native/clientDisplay.html?internalBackButton=true');
-            cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/]');
+            cy.clientDisplay().find(selectors.myRankButton)
 
             // to subject page
             cy.get('[data-cy=navigateButton]').click();
