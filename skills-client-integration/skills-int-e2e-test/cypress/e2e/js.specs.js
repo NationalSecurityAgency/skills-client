@@ -383,6 +383,77 @@ context("Native JS Tests", () => {
             cy.clientDisplay().find(selectors.titleSection).contains('User Skills');
         });
 
+        it('browser back and forward operations', () => {
+            cy.createDefaultTinyProject()
+
+            // visit client display
+            cy.visit("/native/clientDisplay.html");
+
+            cy.clientDisplay().find(selectors.myRankButton)
+
+            // to subject page
+            cy.cdClickSubj(0, 'Subject 0');
+
+            // to skill
+            cy.wrapIframe().find('[data-cy="skillProgressTitle-Thor"] [data-cy="skillProgressTitle"]').click()
+            cy.wrapIframe().find(selectors.titleSection).contains('Skill Overview')
+            cy.wrapIframe().find('[data-cy="skillProgressTitle-Thor"]')
+
+            // click next
+            cy.wrapIframe().find(selectors.nextSkillButton).click()
+            cy.wrapIframe().find('[data-cy="skillProgressTitle-IronMan"]')
+
+            cy.go('back')
+            cy.wrapIframe().find('[data-cy="skillProgressTitle-Thor"]')
+
+            cy.go('back')
+            cy.wrapIframe().find(selectors.titleSection).contains('Subject 0')
+            cy.clientDisplay().find(selectors.myRankButton)
+
+            cy.go('back')
+            cy.clientDisplay().find(selectors.titleSection).contains('User Skills');
+            cy.clientDisplay().find(selectors.myRankButton)
+
+            cy.go('forward')
+            cy.wrapIframe().find(selectors.titleSection).contains('Subject 0')
+            cy.clientDisplay().find(selectors.myRankButton)
+
+            cy.go('forward')
+            cy.wrapIframe().find(selectors.titleSection).contains('Skill Overview')
+            cy.wrapIframe().find('[data-cy="skillProgressTitle-Thor"]')
+
+            cy.go('back')
+            cy.wrapIframe().find(selectors.titleSection).contains('Subject 0')
+            cy.clientDisplay().find(selectors.myRankButton)
+
+            cy.wrapIframe().find(selectors.myRankButton).click();
+            cy.wrapIframe().find(selectors.titleSection).contains(rankDetailsTitle);
+
+            cy.go('back')
+            cy.wrapIframe().find(selectors.titleSection).contains('Subject 0')
+            cy.clientDisplay().find(selectors.myRankButton)
+
+            cy.go('back')
+            cy.clientDisplay().find(selectors.titleSection).contains('User Skills');
+            cy.clientDisplay().find(selectors.myRankButton)
+        });
+
+        it('breadcrumb-based navigation', () => {
+            cy.createDefaultTinyProject()
+
+            // visit client display
+            cy.visit("/native/clientDisplay.html?skillsClientDisplayPath=%2Fsubjects%2Fsubj0%2Frank");
+            cy.wrapIframe().find(selectors.titleSection).contains(rankDetailsTitle);
+
+            cy.wrapIframe().find('[data-cy="breadcrumbLink-subj0"]').click()
+            cy.wrapIframe().find(selectors.titleSection).contains('Subject 0')
+            cy.clientDisplay().find(selectors.myRankButton)
+
+            cy.wrapIframe().find('[data-cy="breadcrumbLink-Overview"]').click()
+            cy.clientDisplay().find(selectors.titleSection).contains('User Skills');
+            cy.clientDisplay().find(selectors.myRankButton)
+        });
+
         it('deep link and reload', () => {
             cy.createDefaultTinyProject()
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
@@ -465,6 +536,49 @@ context("Native JS Tests", () => {
             // to subject page
             cy.get('[data-cy=navigateButton]').click();
             cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/subjects/subj0]');
+        });
+    }
+
+
+    if (Utils.skillsServiceVersionLaterThan('3.1.0')) {
+        it('export user transcript', () => {
+            cy.createDefaultTinyProject()
+
+            // visit client display
+            cy.visit("/native/clientDisplay.html");
+            cy.clientDisplay().find(selectors.titleSection).contains('User Skills');
+            cy.clientDisplay().find(selectors.myRankButton)
+
+            cy.wrapIframe().find('[data-cy="downloadTranscriptBtn"]').click()
+
+            Cypress.Commands.add("readTranscript", () => {
+                const pathToPdf = 'cypress/downloads/Very Cool Project with id proj1 - user1 - Transcript.pdf'
+                cy.readFile(pathToPdf, { timeout: 10000 }).then(() => {
+                    // file exists and was successfully read
+                    cy.log(`Transcript [${pathToPdf}] Found!`)
+                })
+                return cy.task('readPdf', pathToPdf)
+            });
+            const clean = (text) => {
+                return text.replace(/\n/g, '')
+            }
+            cy.readTranscript().then((doc) => {
+                expect(doc.numpages).to.equal(2)
+                expect(clean(doc.text)).to.include('SkillTree Transcript')
+                expect(clean(doc.text)).to.include('Very Cool Project with id proj1')
+                expect(clean(doc.text)).to.include('Level: 0 / 5 ')
+                expect(clean(doc.text)).to.include('Points: 0 / 100 ')
+                expect(clean(doc.text)).to.include('Skills: 0 / 2 ')
+                expect(clean(doc.text)).to.include('user1')
+                expect(clean(doc.text)).to.not.include('Badges')
+
+                // should be a title on the 2nd page
+                expect(clean(doc.text)).to.include('Subject: Subject 0'.toUpperCase())
+                //
+                // expect(clean(doc.text)).to.not.include(expectedHeaderAndFooter)
+                // expect(clean(doc.text)).to.not.include(expectedHeaderAndFooterCommunityProtected)
+                // expect(clean(doc.text)).to.not.include('null')
+            })
         });
     }
 });

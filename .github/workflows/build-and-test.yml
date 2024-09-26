@@ -85,12 +85,12 @@ jobs:
 #        ls ./
 #        cd ..
 
-    - name: Checkout specific branch fo skills-cervice
+    - name: Checkout specific branch fo skills-service
       uses: actions/checkout@v4
       with:
         repository: NationalSecurityAgency/skills-service
         path: skills-service
-        ref: t#2886/skills_display_iframe
+        ref: t#2886/skills_display_iframe_in_memory_history
 
     - name: build skill-service
       run: |

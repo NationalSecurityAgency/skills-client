@@ -51,9 +51,9 @@
     "cypress": "13.6.3",
     "license-check-and-add": "3.0.4",
     "license-checker": "25.0.1",
+    "pdf-parse": "1.1.1",
     "semver": "7.3.2",
     "wait-on": "5.2.0",
     "wait-port": "0.2.9"
-  },
-  "dependencies": {}
+  }
 }

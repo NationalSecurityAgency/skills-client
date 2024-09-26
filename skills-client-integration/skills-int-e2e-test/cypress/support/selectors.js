@@ -16,6 +16,7 @@
 const selectors = {
     backButton: '[data-cy=back]',
     myRankButton: '[data-cy="myRankBtn"]',
-    titleSection: '[data-cy="skillsTitle"]'
+    titleSection: '[data-cy="skillsTitle"]',
+    nextSkillButton: '[data-cy="nextSkill"]'
 }
 export default selectors
