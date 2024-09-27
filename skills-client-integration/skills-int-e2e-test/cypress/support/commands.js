@@ -42,6 +42,12 @@ import selectors from './selectors.js'
 
 const backend = 'http://localhost:8080';
 const baseUrl = Cypress.config().baseUrl;
+const skillsDisplayHomePage = '/native/clientDisplay.html'
+
+Cypress.Commands.add("visitSkillsDisplay", (url = '') => {
+  cy.visit(`${skillsDisplayHomePage}${url}`);
+})
+
 Cypress.Commands.add("backendRegister", (user, pass, grantRoot) => {
   return cy.request(`${backend}/app/users/validExistingDashboardUserId/${user}`)
     .then((response) => {
@@ -56,12 +62,19 @@ Cypress.Commands.add("backendRegister", (user, pass, grantRoot) => {
         if (grantRoot) {
           cy.request('POST', `${backend}/grantFirstRoot`);
         }
-        cy.request('POST', `${backend}/logout`);
+        cy.backendLogout()
       } else {
         cy.log(`User [${user}] already exists`)
       }
     });
 });
+Cypress.Commands.add("backendLogout", () => {
+  cy.request('POST', `${backend}/logout`);
+})
+
+Cypress.Commands.add("backendPost", (url) => {
+  cy.request('POST', `${backend}/${url}`);
+})
 
 Cypress.Commands.add("backendLogin", (user, pass) => {
   cy.request({
