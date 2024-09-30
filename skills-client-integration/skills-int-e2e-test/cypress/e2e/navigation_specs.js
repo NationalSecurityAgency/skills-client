@@ -83,6 +83,7 @@ context("Navigation Tests", () => {
 
             // to subject page
             cy.cdClickSubj(0, 'Subject 0');
+            cy.clientDisplay().find(selectors.titleSection).find(selectors.backButton).should('not.exist')
 
             // navigate to Rank Overview and that it does NOT contains the internal back button
             cy.clientDisplay().find(selectors.myRankButton).click()
