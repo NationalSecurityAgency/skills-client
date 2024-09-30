@@ -3,30 +3,19 @@
 name: Continuous Integration with OAuth
 
 on:
-#  push:
-#    paths-ignore:
-#      - 'README.md'
-#      - .github/workflows/skills-service-backward-compat.yml
-#      - .github/workflows/client-libs-backward-compat.yml
-#  pull_request:
-#    paths-ignore:
-#      - 'README.md'
-#      - .github/workflows/skills-service-backward-compat.yml
-#      - .github/workflows/client-libs-backward-compat.yml
+  push:
+    paths-ignore:
+      - 'README.md'
+      - .github/workflows/skills-service-backward-compat.yml
+      - .github/workflows/client-libs-backward-compat.yml
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+      - .github/workflows/skills-service-backward-compat.yml
+      - .github/workflows/client-libs-backward-compat.yml
   schedule:
     - cron: '0 7 * * *'
   workflow_dispatch:
-#on:
-#  push:
-#    paths-ignore:
-#      - 'README.md'
-#      - .github/workflows/skills-service-backward-compat.yml
-#      - .github/workflows/client-libs-backward-compat.yml
-#  pull_request:
-#    paths-ignore:
-#      - 'README.md'
-#      - .github/workflows/skills-service-backward-compat.yml
-#      - .github/workflows/client-libs-backward-compat.yml
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -90,11 +79,26 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-    - name: download skill-service
+#    - name: download skill-service
+#      run: |
+#        mkdir skills-service
+#        cd skills-service
+#        curl -s https://api.github.com/repos/NationalSecurityAgency/skills-service/releases/latest | grep browser_download_url | cut -d '"' -f 4 | wget -qi -
+#        ls ./
+#        cd ..
+
+    - name: Checkout specific branch fo skills-service
+      uses: actions/checkout@v4
+      with:
+        repository: NationalSecurityAgency/skills-service
+        path: skills-service
+        ref: 3.1.X
+
+    - name: build skill-service
       run: |
-        mkdir skills-service
         cd skills-service
-        curl -s https://api.github.com/repos/NationalSecurityAgency/skills-service/releases/latest | grep browser_download_url | cut -d '"' -f 4 | wget -qi -
+        mvn --batch-mode clean install -DskipTests
+        cp ./service/target/skills-service-*.jar ./
         ls ./
         cd ..
 

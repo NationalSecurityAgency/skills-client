@@ -90,7 +90,7 @@ jobs:
       with:
         repository: NationalSecurityAgency/skills-service
         path: skills-service
-        ref: t#2886/skills_display_iframe_in_memory_history
+        ref: 3.1.X
 
     - name: build skill-service
       run: |
