@@ -121,11 +121,11 @@ Cypress.Commands.add("backendAddSkill", (skillId, version = 0, projId = 'proj1',
   })
 });
 
-Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 2, pointIncrement = 50, numPerformToCompletion = 1, projId = 'proj1') => {
+Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 2, pointIncrement = 50, numPerformToCompletion = 1, projId = 'proj1', projName = null) => {
   const skillIdsToCreate = ['IronMan', 'Thor']
   cy.backendPost(`/app/projects/${projId}`, {
     projectId: projId,
-    name: `Very Cool Project with id ${projId}`
+    name: projName || `Very Cool Project with id ${projId}`
   }).then((resp => {
     if (Cypress.env('oauthMode')) {
       // if we're in oauthMode, then the foo-hyrda user will own the project. so we need to give the
@@ -154,8 +154,8 @@ Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 2,
   }
 });
 
-Cypress.Commands.add("createDefaultTinyProject", (projId = 'proj1') => {
-  cy.createDefaultProject(1, 2, 50, 1, projId)
+Cypress.Commands.add("createDefaultTinyProject", (projId = 'proj1', projName = null) => {
+  cy.createDefaultProject(1, 2, 50, 1, projId, projName)
 });
 
 Cypress.Commands.add("iframe", (handleIframeBody) => {
