@@ -34,6 +34,16 @@ context("Transcript Export Tests", () => {
 
     beforeEach(() => {
         deleteDownloadDir()
+
+        Cypress.Commands.add("printLocInfo", () => {
+            cy.wait(2000)
+            cy.exec('ls ./').then((result) => {
+                cy.log(result.stdout);
+            });
+            cy.exec('ls ./cypress/downloads').then((result) => {
+                cy.log(result.stdout);
+            });
+        })
     })
     if (Utils.skillsServiceVersionLaterThan('3.1.0')) {
         const expectedHeaderAndFooter = 'For All Dragons enjoyment'
@@ -48,9 +58,10 @@ context("Transcript Export Tests", () => {
             cy.clientDisplay().find(selectors.myRankButton)
 
             cy.wrapIframe().find('[data-cy="downloadTranscriptBtn"]').click()
+            cy.printLocInfo()
 
             Cypress.Commands.add("readTranscript", () => {
-                const pathToPdf = 'cypress/downloads/Very Cool Project with id proj1 - user1 - Transcript.pdf'
+                const pathToPdf = './cypress/downloads/Very Cool Project with id proj1 - user1 - Transcript.pdf'
                 cy.readFile(pathToPdf, { timeout: 10000 }).then(() => {
                     // file exists and was successfully read
                     cy.log(`Transcript [${pathToPdf}] Found!`)
@@ -96,7 +107,7 @@ context("Transcript Export Tests", () => {
             cy.clientDisplay().find(selectors.myRankButton)
 
             cy.wrapIframe().find('[data-cy="downloadTranscriptBtn"]').click()
-
+            cy.printLocInfo()
             Cypress.Commands.add("readTranscript", () => {
                 const pathToPdf = 'cypress/downloads/Very Cool Project with id proj1 - user1 - Transcript.pdf'
                 cy.readFile(pathToPdf, { timeout: 10000 }).then(() => {
@@ -139,24 +150,38 @@ context("Transcript Export Tests", () => {
 
             const allDragonsUser = 'allDragons@email.org'
             cy.fixture('vars.json').then((vars) => {
-                cy.backendLogout();
-                cy.backendRegister('user1', vars.defaultPass);
-                cy.backendLogin(vars.rootUser, vars.defaultPass, true);
-                cy.backendPost( `/root/users/user1/tags/dragons`, { tags: ['DivineDragon'] });
-                cy.backendPost( `/root/users/${vars.defaultUser}/tags/dragons`, { tags: ['DivineDragon'] });
+                const logout = cy.backendLogout();
+                const regUser1 = cy.backendRegister('user1', vars.defaultPass);
+                const loginRoot = cy.backendLogin(vars.rootUser, vars.defaultPass, true);
+                const addDivineDragonTags = [
+                    cy.backendPost( `/root/users/user1/tags/dragons`, { tags: ['DivineDragon'] }),
+                    cy.backendPost( `/root/users/${vars.defaultUser}/tags/dragons`, { tags: ['DivineDragon'] })
+                ]
                 cy.backendLogout();
 
-                cy.backendRegister(allDragonsUser, vars.defaultPass);
+                const regAllDragonUsr = cy.backendRegister(allDragonsUser, vars.defaultPass);
                 cy.backendLogout();
 
-                cy.backendLogin(vars.defaultUser, vars.defaultPass);
+                const loginDefault = cy.backendLogin(vars.defaultUser, vars.defaultPass);
+
+                logout
+                    .then(() => regUser1)
+                    .then(() => loginRoot)
+                    .then(() => addDivineDragonTags)
+                    .then(() => logout)
+                    .then(() => regAllDragonUsr)
+                    .then(() => logout)
+                    .then(() => loginDefault)
+                    .then(() => {
+                        cy.backendPost(`/admin/projects/proj1`, {
+                            projectId: 'proj1',
+                            name: `Very Cool Project with id proj1`,
+                            enableProtectedUserCommunity: true
+                        })
+                    })
             });
-            cy.backendPost(`/admin/projects/proj1`, {
-                projectId: 'proj1',
-                name: `Very Cool Project with id proj1`,
-                enableProtectedUserCommunity: true
-            })
 
+            cy.wait(3000)
             // visit client display
             cy.visitSkillsDisplay();
             cy.wait('@getPublicConfig')
@@ -164,7 +189,7 @@ context("Transcript Export Tests", () => {
             cy.clientDisplay().find(selectors.myRankButton)
 
             cy.wrapIframe().find('[data-cy="downloadTranscriptBtn"]').click()
-
+            cy.printLocInfo()
             Cypress.Commands.add("readTranscript", () => {
                 const pathToPdf = 'cypress/downloads/Very Cool Project with id proj1 - Firstname LastName (user1) - Transcript.pdf'
                 cy.readFile(pathToPdf, { timeout: 10000 }).then(() => {

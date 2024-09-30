@@ -69,15 +69,15 @@ Cypress.Commands.add("backendRegister", (user, pass, grantRoot) => {
     });
 });
 Cypress.Commands.add("backendLogout", () => {
-  cy.request('POST', `${backend}/logout`);
+  return cy.request('POST', `${backend}/logout`);
 })
 
 Cypress.Commands.add("backendPost", (url) => {
-  cy.request('POST', `${backend}/${url}`);
+  return cy.request('POST', `${backend}/${url}`);
 })
 
 Cypress.Commands.add("backendLogin", (user, pass) => {
-  cy.request({
+  return cy.request({
     method: 'POST',
     url: `${backend}/performLogin`,
     body: {
@@ -89,12 +89,12 @@ Cypress.Commands.add("backendLogin", (user, pass) => {
 });
 
 Cypress.Commands.add("backendLogout", () => {
-  cy.request('POST', `${backend}/logout`);
+  return cy.request('POST', `${backend}/logout`).as('request')
 });
 
 
 Cypress.Commands.add("backendPost", (url, body) => {
-  cy.request('POST', `${backend}${url}`, body)
+  return cy.request('POST', `${backend}${url}`, body)
 });
 
 Cypress.Commands.add("reportSkill", (skillId, projId = 'proj1') => {
