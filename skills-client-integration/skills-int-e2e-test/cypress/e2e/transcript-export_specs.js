@@ -22,7 +22,7 @@ context("Transcript Export Tests", () => {
     const deleteDownloadDir = () => {
         try {
             cy.log('trying to remove downloads dir')
-            cy.exec('rm -rf cypress/downloads');
+            cy.exec('rm cypress/downloads/*');
             cy.log('remove downloads dir')
         } catch (error) {
             throw Error(`Failed to remove downloads with ${error}`);
@@ -150,38 +150,24 @@ context("Transcript Export Tests", () => {
 
             const allDragonsUser = 'allDragons@email.org'
             cy.fixture('vars.json').then((vars) => {
-                const logout = cy.backendLogout();
-                const regUser1 = cy.backendRegister('user1', vars.defaultPass);
-                const loginRoot = cy.backendLogin(vars.rootUser, vars.defaultPass, true);
-                const addDivineDragonTags = [
-                    cy.backendPost( `/root/users/user1/tags/dragons`, { tags: ['DivineDragon'] }),
-                    cy.backendPost( `/root/users/${vars.defaultUser}/tags/dragons`, { tags: ['DivineDragon'] })
-                ]
+                cy.backendLogout();
+                cy.backendRegister('user1', vars.defaultPass);
+                cy.backendLogin(vars.rootUser, vars.defaultPass, true);
+                cy.backendPost( `/root/users/user1/tags/dragons`, { tags: ['DivineDragon'] });
+                cy.backendPost( `/root/users/${vars.defaultUser}/tags/dragons`, { tags: ['DivineDragon'] });
                 cy.backendLogout();
 
-                const regAllDragonUsr = cy.backendRegister(allDragonsUser, vars.defaultPass);
+                cy.backendRegister(allDragonsUser, vars.defaultPass);
                 cy.backendLogout();
 
-                const loginDefault = cy.backendLogin(vars.defaultUser, vars.defaultPass);
-
-                logout
-                    .then(() => regUser1)
-                    .then(() => loginRoot)
-                    .then(() => addDivineDragonTags)
-                    .then(() => logout)
-                    .then(() => regAllDragonUsr)
-                    .then(() => logout)
-                    .then(() => loginDefault)
-                    .then(() => {
-                        cy.backendPost(`/admin/projects/proj1`, {
-                            projectId: 'proj1',
-                            name: `Very Cool Project with id proj1`,
-                            enableProtectedUserCommunity: true
-                        })
-                    })
+                cy.backendLogin(vars.defaultUser, vars.defaultPass);
             });
+            cy.backendPost(`/admin/projects/proj1`, {
+                projectId: 'proj1',
+                name: `Very Cool Project with id proj1`,
+                enableProtectedUserCommunity: true
+            })
 
-            cy.wait(3000)
             // visit client display
             cy.visitSkillsDisplay();
             cy.wait('@getPublicConfig')
