@@ -49,7 +49,7 @@
         "license-check-and-add": "4.0.5",
         "license-checker": "25.0.1",
         "regenerator-runtime": "0.14.1",
-        "rollup": "4.22.2",
+        "rollup": "4.22.4",
         "xhr-mock": "2.5.1"
     },
     "dependencies": {
