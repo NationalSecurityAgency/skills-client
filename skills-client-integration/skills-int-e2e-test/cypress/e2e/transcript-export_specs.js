@@ -19,11 +19,27 @@ import selectors from "../support/selectors";
 
 context("Transcript Export Tests", () => {
 
+    const clean = (text) => {
+        return text.replace(/\n/g, '')
+    }
+
     beforeEach(() => {
-        Cypress.Commands.add("getFileName", (projName) => {
-            const userName =  Cypress.env('oauthMode') ? 'foo bar (foo)' : 'user1'
+        const getFileName = (projName) => {
+            const userName = Cypress.env('oauthMode') ? 'foo bar (foo)' : 'user1'
             return `./cypress/downloads/${projName} - ${userName} - Transcript.pdf`
-        })
+        }
+        Cypress.Commands.add("readTranscript", (pathToPdf) => {
+            cy.log(`Reading transcript [${pathToPdf}]`)
+            cy.readFile(pathToPdf, { timeout: 10000 }).then(() => {
+                // file exists and was successfully read
+                cy.log(`Transcript [${pathToPdf}] Found!`)
+            })
+            return cy.task('readPdf', pathToPdf)
+        });
+        Cypress.Commands.add("readTranscriptForProj", (projName) => {
+            const pathToPdf = getFileName(projName)
+            return cy.readTranscript(pathToPdf)
+        });
     })
     if (Utils.skillsServiceVersionLaterThan('3.1.0')) {
         const expectedHeaderAndFooter = 'For All Dragons enjoyment'
@@ -40,18 +56,7 @@ context("Transcript Export Tests", () => {
 
             cy.wrapIframe().find('[data-cy="downloadTranscriptBtn"]').click()
 
-            Cypress.Commands.add("readTranscript", () => {
-                const pathToPdf = cy.getFileName(projName)
-                cy.readFile(pathToPdf, { timeout: 10000 }).then(() => {
-                    // file exists and was successfully read
-                    cy.log(`Transcript [${pathToPdf}] Found!`)
-                })
-                return cy.task('readPdf', pathToPdf)
-            });
-            const clean = (text) => {
-                return text.replace(/\n/g, '')
-            }
-            cy.readTranscript().then((doc) => {
+            cy.readTranscriptForProj(projName).then((doc) => {
                 expect(doc.numpages).to.equal(2)
                 expect(clean(doc.text)).to.include('SkillTree Transcript')
                 expect(clean(doc.text)).to.include(projName)
@@ -88,18 +93,7 @@ context("Transcript Export Tests", () => {
             cy.clientDisplay().find(selectors.myRankButton)
 
             cy.wrapIframe().find('[data-cy="downloadTranscriptBtn"]').click()
-            Cypress.Commands.add("readTranscript", () => {
-                const pathToPdf = cy.getFileName(projName)
-                cy.readFile(pathToPdf, { timeout: 10000 }).then(() => {
-                    // file exists and was successfully read
-                    cy.log(`Transcript [${pathToPdf}] Found!`)
-                })
-                return cy.task('readPdf', pathToPdf)
-            });
-            const clean = (text) => {
-                return text.replace(/\n/g, '')
-            }
-            cy.readTranscript().then((doc) => {
+            cy.readTranscriptForProj(projName).then((doc) => {
                 expect(doc.numpages).to.equal(2)
                 expect(clean(doc.text)).to.include('SkillTree Transcript')
                 expect(clean(doc.text)).to.include(projName)
@@ -157,18 +151,9 @@ context("Transcript Export Tests", () => {
                 cy.clientDisplay().find(selectors.myRankButton)
 
                 cy.wrapIframe().find('[data-cy="downloadTranscriptBtn"]').click()
-                Cypress.Commands.add("readTranscript", () => {
-                    const pathToPdf = `cypress/downloads/${projName} - Firstname LastName (user1) - Transcript.pdf`
-                    cy.readFile(pathToPdf, {timeout: 10000}).then(() => {
-                        // file exists and was successfully read
-                        cy.log(`Transcript [${pathToPdf}] Found!`)
-                    })
-                    return cy.task('readPdf', pathToPdf)
-                });
-                const clean = (text) => {
-                    return text.replace(/\n/g, '')
-                }
-                cy.readTranscript().then((doc) => {
+                const pathToPdf = `cypress/downloads/${projName} - Firstname LastName (user1) - Transcript.pdf`
+
+                cy.readTranscript(pathToPdf).then((doc) => {
                     expect(doc.numpages).to.equal(2)
                     expect(clean(doc.text)).to.include('SkillTree Transcript')
                     expect(clean(doc.text)).to.include(projName)
