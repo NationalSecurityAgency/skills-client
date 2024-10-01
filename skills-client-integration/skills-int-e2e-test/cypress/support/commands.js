@@ -38,9 +38,16 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+import selectors from './selectors.js'
 
 const backend = 'http://localhost:8080';
 const baseUrl = Cypress.config().baseUrl;
+const skillsDisplayHomePage = '/native/clientDisplay.html'
+
+Cypress.Commands.add("visitSkillsDisplay", (url = '') => {
+  cy.visit(`${skillsDisplayHomePage}${url}`);
+})
+
 Cypress.Commands.add("backendRegister", (user, pass, grantRoot) => {
   return cy.request(`${backend}/app/users/validExistingDashboardUserId/${user}`)
     .then((response) => {
@@ -55,15 +62,22 @@ Cypress.Commands.add("backendRegister", (user, pass, grantRoot) => {
         if (grantRoot) {
           cy.request('POST', `${backend}/grantFirstRoot`);
         }
-        cy.request('POST', `${backend}/logout`);
+        cy.backendLogout()
       } else {
         cy.log(`User [${user}] already exists`)
       }
     });
 });
+Cypress.Commands.add("backendLogout", () => {
+  return cy.request('POST', `${backend}/logout`);
+})
+
+Cypress.Commands.add("backendPost", (url) => {
+  return cy.request('POST', `${backend}/${url}`);
+})
 
 Cypress.Commands.add("backendLogin", (user, pass) => {
-  cy.request({
+  return cy.request({
     method: 'POST',
     url: `${backend}/performLogin`,
     body: {
@@ -75,12 +89,12 @@ Cypress.Commands.add("backendLogin", (user, pass) => {
 });
 
 Cypress.Commands.add("backendLogout", () => {
-  cy.request('POST', `${backend}/logout`);
+  return cy.request('POST', `${backend}/logout`).as('request')
 });
 
 
 Cypress.Commands.add("backendPost", (url, body) => {
-  cy.request('POST', `${backend}${url}`, body)
+  return cy.request('POST', `${backend}${url}`, body)
 });
 
 Cypress.Commands.add("reportSkill", (skillId, projId = 'proj1') => {
@@ -107,11 +121,11 @@ Cypress.Commands.add("backendAddSkill", (skillId, version = 0, projId = 'proj1',
   })
 });
 
-Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 2, pointIncrement = 50, numPerformToCompletion = 1, projId = 'proj1') => {
+Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 2, pointIncrement = 50, numPerformToCompletion = 1, projId = 'proj1', projName = null) => {
   const skillIdsToCreate = ['IronMan', 'Thor']
   cy.backendPost(`/app/projects/${projId}`, {
     projectId: projId,
-    name: `Very Cool Project with id ${projId}`
+    name: projName || `Very Cool Project with id ${projId}`
   }).then((resp => {
     if (Cypress.env('oauthMode')) {
       // if we're in oauthMode, then the foo-hyrda user will own the project. so we need to give the
@@ -140,8 +154,8 @@ Cypress.Commands.add("createDefaultProject", (numSubj = 3, numSkillsPerSubj = 2,
   }
 });
 
-Cypress.Commands.add("createDefaultTinyProject", (projId = 'proj1') => {
-  cy.createDefaultProject(1, 2, 50, 1, projId)
+Cypress.Commands.add("createDefaultTinyProject", (projId = 'proj1', projName = null) => {
+  cy.createDefaultProject(1, 2, 50, 1, projId, projName)
 });
 
 Cypress.Commands.add("iframe", (handleIframeBody) => {
@@ -168,19 +182,19 @@ Cypress.Commands.add('visitHomePage', (homepage) => {
 });
 
 Cypress.Commands.add("cdClickSubj", (subjIndex, expectedTitle) => {
-  cy.wrapIframe().find(`.user-skill-subject-tile:nth-child(${subjIndex + 1})`).first().click();
+  cy.wrapIframe().find(`[data-cy="subjectTile-subj${subjIndex}"] [data-cy="subjectTileBtn"]`).click();
   if (expectedTitle) {
-    cy.wrapIframe().contains(expectedTitle);
+    cy.wrapIframe().find('[data-cy="skillsTitle"]').contains(expectedTitle);
   }
 });
 
 Cypress.Commands.add("cdBack", (expectedTitle = 'User Skills') => {
-  cy.wrapIframe().find('[data-cy=back]').click()
+  cy.wrapIframe().find(selectors.backButton).click()
   cy.wrapIframe().contains(expectedTitle);
 
   // back button should not exist on the home page, whose title is the default value
   if (expectedTitle === 'User Skills') {
-    cy.wrapIframe().find('[data-cy=back]').should('not.exist');
+    cy.wrapIframe().find(selectors.backButton).should('not.exist');
   }
 });
 

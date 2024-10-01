@@ -12,7 +12,20 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 -- creating Inception project is expensive so lets not delete it
-delete from PROJECT_DEFINITION where PROJECT_ID <> 'Inception';
-delete from USER_ATTRS where USER_ID <> 'root@skills.org' and USER_ID <> 'user1@skills.org';
-delete from GLOBAL_BADGE_LEVEL_DEFINITION;
-delete from SKILL_DEFINITION where PROJECT_ID is null;
+delete from project_definition where project_id <> 'Inception';
+delete from quiz_definition;
+delete from user_attrs where user_id <> 'root@skills.org' and user_id <> 'user1@skills.org';
+delete from user_roles where user_id = 'user1@skills.org' and (role_name = 'ROLE_SUPER_DUPER_USER' OR role_name = 'ROLE_SUPERVISOR' OR role_name = 'ROLE_PROJECT_ADMIN' OR role_name = 'ROLE_PRIVATE_PROJECT_USER' OR role_name = 'ROLE_DASHBOARD_ADMIN_ACCESS');
+delete from user_roles where user_id = 'root@skills.org' and role_name = 'ROLE_SUPERVISOR';
+delete from global_badge_level_definition;
+delete from skill_definition where project_id is null;
+delete from user_achievement;
+delete from settings where setting_group <> 'project.inception';
+delete from user_points where project_id = 'Inception';
+delete from user_achievement where project_id = 'Inception';
+delete from user_performed_skill where project_id = 'Inception';
+delete from user_events where project_id = 'Inception';
+delete from user_tags;
+delete from notifications;
+delete from user_actions_history;
+delete from custom_icons;

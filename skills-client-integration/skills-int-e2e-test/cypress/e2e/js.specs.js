@@ -14,96 +14,11 @@
  * limitations under the License.
  */
 import Utils from "./Utils";
+import selectors from "../support/selectors";
 
 const homePage = '/native/index.html'
 
-context("Native JS Tests", () => {
-
-    const laterThan_1_4_0 = Utils.skillsServiceVersionLaterThan('1.4.0');
-    const laterThan_1_11_1 = Utils.skillsServiceVersionLaterThan('1.11.1');
-    const noThemeBackground = laterThan_1_4_0 ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)';
-    const rankDetailsTitle = laterThan_1_11_1 ? 'My Rank' : 'Rank Overview'
-
-    it("global event show correct results", () => {
-        cy.createDefaultProject();
-
-        const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
-        Cypress.Commands.add("clickSubmit", () => {
-            cy.get(`${sendEventViaDropdownId} .btn`).click();
-        });
-
-        cy.visitHomePage(homePage);
-        cy.clickSubmit();
-
-        cy.get('pre[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
-        cy.get('pre[data-cy=globalEventResult]').contains('"pointsEarned": 50')
-        cy.get('pre[data-cy=globalEventResult]').contains('"skillApplied": true')
-        cy.get('pre[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
-    });
-    it("global event show correct results (skills reported directly to backend endpoint)", () => {
-        cy.createDefaultProject();
-
-        cy.visitHomePage(homePage);
-        cy.reportSkillForUser("IronMan", Cypress.env('proxyUser'));
-
-        cy.get('pre[data-cy=globalEventResult]').should('be.visible')
-        cy.get('pre[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
-        cy.get('pre[data-cy=globalEventResult]').contains('"pointsEarned": 50')
-        cy.get('pre[data-cy=globalEventResult]').contains('"skillApplied": true')
-        cy.get('pre[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
-    });
-
-    it('global event does not update when skill reported for a different project', () => {
-        cy.createDefaultProject()
-        cy.createDefaultTinyProject('proj2')
-
-        cy.visitHomePage(homePage);
-        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'), 'proj2')
-
-        cy.get('pre[data-cy=globalEventResult]').should('be.empty');
-    })
-    it('global event is not reported when skill is not applied (skill reported directly to backend endpoint)', () => {
-        cy.createDefaultProject()
-        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
-
-        cy.visitHomePage(homePage);
-        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
-
-        cy.get('[data-cy=globalEventResult]').should('be.empty');
-    })
-    it('global event is not reported when skill is not applied', () => {
-        cy.createDefaultProject()
-        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
-
-        cy.visitHomePage(homePage);
-        const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
-        Cypress.Commands.add("clickSubmit", () => {
-            cy.get(`${sendEventViaDropdownId} .btn`).click();
-        });
-        cy.get('[type="checkbox"]').uncheck()
-        cy.clickSubmit()
-
-        cy.get('pre[data-cy=globalEventResult]').should('be.empty');
-    })
-
-    it('global event is reported even when skill is not applied when notifyIfSkillNotApplied=true ', () => {
-        cy.createDefaultProject()
-        cy.reportSkillForUser('IronMan', Cypress.env('proxyUser'))
-
-        const sendEventViaDropdownId = "#exampleDirectiveClickEvent";
-        Cypress.Commands.add("clickSubmit", () => {
-            cy.get(`${sendEventViaDropdownId} .btn`).click();
-        });
-
-        cy.visitHomePage(homePage);
-        cy.get('[type="checkbox"]').check()
-        cy.clickSubmit()
-
-        cy.get('pre[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
-        cy.get('pre[data-cy=globalEventResult]').contains('"pointsEarned": 0')
-        cy.get('pre[data-cy=globalEventResult]').contains('"skillApplied": false')
-        cy.get('pre[data-cy=globalEventResult]').contains('"explanation": "This skill reached its maximum points"')
-    })
+context("Skills Display Tests", () => {
 
     it("skill display", () => {
         cy.createDefaultTinyProject();
@@ -113,7 +28,7 @@ context("Native JS Tests", () => {
             userId: Cypress.env('proxyUser'),
             timestamp: Date.now()
         });
-        cy.visit("/native/clientDisplay.html");
+        cy.visitSkillsDisplay();
         
         cy.wrapIframe().contains('My Level')
         cy.wrapIframe().contains('50 Points earned Today')
@@ -121,8 +36,8 @@ context("Native JS Tests", () => {
 
         // verify that there is no background set
         // cypress always validates against rgb
-        cy.wrapIframe().find('.skills-page-title-text-color')
-            .should('have.css', 'background-color').and('equal', noThemeBackground);
+        cy.wrapIframe().find('[data-cy="skillsTitle"]')
+            .should('have.css', 'background-color').and('equal', Utils.noThemeBackground());
     });
 
     it("skill display - default options", () => {
@@ -139,11 +54,12 @@ context("Native JS Tests", () => {
         cy.wrapIframe().contains('My Level')
         cy.wrapIframe().contains('50 Points earned Today')
         cy.wrapIframe().contains('Subject 0')
+        cy.wrapIframe().find('[data-cy="subjectTile-subj0"] [data-cy="subjectTileBtn"]')
 
         // verify that there is no background set
         // cypress always validates against rgb
-        cy.wrapIframe().find('.skills-page-title-text-color')
-            .should('have.css', 'background-color').and('equal', noThemeBackground);
+        cy.wrapIframe().find('[data-cy="skillsTitle"]')
+            .should('have.css', 'background-color').and('equal', Utils.noThemeBackground());
     });
 
     it("skill display - summary only", () => {
@@ -154,17 +70,17 @@ context("Native JS Tests", () => {
             userId: Cypress.env('proxyUser'),
             timestamp: Date.now()
         });
-        cy.visit("/native/clientDisplay.html?isSummaryOnly=true");
+        cy.visitSkillsDisplay("?isSummaryOnly=true");
 
         
         cy.wrapIframe().contains('My Level')
         cy.wrapIframe().contains('50 Points earned Today')
-        cy.wrapIframe().contains('Subject 0').should('not.exist')
+        cy.wrapIframe().find('[data-cy="subjectTile-subj0"] [data-cy="subjectTileBtn"]').should('not.exist')
 
         // verify that there is no background set
         // cypress always validates against rgb
-        cy.wrapIframe().find('.skills-page-title-text-color')
-            .should('have.css', 'background-color').and('equal', noThemeBackground);
+        cy.wrapIframe().find('[data-cy="skillsTitle"]')
+            .should('have.css', 'background-color').and('equal', Utils.noThemeBackground());
     });
 
     it("skill display - theme", () => {
@@ -175,7 +91,7 @@ context("Native JS Tests", () => {
             userId: Cypress.env('proxyUser'),
             timestamp: Date.now()
         });
-        cy.visit("/native/clientDisplay.html?themeName=Dark Blue");
+        cy.visitSkillsDisplay("?themeName=Dark Blue");
         cy.wait("@getToken");
         
         cy.wrapIframe().contains('My Level')
@@ -184,7 +100,7 @@ context("Native JS Tests", () => {
 
         // verify dark blue background of hex #152E4d
         // cypress always validates against rgb
-        cy.wrapIframe().find('.skills-page-title-text-color')
+        cy.wrapIframe().find('[data-cy="skillsTitle"]')
             .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
     });
 
@@ -202,11 +118,11 @@ context("Native JS Tests", () => {
         
         cy.wrapIframe().contains('My Level')
         cy.wrapIframe().contains('50 Points earned Today')
-        cy.wrapIframe().contains('Subject 0').should('not.exist')
+        cy.wrapIframe().find('[data-cy="subjectTile-subj0"] [data-cy="subjectTileBtn"]').should('not.exist')
 
         // verify dark blue background of hex #152E4d
         // cypress always validates against rgb
-        cy.wrapIframe().find('.skills-page-title-text-color')
+        cy.wrapIframe().find('[data-cy="skillsTitle"]')
             .should('have.css', 'background-color').and('equal', 'rgb(21, 46, 77)');
     });
 
@@ -217,35 +133,31 @@ context("Native JS Tests", () => {
             statusCode: 503, // server is down
             body: {}
         }).as('getStatus')
-        cy.visit('/native/clientDisplay.html');
+        cy.visitSkillsDisplay();
         cy.wait('@getStatus')
 
         cy.contains("Could NOT reach Skilltree Service");
     });
 
     it("only display skills up-to the provided version", () => {
-        const noVersionPoints = 'Earn up to 200 points';
-        const v1Points = 'Earn up to 150 points';
-        const v0Points = 'Earn up to 100 points';
+        const totalPointsSelector = '[data-cy="totalPoints"]'
         cy.createDefaultTinyProject();
         cy.intercept(Cypress.env('tokenUrl'))
             .as("getToken");
         cy.backendAddSkill("skillv1", 1);
         cy.backendAddSkill("skillv2", 2);
-        cy.visit("/native/clientDisplay.html");
+        cy.visitSkillsDisplay();
         cy.wait("@getToken");
         cy.wait('@getToken')
-        cy.wrapIframe().contains(noVersionPoints);
+        cy.wrapIframe().find(totalPointsSelector).should('have.text', '200');
 
-        // cy.visit("/native/index.html");
-        cy.visit("/native/clientDisplay.html?skillsVersion=1");
+        cy.visitSkillsDisplay("?skillsVersion=1");
         cy.wait('@getToken')
-        cy.wrapIframe().contains(v1Points);
+        cy.wrapIframe().find(totalPointsSelector).should('have.text', '150');
 
-        // cy.visit("/native/index.html");
-        cy.visit("/native/clientDisplay.html?skillsVersion=0");
+        cy.visitSkillsDisplay("?skillsVersion=0");
         cy.wait('@getToken')
-        cy.wrapIframe().contains(v0Points);
+        cy.wrapIframe().find(totalPointsSelector).should('have.text', '100');
     });
 
     it('skillsClientVersion is reported correctly', () => {
@@ -290,171 +202,4 @@ context("Native JS Tests", () => {
         cy.contains('Level 1')
     })
 
-    if (Utils.skillsServiceVersionLaterThan('1.5.0')) {
-        it('internal back button when when returning from an external page', () => {
-            cy.createDefaultTinyProject()
-            cy.intercept(Cypress.env('tokenUrl')).as('getToken')
-            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-
-            // visit client display
-            cy.visit('/native/clientDisplay.html?internalBackButton=true');
-            // cy.wait('@getToken')
-
-            cy.clientDisplay(true).find('[data-cy=back]').should('not.exist');
-            cy.clientDisplay().contains('User Skills');
-
-            // navigate to Rank Overview that contains the back button
-            cy.clientDisplay().find('[data-cy=myRank]').click();
-            cy.clientDisplay().contains(rankDetailsTitle);
-            cy.clientDisplay().find('[data-cy=back]').should('exist');
-
-            // now visit the "Report Skills" (external) page
-            cy.get('[data-cy=reportSkillsLink]').click()
-            cy.contains('Report Skills Examples');
-
-            // switch back to the the client display
-            cy.get('[data-cy=userDisplayLink]').click()
-        });
-
-        it('internal back button when when returning from an external page - multiple layers deep', () => {
-            cy.createDefaultTinyProject()
-            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-
-            // visit client display
-            cy.visit('/native/clientDisplay.html?internalBackButton=true');
-
-            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
-            cy.clientDisplay().contains('User Skills');
-
-            // to subject page
-            cy.cdClickSubj(0, 'Subject 0');
-
-            // navigate to Rank Overview that contains the back button
-            cy.clientDisplay().find('[data-cy=myRank]').click();
-            cy.clientDisplay().contains(rankDetailsTitle);
-            cy.clientDisplay().find('[data-cy=back]').should('exist');
-
-            // click the back button and verify that we are still in the
-            // client display (Subject page)
-            cy.cdBack('Subject 0');
-
-            // then back one more time and we should be back on the client display home page
-            cy.cdBack('User Skills');
-        });
-
-        it('browser back button works correctly when internal back button is not present', () => {
-            cy.createDefaultTinyProject()
-            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-
-            // visit client display
-            cy.visit("/native/clientDisplay.html?internalBackButton=false");
-
-            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
-            cy.clientDisplay().contains('User Skills');
-
-            // to subject page
-            cy.cdClickSubj(0, 'Subject 0');
-
-            // navigate to Rank Overview and that it does NOT contains the internal back button
-            cy.clientDisplay().find('[data-cy=myRank]').click();
-            cy.clientDisplay().contains(rankDetailsTitle);
-            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
-
-            // click the browser back button and verify that we are still in the
-            // client display (Subject page)
-            cy.wait(1000);
-            cy.go('back')  // browser back button
-            cy.wait(1000);
-            cy.clientDisplay().contains('Subject 0');
-
-            // then back one more time and we should be back on the client display home page
-            cy.wait(1000);
-            cy.go('back')  // browser back button
-            cy.wait(1000);
-            cy.clientDisplay().contains('User Skills');
-        });
-
-        it('deep link and reload', () => {
-            cy.createDefaultTinyProject()
-            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-
-            // navigate to Rank Overview via direct link
-            cy.visit('/native/clientDisplay.html?skillsClientDisplayPath=%2Frank#/showSkills');
-            cy.clientDisplay().contains(rankDetailsTitle);
-
-            // reload and confirm we are still on Rank Overview page
-            cy.reload();
-            cy.clientDisplay().contains(rankDetailsTitle);
-        });
-
-        it('back button after reload', () => {
-            cy.createDefaultTinyProject()
-            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-
-            // visit client display
-            cy.visit("/native/clientDisplay.html?internalBackButton=false");
-
-            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
-            cy.clientDisplay().contains('User Skills');
-
-            // to subject page
-            cy.cdClickSubj(0, 'Subject 0');
-
-            // navigate to Rank Overview and that it does NOT contains the internal back button
-            cy.clientDisplay().find('[data-cy=myRank]').click();
-            cy.clientDisplay().contains(rankDetailsTitle);
-            cy.clientDisplay().find('[data-cy=back]').should('not.exist');
-
-            cy.reload();
-            cy.clientDisplay().contains(rankDetailsTitle);
-
-            // click the browser back button and verify that we are still in the
-            // client display (Subject page)
-            cy.wait(1000);
-            cy.go('back')  // browser back button
-            cy.wait(1000);
-            cy.clientDisplay().contains('Subject 0');
-
-            // then back one more time and we should be back on the client display home page
-            cy.wait(1000);
-            cy.go('back')  // browser back button
-            cy.wait(1000);
-            cy.clientDisplay().contains('User Skills');
-        });
-
-        it('route change is passed to the client app', () => {
-            cy.createDefaultTinyProject()
-            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-
-            // visit client display
-            cy.visit('/native/clientDisplay.html?internalBackButton=true');
-            cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/]');
-
-            // to subject page
-            cy.cdClickSubj(0, 'Subject 0');
-            cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/subjects/subj0]');
-
-            // navigate to Rank Overview and that it does NOT contains the internal back button
-            cy.clientDisplay().find('[data-cy=myRank]').click();
-            cy.clientDisplay().contains(rankDetailsTitle);
-
-            cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/subjects/subj0/rank]');
-        });
-
-    }
-
-    if (Utils.skillsServiceVersionLaterThan('1.6.0')) {
-        it('navigate skills-display programatically', () => {
-            cy.createDefaultTinyProject()
-            cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
-
-            // visit client display
-            cy.visit('/native/clientDisplay.html?internalBackButton=true');
-            cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/]');
-
-            // to subject page
-            cy.get('[data-cy=navigateButton]').click();
-            cy.get('[data-cy=skillsDisplayPath]').contains('Skills Display Path: [/subjects/subj0]');
-        });
-    }
 });

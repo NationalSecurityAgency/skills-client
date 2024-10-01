@@ -162,7 +162,9 @@ describe('userSkillsService', () => {
 
           MockXMLHttpRequest.onreadystatechange();
 
-          promise.finally(() => {
+          promise.catch(() => {
+              // error is ok here
+          }).finally(() => {
             expect(handler1).toHaveBeenCalledWith(JSON.parse(mockError));
             expect(handler2).toHaveBeenCalledWith(JSON.parse(mockError));
             expect(consoleSpy).toHaveBeenCalledWith('Error reporting skill:', JSON.parse(mockError));

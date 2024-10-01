@@ -12,8 +12,9 @@
     "licenseCheck": "npm run licenseHeaderCheck && npm run licenseDepCheck",
     "test": "echo \"Error: no test specified\" && exit 1",
     "cy:open": "cypress open",
+    "cy:open:oauth": "cypress open --env oauthMode=true",
     "cy:run": "npm run licenseCheck && cypress run",
-    "cy:run:oauth": "npm run licenseCheck && cypress run --env authMode=oauth",
+    "cy:run:oauth": "npm run licenseCheck && cypress run --env oauthMode=true",
     "cy:run:timeout": "npm run licenseCheck && cypress run --env timeout=true --spec \"cypress/e2e/timeout.specs.js\"",
     "cy:open:dev:js": "cypress open --config baseUrl=http://localhost:8092",
     "cy:open:dev:ng": "cypress open --config baseUrl=http://localhost:4200",
@@ -51,9 +52,9 @@
     "cypress": "13.6.3",
     "license-check-and-add": "3.0.4",
     "license-checker": "25.0.1",
+    "pdf-parse": "1.1.1",
     "semver": "7.3.2",
     "wait-on": "5.2.0",
     "wait-port": "0.2.9"
-  },
-  "dependencies": {}
+  }
 }

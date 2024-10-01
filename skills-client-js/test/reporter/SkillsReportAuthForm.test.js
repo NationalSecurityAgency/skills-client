@@ -68,6 +68,7 @@ describe('authFormTests()', () => {
       projectId: mockProjectId,
       authenticator: authEndpoint,
     });
+    await new Promise(process.nextTick);
 
     const mockUserSkillId = 'skill1';
     const url = `${mockServiceUrl}/api/projects/${mockProjectId}/skills/${mockUserSkillId}`;
