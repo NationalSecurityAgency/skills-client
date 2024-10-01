@@ -44,9 +44,7 @@ beforeEach(() => {
     cy.request('api/config').then(resp => {
       cy.backendRegister(vars.rootUser, vars.defaultPass, true);
       cy.backendRegister(vars.defaultUser, vars.defaultPass);  // used by the skills-int-service app
-      const oauthMode = resp.body.authenticator === 'hydra' || resp.body.authenticator === 'http://localhost:8080/oauth2/authorization/hydra'
-      Cypress.env('oauthMode', oauthMode)
-      if (!oauthMode) {
+      if (!Cypress.env('oauthMode')) {
         cy.backendLogin(vars.defaultUser, vars.defaultPass);
         Cypress.env('proxyUser', 'user1')
         Cypress.env('tokenUrl', '/api/users/user1/token')

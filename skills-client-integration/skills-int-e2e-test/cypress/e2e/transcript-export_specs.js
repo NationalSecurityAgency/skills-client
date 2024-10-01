@@ -23,9 +23,10 @@ context("Transcript Export Tests", () => {
         return text.replace(/\n/g, '')
     }
 
+    let userName
     beforeEach(() => {
+        userName = Cypress.env('oauthMode') ? 'foo bar (foo)' : 'user1'
         const getFileName = (projName) => {
-            const userName = Cypress.env('oauthMode') ? 'foo bar (foo)' : 'user1'
             return `./cypress/downloads/${projName} - ${userName} - Transcript.pdf`
         }
         Cypress.Commands.add("readTranscript", (pathToPdf) => {
@@ -63,7 +64,7 @@ context("Transcript Export Tests", () => {
                 expect(clean(doc.text)).to.include('Level: 0 / 5 ')
                 expect(clean(doc.text)).to.include('Points: 0 / 100 ')
                 expect(clean(doc.text)).to.include('Skills: 0 / 2 ')
-                expect(clean(doc.text)).to.include('user1')
+                expect(clean(doc.text)).to.include(userName)
                 expect(clean(doc.text)).to.not.include('Badges')
 
                 // should be a title on the 2nd page
@@ -100,7 +101,7 @@ context("Transcript Export Tests", () => {
                 expect(clean(doc.text)).to.include('Level: 0 / 5 ')
                 expect(clean(doc.text)).to.include('Points: 0 / 100 ')
                 expect(clean(doc.text)).to.include('Skills: 0 / 2 ')
-                expect(clean(doc.text)).to.include('user1')
+                expect(clean(doc.text)).to.include(userName)
                 expect(clean(doc.text)).to.not.include('Badges')
 
                 // should be a title on the 2nd page
@@ -111,7 +112,6 @@ context("Transcript Export Tests", () => {
                 expect(clean(doc.text)).to.not.include('null')
             })
         });
-
         if (!Cypress.env('oauthMode')) {
             it('export user transcript - community protected header', () => {
                 cy.intercept('GET', '/public/config', (req) => {
@@ -160,7 +160,7 @@ context("Transcript Export Tests", () => {
                     expect(clean(doc.text)).to.include('Level: 0 / 5 ')
                     expect(clean(doc.text)).to.include('Points: 0 / 100 ')
                     expect(clean(doc.text)).to.include('Skills: 0 / 2 ')
-                    expect(clean(doc.text)).to.include('user1')
+                    expect(clean(doc.text)).to.include(userName)
                     expect(clean(doc.text)).to.not.include('Badges')
 
                     // should be a title on the 2nd page
