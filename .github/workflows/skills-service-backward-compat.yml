@@ -169,7 +169,7 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: service jar
-        path: ./skills-service/service/
+        path: ./skills-service/
 
     - name: build integration test apps
       env:
@@ -186,8 +186,11 @@ jobs:
         cd skills-client-integration/skills-int-e2e-test
         npm install
         ls ../
+        echo "------"
         ls ../../
+        echo "------"
         ls ../../skills-service/
+        echo "------"
         npm run cyServices:start:skills-service:ci
         npm run cyServices:start:integration-apps
         cd ../../
