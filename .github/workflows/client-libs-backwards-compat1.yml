@@ -16,6 +16,25 @@ on:
 jobs:
   get_skills_service_versions:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: skillsPassword
+          POSTGRES_DB: skills
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
     outputs:
       services: ${{ steps.generate-matrix.outputs.services }}
       versions: ${{ steps.generate-matrix.outputs.versions }}
@@ -24,7 +43,7 @@ jobs:
         id: generate-matrix
         run: |
           RESPONSE=$(curl -s -X GET 'https://api.github.com/repos/NationalSecurityAgency/skills-service/releases')
-          TAG_NAMES=$(echo "$RESPONSE" | jq -c '[.[] | .tag_name] | .[:4]')
+          TAG_NAMES=$(echo "$RESPONSE" | jq -c '[.[] | .tag_name] | .[:3]')
           echo "TAG_NAMES=$TAG_NAMES"
           echo ::set-output name=versions::${TAG_NAMES}
 
