@@ -80,7 +80,7 @@ jobs:
     needs: [build-skills-service]
 
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         skillsJsVersion: [ '3.3.0', '3.3.1', '3.4.0']
 
@@ -185,6 +185,9 @@ jobs:
       run: |
         cd skills-client-integration/skills-int-e2e-test
         npm install
+        ls ../
+        ls ../../
+        ls ../../skills-service/
         npm run cyServices:start:skills-service:ci
         npm run cyServices:start:integration-apps
         cd ../../
