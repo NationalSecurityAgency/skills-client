@@ -26,9 +26,9 @@ jobs:
       - name: Generate Matrix
         id: generate-matrix
         run: |
-          res=`curl -s https://api.github.com/repos/NationalSecurityAgency/skills-service/releases`
-          echo $res
-          VERSIONS='${{ toJSON(res.versions) }}'
+          RESPONSE=$(curl -s -X GET 'https://api.github.com/repos/NationalSecurityAgency/skills-service/releases')
+          echo "RESPONSE=$RESPONSE"
+          VERSIONS='${{ toJSON(RESPONSE.versions) }}'
           echo ::set-output name=versions::${VERSIONS}
 
   # ------------------------
