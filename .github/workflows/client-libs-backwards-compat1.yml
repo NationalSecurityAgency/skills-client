@@ -16,8 +16,6 @@ on:
 jobs:
   get_skills_service_versions:
     runs-on: ubuntu-latest
-    outputs:
-      versions: ${{ steps.get_skills_service_versions.outputs.versions }}
     steps:
       - name: Generate Matrix
         id: generate-matrix
