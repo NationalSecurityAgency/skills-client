@@ -17,14 +17,13 @@ jobs:
   get_skills_service_versions:
     runs-on: ubuntu-latest
     outputs:
-      services: ${{ steps.generate-matrix.outputs.services }}
-      versions: ${{ steps.generate-matrix.outputs.versions }}
+      versions: ${{ steps.get_skills_service_versions.outputs.versions }}
     steps:
       - name: Generate Matrix
         id: generate-matrix
         run: |
           RESPONSE=$(curl -s -X GET 'https://api.github.com/repos/NationalSecurityAgency/skills-service/releases')
-          TAG_NAMES=$(echo "$RESPONSE" | jq -c '[.[] | .tag_name] | .[:5]')
+          TAG_NAMES=$(echo "$RESPONSE" | jq -c '[.[] | .tag_name] | .[:4]')
           echo "TAG_NAMES=$TAG_NAMES"
           echo ::set-output name=versions::${TAG_NAMES}
 
@@ -37,12 +36,87 @@ jobs:
       matrix:
         version: ${{ fromJSON(needs.get_skills_service_versions.outputs.versions) }}
     steps:
-      - name: Matrix => (${{ matrix.version}})
-        run: |
-          echo ${{ matrix.version }}
+      - uses: actions/checkout@v4
 
-      - name: Download skills-service:${{ matrix.version }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.11.0'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '19' # The JDK version to make available on the path.
+
+      - name: Print Versions
         run: |
+          mvn --version
+          java -version
+          npm -version
+          node --version
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: download skill-service:${{ matrix.version }}
+        run: |
+          mkdir skills-service
+          cd skills-service
           wget https://github.com/NationalSecurityAgency/skills-service/releases/download/${{ matrix.version }}/skills-service-${{ matrix.version }}.jar
           ls ./
-          
+          cd ..
+
+      - name: setup npm links
+        run: ./.github/workflows/scripts/setupNpmLinks.sh
+
+      - name: build integration test apps
+        env:
+          MAVEN_OPTS: -Xmx2048m
+        run: |
+          cd ./skills-client-integration
+          mvn --batch-mode clean install
+          cd ../
+
+      - name: start services for cypress tests
+        run: |
+          cd skills-client-integration/skills-int-e2e-test
+          npm install
+          npm run cyServices:start:skills-service:ci
+          npm run cyServices:start:integration-apps
+          cd ../../
+
+
+      - name: Run Cypress tests
+        run: |
+          cd skills-client-integration/skills-int-e2e-test
+          npm run cy:run
+          cd ../../
+
+      - name: upload result artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: result artifacts for ${{ matrix.version }}
+          path: |
+            ./skills-service/*.jar
+            ./skills-client-integration/skills-int-service/target/*.jar
+            ./skills-client-integration/skills-int-e2e-test/target/logs/*.out
+            ./skills-client-integration/skills-int-e2e-test/cypress/videos/*.mp4
+            ./skills-client-integration/skills-int-e2e-test/cypress/screenshots/**/*.png
+            ./skills-client-integration/skills-int-e2e-test/logs
+            ./skills-client-integration/skills-int-e2e-test/cypress/videos
+            ./skills-client-integration/skills-int-e2e-test/cypress/screenshots
+            ./skills-client-integration/skills-int-e2e-test/cypress/snapshots/**/**/__diff_output__/*.png
+            ./skills-client-integration/skills-int-e2e-test/cypress/snapshots/**/__diff_output__/*.png
