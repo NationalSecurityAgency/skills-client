@@ -29,6 +29,60 @@ jobs:
           echo "TAG_NAMES=$TAG_NAMES"
           echo ::set-output name=versions::${TAG_NAMES}
 
+  build_skills_client_int:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.11.0'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '19' # The JDK version to make available on the path.
+
+      - name: Print Versions
+        run: |
+          mvn --version
+          java -version
+          npm -version
+          node --version
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: setup npm links
+        run: ./.github/workflows/scripts/setupNpmLinks.sh
+
+      - name: build integration test apps
+        env:
+          MAVEN_OPTS: -Xmx2048m
+        run: |
+          cd ./skills-client-integration
+          mvn --batch-mode clean install
+          cd ../
+
+      - name: upload service jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: service jar
+          path: ./skills-client-integration/skills-int-service/target/skills-int-service-*.jar
+
   run_backward_compatibility_tests:
     runs-on: ubuntu-latest
 
@@ -52,6 +106,7 @@ jobs:
 
     needs:
       - get_skills_service_versions
+      - build_skills_client_int
     strategy:
       fail-fast: false
       matrix:
@@ -99,16 +154,20 @@ jobs:
           ls ./
           cd ..
 
-      - name: setup npm links
-        run: ./.github/workflows/scripts/setupNpmLinks.sh
 
-      - name: build integration test apps
-        env:
-          MAVEN_OPTS: -Xmx2048m
-        run: |
-          cd ./skills-client-integration
-          mvn --batch-mode clean install
-          cd ../
+#      - name: build integration test apps
+#        env:
+#          MAVEN_OPTS: -Xmx2048m
+#        run: |
+#          cd ./skills-client-integration
+#          mvn --batch-mode clean install
+#          cd ../
+
+      - name: download integration test apps
+        uses: actions/download-artifact@v4
+        with:
+          name: service jar
+          path: ./skills-client-integration/skills-int-service/target/
 
       - name: start services for cypress tests
         run: |
