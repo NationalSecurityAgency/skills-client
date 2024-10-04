@@ -40,3 +40,9 @@ jobs:
       - name: Matrix => (${{ matrix.version}})
         run: |
           echo ${{ matrix.version }}
+
+      - name: Download skills-service:${{ matrix.version }}
+        run: |
+          wget https://github.com/NationalSecurityAgency/skills-service/releases/download/${{ matrix.version }}/skills-service-${{ matrix.version }}.jar
+          ls ./
+          
