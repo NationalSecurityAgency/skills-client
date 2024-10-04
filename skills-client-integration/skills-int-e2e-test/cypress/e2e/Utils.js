@@ -20,6 +20,10 @@ export default {
         const versionToCompare = Cypress.env(lib);
         return this.laterThanMinVersion(minVersion, versionToCompare);
     },
+    skillsClientJSVersionLaterThan(minVersion) {
+        const versionToCompare = Cypress.env('skills-client-js-version')
+        return this.laterThanMinVersion(minVersion, versionToCompare);
+    },
     skillsServiceVersionLaterThan(minVersion) {
         const versionToCompare = Cypress.env('skills-service.minVersion');
         return this.laterThanMinVersion(minVersion, versionToCompare);

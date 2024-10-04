@@ -44,6 +44,13 @@ const backend = 'http://localhost:8080';
 const baseUrl = Cypress.config().baseUrl;
 const skillsDisplayHomePage = '/native/clientDisplay.html'
 
+
+Cypress.Commands.add('onlyOn', (enabled) => {
+  if (enabled !== true) {
+    cy.state('runnable').ctx.skip()
+  }
+})
+
 Cypress.Commands.add("visitSkillsDisplay", (url = '') => {
   cy.visit(`${skillsDisplayHomePage}${url}`);
 })

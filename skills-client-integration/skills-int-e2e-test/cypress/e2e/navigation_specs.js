@@ -247,6 +247,7 @@ context("Navigation Tests", () => {
 
     if (Utils.skillsServiceVersionLaterThan('1.6.0')) {
         it('navigate skills-display programmatically', () => {
+            cy.onlyOn(Utils.skillsClientJSVersionLaterThan('3.3.1'))
             cy.createDefaultTinyProject()
             cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 

@@ -33,12 +33,20 @@ import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
-
+before(() => {
+  cy.readFile('../skills-int-client-js/package.json').then((packageJson) => {
+    const skillsClientJsVersion = packageJson['dependencies']['@skilltree/skills-client-js']
+    Cypress.env('skills-client-js-version', skillsClientJsVersion)
+    cy.log(`Running with skills-client-js version [${skillsClientJsVersion}]`)
+  })
+})
 
 beforeEach(() => {
   // first call to npm fails, looks like this may be the bug: https://github.com/cypress-io/cypress/issues/6081
   cy.exec('npm version', { failOnNonZeroExit: false })
   cy.exec('npm run backend:resetDb')
+
+  cy.log(`Running with skills-client-js version [${Cypress.env('skills-client-js-version')}]`)
 
   cy.fixture('vars.json').then((vars) => {
     cy.request('api/config').then(resp => {
