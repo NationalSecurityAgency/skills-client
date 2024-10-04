@@ -6,9 +6,9 @@ name:  Skills-service Backward Compatibility
 #    paths-ignore:
 #      - 'README.md'
 on:
-  push:
-    paths-ignore:
-      - 'README.md'
+#  push:
+#    paths-ignore:
+#      - 'README.md'
   schedule:
     - cron: '0 6 * * *'
   workflow_dispatch:
