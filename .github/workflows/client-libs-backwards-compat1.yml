@@ -24,7 +24,7 @@ jobs:
         id: generate-matrix
         run: |
           RESPONSE=$(curl -s -X GET 'https://api.github.com/repos/NationalSecurityAgency/skills-service/releases')
-          TAG_NAMES=$(echo "$RESPONSE" | jq -c '[.[] | .tag_name | limit(5; .)]')
+          TAG_NAMES=$(echo "$RESPONSE" | jq -c '[.[] | .tag_name] | .[:5]')
           echo "TAG_NAMES=$TAG_NAMES"
           echo ::set-output name=versions::${TAG_NAMES}
 
