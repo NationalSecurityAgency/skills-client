@@ -28,18 +28,18 @@ jobs:
         run: |
           RESPONSE=$(curl -s -X GET 'https://api.github.com/repos/NationalSecurityAgency/skills-service/releases')
           echo "RESPONSE=$RESPONSE"
-          VERSIONS='${{ toJSON(RESPONSE.versions) }}'
-          echo ::set-output name=versions::${VERSIONS}
+#          VERSIONS='${{ toJSON(RESPONSE.versions) }}'
+#          echo ::set-output name=versions::${VERSIONS}
 
   # ------------------------
-  run_backward_compatibility_tests:
-    runs-on: ubuntu-latest
-    needs:
-      - get_skills_service_versions
-    strategy:
-      matrix:
-        version: ${{ fromJSON(needs.get_skills_service_versions.outputs.versions) }}
-    steps:
-      - name: Matrix => (${{ matrix.version}})
-        run: |
-          echo ${{ matrix.version }}
+#  run_backward_compatibility_tests:
+#    runs-on: ubuntu-latest
+#    needs:
+#      - get_skills_service_versions
+#    strategy:
+#      matrix:
+#        version: ${{ fromJSON(needs.get_skills_service_versions.outputs.versions) }}
+#    steps:
+#      - name: Matrix => (${{ matrix.version}})
+#        run: |
+#          echo ${{ matrix.version }}
