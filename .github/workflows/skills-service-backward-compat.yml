@@ -2,14 +2,13 @@
 
 name:  Skills-service Backward Compatibility
 
-#on:
-#  push:
-#    paths-ignore:
-#      - 'README.md'
 #  pull_request:
 #    paths-ignore:
 #      - 'README.md'
 on:
+  push:
+    paths-ignore:
+      - 'README.md'
   schedule:
     - cron: '0 6 * * *'
   workflow_dispatch:
@@ -68,15 +67,13 @@ jobs:
         run: |
           cd skills-service
           mvn --batch-mode clean install -DskipTests
-          cp ./service/target/skills-service-*.jar ./
-          ls ./
           cd ..
 
       - name: upload service jar
         uses: actions/upload-artifact@v4
         with:
           name: service jar
-          path: ./service/target/*.jar
+          path: ./skills-service/service/target/skills-service-*.jar
 
   test-skill-service-backward-compat:
     runs-on: ubuntu-latest
