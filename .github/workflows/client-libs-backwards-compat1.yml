@@ -28,7 +28,7 @@ jobs:
           RESPONSE=$(curl -s -X GET 'https://api.github.com/repos/NationalSecurityAgency/skills-service/releases')
           ALL_TAG_NAMES=$(echo "$RESPONSE" | jq -c '[.[] | .tag_name]')
           echo "ALL_TAG_NAMES=$ALL_TAG_NAMES"
-          FILTERED_TAG_NAMES=$(jq -r --argjson to_exclude "$TO_EXCLUDE" '[.[] | select(. != ($to_exclude[] | .))] | reverse' <<< "$ALL_TAG_NAMES")
+          FILTERED_TAG_NAMES=$(jq -r --argjson to_exclude "$TO_EXCLUDE" '[.[] | select(. != ($to_exclude[] | .))] | unique | reverse' <<< "$ALL_TAG_NAMES")
           echo "FILTERED_TAG_NAMES=$FILTERED_TAG_NAMES"
           TOP_TAGS=$(jq -c '.[0:5]' <<< "$FILTERED_TAG_NAMES")
           echo "TOP_TAGS=$TOP_TAGS"
