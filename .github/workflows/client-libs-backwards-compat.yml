@@ -1,4 +1,4 @@
-name: Client Libs Backward Compatibility - New
+name: Client Libs Backward Compatibility
 
 on:
   push:
