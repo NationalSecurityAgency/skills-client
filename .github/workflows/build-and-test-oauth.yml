@@ -92,7 +92,6 @@ jobs:
       with:
         repository: NationalSecurityAgency/skills-service
         path: skills-service
-        ref: 3.1.X
 
     - name: build skill-service
       run: |

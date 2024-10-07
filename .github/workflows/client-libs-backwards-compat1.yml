@@ -177,7 +177,7 @@ jobs:
       - name: Run Cypress tests
         run: |
           cd skills-client-integration/skills-int-e2e-test
-          npm run cy:run
+          npx cypress run --env skills-service.minVersion=${{ matrix.version }}
           cd ../../
 
       - name: upload result artifacts

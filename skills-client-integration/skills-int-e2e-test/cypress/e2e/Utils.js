@@ -45,10 +45,7 @@ export default {
        return  this.skillsServiceVersionLaterThan('1.11.1');
     },
     noThemeBackground() {
-        if (this.laterThan_3_1_0()) {
-            return 'rgb(255, 255, 255)'
-        }
-        return this.laterThan_1_4_0() ? 'rgba(0, 0, 0, 0)' : 'rgb(255, 255, 255)';
+        return 'rgb(255, 255, 255)';
     },
     rankDetailsTitle() {
         return this.laterThan_1_11_1() ? 'My Rank' : 'Rank Overview'

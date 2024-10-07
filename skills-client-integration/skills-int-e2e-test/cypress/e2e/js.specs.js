@@ -54,7 +54,7 @@ context("Skills Display Tests", () => {
         cy.wrapIframe().contains('My Level')
         cy.wrapIframe().contains('50 Points earned Today')
         cy.wrapIframe().contains('Subject 0')
-        cy.wrapIframe().find('[data-cy="subjectTile-subj0"] [data-cy="subjectTileBtn"]')
+        cy.wrapIframe().find(selectors.firstSubjectTileBtn)
 
         // verify that there is no background set
         // cypress always validates against rgb
@@ -149,15 +149,22 @@ context("Skills Display Tests", () => {
         cy.visitSkillsDisplay();
         cy.wait("@getToken");
         cy.wait('@getToken')
-        cy.wrapIframe().find(totalPointsSelector).should('have.text', '200');
+        const validateTotalPoints = (expectedPoints) => {
+            if (Utils.skillsServiceVersionLaterThan('3.0.0')){
+                cy.wrapIframe().find(totalPointsSelector).should('have.text', `${expectedPoints}`);
+            } else {
+                cy.wrapIframe().find('.user-skills-overview').contains(`Earn up to ${expectedPoints} points`)
+            }
+        }
+        validateTotalPoints(200)
 
         cy.visitSkillsDisplay("?skillsVersion=1");
         cy.wait('@getToken')
-        cy.wrapIframe().find(totalPointsSelector).should('have.text', '150');
+        validateTotalPoints(150)
 
         cy.visitSkillsDisplay("?skillsVersion=0");
         cy.wait('@getToken')
-        cy.wrapIframe().find(totalPointsSelector).should('have.text', '100');
+        validateTotalPoints(100)
     });
 
     it('skillsClientVersion is reported correctly', () => {

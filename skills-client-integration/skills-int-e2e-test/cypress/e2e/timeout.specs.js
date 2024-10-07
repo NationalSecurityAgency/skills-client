@@ -49,7 +49,7 @@ context("Token timeout JS Tests", () => {
 
       // to subject page
       cy.wait(10000)  // wait 10 seconds to ensure the token has expired
-      cy.cdClickSubj(0, 'Subject 0');
+      cy.cdClickSubj();
     });
 
   } else {
