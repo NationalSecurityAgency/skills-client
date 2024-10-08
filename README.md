@@ -16,7 +16,7 @@ These pages provide in-depth guidance on the installation, usage and contributio
 
 [![Skills-service Backward Compatibility](https://github.com/NationalSecurityAgency/skills-client/actions/workflows/skills-service-backward-compat.yml/badge.svg)](https://github.com/NationalSecurityAgency/skills-client/actions/workflows/skills-service-backward-compat.yml)
 
-[![Client Libs Backward Compatibility](https://github.com/NationalSecurityAgency/skills-client/actions/workflows/client-libs-backward-compat.yml/badge.svg)](https://github.com/NationalSecurityAgency/skills-client/actions/workflows/client-libs-backward-compat.yml)
+[![Client Libs Backward Compatibility](https://github.com/NationalSecurityAgency/skills-client/actions/workflows/client-libs-backwards-compat.yml/badge.svg)](https://github.com/NationalSecurityAgency/skills-client/actions/workflows/client-libs-backwards-compat.yml)
 
 
 
