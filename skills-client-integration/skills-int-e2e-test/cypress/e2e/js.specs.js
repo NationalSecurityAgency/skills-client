@@ -127,6 +127,7 @@ context("Skills Display Tests", () => {
     });
 
     it('client display should display an error if skills service is down', () => {
+        cy.onlyOn(Utils.skillsClientJSVersionLaterThan('3.2.0'))
         cy.createDefaultTinyProject()
         cy.intercept('/public/status',
         {
