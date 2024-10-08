@@ -19,13 +19,14 @@ import selectors from "../support/selectors";
 context("Navigation Tests", () => {
 
     it('internal back button when when returning from an external page', () => {
+        cy.onlyOn(Utils.skillsClientJSVersionLaterThan('3.3.0'))
         cy.createDefaultTinyProject()
         cy.intercept(Cypress.env('tokenUrl')).as('getToken')
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
         // visit client display
-        cy.visitSkillsDisplay('?internalBackButton=true');
-        // cy.wait('@getToken')
+        const url = Utils.skillsClientJSVersionLaterThan('3.3.0')  ? '?internalBackButton=true' : ''
+        cy.visitSkillsDisplay(url);
 
         // cy.clientDisplay(true)
         cy.wrapIframe().find(selectors.myRankButton)
@@ -49,7 +50,8 @@ context("Navigation Tests", () => {
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
         // visit client display
-        cy.visitSkillsDisplay('?internalBackButton=true');
+        const url = Utils.skillsClientJSVersionLaterThan('3.3.0')  ? '?internalBackButton=true' : ''
+        cy.visitSkillsDisplay(url);
 
         cy.clientDisplay().find(selectors.myRankButton)
         cy.clientDisplay().find(selectors.titleSection).find(selectors.backButton).should('not.exist')
@@ -71,6 +73,7 @@ context("Navigation Tests", () => {
     });
 
     it('browser back button works correctly when internal back button is not present', () => {
+        cy.onlyOn(Utils.skillsClientJSVersionLaterThan('3.3.0'))
         cy.createDefaultTinyProject()
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
@@ -105,6 +108,7 @@ context("Navigation Tests", () => {
 
     if (Utils.skillsServiceVersionLaterThan('3.1.1')) {
         it('browser back and forward operations', () => {
+            cy.onlyOn(Utils.skillsClientJSVersionLaterThan('3.3.0'))
             cy.createDefaultTinyProject()
 
             // visit client display
@@ -160,6 +164,7 @@ context("Navigation Tests", () => {
         });
     }
     it('breadcrumb-based navigation', () => {
+        cy.onlyOn(Utils.skillsClientJSVersionLaterThan('3.3.0'))
         cy.createDefaultTinyProject()
 
         // visit client display
@@ -176,6 +181,7 @@ context("Navigation Tests", () => {
     });
 
     it('deep link and reload', () => {
+        cy.onlyOn(Utils.skillsClientJSVersionLaterThan('3.3.0'))
         cy.createDefaultTinyProject()
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
@@ -189,6 +195,7 @@ context("Navigation Tests", () => {
     });
 
     it('back button after reload', () => {
+        cy.onlyOn(Utils.skillsClientJSVersionLaterThan('3.3.0'))
         cy.createDefaultTinyProject()
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
@@ -226,6 +233,7 @@ context("Navigation Tests", () => {
     });
 
     it('route change is passed to the client app', () => {
+        cy.onlyOn(Utils.skillsClientJSVersionLaterThan('3.3.0'))
         cy.createDefaultTinyProject()
         cy.backendPost('/api/projects/proj1/skills/Thor', {userId: Cypress.env('proxyUser'), timestamp: Date.now()})
 
