@@ -17,13 +17,15 @@ limitations under the License.
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Skills Examples - Native Javascript</title>
+  <title>Skill Client Test</title>
 
+  <link rel="icon" type="image/x-icon" href="./skilltree.ico">
   <link rel="stylesheet" type="text/css" href="./assets/app.css"/>
   <link rel="stylesheet" type="text/css" href="./assets/js/bootstrap/dist/css/bootstrap.css">
 
+  <script type="text/javascript" src="./assets/js/jquery/dist/jquery.js"></script>
   <script type="text/javascript" src="./assets/js/axios/dist/axios.min.js"></script>
-  <script type="text/javascript" src="./assets/js/js-beautify/js/lib/beautify.js"></script>
+  <script type="text/javascript" src="./assets/js/bootstrap/dist/js/bootstrap.bundle.js"></script>
 
   <script type="module">
     import { SkillsReporter, SkillsConfiguration, SkillsLevelJS, Logger } from './assets/js/@skilltree/skills-client-js/dist/skills-client-js.esm.min.js'
@@ -77,20 +79,26 @@ limitations under the License.
 <div id="app">
   <div>
     <div>
-      <nav class="navbar navbar-dark bg-info">
-        <a href="#" class="navbar-brand">Native Javascript Integration Examples</a>
-
-        <ul class="navbar-nav flex-row mr-auto">
-          <li class="nav-item active pr-3">
-            <a class="nav-link" href="javascript:void(0)" data-cy="reportSkillsLink">Report Skill Events</a>
-          </li>
-          <li class="nav-item pr-3">
-            <a class="nav-link" href="clientDisplay.html" data-cy="userDisplayLink">User Display</a>
-          </li>
-        </ul>
-        <button type="button" class="btn btn-primary">
-          <span id="skillLevel"/>
-        </button>
+      <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+          <a href="#" class="navbar-brand">Client Test</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="javascript:void(0)" data-cy="reportSkillsLink">Report Skill Events</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="clientDisplay.html" data-cy="userDisplayLink">User Display</a>
+              </li>
+            </ul>
+            <button type="button" class="btn btn-primary">
+              <span id="skillLevel"/>
+            </button>
+          </div>
+        </div>
       </nav>
     </div>
 
@@ -140,13 +148,6 @@ limitations under the License.
 
       </div>
     </div>
-
-    <footer class="text-muted bg-light py-5">
-      <div class="container">
-        <p>Native Javascript Examples Guide</p>
-        <p></p>
-      </div>
-    </footer>
   </div>
 </div>
 

@@ -77,20 +77,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-#    - name: download skill-service
-#      run: |
-#        mkdir skills-service
-#        cd skills-service
-#        curl -s https://api.github.com/repos/NationalSecurityAgency/skills-service/releases/latest | grep browser_download_url | cut -d '"' -f 4 | wget -qi -
-#        ls ./
-#        cd ..
-
     - name: Checkout specific branch fo skills-service
       uses: actions/checkout@v4
       with:
         repository: NationalSecurityAgency/skills-service
         path: skills-service
-        ref: 3.1.X
 
     - name: build skill-service
       run: |

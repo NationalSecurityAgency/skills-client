@@ -44,6 +44,13 @@ const backend = 'http://localhost:8080';
 const baseUrl = Cypress.config().baseUrl;
 const skillsDisplayHomePage = '/native/clientDisplay.html'
 
+
+Cypress.Commands.add('onlyOn', (enabled) => {
+  if (enabled !== true) {
+    cy.state('runnable').ctx.skip()
+  }
+})
+
 Cypress.Commands.add("visitSkillsDisplay", (url = '') => {
   cy.visit(`${skillsDisplayHomePage}${url}`);
 })
@@ -181,11 +188,9 @@ Cypress.Commands.add('visitHomePage', (homepage) => {
   cy.skillsLog(`Visit Home page for test [${Cypress.mocha.getRunner().test.title}]`)
 });
 
-Cypress.Commands.add("cdClickSubj", (subjIndex, expectedTitle) => {
-  cy.wrapIframe().find(`[data-cy="subjectTile-subj${subjIndex}"] [data-cy="subjectTileBtn"]`).click();
-  if (expectedTitle) {
-    cy.wrapIframe().find('[data-cy="skillsTitle"]').contains(expectedTitle);
-  }
+Cypress.Commands.add("cdClickSubj", () => {
+  cy.wrapIframe().find(selectors.firstSubjectTileBtn).click();
+  cy.wrapIframe().find(selectors.titleSection).contains('Subject 0');
 });
 
 Cypress.Commands.add("cdBack", (expectedTitle = 'User Skills') => {
