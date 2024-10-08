@@ -1,0 +1,73 @@
+<!--
+Copyright 2020 SkillTree
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Skill Client Test</title>
+
+  <link rel="icon" type="image/x-icon" href="./skilltree.ico">
+  <link rel="stylesheet" type="text/css" href="./assets/app.css"/>
+  <link rel="stylesheet" type="text/css" href="./assets/js/bootstrap/dist/css/bootstrap.css">
+
+  <script type="text/javascript" src="./assets/js/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="./assets/js/axios/dist/axios.min.js"></script>
+  <script type="text/javascript" src="./assets/js/bootstrap/dist/js/bootstrap.bundle.js"></script>
+
+  <script type="module">
+    import { SkillsReporter, SkillsConfiguration, SkillsLevelJS, SkillsDisplayJS, Logger } from './assets/js/@skilltree/skills-client-js/dist/skills-client-js.esm.min.js'
+
+    axios.get("/api/config")
+      .then((result) => {
+        SkillsConfiguration.configure({...result.data, enabled: false});
+      });
+
+    document.querySelector('#reportSkillBtn').addEventListener('click', () => {
+      SkillsReporter.reportSkill('someId')
+    });
+
+    SkillsConfiguration.afterConfigure().then(() => {
+      const initializeSkillsDisplay = () => {
+        const clientDisplay = new SkillsDisplayJS();
+        clientDisplay.attachTo(document.querySelector('#skills-client-display'));
+      };
+      if (document.readyState === "complete"
+              || document.readyState === "loaded"
+              || document.readyState === "interactive") {
+        initializeSkillsDisplay();
+      } else {
+        document.addEventListener("DOMContentLoaded", initializeSkillsDisplay);
+      }
+    });
+  </script>
+
+</head>
+<body>
+
+<div id="app">
+    <button
+            id="reportSkillBtn"
+            data-cy="reportSkillButton"
+            class="btn btn-outline-primary">
+      Report Skill
+    </button>
+
+     <div data-cy="levelComponentRes">Level: [<span id="skillLevel"/>]</div>
+     <div data-cy="skillsDisplayRes">Skills Display: [<div id="skills-client-display"></div>]</div>
+</div>
+
+</body>
+</html>

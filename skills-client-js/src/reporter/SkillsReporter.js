@@ -182,6 +182,11 @@ const SkillsReporter = {
     this.maxRetryQueueSize = maxRetryQueueSize;
     this.maxRetryAttempts = maxRetryAttempts;
 
+    if (SkillsConfiguration.isDisabled()) {
+      log.info('SkillsClient::SkillsReporter::configure: SkillsConfiguration is disabled. No reporting will occur');
+      return;
+    }
+
     if (retryInterval != null) {
       // cancel existing RetryChecker, then start w/ passed in retryInterval
       this.cancelRetryChecker();
@@ -191,14 +196,26 @@ const SkillsReporter = {
   },
 
   addSuccessHandler(handler) {
+    if (SkillsConfiguration.isDisabled()) {
+      log.info('SkillsClient::SkillsReporter::addSuccessHandler: SkillsConfiguration is disabled handler is not added');
+      return;
+    }
     successHandlerCache.add(handler);
     log.info(`SkillsClient::SkillsReporter::added success handler [${handler ? handler.toString() : handler}]`);
   },
   addErrorHandler(handler) {
+    if (SkillsConfiguration.isDisabled()) {
+      log.info('SkillsClient::SkillsReporter::addErrorHandler: SkillsConfiguration is disabled handler is not added');
+      return;
+    }
     errorHandlerCache.add(handler);
     log.info(`SkillsClient::SkillsReporter::added error handler [${handler ? handler.toString() : handler}]`);
   },
   reportSkill(userSkillId, timestamp = null, isRetry = false, retryAttempt = undefined) {
+    if (SkillsConfiguration.isDisabled()) {
+      log.info(`SkillsClient::SkillsReporter::reportSkill: SkillsConfiguration is disabled. No reporting will occur for skillId=[${userSkillId}]`);
+      return Promise.resolve();
+    }
     log.info(`SkillsClient::SkillsReporter::reporting skill [${userSkillId}] retryAttempt [${retryAttempt}]`);
     SkillsConfiguration.validate();
     if (retryIntervalId == null) {

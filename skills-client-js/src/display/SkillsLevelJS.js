@@ -32,6 +32,10 @@ export default class SkillsLevelJS {
   }
 
   attachTo(selectorOrElement) {
+    if (SkillsConfiguration.isDisabled()) {
+      log.info('SkillsLevelJS.js::attachTo: SkillsConfiguration is disabled Level will not be initialized');
+      return;
+    }
     log.info(`SkillsClient::SkillsLevelJS::attaching to [${selectorOrElement}]`);
     let skillLevelElement = selectorOrElement;
     if (typeof selectorOrElement === 'string') {

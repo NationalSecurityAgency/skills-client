@@ -48,6 +48,11 @@ export default class SkillsDisplayJS {
   }
 
   attachTo(selectorOrElement) {
+    if (SkillsConfiguration.isDisabled()) {
+      log.info('SkillsClient::SkillsDisplayJS::attachTo: SkillsConfiguration is disabled Skills Display will not be initialized');
+      return;
+    }
+
     log.info(`SkillsClient::SkillsDisplayJS::attaching to [${selectorOrElement ? selectorOrElement.toString() : selectorOrElement}]`);
     let iframeContainer = selectorOrElement;
     if (typeof selectorOrElement === 'string') {

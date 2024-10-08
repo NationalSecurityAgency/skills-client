@@ -66,11 +66,24 @@ const exportObject = {
     authenticator,
     authToken,
     oauthRedirect = false,
+    enabled = true,
   }) {
     if (this.isInitialized()) {
       log.warn('SkillsConfiguration already initialized.');
       return;
     }
+
+    log.debug(`SkillsConfiguration::configure params serviceUrl=[${serviceUrl}], projectId=[${projectId}], `
+        + `authenticator=[${authenticator}], authToken=[${authToken}], oauthRedirect=${oauthRedirect}, enabled=${enabled}`)
+
+    this.enabled = enabled
+    if (!enabled) {
+      log.useDefaults();
+      log.setLevel(log.TRACE)
+      log.info('SkillsConfiguration is disabled.');
+      return Promise.resolve();
+    }
+
     if (!this.skillsClientVersion) {
       // this will be replaced at build time with the current skills-client-js
       // version. extensions of the plain JS client (vue, react, etc), should
@@ -150,6 +163,10 @@ SkillsConfiguration is a singleton and you only have to do this once. Please see
 
   getProjectId() {
     return this.projectId;
+  },
+
+  isDisabled() {
+    return !this.enabled;
   },
 
   getServiceUrl() {
