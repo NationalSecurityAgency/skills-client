@@ -32,6 +32,10 @@ export default class SkillsLevelJS {
   }
 
   attachTo(selectorOrElement) {
+    if (SkillsConfiguration.isDisabled()) {
+      log.info('SkillsLevelJS.js::attachTo: SkillsConfiguration is disabled Level will not be initialized');
+      return;
+    }
     log.info(`SkillsClient::SkillsLevelJS::attaching to [${selectorOrElement}]`);
     let skillLevelElement = selectorOrElement;
     if (typeof selectorOrElement === 'string') {
@@ -60,7 +64,7 @@ export default class SkillsLevelJS {
           .then((result) => {
             this.setSkillLevel(result.data);
             SkillsReporter.addSuccessHandler(this.update.bind(this));
-            log.info(`SkillsClient::SkillsLevelJS::recieved initial skill level [${result.data}]`);
+            log.info(`SkillsClient::SkillsLevelJS::received initial skill level [${result.data}]`);
           });
       });
   }

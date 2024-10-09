@@ -20,6 +20,7 @@ import axios from 'axios';
 
 import SkillsDisplayJS from '../../src/display/SkillsDisplayJS';
 import ErrorPageUtils from '../../src/display/ErrorPageUtils';
+import SkillsConfiguration from '../../src/config/SkillsConfiguration';
 
 jest.mock('../../src/display/ErrorPageUtils.js');
 jest.mock('postmate');
@@ -80,6 +81,7 @@ describe('SkillsDisplayJS', () => {
     let realDocument;
 
     beforeEach(() => {
+      SkillsConfiguration.enabled = true
       realDocument = global.document;
       global.document.querySelector = jest.fn();
     });

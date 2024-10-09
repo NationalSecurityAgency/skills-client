@@ -34,43 +34,43 @@ limitations under the License.
       .then((result) => {
         SkillsConfiguration.configure(result.data);
       });
-
-    SkillsReporter.addSuccessHandler((result) => {
-      document.querySelector('#global-event-result-container-js').innerHTML = JSON.stringify(result, null, 2);
-    });
-
-    SkillsReporter.addErrorHandler((result) => {
-      document.querySelector('#global-event-result-container-js').innerHTML = JSON.stringify(result, null, 2);
-    });
-
-    const reportSkill = (skillId) => {
-      SkillsReporter.reportSkill(skillId)
-        .then((response) => {
-          document.querySelector('#report-result-container').innerHTML = JSON.stringify(response, null, 2);
-        }).catch((err) => {
-          document.querySelector('#report-result-container').innerHTML = JSON.stringify(err, null, 2);
-      });
-    };
-
-    document.querySelector('#exampleDirectiveClickEvent').addEventListener('click', () => {
-      var skillId = document.getElementById('skillId').value;
-      reportSkill(skillId);
-    });
-
-    const toggleAllEvents = () => {
-      const notifyIfSkillNotApplied = document.querySelector('#all-events-check').checked
-      SkillsReporter.configure( { notifyIfSkillNotApplied });
-    }
-    document.querySelector('#all-events-check').addEventListener('click', toggleAllEvents);
-    toggleAllEvents();
     SkillsConfiguration.afterConfigure()
-      .then(() => {
-        if (window.Cypress) {
-          window.skillsLogger = Logger;
-        }
-        const skillLevel = new SkillsLevelJS();
-        skillLevel.attachTo('#skillLevel')
-      });
+            .then(() => {
+              SkillsReporter.addSuccessHandler((result) => {
+                document.querySelector('#global-event-result-container-js').innerHTML = JSON.stringify(result, null, 2);
+              });
+
+              SkillsReporter.addErrorHandler((result) => {
+                document.querySelector('#global-event-result-container-js').innerHTML = JSON.stringify(result, null, 2);
+              });
+
+              const reportSkill = (skillId) => {
+                SkillsReporter.reportSkill(skillId)
+                        .then((response) => {
+                          document.querySelector('#report-result-container').innerHTML = JSON.stringify(response, null, 2);
+                        }).catch((err) => {
+                  document.querySelector('#report-result-container').innerHTML = JSON.stringify(err, null, 2);
+                });
+              };
+
+              document.querySelector('#exampleDirectiveClickEvent').addEventListener('click', () => {
+                var skillId = document.getElementById('skillId').value;
+                reportSkill(skillId);
+              });
+
+              const toggleAllEvents = () => {
+                const notifyIfSkillNotApplied = document.querySelector('#all-events-check').checked
+                SkillsReporter.configure({notifyIfSkillNotApplied});
+              }
+              document.querySelector('#all-events-check').addEventListener('click', toggleAllEvents);
+              toggleAllEvents();
+
+              if (window.Cypress) {
+                window.skillsLogger = Logger;
+              }
+              const skillLevel = new SkillsLevelJS();
+              skillLevel.attachTo('#skillLevel')
+            });
   </script>
 
 </head>
