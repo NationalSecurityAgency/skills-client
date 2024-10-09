@@ -201,7 +201,7 @@ const SkillsReporter = {
       return;
     }
     successHandlerCache.add(handler);
-    log.info(`SkillsClient::SkillsReporter::added success handler [${handler ? handler.toString() : handler}]`);
+    log.info(`SkillsClient::SkillsReporter::added success handler. successHandlerCache size [${successHandlerCache.size}]`);
   },
   addErrorHandler(handler) {
     if (SkillsConfiguration.isDisabled()) {
@@ -209,7 +209,7 @@ const SkillsReporter = {
       return;
     }
     errorHandlerCache.add(handler);
-    log.info(`SkillsClient::SkillsReporter::added error handler [${handler ? handler.toString() : handler}]`);
+    log.info(`SkillsClient::SkillsReporter::added error handler. errorHandlerCache size [${errorHandlerCache.size}]`);
   },
   reportSkill(userSkillId, timestamp = null, isRetry = false, retryAttempt = undefined) {
     if (SkillsConfiguration.isDisabled()) {

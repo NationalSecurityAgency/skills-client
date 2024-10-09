@@ -64,7 +64,7 @@ export default class SkillsLevelJS {
           .then((result) => {
             this.setSkillLevel(result.data);
             SkillsReporter.addSuccessHandler(this.update.bind(this));
-            log.info(`SkillsClient::SkillsLevelJS::recieved initial skill level [${result.data}]`);
+            log.info(`SkillsClient::SkillsLevelJS::received initial skill level [${result.data}]`);
           });
       });
   }
