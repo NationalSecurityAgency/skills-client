@@ -103,12 +103,5 @@ class ReleaseClientLibs {
         json.dependencies.findAll { it.key.startsWith(Vars.NpmNamespace) }.each {
             assert json.dependencies."${it.key}" == newVersion
         }
-
-        if (npmProj.angularModule) {
-            File loc = new File(npmProj.loc, "projects/skilltree/skills-client-ng/")
-            assert loc.exists()
-            NpmProj angularProj = new NpmProj(loc: loc, name: loc.name, doOthersLinkToMe: true)
-            updateVersion(angularProj, newVersion)
-        }
     }
 }
