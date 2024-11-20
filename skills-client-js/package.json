@@ -67,7 +67,7 @@
         "User Engagement",
         "Rapid Integration"
     ],
-    "homepage": "https://code.nsa.gov/skills-docs/",
+    "homepage": "https://skilltreeplatform.dev/",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/NationalSecurityAgency/skills-client.git"
