@@ -35,7 +35,7 @@ These pages provide in-depth guidance on the installation, usage and contributio
 
 ## Library Features
 
-SkillTree client library offer a comprehensive set of features:
+SkillTree client library offers a comprehensive set of features:
 
 - **Seamless navigation and visualization:** Our Skill Display component provides a fully navigable Ranking and Visualization view, making it easy for users to explore and understand their skills.
 - **Effortless skill event reporting:** The SkillsReporter JS utility simplifies the process of reporting skill events, ensuring accurate and timely tracking of user progress.
