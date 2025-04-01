@@ -101,6 +101,7 @@
 								<licenseMerge>Eclipse Public License - Version 1.0|Eclipse Public License - v 1.0</licenseMerge>
 								<licenseMerge>Eclipse Public License - Version 2.0|EPL 2.0</licenseMerge>
 								<licenseMerge>The GNU General Public License (GPL) Version 2 with the Classpath Exception|GPL2 w/ CPE</licenseMerge>
+								<licenseMerge>MIT License|MIT</licenseMerge>
 							</licenseMerges>
 						</configuration>
 					</execution>

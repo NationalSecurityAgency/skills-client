@@ -144,6 +144,7 @@
                                 <licenseMerge>The 3-Clause BSD License|New BSD License</licenseMerge>
                                 <licenseMerge>Eclipse Public License - Version 1.0|Eclipse Public License - v 1.0</licenseMerge>
                                 <licenseMerge>MIT License|The MIT License</licenseMerge>
+                                <licenseMerge>MIT License|MIT</licenseMerge>
                                 <licenseMerge>Eclipse Public License - Version 2.0|EPL 2.0</licenseMerge>
                                 <licenseMerge>The GNU General Public License (GPL) Version 2 with the Classpath Exception|GPL2 w/ CPE</licenseMerge>
                             </licenseMerges>
