@@ -1,4 +1,4 @@
-# Copyright 2020 SkillTree
+# Copyright 2025 SkillTree
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,11 +17,37 @@ set -e
 set -o pipefail
 
 echo "------- START: Setup npm links -------"
-cd skills-client-integration/skills-int-e2e-test
-mvn --batch-mode clean package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
-ls -la target/skills-int-e2e-test-*.jar
-du -sh target/*
-java --version
-java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.launch.PropertiesLauncher
-cd ../../
+#cd skills-client-integration/skills-int-e2e-test
+#mvn --batch-mode clean package -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+#ls -la target/skills-int-e2e-test-*.jar
+#du -sh target/*
+#java --version
+#java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.SetupNpmLinks org.springframework.boot.loader.launch.PropertiesLauncher
+#cd ../../
+
+cd skills-client-js
+echo "------- skills-client-js: npm link -------"
+npm link
+cd ../skills-client-integration/skills-int-client-js/
+echo "------- skills-int-client-js: npm link @skilltree/skills-client-js -------"
+npm link @skilltree/skills-client-js
+
+cd ../../skills-client-js
+echo "------- skills-client-js: npm install -------"
+npm install
+echo "------- skills-int-client-js: npm install -------"
+cd ../skills-client-integration/skills-int-client-js/
+npm install
+
+echo "------- validate npm links -------"
+if ! npm ls --link --global | grep -q "skills-client-js@3.6.1"; then
+    echo "Error: skills-client-js@3.6.1 is not properly linked"
+    exit 1
+else
+    echo "Verified: skills-client-js@3.6.1 is properly linked"
+fi
+
+echo "------- skills-int-client-js: npm run build -------"
+npm run build
+
 echo "------- DONE: Setup npm links -------"
