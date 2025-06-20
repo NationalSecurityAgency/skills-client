@@ -25,14 +25,14 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.11.0'
+          node-version: ${{ vars.NODE_VERSION }}
 
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: |
             11
-            19
+            ${{ vars.JAVA_VERSION }}
 
       - name: Print Versions
         run: |
@@ -109,14 +109,14 @@ jobs:
 
     - uses: actions/setup-node@v4
       with:
-        node-version: '20.11.0'
+        node-version: ${{ vars.NODE_VERSION }}
 
     - uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: |
           11
-          19
+          ${{ vars.JAVA_VERSION }}
 
     - name: Print Versions
       run: |
