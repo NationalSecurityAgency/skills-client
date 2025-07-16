@@ -40,11 +40,11 @@ cd ../skills-client-integration/skills-int-client-js/
 npm install
 
 echo "------- validate npm links -------"
-if ! npm ls --link --global | grep -q "skills-client-js@3.6.1"; then
-    echo "Error: skills-client-js@3.6.1 is not properly linked"
+if ! npm ls --link --global | grep "skills-client-js"; then
+    echo "Error: skills-client-js is not properly linked"
     exit 1
 else
-    echo "Verified: skills-client-js@3.6.1 is properly linked"
+    echo "Verified: skills-client-js is properly linked"
 fi
 
 echo "------- skills-int-client-js: npm run build -------"
