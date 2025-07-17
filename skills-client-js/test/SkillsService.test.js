@@ -46,7 +46,7 @@ describe('OAuth auto redirect tests', () => {
   // replace the real XHR object with the mock XHR object before each test
   beforeEach(() => {
     mock.setup();
-    const url = /.*\/api\/projects\/proj1\/skillsClientVersion/;
+    // const url = /.*\/api\/projects\/proj1\/skillsClientVersion/;
     window.location.assign.mockReset()
   });
 
