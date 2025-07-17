@@ -24,6 +24,13 @@ describe('OAuth auto redirect tests', () => {
   const authEndpoint = `${mockServiceUrl}/oauth2/authorization/gitlab`;
   const oldWindowLocation = window.location
 
+  /**
+   * Please note that this test will need to be re-written in order to upgrade
+   * jest-environment-jsdom from 29 to 30; version 30 does not support manipulating
+   * `window.location`, here are some relevant tickets:
+   *   https://github.com/jestjs/jest/issues/15674
+   *   https://github.com/jsdom/jsdom/issues/3492
+   */
   beforeAll(() => {
     delete window.location
 
