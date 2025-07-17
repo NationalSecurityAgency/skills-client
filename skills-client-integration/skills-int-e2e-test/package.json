@@ -48,12 +48,12 @@
     "dev:removeNpmLinks": "mvn --batch-mode clean package && java -cp target/skills-int-e2e-test-*.jar -Dloader.main=skills.RemoveNpmLinks org.springframework.boot.loader.launch.PropertiesLauncher"
   },
   "devDependencies": {
-    "cypress": "13.6.3",
-    "license-check-and-add": "3.0.4",
+    "cypress": "14.5.2",
+    "license-check-and-add": "4.0.5",
     "license-checker": "25.0.1",
     "pdf-parse": "1.1.1",
-    "semver": "7.3.2",
-    "wait-on": "5.2.0",
-    "wait-port": "0.2.9"
+    "semver": "7.7.2",
+    "wait-on": "8.0.3",
+    "wait-port": "1.1.0"
   }
 }

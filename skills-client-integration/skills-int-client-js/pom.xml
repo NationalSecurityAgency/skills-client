@@ -21,6 +21,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.1</version>
                 <executions>
                     <execution>
                         <id>exec-npm-install</id>
@@ -39,57 +40,6 @@
                     </execution>
                 </executions>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>com.github.eirslett</groupId>-->
-<!--                <artifactId>frontend-maven-plugin</artifactId>-->
-<!--                <version>${frontend-maven-plugin.version}</version>-->
-<!--                <configuration>-->
-<!--                    <installDirectory>target</installDirectory>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>install node and npm</id>-->
-<!--                        <goals>-->
-<!--                            <goal>install-node-and-npm</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <nodeVersion>${node.version}</nodeVersion>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>npm install</id>-->
-<!--                        <goals>-->
-<!--                            <goal>npm</goal>-->
-<!--                        </goals>-->
-<!--                        <phase>generate-resources</phase>-->
-<!--                        <configuration>-->
-<!--                            <arguments>&#45;&#45;unsafe-perm install</arguments>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>npm run build</id>-->
-<!--                        <goals>-->
-<!--                            <goal>npm</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <arguments>run build</arguments>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-
-<!--                    &lt;!&ndash;TODO: uncomment when we have at least 1 unit test&ndash;&gt;-->
-<!--                    &lt;!&ndash;<execution>&ndash;&gt;-->
-<!--                    &lt;!&ndash;<id>npm run test</id>&ndash;&gt;-->
-<!--                    &lt;!&ndash;<goals>&ndash;&gt;-->
-<!--                    &lt;!&ndash;<goal>npm</goal>&ndash;&gt;-->
-<!--                    &lt;!&ndash;</goals>&ndash;&gt;-->
-<!--                    &lt;!&ndash;<phase>test</phase>&ndash;&gt;-->
-<!--                    &lt;!&ndash;<configuration>&ndash;&gt;-->
-<!--                    &lt;!&ndash;<arguments>run unit</arguments>&ndash;&gt;-->
-<!--                    &lt;!&ndash;</configuration>&ndash;&gt;-->
-<!--                    &lt;!&ndash;</execution>&ndash;&gt;-->
-<!--                </executions>-->
-
-<!--            </plugin>-->
         </plugins>
     </build>
 </project>

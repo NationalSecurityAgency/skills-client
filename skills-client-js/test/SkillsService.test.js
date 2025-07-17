@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 SkillTree
+ * Copyright 2025 SkillTree
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,13 @@ describe('OAuth auto redirect tests', () => {
   const authEndpoint = `${mockServiceUrl}/oauth2/authorization/gitlab`;
   const oldWindowLocation = window.location
 
+  /**
+   * Please note that this test will need to be re-written in order to upgrade
+   * jest-environment-jsdom from 29 to 30; version 30 does not support manipulating
+   * `window.location`, here are some relevant tickets:
+   *   https://github.com/jestjs/jest/issues/15674
+   *   https://github.com/jsdom/jsdom/issues/3492
+   */
   beforeAll(() => {
     delete window.location
 
@@ -46,7 +53,7 @@ describe('OAuth auto redirect tests', () => {
   // replace the real XHR object with the mock XHR object before each test
   beforeEach(() => {
     mock.setup();
-    const url = /.*\/api\/projects\/proj1\/skillsClientVersion/;
+    // const url = /.*\/api\/projects\/proj1\/skillsClientVersion/;
     window.location.assign.mockReset()
   });
 
