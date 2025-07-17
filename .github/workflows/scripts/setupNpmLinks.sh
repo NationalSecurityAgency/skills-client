@@ -35,7 +35,7 @@ npm link @skilltree/skills-client-js
 cd ../../skills-client-js
 echo "------- skills-client-js: npm install -------"
 npm install
-npm run buildSkipTests
+npm run build
 
 echo "------- skills-int-client-js: npm install -------"
 cd ../skills-client-integration/skills-int-client-js/
