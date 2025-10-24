@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.6</version>
+        <version>3.5.7</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>skills</groupId>
@@ -34,7 +34,7 @@
         <frontend-maven-plugin.version>1.10.3</frontend-maven-plugin.version>
 
         <!--  TODO: Temporary override spring boot versions, remove once spring boot upgrades these versions -->
-        <commons-lang3.version>3.18.0</commons-lang3.version>
+        <commons-lang3.version>3.19.0</commons-lang3.version>
         <tomcat.version>10.1.44</tomcat.version>
     </properties>
 
