@@ -1,10 +1,16 @@
 # SkillTree Client Libraries
+<p>
+  <img src="https://img.shields.io/npm/d18m/%40skilltree%2Fskills-client-js"  alt="npm downloads">
+  <img src="https://img.shields.io/npm/dw/%40skilltree%2Fskills-client-js"  alt="npm weekly downloads">
+  <img src="https://img.shields.io/npm/l/%40skilltree%2Fskills-client-js" alt="License">
+  <img src="https://img.shields.io/npm/v/%40skilltree%2Fskills-client-js" alt="Latest Version">
+  <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/%40skilltree%2Fskills-client-js">
+</p>
 
-SkillTree is an innovative approach to implementing application training. SkillTree skills-client project is an assembly of 
-client libraries that facilitate rapid integration with the SkillTree service. 
+SkillTree is an innovative approach to implementing application training. SkillTree's ``skills-client-js`` project facilitates rapid integration with the SkillTree service.
 
-To learn about the SkillTree platform please visit our [Official Documentation](https://skilltreeplatform.dev/). 
-These pages provide in-depth guidance on the installation, usage and contribution.  
+To learn about the SkillTree platform please visit our [Official Documentation](https://skilltreeplatform.dev/).
+These pages provide in-depth guidance on the installation, usage and contribution.
 
 ## Workflow Status
 
