@@ -1,6 +1,6 @@
 {
     "name": "skills-int-client-js",
-    "version": "3.6.2",
+    "version": "3.6.3",
     "license": "Apache-2.0",
     "description": "SkillTree Client Lib Integration Tests - Native JS",
     "main": "index.js",
@@ -16,7 +16,7 @@
     },
     "author": "SkillTree Team",
     "dependencies": {
-        "@skilltree/skills-client-js": "3.6.2",
+        "@skilltree/skills-client-js": "3.6.3",
         "axios": "1.16.0",
         "bootstrap": "5.3.8",
         "jquery": "4.0.0"
