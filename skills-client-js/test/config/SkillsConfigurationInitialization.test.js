@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SkillTree
+ * Copyright 2026 SkillTree
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 import mock from 'xhr-mock';
 import SkillsConfiguration from '../../src/config/SkillsConfiguration';
+import log from 'js-logger';
 
 /**
  * @jest-environment jsdom
@@ -193,4 +194,32 @@ describe('SkillsConfigurationInit', () => {
 
             expect(SkillsConfiguration.getServiceUrl()).toBe('http://some');
         });
+
+    it('configure with enabled=false exercises disabled logging path', () => {
+        // Spy on the logger methods to verify they are called
+        const logUseDefaultsSpy = jest.spyOn(log, 'useDefaults').mockImplementation();
+        const logSetLevelSpy = jest.spyOn(log, 'setLevel').mockImplementation();
+        const logInfoSpy = jest.spyOn(log, 'info').mockImplementation();
+
+        const result = SkillsConfiguration.configure({
+            serviceUrl: 'http://test.com',
+            projectId: 'test-project',
+            authenticator: 'http://test.com/auth',
+            enabled: false
+        });
+
+        // Verify the specific lines are exercised
+        expect(logUseDefaultsSpy).toHaveBeenCalled();
+        expect(logSetLevelSpy).toHaveBeenCalledWith(log.TRACE);
+        expect(logInfoSpy).toHaveBeenCalledWith('SkillsConfiguration is disabled.');
+
+        // Verify it returns a resolved promise
+        expect(result).toBeInstanceOf(Promise);
+
+        // Clean up spies
+        logUseDefaultsSpy.mockRestore();
+        logSetLevelSpy.mockRestore();
+        logInfoSpy.mockRestore();
+    });
+
 });

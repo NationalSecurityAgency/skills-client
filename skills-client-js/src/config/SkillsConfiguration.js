@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SkillTree
+ * Copyright 2026 SkillTree
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,7 +125,6 @@ const exportObject = {
         setConfigureWasCalled();
       }
     }).catch((error) => {
-      // eslint-disable-next-line no-console
       console.error('Error getting service status', error);
       setConfigureWasCalled();
       initializedResolvers.resolve();

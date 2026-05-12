@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SkillTree
+ * Copyright 2026 SkillTree
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 import mock from 'xhr-mock';
 import SkillsService from '../src/SkillsService';
+import log from 'js-logger';
 
 require('@babel/polyfill');
 
@@ -22,39 +23,14 @@ describe('OAuth auto redirect tests', () => {
   const mockServiceUrl = 'http://some.com';
   const mockProjectId = 'proj1';
   const authEndpoint = `${mockServiceUrl}/oauth2/authorization/gitlab`;
-  const oldWindowLocation = window.location
 
-  /**
-   * Please note that this test will need to be re-written in order to upgrade
-   * jest-environment-jsdom from 29 to 30; version 30 does not support manipulating
-   * `window.location`, here are some relevant tickets:
-   *   https://github.com/jestjs/jest/issues/15674
-   *   https://github.com/jsdom/jsdom/issues/3492
-   */
   beforeAll(() => {
-    delete window.location
-
-    window.location = Object.defineProperties(
-      {},
-      {
-        ...Object.getOwnPropertyDescriptors(oldWindowLocation),
-        assign: {
-          configurable: true,
-          value: jest.fn(),
-        },
-      },
-    )
-  })
-  afterAll(() => {
-    // restore `window.location` to the `jsdom` `Location` object
-    window.location = oldWindowLocation
+    SkillsService.assignWindowLocation = jest.fn();
   })
 
-  // replace the real XHR object with the mock XHR object before each test
   beforeEach(() => {
     mock.setup();
-    // const url = /.*\/api\/projects\/proj1\/skillsClientVersion/;
-    window.location.assign.mockReset()
+    SkillsService.assignWindowLocation.mockReset()
   });
 
   // put the real XHR object back and clear the mocks after each test
@@ -68,8 +44,8 @@ describe('OAuth auto redirect tests', () => {
 
     await SkillsService.getAuthenticationToken(authEndpoint, mockServiceUrl, mockProjectId, true);
 
-    expect(window.location.assign).toHaveBeenCalledTimes(1)
-    expect(window.location.assign).toHaveBeenCalledWith(`${authEndpoint}?skillsRedirectUri=http://localhost/`)
+    expect(SkillsService.assignWindowLocation).toHaveBeenCalledTimes(1)
+    expect(SkillsService.assignWindowLocation).toHaveBeenCalledWith(`${authEndpoint}?skillsRedirectUri=http://localhost/`)
   });
 
   it('oauth does not auto redirect when oauthRedirect=false', async () => {
@@ -80,7 +56,7 @@ describe('OAuth auto redirect tests', () => {
       await SkillsService.getAuthenticationToken(authEndpoint, mockServiceUrl, mockProjectId);
     } catch (e) {
       expect(e.message).toMatch('Unable to authenticate');
-      expect(window.location.assign).toHaveBeenCalledTimes(0);
+      expect(SkillsService.assignWindowLocation).toHaveBeenCalledTimes(0);
     }
   });
 
@@ -89,8 +65,148 @@ describe('OAuth auto redirect tests', () => {
     mock.get(oauthTokenEndpoint, (req, res) => res.status(200).body('{"access_token": "token1"}'));
 
     const result = await SkillsService.getAuthenticationToken(authEndpoint, mockServiceUrl, mockProjectId, true);
-    expect(window.location.assign).toHaveBeenCalledTimes(0);
+    expect(SkillsService.assignWindowLocation).toHaveBeenCalledTimes(0);
     expect(result).toMatch('token1');
+  });
+
+  it('send log message', async () => {
+    const logEndpoint = `${mockServiceUrl}/public/log`;
+    const testMessage = 'Test log message';
+    const testLevel = 'ERROR';
+
+    // Mock the POST request to the log endpoint
+    mock.post(logEndpoint, (req, res) => {
+      // Verify the request body contains expected data
+      expect(req.body()).toContain('message');
+      expect(req.body()).toContain(testMessage);
+      expect(req.body()).toContain(testLevel);
+      return res.status(200).body('{"success": true}');
+    });
+
+    const result = await SkillsService.sendLogMessage(mockServiceUrl, [testMessage], { level: testLevel });
+
+    expect(result).toEqual({ success: true });
+  });
+
+  it('send log message failure', async () => {
+    const logEndpoint = `${mockServiceUrl}/public/log`;
+    const testMessage = 'Test log message';
+    const testLevel = 'ERROR';
+
+    // Mock a failed response
+    mock.post(logEndpoint, (req, res) => res.status(500));
+
+    try {
+      await SkillsService.sendLogMessage(mockServiceUrl, [testMessage], { level: testLevel });
+      fail('Expected sendLogMessage to throw an error');
+    } catch (error) {
+      expect(error.message).toContain('Unable to send client log message');
+      expect(error.message).toContain('Received status [500]');
+    }
+  });
+
+  it('configure logging with enabled logging', async () => {
+    const logEndpoint = `${mockServiceUrl}/public/log`;
+    const testMessage = 'Test log message';
+
+    // Mock the POST request for log message
+    mock.post(logEndpoint, (req, res) => res.status(200).body('{"success": true}'));
+
+    const response = {
+      clientLib: {
+        loggingEnabled: 'true',
+        loggingLevel: 'INFO'
+      }
+    };
+
+    // Mock console.info to capture log output
+    const consoleSpy = jest.spyOn(console, 'info').mockImplementation();
+
+    SkillsService.configureLogging(mockServiceUrl, response);
+
+    // Trigger a log message to test the handler
+    log.info(testMessage);
+
+    // Wait for async log message to be sent
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    // Check that our test message was logged
+    expect(consoleSpy.mock.calls.some(call =>
+        call[0] === testMessage || (Array.isArray(call[0]) && call[0].includes(testMessage))
+    )).toBe(true);
+    consoleSpy.mockReset();
+  });
+
+  it('configure logging with unknown level defaults to INFO and logs warning', async () => {
+    const logEndpoint = `${mockServiceUrl}/public/log`;
+    const response = {
+      clientLib: {
+        loggingEnabled: 'true',
+        loggingLevel: 'UNKNOWN_LEVEL'
+      }
+    };
+
+    // Mock the POST request for log message
+    mock.post(logEndpoint, (req, res) => res.status(200).body('{"success": true}'));
+
+    // Spy on the logger's warn method instead of console.warn
+    const logWarnSpy = jest.spyOn(log, 'warn').mockImplementation();
+    const consoleSpy = jest.spyOn(console, 'info').mockImplementation();
+
+    SkillsService.configureLogging(mockServiceUrl, response);
+
+    // Verify the specific warning message was logged
+    expect(logWarnSpy).toHaveBeenCalledWith(
+        'SkillsClient::SkillService::Unknown log level [UNKNOWN_LEVEL], defaulting to INFO'
+    );
+
+    // Verify that logging still works after defaulting to INFO
+    log.info('Test message after defaulting');
+
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    logWarnSpy.mockRestore();
+    consoleSpy.mockRestore();
+  });
+
+  it('reportSkillsClientVersion success', async () => {
+    const mockConfig = {
+      getServiceUrl: () => mockServiceUrl,
+      getProjectId: () => mockProjectId,
+      isPKIMode: () => false,
+      getAuthToken: () => 'test-token'
+    };
+
+    const versionEndpoint = `${mockServiceUrl}/api/projects/${mockProjectId}/skillsClientVersion`;
+    const mockResponse = { success: true, version: '3.6.2' };
+
+    // Mock a successful response (200)
+    mock.post(versionEndpoint, (req, res) => res.status(200).body(JSON.stringify(mockResponse)));
+
+    const result = await SkillsService.reportSkillsClientVersion(mockConfig);
+
+    expect(result).toEqual(mockResponse);
+  });
+
+  it('reportSkillsClientVersion failure', async () => {
+    const mockConfig = {
+      getServiceUrl: () => mockServiceUrl,
+      getProjectId: () => mockProjectId,
+      isPKIMode: () => false,
+      getAuthToken: () => 'test-token'
+    };
+
+    const versionEndpoint = `${mockServiceUrl}/api/projects/${mockProjectId}/skillsClientVersion`;
+
+    // Mock a failed response (e.g., 401)
+    mock.post(versionEndpoint, (req, res) => res.status(401));
+
+    try {
+      await SkillsService.reportSkillsClientVersion(mockConfig);
+      fail('Expected reportSkillsClientVersion to throw an error');
+    } catch (error) {
+      expect(error.message).toBe('Unable to report skillsClientVersion.  Received status [401]');
+    }
   });
 
 });

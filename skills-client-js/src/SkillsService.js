@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SkillTree
+ * Copyright 2026 SkillTree
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,6 +99,10 @@ export default {
     return typeof authenticator === 'string' && authenticator.startsWith(`${serviceUrl}/oauth2/authorization`);
   },
 
+  assignWindowLocation(newLocation) {
+    window.location.assign(newLocation);
+  },
+
   getAuthenticationToken(authenticator, serviceUrl, projectId, oauthRedirect = false) {
     return new Promise((resolve, reject) => {
       const isOAuthMode = this.isOAuthMode(authenticator, serviceUrl);
@@ -117,7 +121,7 @@ export default {
               // if we get 401 and we are using OAuth, then redirect to the OAuth Provider
               const oauthAuthenticator = `${authenticator}?skillsRedirectUri=${window.location}`;
               log.info(`SkillsClient::SkillService::unable to get oAuth token, navigating to [${oauthAuthenticator}]`);
-              window.location.assign(oauthAuthenticator);
+              this.assignWindowLocation(oauthAuthenticator);
               resolve();
             } else {
               reject(new Error(`SkillTree: Unable to authenticate using [${authenticator}] endpoint. Response Code=[${xhr.status}].\n
