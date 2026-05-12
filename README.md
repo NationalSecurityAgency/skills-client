@@ -1,10 +1,9 @@
 # SkillTree Client Libraries
 
-SkillTree is an innovative approach to implementing application training. SkillTree skills-client project is an assembly of 
-client libraries that facilitate rapid integration with the SkillTree service. 
+SkillTree is an innovative approach to implementing application training. SkillTree's ``skills-client-js`` project facilitates rapid integration with the SkillTree service.
 
-To learn about the SkillTree platform please visit our [Official Documentation](https://skilltreeplatform.dev/). 
-These pages provide in-depth guidance on the installation, usage and contribution.  
+To learn about the SkillTree platform please visit our [Official Documentation](https://skilltreeplatform.dev/).
+These pages provide in-depth guidance on the installation, usage and contribution.
 
 ## Workflow Status
 
