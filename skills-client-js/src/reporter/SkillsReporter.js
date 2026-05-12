@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SkillTree
+ * Copyright 2026 SkillTree
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ const callSuccessHandlers = (event) => {
 };
 
 const callErrorHandlers = (event) => {
-  // eslint-disable-next-line no-console
   console.error('Error reporting skill:', event);
   errorHandlerCache.forEach((it) => it(event));
 };

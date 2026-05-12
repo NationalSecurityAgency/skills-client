@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 SkillTree
+ * Copyright 2026 SkillTree
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ const skillsClientDisplayPath = 'skillsClientDisplayPath';
 const markedForDestruction = [];
 
 export default class SkillsDisplayJS {
-  /* eslint-disable object-curly-newline */
   constructor({ options, theme, version, handleRouteChanged, userId } = {}) {
     log.debug(`SkillsClient::SkillsDisplayJS::Constructing with options [${options}], theme [${theme}], version [${version}], userId [${userId}]`);
     this._options = { ...{ }, ...options };
@@ -36,7 +35,6 @@ export default class SkillsDisplayJS {
     this._userId = userId;
   }
 
-  /* eslint-disable class-methods-use-this */
   currentIframeId() {
     return uniqueId;
   }
@@ -201,7 +199,6 @@ export default class SkillsDisplayJS {
           errorMessage += ' and that your browser trusts the server\'s certificate';
         }
         errorMessage += `. skilltree service URL: ${this.configuration.serviceUrl}`;
-        /* eslint-disable no-console */
         console.error(errorMessage);
         log.error(`SkillsClient::SkillsDisplayJS::${errorMessage}`, error);
         ErrorPageUtils.removeAllChildren(iframeContainer);
