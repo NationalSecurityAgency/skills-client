@@ -104,7 +104,6 @@
                 <!--                mvn license:add-third-party-->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>2.0.0</version>
                 <executions>
                     <execution>
                         <id>default-cli</id>
@@ -146,7 +145,7 @@
                                 <licenseMerge>Eclipse Public License - Version 1.0|Eclipse Public License - v 1.0</licenseMerge>
                                 <licenseMerge>MIT License|The MIT License</licenseMerge>
                                 <licenseMerge>MIT License|MIT</licenseMerge>
-                                <licenseMerge>Eclipse Public License - Version 2.0|EPL 2.0</licenseMerge>
+                                <licenseMerge>Eclipse Public License - Version 2.0|EPL 2.0|EPL-2.0</licenseMerge>
                                 <licenseMerge>Eclipse Public License - Version 2.0|Eclipse Public License - v 2.0</licenseMerge>
                                 <licenseMerge>The GNU General Public License (GPL) Version 2 with the Classpath Exception|GPL2 w/ CPE</licenseMerge>
                             </licenseMerges>

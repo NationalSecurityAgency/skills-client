@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2025 SkillTree
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
