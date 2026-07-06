@@ -2,6 +2,9 @@
 
 name:  Skills-service Backward Compatibility
 
+env:
+  NODE_VERSION: 26
+  JAVA_VERSION: 25
 
 on:
   push:
@@ -21,18 +24,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: ${{ vars.NODE_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: |
             11
-            ${{ vars.JAVA_VERSION }}
+            ${{ env.JAVA_VERSION }}
 
       - name: Print Versions
         run: |
@@ -42,7 +45,7 @@ jobs:
           node --version
 
       - name: Cache local Maven repository
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -50,7 +53,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Cache npm
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -58,7 +61,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Checkout specific branch fo skills-service
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: NationalSecurityAgency/skills-service
           path: skills-service
@@ -70,7 +73,7 @@ jobs:
           cd ..
 
       - name: upload service jar
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: service jar
           path: ./skills-service/service/target/skills-service-*.jar
@@ -105,18 +108,18 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v6
       with:
-        node-version: ${{ vars.NODE_VERSION }}
+        node-version: ${{ env.NODE_VERSION }}
 
-    - uses: actions/setup-java@v4
+    - uses: actions/setup-java@v5
       with:
         distribution: 'temurin'
         java-version: |
           11
-          ${{ vars.JAVA_VERSION }}
+          ${{ env.JAVA_VERSION }}
 
     - name: Print Versions
       run: |
@@ -126,7 +129,7 @@ jobs:
         node --version
 
     - name: Cache local Maven repository
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -134,7 +137,7 @@ jobs:
           ${{ runner.os }}-maven-
 
     - name: Cache npm
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/.npm
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -152,7 +155,7 @@ jobs:
 #        cd ..
 
 #    - name: Checkout specific branch fo skills-service
-#      uses: actions/checkout@v4
+#      uses: actions/checkout@v6
 #      with:
 #        repository: NationalSecurityAgency/skills-service
 #        path: skills-service
@@ -165,7 +168,7 @@ jobs:
 #        ls ./
 #        cd ..
 
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v8
       with:
         name: service jar
         path: ./skills-service/
@@ -203,7 +206,7 @@ jobs:
 
     - name: upload result artifacts
       if: ${{ always() }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: result artifacts for [${{ matrix.skillsJsVersion }}] version
         path: |
@@ -229,7 +232,7 @@ jobs:
 #
 #    - name: upload result artifacts
 #      if: ${{ always() }}
-#      uses: actions/upload-artifact@v4
+#      uses: actions/upload-artifact@v7
 #      with:
 #        name: result artifacts
 #        path: |
