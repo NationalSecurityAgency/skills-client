@@ -119,7 +119,7 @@ export default {
           if (xhr.status !== 200) {
             if (isOAuthMode && oauthRedirect && xhr.status === 401) {
               // if we get 401 and we are using OAuth, then redirect to the OAuth Provider
-              const oauthAuthenticator = `${authenticator}?skillsRedirectUri=${window.location}`;
+              const oauthAuthenticator = `${authenticator}?skillsRedirectUri=${encodeURIComponent(window.location.href)}`;
               log.info(`SkillsClient::SkillService::unable to get oAuth token, navigating to [${oauthAuthenticator}]`);
               this.assignWindowLocation(oauthAuthenticator);
               resolve();
