@@ -45,7 +45,23 @@ describe('OAuth auto redirect tests', () => {
     await SkillsService.getAuthenticationToken(authEndpoint, mockServiceUrl, mockProjectId, true);
 
     expect(SkillsService.assignWindowLocation).toHaveBeenCalledTimes(1)
-    expect(SkillsService.assignWindowLocation).toHaveBeenCalledWith(`${authEndpoint}?skillsRedirectUri=http://localhost/`)
+    expect(SkillsService.assignWindowLocation).toHaveBeenCalledWith(`${authEndpoint}?skillsRedirectUri=${encodeURIComponent('http://localhost/')}`)
+  });
+
+  it('oauth redirect encodes the current location so it cannot add query parameters', async () => {
+    const oauthTokenEndpoint = `${mockServiceUrl}/api/projects/${mockProjectId}/token`;
+    mock.get(oauthTokenEndpoint, (req, res) => res.status(401));
+
+    window.history.pushState({}, '', '/page?a=1&skillsRedirectUri=http://evil.example.com/');
+    const injected = window.location.href;
+
+    await SkillsService.getAuthenticationToken(authEndpoint, mockServiceUrl, mockProjectId, true);
+
+    const [redirectedTo] = SkillsService.assignWindowLocation.mock.calls[0];
+    expect(redirectedTo).toBe(`${authEndpoint}?skillsRedirectUri=${encodeURIComponent(injected)}`);
+    // the injected separators must not survive as separators
+    expect(redirectedTo.split('?')).toHaveLength(2);
+    expect(redirectedTo).not.toContain('&skillsRedirectUri=');
   });
 
   it('oauth does not auto redirect when oauthRedirect=false', async () => {
