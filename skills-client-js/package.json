@@ -25,7 +25,8 @@
         "test": "NODE_ENV=test jest --coverage",
         "test-watch": "npx jest --passWithNoTests --coverage --watch",
         "prepublishOnly": "npm run build",
-        "lint": "eslint src/**"
+        "lint": "eslint src/**",
+        "lint:grammar": "cspell --quiet --no-must-find-files \"**/*.*\""
     },
     "author": "SkillTree Team",
     "devDependencies": {
@@ -44,6 +45,7 @@
         "@rollup/plugin-terser": "1.0.0",
         "axios-mock-adapter": "2.1.0",
         "babel-jest": "30.4.1",
+        "cspell": "^10.0.1",
         "eslint": "10.3.0",
         "globals": "17.6.0",
         "jest": "30.4.2",
