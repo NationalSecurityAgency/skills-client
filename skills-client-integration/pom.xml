@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.16</version>
+        <version>4.1.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>skills</groupId>
@@ -31,10 +31,6 @@
     <properties>
         <!--suppress UnresolvedMavenProperty -->
         <nexusServer>${nexus.url}</nexusServer>
-        <frontend-maven-plugin.version>1.10.3</frontend-maven-plugin.version>
-
-        <!--  TODO: Temporary override spring boot versions, remove once spring boot upgrades these versions -->
-        <commons-lang3.version>3.19.0</commons-lang3.version>
     </properties>
 
 </project>
