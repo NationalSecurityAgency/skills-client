@@ -18,15 +18,18 @@ package skills.example.filters;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Component
-@Order(SecurityProperties.DEFAULT_FILTER_ORDER-1)
+@Order(VueEntryPointFilter.BEFORE_SECURITY_FILTER_ORDER)
 public class VueEntryPointFilter implements Filter {
+
+    // -100 (Default Security Order) - 1
+    public static final int BEFORE_SECURITY_FILTER_ORDER = -101;
+
     @Autowired
     private VueEntryPointFilterUtils vueEntryPointFilterUtils;
 
