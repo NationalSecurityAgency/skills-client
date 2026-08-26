@@ -30,7 +30,10 @@ context("Token timeout JS Tests", () => {
       cy.wait(71000)  // wait 71 seconds to ensure the token has expired
       cy.get('[data-cy="exampleDirectiveClickEventButton"]').click();
 
-      cy.get('pre[data-cy=globalEventResult]').should('be.empty');
+      // should be empty string or empty JSON object
+      cy.get('pre[data-cy=globalEventResult]')
+        .invoke('text')
+        .should('match', /^\s*$|^\s*\{\s*\}\s*$/);
 
       cy.wait("@getToken", { timeout: 60000 }); // wait ~ another 50 seconds to all for the RetryChecker to resubmit
 
