@@ -20,6 +20,8 @@ const homePage = '/native/index.html'
 
 context("Global Events Tests", () => {
 
+    const level1CompleteRegex = /"completed"\s*:\s*\[(?=[\s\S]*?\{[^{}]*?(?:"type"\s*:\s*"Overall"[^{}]*?"level"\s*:\s*1|"level"\s*:\s*1[^{}]*?"type"\s*:\s*"Overall")[^{}]*?\})[\s\S]*?\]/;
+
     it("global event show correct results", () => {
         cy.createDefaultProject();
 
@@ -34,7 +36,7 @@ context("Global Events Tests", () => {
         cy.get('pre[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
         cy.get('pre[data-cy=globalEventResult]').contains('"pointsEarned": 50')
         cy.get('pre[data-cy=globalEventResult]').contains('"skillApplied": true')
-        cy.get('pre[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
+        cy.get('pre[data-cy=globalEventResult]').contains(level1CompleteRegex)
     });
     it("global event show correct results (skills reported directly to backend endpoint)", () => {
         cy.createDefaultProject();
@@ -46,7 +48,7 @@ context("Global Events Tests", () => {
         cy.get('pre[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
         cy.get('pre[data-cy=globalEventResult]').contains('"pointsEarned": 50')
         cy.get('pre[data-cy=globalEventResult]').contains('"skillApplied": true')
-        cy.get('pre[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
+        cy.get('pre[data-cy=globalEventResult]').contains(level1CompleteRegex)
     });
 
     it('global event does not update when skill reported for a different project', () => {
