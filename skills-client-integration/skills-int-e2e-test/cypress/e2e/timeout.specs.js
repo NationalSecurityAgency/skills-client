@@ -18,6 +18,8 @@ const homePage = '/native/index.html'
 
 context("Token timeout JS Tests", () => {
 
+  const level1CompleteRegex = /"completed"\s*:\s*\[(?=[\s\S]*?\{[^{}]*?(?:"type"\s*:\s*"Overall"[^{}]*?"level"\s*:\s*1|"level"\s*:\s*1[^{}]*?"type"\s*:\s*"Overall")[^{}]*?\})[\s\S]*?\]/;
+
   if (Cypress.env('timeout') === true || Cypress.env('timeout') === 'true') {
     it("report skill with expired token, retry checker will resend with new token", () => {
       cy.createDefaultProject();
@@ -35,7 +37,7 @@ context("Token timeout JS Tests", () => {
       cy.get('pre[data-cy=globalEventResult]').contains('"skillId": "IronMan"')
       cy.get('pre[data-cy=globalEventResult]').contains('"pointsEarned": 50')
       cy.get('pre[data-cy=globalEventResult]').contains('"skillApplied": true')
-      cy.get('pre[data-cy=globalEventResult]').contains(/completed": [[][^]*"type": "Overall",[^]\s*"level": 1/)
+      cy.get('pre[data-cy=globalEventResult]').contains(level1CompleteRegex)
     });
 
     it('skill display - navigate after token expires', () => {
