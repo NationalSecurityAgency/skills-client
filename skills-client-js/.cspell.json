@@ -1,0 +1,13 @@
+{
+  "version": "0.2",
+  "language": "en-us",
+  "caseSensitive": false,
+  "gitignore": true,
+  "words": [
+    "Postmate",
+    "Skilltree",
+    "stompjs",
+    "doesnt",
+    "newing"
+  ]
+}
