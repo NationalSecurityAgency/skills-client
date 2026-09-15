@@ -482,6 +482,7 @@ describe('SkillsDisplayJS', () => {
           isSummaryOnly: false,
           projectId: mockProjectId,
           serviceUrl: mockServiceUrl,
+          parentPath: '/',
         };
         mockVersion = `${Math.random()}`;
 
@@ -497,6 +498,7 @@ describe('SkillsDisplayJS', () => {
           authenticator: 'pki',
           serviceUrl: mockServiceUrl,
           projectId: mockProjectId,
+          parentPath: '/'
         };
 
         const client = new SkillsDisplayJS({
@@ -538,6 +540,7 @@ describe('SkillsDisplayJS', () => {
           authenticator: mockAuthenticator,
           serviceUrl: mockServiceUrl,
           projectId: mockProjectId,
+          parentPath: '/'
         };
         const client = new SkillsDisplayJS({
           options,
@@ -578,6 +581,7 @@ describe('SkillsDisplayJS', () => {
           serviceUrl: mockServiceUrl,
           projectId: mockProjectId,
           internalBackButton: false,
+          parentPath: '/'
         };
         const client = new SkillsDisplayJS({
           options,
@@ -618,6 +622,7 @@ describe('SkillsDisplayJS', () => {
           serviceUrl: mockServiceUrl,
           projectId: mockProjectId,
           internalBackButton: true,
+          parentPath: '/'
         };
         const client = new SkillsDisplayJS({
           options,
@@ -657,6 +662,7 @@ describe('SkillsDisplayJS', () => {
           authenticator: mockAuthenticator,
           serviceUrl: mockServiceUrl,
           projectId: mockProjectId,
+          parentPath: '/'
         };
         const client = new SkillsDisplayJS({
           options,
@@ -695,7 +701,7 @@ describe('SkillsDisplayJS', () => {
   describe('construction', () => {
     describe('options', () => {
       it('accepts options in the constructor', () => {
-        const mockOptions = { authenticator: 'option' };
+        const mockOptions = { authenticator: 'option', parentPath: 'non-default/' };
         const client = new SkillsDisplayJS({
           options: mockOptions,
         });
@@ -704,14 +710,14 @@ describe('SkillsDisplayJS', () => {
 
       it('supports null or undefined being passed', () => {
         let client = new SkillsDisplayJS({ options: null });
-        expect(client.options).toEqual({});
+        expect(client.options).toEqual({ parentPath: '/' });
         client = new SkillsDisplayJS({ options: undefined });
-        expect(client.options).toEqual({});
+        expect(client.options).toEqual({ parentPath: '/'} );
       });
 
-      it('supports empty constructor', () => {
+      it('supports empty constructor, defaults parentPath to window.location.pathname', () => {
         const client = new SkillsDisplayJS();
-        expect(client.options).toEqual({});
+        expect(client.options).toEqual({ parentPath: '/'} );
       });
 
       it('accepts valid options', () => {

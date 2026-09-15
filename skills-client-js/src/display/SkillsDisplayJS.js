@@ -28,7 +28,7 @@ const markedForDestruction = [];
 export default class SkillsDisplayJS {
   constructor({ options, theme, version, handleRouteChanged, userId } = {}) {
     log.debug(`SkillsClient::SkillsDisplayJS::Constructing with options [${options}], theme [${theme}], version [${version}], userId [${userId}]`);
-    this._options = { ...{ }, ...options };
+    this._options = { parentPath: window.location.pathname, ...options };
     this._theme = theme;
     this._version = version;
     this._handleRouteChanged = handleRouteChanged;
