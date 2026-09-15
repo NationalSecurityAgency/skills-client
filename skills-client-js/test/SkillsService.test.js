@@ -169,12 +169,18 @@ describe('OAuth auto redirect tests', () => {
     const logWarnSpy = jest.spyOn(log, 'warn').mockImplementation();
     const consoleSpy = jest.spyOn(console, 'info').mockImplementation();
 
+    // start from a level other than INFO so we can tell the default was applied
+    log.setLevel(log.ERROR);
+
     SkillsService.configureLogging(mockServiceUrl, response);
 
     // Verify the specific warning message was logged
     expect(logWarnSpy).toHaveBeenCalledWith(
         'SkillsClient::SkillService::Unknown log level [UNKNOWN_LEVEL], defaulting to INFO'
     );
+
+    // the logger should actually be at INFO, not left at the previous level
+    expect(log.getLevel()).toBe(log.INFO);
 
     // Verify that logging still works after defaulting to INFO
     log.info('Test message after defaulting');
