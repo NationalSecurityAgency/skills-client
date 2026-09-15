@@ -10,11 +10,6 @@ on:
       - 'README.md'
       - .github/workflows/skills-service-backward-compat.yml
       - .github/workflows/client-libs-backward-compat.yml
-  pull_request:
-    paths-ignore:
-      - 'README.md'
-      - .github/workflows/skills-service-backward-compat.yml
-      - .github/workflows/client-libs-backward-compat.yml
   workflow_dispatch:
 
 jobs:
