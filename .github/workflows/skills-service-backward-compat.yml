@@ -13,8 +13,6 @@ on:
   pull_request:
     paths-ignore:
       - 'README.md'
-  schedule:
-    - cron: '0 6 * * *'
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
