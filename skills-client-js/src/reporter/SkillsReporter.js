@@ -138,7 +138,7 @@ const reportInternal = (resolve, reject, userSkillId, timestamp, isRetry, retryA
   const xhr = new XMLHttpRequest();
 
   xhr.open('POST', `${SkillsConfiguration.getServiceUrl()}/api/projects/${SkillsConfiguration.getProjectId()}/skills/${userSkillId}`);
-  xhr.withCredentials = true;
+  xhr.withCredentials = SkillsConfiguration.isPKIMode();
   if (!SkillsConfiguration.isPKIMode()) {
     xhr.setRequestHeader('Authorization', `Bearer ${SkillsConfiguration.getAuthToken()}`);
   }

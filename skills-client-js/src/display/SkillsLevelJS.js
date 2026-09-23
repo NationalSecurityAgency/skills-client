@@ -55,7 +55,7 @@ export default class SkillsLevelJS {
           this._projectId = SkillsConfiguration.getProjectId();
           log.debug(`SkillsClient::SkillsLevelJS::getting projectId from SkillsConfiguration: [${this._projectId}]`);
         }
-        const requestConfig = { withCredentials: true };
+        const requestConfig = { withCredentials: SkillsConfiguration.isPKIMode() };
         if (!SkillsConfiguration.isPKIMode()) {
           const authToken = SkillsConfiguration.getAuthToken();
           requestConfig.headers = { Authorization: `Bearer ${authToken}` };

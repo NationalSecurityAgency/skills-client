@@ -21,7 +21,7 @@
         "buildSkipTests": "npm run lint && npm run clean && npm run build:umd && npm run build:esm",
         "build:umd": "rollup --config --format umd --file dist/skills-client-js.umd.min.js --name SkillsClient --bundleConfigAsCjs",
         "build:esm": "rollup --config --format esm --file dist/skills-client-js.esm.min.js --bundleConfigAsCjs",
-        "deploy-to-examples": "npm run build && cp ./dist/skills-display-js.umd.min.js ../skills-examples/skills-example-client-js/app/assets/js/@skilltree/skills-client-js/dist",
+        "deploy-to-examples": "npm run clean && npm run build:umd && npm run build:esm && rm ../skills-client-integration/skills-int-service/src/main/resources/public/native/assets/js/@skilltree/skills-client-js/dist/* && cp ./dist/* ../skills-client-integration/skills-int-service/src/main/resources/public/native/assets/js/@skilltree/skills-client-js/dist/",
         "test": "NODE_ENV=test jest --coverage",
         "test-watch": "npx jest --passWithNoTests --coverage --watch",
         "prepublishOnly": "npm run build",

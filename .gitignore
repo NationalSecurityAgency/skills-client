@@ -16,3 +16,5 @@
 /skills-client-ng/dist/
 /skills-client-ng/projects/skilltree/skills-client-ng/src/version.js
 /skills-client-integration/skills-int-e2e-test/cypress/downloads/*
+
+AGENTS.md

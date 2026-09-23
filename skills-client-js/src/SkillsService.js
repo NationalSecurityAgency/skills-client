@@ -58,7 +58,7 @@ export default {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', `${conf.getServiceUrl()}/api/projects/${conf.getProjectId()}/skillsClientVersion`);
-      xhr.withCredentials = true;
+      xhr.withCredentials = conf.isPKIMode();
       if (!conf.isPKIMode()) {
         xhr.setRequestHeader('Authorization', `Bearer ${conf.getAuthToken()}`);
       }
@@ -111,7 +111,6 @@ export default {
         xhr.open('GET', authenticator);
       } else {
         xhr.open('GET', `${serviceUrl}/api/projects/${projectId}/token`);
-        xhr.withCredentials = true;
       }
 
       xhr.onreadystatechange = () => {
