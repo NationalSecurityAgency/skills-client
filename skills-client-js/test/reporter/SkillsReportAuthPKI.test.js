@@ -18,21 +18,33 @@ import mock from 'xhr-mock';
 import SkillsConfiguration from '../../src/config/SkillsConfiguration';
 import { SkillsReporter } from '../../src/reporter/SkillsReporter.js';
 
+// These tests exercise HTTP authentication, not the background websocket connection.
+jest.mock('@stomp/stompjs');
+
 describe('authPkiTests()', () => {
   const mockServiceUrl = 'http://some.com';
   const mockProjectId = 'proj1';
 
-  SkillsConfiguration.configure({
-    serviceUrl: mockServiceUrl,
-    projectId: mockProjectId,
-    authenticator: 'pki',
+  // replace the real XHR object with the mock XHR object before each test
+  beforeEach(async () => {
+    mock.setup();
+    SkillsConfiguration.logout();
+    mock.get(/.*\/public\/status/, (req, res) => res.status(200).body('{"status":"OK","clientLib":{"loggingEnabled":"false","loggingLevel":"DEBUG"}}'));
+    mock.post(/.*\/api\/projects\/proj1\/skillsClientVersion/, (req, res) => res.status(200).body('{"success":true,"explanation":null}'));
+    await SkillsConfiguration.configure({
+      serviceUrl: mockServiceUrl,
+      projectId: mockProjectId,
+      authenticator: 'pki',
+    });
   });
 
-  // replace the real XHR object with the mock XHR object before each test
-  beforeEach(() => mock.setup());
-
   // put the real XHR object back and clear the mocks after each test
-  afterEach(() => mock.teardown());
+  afterEach(() => {
+    SkillsReporter.cancelRetryChecker();
+    window.localStorage.removeItem('skillTreeRetryQueue');
+    SkillsConfiguration.logout();
+    mock.teardown();
+  });
 
   it('successful call in pki mode', async () => {
     expect.assertions(2);

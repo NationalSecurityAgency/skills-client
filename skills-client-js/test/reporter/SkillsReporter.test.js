@@ -55,6 +55,8 @@ describe('userSkillsService', () => {
   });
 
   afterEach(() => {
+    SkillsReporter.cancelRetryChecker();
+    jest.restoreAllMocks();
     window.XMLHttpRequest = realXMLHttpRequest;
   });
 
@@ -79,9 +81,16 @@ describe('userSkillsService', () => {
       expect(MockXMLHttpRequest.setRequestHeader).toHaveBeenCalledWith('Authorization', `Bearer ${SkillsConfiguration.getAuthToken()}`);
     });
 
-    it('enables withCredentials', () => {
+    it('disables withCredentials in token mode', () => {
       SkillsReporter.reportSkill(mockUserSkillId);
-      expect(MockXMLHttpRequest.withCredentials).toBeTruthy();
+      expect(MockXMLHttpRequest.withCredentials).toBe(false);
+    });
+
+    it('enables withCredentials without an Authorization header in PKI mode', () => {
+      SkillsConfiguration.setAuthToken('pki');
+      SkillsReporter.reportSkill(mockUserSkillId);
+      expect(MockXMLHttpRequest.withCredentials).toBe(true);
+      expect(MockXMLHttpRequest.setRequestHeader).not.toHaveBeenCalledWith('Authorization', expect.anything());
     });
 
     it('sends out the ajax request', () => {
