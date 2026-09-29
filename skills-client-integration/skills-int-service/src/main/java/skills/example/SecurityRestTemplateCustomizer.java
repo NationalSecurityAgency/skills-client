@@ -16,6 +16,8 @@
 package skills.example;
 
 import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.cookie.Cookie;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
@@ -45,12 +47,22 @@ public class SecurityRestTemplateCustomizer implements RestTemplateCustomizer {
         // not by default keeps track of session.  This method is called by the
         // RestTemplateBuilder used in the skills.example.Controller constructor
         HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-        HttpClient client = getHttpClient();
+        BasicCookieStore cookieStore = new BasicCookieStore();
+        HttpClient client = getHttpClient(cookieStore);
         clientHttpRequestFactory.setHttpClient(client);
         restTemplate.setRequestFactory(clientHttpRequestFactory);
+        restTemplate.getInterceptors().add((request, body, execution) -> {
+            for (Cookie cookie : cookieStore.getCookies()) {
+                if ("XSRF-TOKEN".equals(cookie.getName())) {
+                    request.getHeaders().set("X-XSRF-TOKEN", cookie.getValue());
+                    break;
+                }
+            }
+            return execution.execute(request, body);
+        });
     }
 
-    private HttpClient getHttpClient() {
+    private HttpClient getHttpClient(BasicCookieStore cookieStore) {
         try {
             SSLContext sslContext = SSLContexts.createSystemDefault();
             HostnameVerifier allowAllHosts = new NoopHostnameVerifier();
@@ -67,6 +79,7 @@ public class SecurityRestTemplateCustomizer implements RestTemplateCustomizer {
 
             return HttpClients.custom()
                     .useSystemProperties()
+                    .setDefaultCookieStore(cookieStore)
                     .setConnectionManager(poolingHttpClientConnectionManager)
                     .build();
         } catch (Exception e) {
