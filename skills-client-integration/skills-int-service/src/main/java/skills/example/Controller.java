@@ -128,6 +128,9 @@ public class Controller {
 
     private void authIfNecessary() {
         if (!skillsConfig.getAuthMode().equalsIgnoreCase("pki")) {
+            // Seed the session and XSRF-TOKEN before /performLogin, which requires CSRF validation.
+            // SecurityRestTemplateCustomizer retains the cookies and sends X-XSRF-TOKEN on later requests.
+            restTemplate.getForEntity(skillsConfig.getServiceUrl() + "/app/userInfo", String.class);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
