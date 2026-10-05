@@ -45,6 +45,44 @@ const baseUrl = Cypress.config().baseUrl;
 const skillsDisplayHomePage = '/native/clientDisplay.html'
 
 
+// cy.request does not add Axios's X-XSRF-TOKEN header automatically. Keep the
+// cookie and header in sync for requests to the Skills Service, including
+// registration and login requests made before the browser visits the dashboard.
+Cypress.Commands.overwrite('request', (originalFn, ...args) => {
+  const options = typeof args[0] === 'object'
+      ? { ...args[0] }
+      : typeof args[1] === 'string'
+          ? { method: args[0], url: args[1], body: args[2] }
+          : { url: args[0], body: args[1] };
+  const method = (options.method || 'GET').toUpperCase();
+  const url = new URL(options.url, Cypress.config('baseUrl'));
+  const backend = new URL(Cypress.config('baseUrl'));
+  const isSkillsService = url.origin === backend.origin ||
+      (url.hostname === backend.hostname && url.port === '8080');
+
+  if (!isSkillsService || ['GET', 'HEAD', 'OPTIONS', 'TRACE'].includes(method)) {
+    return originalFn(...args);
+  }
+
+  return cy.getCookie('XSRF-TOKEN').then((cookie) => {
+    if (cookie) {
+      return originalFn({
+        ...options,
+        headers: { ...options.headers, 'X-XSRF-TOKEN': cookie.value },
+      });
+    }
+
+    // The first request can be registration, logout, or login. A GET loads
+    // the token without requiring an authenticated session.
+    return cy.request({ url: `${url.origin}/app/userInfo` })
+        .then(() => cy.getCookie('XSRF-TOKEN').should('exist'))
+        .then((xsrfCookie) => originalFn({
+          ...options,
+          headers: { ...options.headers, 'X-XSRF-TOKEN': xsrfCookie.value },
+        }));
+  });
+});
+
 Cypress.Commands.add('onlyOn', (enabled) => {
   if (enabled !== true) {
     cy.state('runnable').ctx.skip()
@@ -59,15 +97,20 @@ Cypress.Commands.add("backendRegister", (user, pass, grantRoot) => {
   return cy.request(`${backend}/app/users/validExistingDashboardUserId/${user}`)
     .then((response) => {
       if (response.body !== true) {
-        cy.log(`Creating user [${user}]`)
-        cy.request('PUT', `${backend}/createAccount`, {
+
+        const userBody = {
           firstName: 'Firstname',
           lastName: 'LastName',
           email: user,
           password: pass,
-        });
+        }
+
         if (grantRoot) {
-          cy.request('POST', `${backend}/grantFirstRoot`);
+          cy.log(`Creating root user [${user}]`)
+          cy.request('PUT', `${backend}/createRootAccount`, userBody)
+        } else {
+          cy.log(`Creating user [${user}]`)
+          cy.request('PUT', `${backend}/createAccount`, userBody);
         }
         cy.backendLogout()
       } else {
