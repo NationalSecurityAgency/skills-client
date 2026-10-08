@@ -273,18 +273,23 @@ Cypress.Commands.add('skillsLog', (message) => {
   });
 });
 
-Cypress.Commands.add('loginBySingleSignOn', (projId = 'proj1') => {
+Cypress.Commands.add('loginBySingleSignOn', () => {
   Cypress.log({
     name: 'loginBySingleSignOn',
   })
 
-  // first try to get a skills token,
-  cy.request({
-    url: `http://localhost:8080/api/projects/${projId}/token`,
+  // Check the session without saving a protected request for Spring to replay
+  // after OAuth login, before the test has created any projects.
+  return cy.request({
+    url: `${backend}/app/userInfo`,
     failOnStatusCode: false,
-  }).then((tokenResp) => {
-    if (tokenResp.status === 401) {
-      cy.skillsLog('Skills token request failed, authenticating with OAuth provider...');
+    followRedirect: false,
+  }).then((sessionResp) => {
+    const requiresLogin = sessionResp.status === 401 ||
+      (sessionResp.status === 200 && !sessionResp.body?.userId) ||
+      ([301, 302, 303, 307, 308].includes(sessionResp.status) && Boolean(sessionResp.headers.location));
+    if (requiresLogin) {
+      cy.skillsLog('Skills session requires authentication, authenticating with OAuth provider...');
       cy.request({
         url: 'http://localhost:8080/oauth2/authorization/hydra', 
         qs: { skillsRedirectUri: baseUrl, },
@@ -296,10 +301,14 @@ Cypress.Commands.add('loginBySingleSignOn', (projId = 'proj1') => {
         const $html = Cypress.$(resp.body)
         const authenticityToken = $html.find('input[name=_csrf]').val()
         const challenge = $html.find('input[name=challenge]').val()
+        expect(authenticityToken, 'OAuth login CSRF token').to.be.a('string').and.not.be.empty;
+        expect(challenge, 'OAuth login challenge').to.be.a('string').and.not.be.empty;
         const options = {
           method: 'POST',
           url: 'http://localhost:3000/login',
           form: true, // we are submitting a regular form body
+          followRedirect: false,
+          failOnStatusCode: false,
           body: {
             _csrf: authenticityToken,
             challenge,
@@ -311,38 +320,53 @@ Cypress.Commands.add('loginBySingleSignOn', (projId = 'proj1') => {
         };
 
         cy.request(options).then((resp2) => {
-          expect(resp2.status).to.eq(200)
+          expect(
+            resp2.status,
+            `OAuth login: ${JSON.stringify({
+              location: resp2.headers.location,
+              body: resp2.body,
+            })}`,
+          ).to.eq(302);
 
-          if (resp2.redirects[resp2.redirects.length-1].includes('/consent?consent_challenge')) {
-            cy.skillsLog('Granting consent with OAuth provider...');
-            const $html = Cypress.$(resp2.body)
-            const authenticityToken = $html.find('input[name=_csrf]').val()
-            const challenge = $html.find('input[name=challenge]').val()
-            // const consentUrl = resp2.redirects.filter(r => r.includes('/consent?consent_challenge'))[0].split(' ')[1]
-            const options = {
-              method: 'POST',
-              url: 'http://localhost:3000/consent',
-              form: true, // we are submitting a regular form body
-              qs: { consent_challenge: challenge },
-              body: {
-                _csrf: authenticityToken,
-                challenge,
-                grant_scope: 'openid',
-                // grant_scope: 'offline',
-                submit: 'Allow access',
-                remember: '1',
-              },
-              failOnStatusCode: false,
-            };
+          expect(resp2.headers.location, 'OAuth login redirect').to.be.a('string').and.not.be.empty;
+          const redirectUrl = new URL(resp2.headers.location, options.url).href;
+          return cy.request(redirectUrl).then((resp2) => {
+            expect(resp2.status).to.eq(200)
 
-            cy.request(options).then((resp3) => {
-              expect(resp3.status).to.eq(200)
-            })
-          }
+            if ((resp2.redirects || []).some(redirect => redirect.includes('/consent?consent_challenge')) &&
+              Cypress.$(resp2.body).find('input[name=challenge]').length > 0) {
+              cy.skillsLog('Granting consent with OAuth provider...');
+              const $html = Cypress.$(resp2.body)
+              const authenticityToken = $html.find('input[name=_csrf]').val()
+              const challenge = $html.find('input[name=challenge]').val()
+              const options = {
+                method: 'POST',
+                url: 'http://localhost:3000/consent',
+                form: true, // we are submitting a regular form body
+                qs: { consent_challenge: challenge },
+                body: {
+                  _csrf: authenticityToken,
+                  challenge,
+                  grant_scope: 'openid',
+                  submit: 'Allow access',
+                  remember: '1',
+                },
+                failOnStatusCode: false,
+              };
+
+              cy.request(options).then((resp3) => {
+                expect(resp3.status).to.eq(200)
+              })
+            }
+          })
         })
       })
     } else {
-      cy.skillsLog('Received Skills token, already authenticated with OAuth provider.');
+      expect(sessionResp.status, 'Skills session response status').to.eq(200)
+      cy.skillsLog('Skills session already authenticated with OAuth provider.');
     }
-  })
+  }).then(() => cy.request(`${backend}/app/userInfo`).then((resp) => {
+    expect(resp.status, 'Authenticated Skills session status').to.eq(200)
+    expect(resp.body.userId, 'Authenticated Skills user').to.be.a('string').and.not.be.empty;
+  }))
 });
