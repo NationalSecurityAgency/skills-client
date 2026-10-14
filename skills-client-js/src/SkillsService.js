@@ -45,11 +45,11 @@ export default {
         this.sendLogMessage(serviceUrl, messages, context);
       });
       let loggingLevel = log[response.clientLib.loggingLevel];
-      log.setLevel(loggingLevel);
       if (!loggingLevel) {
         loggingLevel = log.INFO;
         log.warn(`SkillsClient::SkillService::Unknown log level [${response.clientLib.loggingLevel}], defaulting to INFO`);
       }
+      log.setLevel(loggingLevel);
       log.info(`SkillsClient::SkillService::Logger enabled, log level set to [${loggingLevel.name}]`);
     }
   },
